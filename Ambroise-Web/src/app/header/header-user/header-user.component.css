@@ -1,0 +1,22 @@
+#modules{
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+    transition : linear .2s;
+}
+
+#moduleHome{
+    background-color: hsla(0,0%,100%,.4);
+    transition: linear .2s;
+}
+
+.otherModules{
+    /*
+    * This property might be useful  width: 100%;
+    */   
+    display : inline;
+    background-color: hsla(0,0%,100%,.2);
+    margin: auto;
+    text-align: center;
+    transition: linear .2s;
+}
