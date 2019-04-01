@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
     }
 
     /*
-    * TO-DO : prendre en compte l'état de connexion de l'utilisateur
+    * TO-DO : prendre en compte l'état de connexion de l'utilisateur pour savoir s'il a accès ou non au contenu demandé
     */
   canActivate(
     route: ActivatedRouteSnapshot,

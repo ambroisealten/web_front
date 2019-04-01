@@ -12,4 +12,10 @@ export class HeaderUserComponent implements OnInit {
   ngOnInit() {
   }
 
+  accountClick(){
+    /*
+    * TO-DO : Définir l'action à faire lors d'un clic utilisateur
+    */
+  }
+
 }

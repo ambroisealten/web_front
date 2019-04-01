@@ -7,6 +7,7 @@ import { HeaderVisitorComponent } from './header/header-visitor/header-visitor.c
 import { AuthGuard } from './services/auth-guard.service';
 import { PageLoginComponent } from './content/page-login/page-login.component';
 import { PageContentComponent } from './content/page-content/page-content.component';
+import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
 
 const appRoutes: Routes = [
   {path:'content', component:PageContentComponent},
@@ -18,7 +19,8 @@ const appRoutes: Routes = [
     HeaderUserComponent,
     HeaderVisitorComponent,
     PageLoginComponent,
-    PageContentComponent
+    PageContentComponent,
+    HeaderMenuComponent
   ],
   imports: [
     BrowserModule,
