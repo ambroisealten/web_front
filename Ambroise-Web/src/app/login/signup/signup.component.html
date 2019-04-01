@@ -1,0 +1,14 @@
+<div class="login-page">
+  <div class="form">
+    <h1>Inscription</h1>
+    <form class="register-form">
+      <input type="text" placeholder="nom" [(ngModel)]="userName" name="userName"/>
+      <input type="text" placeholder="prénom" [(ngModel)]="userFirstname" name="userFirstname"/>
+      <input type="email" placeholder="email" [(ngModel)]="userEmail" name="userEmail"/>
+      <input type="password" placeholder="mot de passe" [(ngModel)]="userPswd" name="userPswd"/>
+      <input type="password" placeholder="confirmation mot de passe" [(ngModel)]="userPswdCheck" name="userPswdCheck"/>
+      <button class="login-button" (click)="onSignup()">Créer mon compte</button>
+      <p class="message">Vous avez déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+    </form>
+  </div>
+</div>

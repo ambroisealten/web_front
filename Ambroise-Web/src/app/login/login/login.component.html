@@ -1,0 +1,11 @@
+<div class="login-page">
+  <div class="form">
+    <h1>Connexion</h1>
+    <form class="login-form">
+      <input type="email" placeholder="email" [(ngModel)]="userEmail" name="userEmail"/>
+      <input type="password" placeholder="mot de passe" [(ngModel)]="userPswd" name="userPswd"/>
+      <button class="login-button" (click)="onConnect()">Se connecter</button>
+      <p class="message">Vous n'avez pas encore de compte ? <a routerLink="/signup" routerLinkActive="active">Créer un compte</a></p>
+    </form>
+  </div>
+</div>
