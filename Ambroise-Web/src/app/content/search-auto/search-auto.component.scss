@@ -42,3 +42,43 @@
 .closeTag:hover{
     filter : brightness(0) invert(1);
 }
+
+@media (max-width :400px){
+    .allTagWords{
+        grid-template-columns: repeat(3,1fr);
+        grid-column-gap: 10%;
+    }
+}
+
+@media (min-width : 400px) and (max-width:600px){
+    .allTagWords{
+        grid-template-columns: repeat(3,1fr);
+        grid-column-gap: 7.5%;
+    }
+}
+
+@media (min-width:600px) and (max-width:900px) {
+    .allTagWords{
+        grid-template-columns: repeat(3,1fr);
+        grid-column-gap: 5%;
+    }
+}
+
+@media (min-width:900px) and (max-width:1200px){
+    .allTagWords{
+        grid-template-columns: repeat(4,1fr);
+        grid-column-gap: 5%;
+    }
+} 
+
+@media (min-width:1200px) and (max-width:1500px){
+    .allTagWords{
+        grid-template-columns: repeat(5,1fr);
+    }
+}
+
+@media (min-width:1500px) {
+    .allTagWords{
+        grid-template-columns: repeat(5,1fr);
+    }
+}

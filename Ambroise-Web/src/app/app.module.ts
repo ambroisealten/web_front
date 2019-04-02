@@ -9,7 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { HeaderUserComponent } from './header/header-user/header-user.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { PageLoginComponent } from './content/page-login/page-login.component';
 import { PageContentComponent } from './content/page-content/page-content.component';
@@ -23,18 +22,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    SearchAutoComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DemoMaterialModule,
-    HttpClientModule,
-    BrowserAnimationsModule
-  ],
-  providers: [
-    SearchService
+    SearchAutoComponent,
     HeaderUserComponent,
     PageLoginComponent,
     PageContentComponent,
@@ -42,12 +30,18 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DemoMaterialModule,
+    HttpClientModule,
     RouterModule.forRoot(
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
+    BrowserAnimationsModule
   ],
   providers: [
+    SearchService,
     AuthGuard
   ],
   bootstrap: [AppComponent]
