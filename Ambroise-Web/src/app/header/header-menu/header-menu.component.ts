@@ -8,137 +8,19 @@ import { HeaderNavigation } from 'src/app/services/navigation.services';
 })
 export class HeaderMenuComponent implements OnInit {
 
-    /*currentModule = "Missions";
-    modules = {
-        "modules": [
-            {
-                "label": "Missions",
-                "menus": [
-                    {
-                        "label": "Menu 1",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    },
-                    {
-                        "label": "Menu 2",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    },
-                    {
-                        "label": "Menu 3",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "label": "Compétences",
-                "menus": [
-                    {
-                        "label": "Menu 1",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    },
-                    {
-                        "label": "Menu 2",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    },
-                    {
-                        "label": "Menu 3",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "label": "Forum",
-                "menus": [
-                    {
-                        "label": "Menu 1",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    },
-                    {
-                        "label": "Menu 2",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    },
-                    {
-                        "label": "Menu 3",
-                        "submenus": [
-                            {
-                                "label": "submenu1"
-                            },
-                            {
-                                "label": "submenu2"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }*/
-
-    modules : any
-    currentModule : String;
+    modules : any //Objet JSON contenant la liste des modules/menus/sous-menus (stocké en dur dans navigationService atm)
 
     constructor(private navigationService: HeaderNavigation) {
         this.modules = this.navigationService.getModules();
-        this.currentModule = this.navigationService.getCurrentModul();
-        console.log(this.modules); //Working
-        console.log(this.currentModule); //Working
     }
 
     ngOnInit() {
+    }
+
+    getCurrentModule()
+    {
+        //console.log("Mpouhahaha");
+        return this.navigationService.getCurrentModule();
     }
 
 }

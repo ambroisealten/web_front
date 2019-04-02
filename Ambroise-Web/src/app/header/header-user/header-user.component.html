@@ -6,10 +6,10 @@
                 <div id="modules">
                     <p></p>
                     <ng-container *ngFor="let module of displayedModules">
-                        <a class="nav-link text-light" *ngIf="module.name === currentModule" id="moduleHome"
+                        <a class="nav-link text-light" *ngIf="module.name === getCurrentModule()" id="moduleHome"
                             (click)="setCurrentModule($event)">{{ module.name }}</a>
                         <ng-container #elseBlock>
-                            <a class="nav-link text-light otherModules" *ngIf="module.name != currentModule"
+                            <a class="nav-link text-light otherModules" *ngIf="module.name != getCurrentModule()"
                                 (click)="setCurrentModule($event)">{{ module.name }}</a>
                         </ng-container>
                     </ng-container>

@@ -9,8 +9,13 @@ import { AuthGuard } from 'src/app/services/auth-guard.service';
 export class PageContentComponent implements OnInit {
 
   constructor(private authGuard : AuthGuard) {
+    /***
+    * A changer !
+    */
     authGuard.setActive("manager");
    }
+
+   
 
   ngOnInit() {
   }
