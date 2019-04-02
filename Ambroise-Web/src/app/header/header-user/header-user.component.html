@@ -1,0 +1,21 @@
+<div id="header">
+    <div class="surheader">    
+        <nav class="navbar mb-0 navbar-expand-sm navbar-dark rounded-0" style="background-color: #008bd2">
+            <img src="assets/images/header-logo-alten.svg" alt="Logo ALTEN" id="logo"/>
+            <div class="collapse navbar-collapse" class="headNavbar">
+                <div id="modules">
+                    <p></p>
+                    <ng-container *ngFor="let module of displayedModules">
+                        <a class="nav-link text-light" *ngIf="module.name === currentModule" id="moduleHome" (click)="setCurrentModule($event)">{{ module.name }}</a>
+                        <ng-container #elseBlock>
+                            <a class="nav-link text-light otherModules" *ngIf="module.name != currentModule" (click)="setCurrentModule($event)">{{ module.name }}</a>
+                        </ng-container>
+                    </ng-container>
+                    <p></p>
+                </div>
+            </div>
+            <img src="assets/images/accountWhite.png" alt="Lien vers la page de connexion" id="account" (click)="accountClick()" />
+          </nav>     
+    </div>
+    <app-header-menu></app-header-menu>
+</div>
