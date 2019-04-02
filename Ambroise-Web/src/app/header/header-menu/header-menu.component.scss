@@ -6,6 +6,7 @@
 .header nav{
     flex-direction: row;
     flex-wrap: wrap;
+    background-color: var(--ALTENLightGray);
 }
 
 .headNavbar, .navbarContent {
@@ -51,8 +52,8 @@ li {
 }
 
 .dropdown-item:hover{
-    background-color: rgba(14,24,110,0.8);
-    color : white;
+    background-color: var(--ALTENDarkBlue);
+    color : var(--ALTENLightGray);
     transition : linear .1s;
 }
 
@@ -60,7 +61,6 @@ li {
     display: block;
     width: 100%;
     padding: 2.5% 10%;
-    color: #212529;
     text-align: inherit;
     white-space: nowrap;
     background-color: transparent;
