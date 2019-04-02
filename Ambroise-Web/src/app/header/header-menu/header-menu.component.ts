@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HeaderNavigation } from 'src/app/services/navigation.services';
 
 @Component({
   selector: 'app-header-menu',
@@ -7,11 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderMenuComponent implements OnInit {
 
-  currentModule = "Module 1";
+  currentModule = "Missions";
   modules = {
     "modules" : [
         {
-            "label" : "Module 1",
+            "label" : "Missions",
             "menus" : [
                 {
                     "label" : "Menu 1",
@@ -49,7 +50,45 @@ export class HeaderMenuComponent implements OnInit {
             ]
         },
         {
-            "label" : "Module 2",
+            "label" : "Compétences",
+            "menus" : [
+                {
+                    "label" : "Menu 1",
+                    "submenus" : [
+                        {
+                            "label" : "submenu1"
+                        },
+                        {
+                            "label" : "submenu2"
+                        }
+                    ]
+                },
+                {
+                    "label" : "Menu 2",
+                    "submenus" : [
+                        {
+                            "label" : "submenu1"
+                        },
+                        {
+                            "label" : "submenu2"
+                        }
+                    ]
+                },
+                {
+                    "label" : "Menu 3",
+                    "submenus" : [
+                        {
+                            "label" : "submenu1"
+                        },
+                        {
+                            "label" : "submenu2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label" : "Forum",
             "menus" : [
                 {
                     "label" : "Menu 1",
@@ -89,7 +128,7 @@ export class HeaderMenuComponent implements OnInit {
     ]
 };
 
-  constructor() { }
+  constructor(private navigationService : HeaderNavigation) { }
 
   ngOnInit() {
   }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HeaderVisitorComponent } from './header-visitor.component';
+import { SearchAutoComponent } from './search-auto.component';
 
-describe('HeaderVisitorComponent', () => {
-  let component: HeaderVisitorComponent;
-  let fixture: ComponentFixture<HeaderVisitorComponent>;
+describe('SearchAutoComponent', () => {
+  let component: SearchAutoComponent;
+  let fixture: ComponentFixture<SearchAutoComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderVisitorComponent ]
+      declarations: [ SearchAutoComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HeaderVisitorComponent);
+    fixture = TestBed.createComponent(SearchAutoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

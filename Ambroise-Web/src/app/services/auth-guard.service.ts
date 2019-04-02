@@ -4,8 +4,11 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private isActive : boolean;
+  private role : string;
     constructor(private router : Router){
-
+      this.isActive = true;
+      this.role = "admin";
     }
 
     /*
@@ -14,6 +17,29 @@ export class AuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return true;
+    return this.isActive;
+  }
+
+  isActivated(){
+    return this.isActive;
+  }
+
+  getRole(){  
+    return this.role;
+  }
+
+  setRole(value : string){
+    this.role = value;
+  }
+
+  setActive(value? : string){
+    this.isActive = true;
+    let role = (value === undefined) ? "admin" : value;
+    this.setRole(role);
+  }
+
+  unsetActive(){
+    this.isActive = false;
+    this.setRole("");
   }
 }
