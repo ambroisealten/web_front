@@ -43,3 +43,26 @@ li {
     display: list-item;
     text-align: -webkit-match-parent;
 }
+
+.dropdown-menu{ 
+    margin-left: 30%; 
+    width: 50%;
+    min-width: 80px;
+}
+
+.dropdown-item:hover{
+    background-color: rgba(14,24,110,0.8);
+    color : white;
+    transition : linear .1s;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 2.5% 10%;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
