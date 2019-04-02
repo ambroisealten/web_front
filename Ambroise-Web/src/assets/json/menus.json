@@ -1,0 +1,37 @@
+{
+    "menus" : [
+        {
+            "label" : "Menu 1",
+            "submenus" : [
+                {
+                    "label" : "submenu1"
+                },
+                {
+                    "label" : "submenu2"
+                }
+            ]
+        },
+        {
+            "label" : "Menu 2",
+            "submenus" : [
+                {
+                    "label" : "submenu1"
+                },
+                {
+                    "label" : "submenu2"
+                }
+            ]
+        },
+        {
+            "label" : "Menu 3",
+            "submenus" : [
+                {
+                    "label" : "submenu1"
+                },
+                {
+                    "label" : "submenu2"
+                }
+            ]
+        }
+    ]
+}
