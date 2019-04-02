@@ -14,6 +14,7 @@ import { PageLoginComponent } from './content/page-login/page-login.component';
 import { PageContentComponent } from './content/page-content/page-content.component';
 import { HeaderUserComponent } from './header/header-user/header-user.component';
 import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
+import { HeaderNavigation } from './services/navigation.services';
 
 const appRoutes: Routes = [
   {path:'content', component:PageContentComponent},
@@ -42,7 +43,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     SearchService,
-    AuthGuard
+    AuthGuard,
+    HeaderNavigation
   ],
   bootstrap: [AppComponent]
 })

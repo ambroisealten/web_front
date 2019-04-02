@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuard } from 'src/app/services/auth-guard.service';
 import { Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, Navigation } from '@angular/router';
+import { HeaderNavigation } from 'src/app/services/navigation.services';
 
 export class Menu{
   name : string;
@@ -25,7 +26,8 @@ export class HeaderUserComponent implements OnInit {
   displayedModules : Menu[] =  [];
   currentModule : string = "Mission";
 
-  constructor(private titleService : Title, private authGuard  : AuthGuard,private router : Router) { 
+  constructor(private titleService : Title, private authGuard  : AuthGuard,private router : Router,
+    private navigationService : HeaderNavigation) { 
     this.titleService.setTitle("Ambroise - "+this.currentModule);
     if(authGuard.isActivated()){ 
       for(let module of this.modules){

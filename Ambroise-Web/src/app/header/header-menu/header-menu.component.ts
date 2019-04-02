@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HeaderNavigation } from 'src/app/services/navigation.services';
 
 @Component({
   selector: 'app-header-menu',
@@ -127,7 +128,7 @@ export class HeaderMenuComponent implements OnInit {
     ]
 };
 
-  constructor() { }
+  constructor(private navigationService : HeaderNavigation) { }
 
   ngOnInit() {
   }

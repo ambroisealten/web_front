@@ -1,13 +1,14 @@
 <div class="header">
   <nav class="navbar mb-0navbar-light rounded-0">
-  
+
     <div class="collapse navbar-collapse" class="headNavbar">
       <ul class="navbarContent">
         <ng-container *ngFor="let module of modules.modules">
-         <ng-container *ngIf="module.label === currentModule">
+          <ng-container *ngIf="module.label === currentModule">
+            <!--assigné currentModul dans un service commun à header-user et header-menu-->
             <li class="nav-item dropdown headMenu" *ngFor="let menu of module.menus">
-              <a class = "nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false">{{menu.label}}</a>
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">{{menu.label}}</a>
               <div class="dropdown-menu" aria-labelledby="dropdown02">
                 <a class="dropdown-item" *ngFor="let submenu of menu.submenus" href="#">{{submenu.label}}</a>
               </div>
