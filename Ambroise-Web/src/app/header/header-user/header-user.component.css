@@ -11,9 +11,7 @@
 }
 
 .otherModules{
-    /*
-    * This property might be useful  width: 100%;
-    */   
+    width: 100%;
     display : inline;
     background-color: hsla(0,0%,100%,.2);
     margin: auto;
