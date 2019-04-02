@@ -143,9 +143,9 @@ export class HeaderNavigation{
         return this.currentModule;
     }
 
-    setModules(modules){
+   /* setModules(modules){
         this.modules = modules;
-    }
+    }*/
 
     getModules(){
         return this.modules;
