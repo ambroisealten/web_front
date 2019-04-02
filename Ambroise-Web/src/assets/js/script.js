@@ -24,10 +24,10 @@ function setCloseTag(){
     let closeTags = document.getElementsByClassName("closeTag");
     for(let closeTag of closeTags){
         closeTag.addEventListener("mouseover",function(e){
-            closeTag.parentElement.style = "background-color:red; color: white;";
+            closeTag.parentElement.style = "background-color: var(--ALTENRed); color: white;";
         });
         closeTag.addEventListener("mouseout",function(e){
-            closeTag.parentElement.style = "background-color: #E6E6E9; color : #043962;";
+            closeTag.parentElement.style = "background-color: var(--ALTENGray); color : var(--ALTENDarkBlue);";
         });
     }
 }

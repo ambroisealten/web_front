@@ -14,13 +14,13 @@
 }
 
 .tagWord{
-    color :#043962;
+    color : var(--ALTENDarkBlue);
     margin: auto;
     text-align: center;
     display: grid;
     grid-template-columns: 1fr 3fr;
     width: 40%;
-    background-color: #E6E6E9;
+    background-color: var(--ALTENGray);
     border-radius: 5px;
     margin-bottom: 1%; 
     transition: linear .2s;
@@ -41,6 +41,7 @@
 
 .closeTag:hover{
     filter : brightness(0) invert(1);
+    transform: rotateY(180deg);
 }
 
 @media (max-width :400px){

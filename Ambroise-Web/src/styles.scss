@@ -1,10 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 body{
     margin: auto;
     text-align: center;
     font-family: 'Raleway', sans-serif;
+    --ALTENBlue : #008bd2e8;
+    --ALTENLightGray : #E6E6E9;
+    --ALTENWhiteModule : hsla(0,0%,100%,.2);
+    --ALTENWhiteModuleHome : hsla(0,0%,100%,.4);
+    --ALTENGray : #C0C0C8;
+    --ALTENDarkGray : #8C8C9A;
+    --ALTENDarkBlue : #043962;
+    --ALTENRed : #E30513;
+    --ALTENMarinBlue : #2F80F3;
+    --ALTENLightBlue : #7ECBEE;
+    --ALTENOrange : #FFBA00;
+    color : var(--ALTENDarkGray);
+}
+
+a{
+    color: var(--ALTENBlue);
 }
 
 @media (max-width :400px){

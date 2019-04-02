@@ -6,20 +6,21 @@
 }
 
 #moduleHome{
-    background-color: hsla(0,0%,100%,.4);
+    background-color: var(--ALTENWhiteModuleHome);
     transition: linear .2s;
 }
 
 .otherModules{
     width: 100%;
     display : inline;
-    background-color: hsla(0,0%,100%,.2);
+    background-color: var(--ALTENWhiteModule);
     margin: auto;
     text-align: center;
     transition: linear .2s;
 }
 
 .surheader nav {
+    background-color: var(--ALTENBlue);
     display: grid;
     grid-template-columns: 10fr 1fr;
     flex-direction: column;
@@ -27,7 +28,7 @@
 
 #account{
     width: 40%;
-    margin: auto;
+    margin-left: 50%;
     min-width: 30px;
 }
 
