@@ -2,135 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { HeaderNavigation } from 'src/app/services/navigation.services';
 
 @Component({
-  selector: 'app-header-menu',
-  templateUrl: './header-menu.component.html',
-  styleUrls: ['./header-menu.component.scss']
+    selector: 'app-header-menu',
+    templateUrl: './header-menu.component.html',
+    styleUrls: ['./header-menu.component.scss']
 })
 export class HeaderMenuComponent implements OnInit {
 
-  currentModule = "Missions";
-  modules = {
-    "modules" : [
-        {
-            "label" : "Missions",
-            "menus" : [
-                {
-                    "label" : "Menu 1",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                },
-                {
-                    "label" : "Menu 2",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                },
-                {
-                    "label" : "Menu 3",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "label" : "Compétences",
-            "menus" : [
-                {
-                    "label" : "Menu 1",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                },
-                {
-                    "label" : "Menu 2",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                },
-                {
-                    "label" : "Menu 3",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "label" : "Forum",
-            "menus" : [
-                {
-                    "label" : "Menu 1",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                },
-                {
-                    "label" : "Menu 2",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                },
-                {
-                    "label" : "Menu 3",
-                    "submenus" : [
-                        {
-                            "label" : "submenu1"
-                        },
-                        {
-                            "label" : "submenu2"
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-};
+    modules : any //Objet JSON contenant la liste des modules/menus/sous-menus (stocké en dur dans navigationService atm)
 
-  constructor(private navigationService : HeaderNavigation) { }
+    constructor(private navigationService: HeaderNavigation) {
+        this.modules = this.navigationService.getModules();
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
+
+    getCurrentModule()
+    {
+        //console.log("Mpouhahaha");
+        return this.navigationService.getCurrentModule();
+    }
 
 }
