@@ -8,6 +8,7 @@
 .form {
   background: #FFFFFF;
   max-width: 500px;
+  width: 50%;
   padding: 0 2% 1% 2%;
   text-align: center;
   position: absolute;
@@ -17,7 +18,7 @@
 }
 h1 {
   font-family: "Roboto", sans-serif;
-  color: #008bd2e8;
+  color: var(--ALTENBlue);
   font-weight: bolder;
 }
 .form input {
@@ -25,19 +26,19 @@ h1 {
   outline: 0;
   background: #f2f2f2;
   width: 100%;
+  margin-bottom: 2%;
   border: 0;
-  margin: 0 0 4%;
   padding: 3%;
   box-sizing: border-box;
   font-size: 1.2em;
 }
 .form .message {
   margin: 15px 0 0;
-  color: #b3b3b3;
+  color: var(--ALTENDarkGray);
   font-size: 0.75em;
 }
 .form .message a {
-  color: #008bd2e8;
+  color: var(--ALTENBlue);
   text-decoration: none;
 }
 .container {
@@ -54,7 +55,7 @@ h1 {
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   outline: 0;
-  background: #008bd2e8;
+  background: var(--ALTENBlue);
   width: 100%;
   border: 0;
   padding: 3%;
@@ -79,7 +80,7 @@ body {
 }
 /* set background color */
 :host {
-  background-color: #008bd2e8;
+  background-color: var(--ALTENBlue);
   position: absolute;
   left: 0;
   right: 0;
