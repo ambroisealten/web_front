@@ -7,11 +7,6 @@ body {
 }
 
 @media (max-width :400px){
-    #logo{
-        margin-top: 15%;
-        margin-left: 2%;
-    }
-
     a,body{
         font-size: 2.3vw;
     }
@@ -38,10 +33,6 @@ body {
 
     h1{
         font-size: 3vw;
-    }
-    .allTagWords{
-        grid-template-columns: repeat(3,1fr);
-        grid-column-gap: 10%;
     }
 }
 
@@ -73,15 +64,6 @@ body {
     h1{
         font-size: 2.9vw;
     }
-
-    #logo{
-        margin-top: 10%;
-        margin-left: 2%;
-    }
-    .allTagWords{
-        grid-template-columns: repeat(3,1fr);
-        grid-column-gap: 7.5%;
-    }
 }
 
 @media (min-width:600px) and (max-width:900px) {
@@ -111,15 +93,6 @@ body {
 
     h1{
         font-size: 2.35vw;
-    }
-
-    #logo{
-        margin-top: 6%;
-        margin-left: 1.7%;
-    }
-    .allTagWords{
-        grid-template-columns: repeat(3,1fr);
-        grid-column-gap: 5%;
     }
 }
 
@@ -151,15 +124,6 @@ body {
     h1{
         font-size: 2vw;
     }
-
-    #logo{
-        margin-top: 4.5%;
-        margin-left: 1.4%;
-    }
-    .allTagWords{
-        grid-template-columns: repeat(4,1fr);
-        grid-column-gap: 5%;
-    }
 } 
 
 @media (min-width:1200px) and (max-width:1500px){
@@ -190,18 +154,10 @@ body {
     h1{
         font-size: 1.8vw;
     }
-
-    #logo{
-        margin-top: 3.3%;
-        margin-left: 1.2%;
-    }
-    .allTagWords{
-        grid-template-columns: repeat(5,1fr);
-    }
 }
 
 @media (min-width:1500px) {
-    a,body,h1,h2,h3,h4,h5,h6{
+    a,body{
         font-size: .95vw; 
     }
 
@@ -228,37 +184,6 @@ body {
     h1{
         font-size: 1.6vw;
     }
-
-    #logo{
-        margin-top: 3%;
-        margin-left: 1%;
-    }
-    .allTagWords{
-        grid-template-columns: repeat(5,1fr);
-    }
-}
-
-.surheader nav {
-    display: grid;
-    grid-template-columns: 10fr 1fr;
-    flex-direction: column;
-}
-
-#account{
-    width: 40%;
-    margin: auto;
-    min-width: 30px;
-}
-
-#logo{
-    padding : 0.1%;
-    min-height: 85px;
-    width: 4%;
-    min-width: 50px;
-    position: absolute;
-    left: 0;
-    z-index: 5;
-    background-color: rgba(255, 255, 255, 0.95); 
 }
 
 .login-button{

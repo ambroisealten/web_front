@@ -9,9 +9,6 @@
                         <a class="nav-link text-light" *ngIf="module.name === currentModule" id="moduleHome" (click)="setCurrentModule($event)">{{ module.name }}</a>
                         <ng-container #elseBlock>
                             <a class="nav-link text-light otherModules" *ngIf="module.name != currentModule" (click)="setCurrentModule($event)">{{ module.name }}</a>
-                            <ng-container #elseBlock>
-                                <p></p>
-                            </ng-container>
                         </ng-container>
                     </ng-container>
                     <p></p>
