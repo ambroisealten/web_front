@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthGuard } from 'src/app/services/auth-guard.service';
 
 @Component({
   selector: 'app-page-content',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PageContentComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authGuard : AuthGuard) {
+    authGuard.setActive("manager");
+   }
 
   ngOnInit() {
   }
