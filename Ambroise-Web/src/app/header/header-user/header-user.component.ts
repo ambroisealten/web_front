@@ -9,9 +9,8 @@ export class Menu {
   roles: string[];
   routerLink: string;
 
-  constructor(name: string, roles: string[], routerLink: string) {
+  constructor(name: string, routerLink: string) {
     this.name = name;
-    this.roles = roles;
     this.routerLink = routerLink;
   }
 
@@ -27,9 +26,6 @@ export class Menu {
 })
 export class HeaderUserComponent implements OnInit {
   modules: Menu[] = [];
-  displayedModules: Menu[] = [];
-
-
 
 
   constructor(private titleService: Title, private authGuard: AuthGuard, private router: Router,
@@ -38,9 +34,6 @@ export class HeaderUserComponent implements OnInit {
     setTimeout(() => {
       this.navigationService.setCurrentModule("Missions");
       this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
-      for (let module of this.modules) {
-        this.displayedModules.push(module);
-      }
     }, 200);
   }
 
@@ -71,9 +64,9 @@ export class HeaderUserComponent implements OnInit {
     let tmpModules: any;
     this.navigationService.getModulesFromService((tmp) => {
       tmpModules = JSON.parse(tmp);
-      for (let module of tmpModules.modules) { //this.navigationService.getModules().modules) {
-        let m = new Menu(module.label, module.roles, module.routerLink);
-        this.modules.push(new Menu(module.label, module.roles, module.routerLink));
+      for (let module of tmpModules.modules) {
+        let m = new Menu(module.label,  module.routerLink);
+        this.modules.push(new Menu(module.label, module.routerLink));
       }
 
     });

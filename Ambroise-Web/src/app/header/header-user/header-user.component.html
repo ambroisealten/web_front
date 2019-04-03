@@ -5,7 +5,7 @@
             <div class="collapse navbar-collapse" class="headNavbar">
                 <div id="modules">
                     <p></p>
-                    <ng-container *ngFor="let module of displayedModules">
+                    <ng-container *ngFor="let module of modules">
                         <a class="nav-link text-light" *ngIf="module.name === getCurrentModule()" id="moduleHome"
                             (click)="setCurrentModule($event)">{{ module.name }}</a>
                         <ng-container #elseBlock>

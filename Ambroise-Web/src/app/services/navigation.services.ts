@@ -144,31 +144,6 @@ export class HeaderNavigation {
         return this.currentModule;
     }
 
-   /* getModules() {
-        let token = window.sessionStorage.getItem("bearerToken");
-
-        let headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': token != "" ? token : ''
-        });
-
-        let options = { headers: headers };
-
-        this.httpClient
-            .get('http://localhost:8080/configMenu')
-            .subscribe(data => {
-                console.log(JSON.stringify(data));
-                this.test = data;
-            }, error => {
-                console.log(error);// Error getting the data
-            });
-        setTimeout(() => {
-            console.log("coucou" + this.test);
-            this.modules = this.test;
-            return this.modules;
-        }, 50);
-    }*/
-
     getModulesFromService(callback) {
         let token = window.sessionStorage.getItem("bearerToken");
 
