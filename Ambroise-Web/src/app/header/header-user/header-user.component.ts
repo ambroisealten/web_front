@@ -14,6 +14,10 @@ export class Menu {
     this.roles = roles;
     this.routerLink = routerLink;
   }
+
+  toString() {
+    return "label : " + this.name + " role : [" + this.roles + "] routerlink : " + this.routerLink;
+  }
 }
 
 @Component({
@@ -22,7 +26,6 @@ export class Menu {
   styleUrls: ['./header-user.component.css']
 })
 export class HeaderUserComponent implements OnInit {
-  //modules : Menu[] = [new Menu("Mission",["admin","cdr","manager"],"mission"),new Menu("Compétences",['admin','manager'],'competences'),new Menu("Forum",['admin','manager'],'forum')];
   modules: Menu[] = [];
   displayedModules: Menu[] = [];
 
@@ -32,30 +35,23 @@ export class HeaderUserComponent implements OnInit {
   constructor(private titleService: Title, private authGuard: AuthGuard, private router: Router,
     private navigationService: HeaderNavigation) {
     this.getModules();
-    this.navigationService.setCurrentModule("Missions");
-    console.log(this.modules);
-    this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
-    if (authGuard.isActivated()) {
+    setTimeout(() => {
+      this.navigationService.setCurrentModule("Missions");
+      this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
       for (let module of this.modules) {
-        if (module.roles.indexOf(authGuard.getRole()) > -1) {
-          this.displayedModules.push(module);
-        }
+        this.displayedModules.push(module);
       }
-    }
-    //this.modules = this.navigationService.getModules();
+    }, 200);
   }
 
   ngOnInit() {
   }
 
   setCurrentModule(event) {
-    //this.currentModule = (event.target.textContent != this.currentModule) ? event.target.textContent : this.currentModule;
-    //this.titleService.setTitle("Ambroise - "+this.currentModule);
     let tmp = this.getCurrentModule()
     this.navigationService.setCurrentModule((event.target.textContent != tmp) ? event.target.textContent : tmp);
     this.titleService.setTitle("Ambroise - " + tmp);
-    //console.log(tmp);
-    //console.log(this.navigationService.getCurrentModule());
+
   }
 
   getCurrentModule() {
@@ -72,9 +68,18 @@ export class HeaderUserComponent implements OnInit {
   }
 
   getModules() {
-    for (let module of this.navigationService.getModules().modules) {
-      this.modules.push(new Menu(module.label, module.roles, module.routerLink));
-    }
+    let tmpModules: any;
+    this.navigationService.getModulesFromService((tmp) => {
+      tmpModules = JSON.parse(tmp);
+      for (let module of tmpModules.modules) { //this.navigationService.getModules().modules) {
+        let m = new Menu(module.label, module.roles, module.routerLink);
+        this.modules.push(new Menu(module.label, module.roles, module.routerLink));
+      }
+
+    });
+    return this.modules;
   }
+
+
 
 }

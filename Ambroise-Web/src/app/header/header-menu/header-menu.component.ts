@@ -8,19 +8,25 @@ import { HeaderNavigation } from 'src/app/services/navigation.services';
 })
 export class HeaderMenuComponent implements OnInit {
 
-    modules : any //Objet JSON contenant la liste des modules/menus/sous-menus (stocké en dur dans navigationService atm)
+    modules: any;
 
     constructor(private navigationService: HeaderNavigation) {
-        this.modules = this.navigationService.getModules();
+        this.getMenus();
     }
 
     ngOnInit() {
     }
 
-    getCurrentModule()
-    {
-        //console.log("Mpouhahaha");
+    getCurrentModule() {
         return this.navigationService.getCurrentModule();
     }
 
+    getMenus() {
+
+        let tmpModules: any;
+        this.navigationService.getModulesFromService((tmp) => {
+            tmpModules = JSON.parse(tmp);
+            this.modules=tmpModules.modules;
+        });
+    }
 }
