@@ -32,22 +32,22 @@ export class HeaderUserComponent implements OnInit {
 
     setTimeout(() => { //TO-DELETE
       this.getModules();
-    }, 200);
+    }, 20);
 
 
     setTimeout(() => {
-      this.navigationService.setCurrentModuleFromService("Missions");
+      this.navigationService.setCurrentModuleFromService(this.navigationService.getCurrentModuleFromService());
       this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
-    }, 400);
+    }, 40);
   }
 
   ngOnInit() {
   }
 
   setCurrentModule(event) {
-    let tmp = this.getCurrentModule()
+    let tmp = this.navigationService.getCurrentModuleFromService();
     this.navigationService.setCurrentModuleFromService((event.target.textContent != tmp) ? event.target.textContent : tmp);
-    this.titleService.setTitle("Ambroise - " + tmp);
+    this.titleService.setTitle("Ambroise - " + this.navigationService.getCurrentModuleFromService());
 
   }
 
