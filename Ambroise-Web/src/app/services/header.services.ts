@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class HeaderNavigation {
+export class HeaderService {
 
     private currentModule: String;
     test: any;
-    private modules = {
+   /* private modules = {
         "modules": [
             {
                 "label": "Missions",
@@ -130,17 +130,17 @@ export class HeaderNavigation {
                 ]
             }
         ]
-    };
+    };*/
 
     constructor(private httpClient: HttpClient) {
         this.currentModule = "Missions";
     }
 
-    setCurrentModule(currentModule: String) {
+    setCurrentModuleFromService(currentModule: String) {
         this.currentModule = currentModule;
     }
 
-    getCurrentModule() {
+    getCurrentModuleFromService() {
         return this.currentModule;
     }
 
@@ -149,13 +149,13 @@ export class HeaderNavigation {
 
         let headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': token != "" ? token : ''
+            'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
         });
 
         let options = { headers: headers };
 
         this.httpClient
-            .get('http://localhost:8080/configMenu')
+            .get('http://localhost:8080/configMenu' /*, options*/) //En attente du WebService Login pour la récuperation du token
             .subscribe(data => {
                 callback(JSON.stringify(data));
             }, error => {

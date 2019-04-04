@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthGuard } from 'src/app/services/auth-guard.service';
 import { Title } from '@angular/platform-browser';
 import { Router, Navigation } from '@angular/router';
-import { HeaderNavigation } from 'src/app/services/navigation.services';
+import { HeaderService } from 'src/app/services/header.services';
 
 export class Menu {
   name: string;
-  roles: string[];
   routerLink: string;
 
   constructor(name: string, routerLink: string) {
@@ -15,7 +13,7 @@ export class Menu {
   }
 
   toString() {
-    return "label : " + this.name + " role : [" + this.roles + "] routerlink : " + this.routerLink;
+    return "label : " + this.name + "routerlink : " + this.routerLink;
   }
 }
 
@@ -28,11 +26,11 @@ export class HeaderUserComponent implements OnInit {
   modules: Menu[] = [];
 
 
-  constructor(private titleService: Title, private authGuard: AuthGuard, private router: Router,
-    private navigationService: HeaderNavigation) {
+  constructor(private titleService: Title, private router: Router,
+    private navigationService: HeaderService) {
     this.getModules();
     setTimeout(() => {
-      this.navigationService.setCurrentModule("Missions");
+      this.navigationService.setCurrentModuleFromService("Missions");
       this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
     }, 200);
   }
@@ -42,22 +40,13 @@ export class HeaderUserComponent implements OnInit {
 
   setCurrentModule(event) {
     let tmp = this.getCurrentModule()
-    this.navigationService.setCurrentModule((event.target.textContent != tmp) ? event.target.textContent : tmp);
+    this.navigationService.setCurrentModuleFromService((event.target.textContent != tmp) ? event.target.textContent : tmp);
     this.titleService.setTitle("Ambroise - " + tmp);
 
   }
 
   getCurrentModule() {
-    return this.navigationService.getCurrentModule();
-  }
-
-  accountClick() {
-    if (this.authGuard.isActivated()) {
-      this.router.navigate(['']);
-    }
-    else {
-      this.router.navigate(['content']);
-    }
+    return this.navigationService.getCurrentModuleFromService();
   }
 
   getModules() {

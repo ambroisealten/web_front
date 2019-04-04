@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderNavigation } from 'src/app/services/navigation.services';
+import { HeaderService } from 'src/app/services/header.services';
 
 @Component({
     selector: 'app-header-menu',
@@ -10,7 +10,7 @@ export class HeaderMenuComponent implements OnInit {
 
     modules: any;
 
-    constructor(private navigationService: HeaderNavigation) {
+    constructor(private headerService: HeaderService) {
         this.getMenus();
     }
 
@@ -18,13 +18,13 @@ export class HeaderMenuComponent implements OnInit {
     }
 
     getCurrentModule() {
-        return this.navigationService.getCurrentModule();
+        return this.headerService.getCurrentModuleFromService();
     }
 
     getMenus() {
 
         let tmpModules: any;
-        this.navigationService.getModulesFromService((tmp) => {
+        this.headerService.getModulesFromService((tmp) => {
             tmpModules = JSON.parse(tmp);
             this.modules=tmpModules.modules;
         });
