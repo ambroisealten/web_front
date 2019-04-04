@@ -28,11 +28,17 @@ export class HeaderUserComponent implements OnInit {
 
   constructor(private titleService: Title, private router: Router,
     private navigationService: HeaderService) {
-    this.getModules();
+    this.navigationService.login(); //TO-DELETE
+
+    setTimeout(() => { //TO-DELETE
+      this.getModules();
+    }, 200);
+
+
     setTimeout(() => {
       this.navigationService.setCurrentModuleFromService("Missions");
       this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
-    }, 200);
+    }, 400);
   }
 
   ngOnInit() {
@@ -54,7 +60,7 @@ export class HeaderUserComponent implements OnInit {
     this.navigationService.getModulesFromService((tmp) => {
       tmpModules = JSON.parse(tmp);
       for (let module of tmpModules.modules) {
-        let m = new Menu(module.label,  module.routerLink);
+        let m = new Menu(module.label, module.routerLink);
         this.modules.push(new Menu(module.label, module.routerLink));
       }
 
