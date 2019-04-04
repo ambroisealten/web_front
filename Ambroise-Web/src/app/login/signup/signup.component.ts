@@ -29,7 +29,7 @@ export class SignupComponent implements OnInit {
     this.validationForm =this.formBuilder.group({
       name: ['', Validators.required],
       firstname: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")]],
+      email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordCheck: ['', [Validators.required]]
     }, {
