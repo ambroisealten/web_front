@@ -41,7 +41,7 @@ export class HeaderService {
 
     login() { //TO-DELETE : TO-ADAPT
         let postParams = {
-            mail: 'abc@gmail.com',
+            mail: 'abee@gmail.com',
             pswd: 'pass',
         }
 

@@ -1,0 +1,86 @@
+<app-header-user></app-header-user>
+<div class="grid-container">
+  <div class="infoForm">
+    <mat-form-field (ngSubmit)="onSubmitForm()">
+      <mat-label>Diplôme</mat-label>
+      <input type="text" placeholder="Diplôme le plus élevé" matInput >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Employeur</mat-label>
+      <input type="text" matInput >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Métier</mat-label>
+      <input type="text" matInput >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Disponibilité</mat-label>
+      <input type="date" matInput >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Année de diplôme</mat-label>
+      <input type="number" min="1960" max="2100" matInput >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Années d'expérience</mat-label>
+      <input type="number" matInput >
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Prétention salariale</mat-label>
+      <input type="number" matInput >
+      <span matPrefix>€&nbsp;</span>
+    </mat-form-field>
+
+    <table mat-table [dataSource]="lastModificationsArray">
+      <!-- Manager Column -->
+      <ng-container matColumnDef="manager">
+        <th mat-header-cell *matHeaderCellDef> Manager </th>
+        <td mat-cell *matCellDef="let element"> {{element.manager}} </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element"> {{element.action}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-form-field>
+      <mat-label>Avis</mat-label>
+      <mat-select>
+        <mat-optgroup label="ED">
+          <mat-option value>A</mat-option>
+          <mat-option value>B</mat-option>
+          <mat-option value>C</mat-option>
+          <mat-option value>D</mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="EP">
+          <mat-option value>A</mat-option>
+          <mat-option value>B</mat-option>
+          <mat-option value>C</mat-option>
+          <mat-option value>D</mat-option>
+        </mat-optgroup>
+        <mat-option value>NOK</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput placeholder="Commentaire"></textarea>
+    </mat-form-field>
+  </div>
+  <div class="skillsArrays">
+    <p> tableaux compétences </p>
+  </div>
+  <div class="matrix">
+    <p> matrices </p>
+  </div>
+</div>

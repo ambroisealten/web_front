@@ -17,10 +17,12 @@ import { HeaderUserComponent } from './header/header-user/header-user.component'
 import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
+import { SkillsFormComponent } from './content/skills-form/skills-form.component';
 
 const appRoutes: Routes = [
-  {path:'content', component:PageContentComponent},
-  {path:'',component:PageLoginComponent},
+  { path:'content', component: PageContentComponent},
+  { path:'', redirectTo: '/login', pathMatch: 'full'},
+  { path:'skills', component: SkillsFormComponent},
   { path: 'login', component: LoginComponent },
   { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
@@ -33,7 +35,8 @@ const appRoutes: Routes = [
     PageContentComponent,
     HeaderMenuComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    SkillsFormComponent
   ],
   imports: [
     BrowserModule,

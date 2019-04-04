@@ -1,0 +1,11 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 2%;
+}
+
+.infoForm {
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+}
