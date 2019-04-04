@@ -9,16 +9,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { AuthGuard } from './services/auth-guard.service';
-import { PageLoginComponent } from './content/page-login/page-login.component';
-import { PageContentComponent } from './content/page-content/page-content.component';
-import { HeaderUserComponent } from './header/header-user/header-user.component';
-import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
-import { HeaderService } from './services/header.services';
+import { LoginComponent } from './login/login/login.component';
+import { SignupComponent } from './login/signup/signup.component';
 
 const appRoutes: Routes = [
   {path:'content', component:PageContentComponent},
   {path:'',component:PageLoginComponent}
+  { path: 'login', component: LoginComponent },
+  { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
 @NgModule({
   declarations: [
@@ -28,6 +26,8 @@ const appRoutes: Routes = [
     PageLoginComponent,
     PageContentComponent,
     HeaderMenuComponent
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
