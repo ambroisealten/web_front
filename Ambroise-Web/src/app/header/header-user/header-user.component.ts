@@ -20,7 +20,7 @@ export class Menu {
 @Component({
   selector: 'app-header-user',
   templateUrl: './header-user.component.html',
-  styleUrls: ['./header-user.component.css']
+  styleUrls: ['./header-user.component.scss']
 })
 export class HeaderUserComponent implements OnInit {
   modules: Menu[] = [];
