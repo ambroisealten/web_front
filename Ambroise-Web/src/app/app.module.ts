@@ -19,9 +19,9 @@ import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
 
 const appRoutes: Routes = [
-  {path:'content', component:PageContentComponent},
-  {path:'',component:PageLoginComponent},
-  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent},
+  { path:'content', component:PageContentComponent},
   { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
 @NgModule({
