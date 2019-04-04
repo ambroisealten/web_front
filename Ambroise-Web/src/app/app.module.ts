@@ -11,10 +11,16 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login/login.component';
 import { SignupComponent } from './login/signup/signup.component';
+import { PageContentComponent } from './content/page-content/page-content.component';
+import { PageLoginComponent } from './content/page-login/page-login.component';
+import { HeaderUserComponent } from './header/header-user/header-user.component';
+import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
+import { AuthGuard } from './services/auth-guard.service';
+import { HeaderService } from './services/header.services';
 
 const appRoutes: Routes = [
   {path:'content', component:PageContentComponent},
-  {path:'',component:PageLoginComponent}
+  {path:'',component:PageLoginComponent},
   { path: 'login', component: LoginComponent },
   { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
@@ -25,7 +31,7 @@ const appRoutes: Routes = [
     HeaderUserComponent,
     PageLoginComponent,
     PageContentComponent,
-    HeaderMenuComponent
+    HeaderMenuComponent,
     LoginComponent,
     SignupComponent
   ],
