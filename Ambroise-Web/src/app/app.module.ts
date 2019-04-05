@@ -17,6 +17,7 @@ import { HeaderUserComponent } from './header/header-user/header-user.component'
 import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
+import { AuthService } from './services/auth.service';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -50,7 +51,8 @@ const appRoutes: Routes = [
   providers: [
     SearchService,
     AuthGuard,
-    HeaderService
+    HeaderService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

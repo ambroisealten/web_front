@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import * as sha512 from 'js-sha512';
+import { AuthService } from 'src/app/services/auth.service';
+import { timeout } from 'q';
 
 @Component({
   selector: 'app-login',
@@ -17,11 +19,12 @@ export class LoginComponent implements OnInit {
   userEmail: string;
   userPswd: string;
 
-  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder) { }
+  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder,
+    private authService: AuthService) { }
 
   ngOnInit() {
     // init validators
-    this.validationForm =this.formBuilder.group({
+    this.validationForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
       password: ['', [Validators.required]]
     });
@@ -36,23 +39,20 @@ export class LoginComponent implements OnInit {
   onConnect() {
 
     this.submitted = true;
-
     // stop here if form is invalid
     if (this.validationForm.invalid) {
       return;
     }
+    console.log('form validated');
+    this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password,(result:String)=>{
+      console.log(result);
 
-    // init values with form
-    this.userEmail = this.validationForm.value.email;
-    this.userPswd = this.validationForm.value.password;
+    });
 
-    // password hash with sha512 before POST request
-    let postParams = {
-      mail: this.userEmail,
-      pswd: sha512.sha512(this.userPswd),
-    }
+   /* setTimeout(() => {
+      this.authService.redirectToHomePage();
+    }, 2000)*/
 
-    /** TODO call login Web service with postParams **/
   }
 
 }
