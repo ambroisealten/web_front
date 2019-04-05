@@ -18,6 +18,8 @@ import { HeaderMenuComponent } from './header/header-menu/header-menu.component'
 import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
 import { SkillsFormComponent } from './content/skills-form/skills-form.component';
+import { ArraySkillsUpdatesComponent } from './components/array-skillsUpdates/array-skillsUpdates.component';
+import { ArraySkillsComponent } from './components/array-skills/array-skills.component';
 
 const appRoutes: Routes = [
   { path:'content', component: PageContentComponent},
@@ -36,7 +38,9 @@ const appRoutes: Routes = [
     HeaderMenuComponent,
     LoginComponent,
     SignupComponent,
-    SkillsFormComponent
+    SkillsFormComponent,
+    ArraySkillsUpdatesComponent,
+    ArraySkillsComponent
   ],
   imports: [
     BrowserModule,
