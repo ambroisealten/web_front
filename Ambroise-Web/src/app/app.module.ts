@@ -12,16 +12,18 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login/login.component';
 import { SignupComponent } from './login/signup/signup.component';
 import { PageContentComponent } from './content/page-content/page-content.component';
-import { PageLoginComponent } from './content/page-login/page-login.component';
 import { HeaderUserComponent } from './header/header-user/header-user.component';
 import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
 import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
 import { AuthService } from './services/auth.service';
+import { LoginAyncComponent } from './test-async/login-aync/login-aync.component';
+import { AuthAsyncService } from './services/auth-async.service';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/async', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
+  { path: 'async', component: LoginAyncComponent},
   { path:'content', component:PageContentComponent},
   { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
@@ -30,11 +32,11 @@ const appRoutes: Routes = [
     AppComponent,
     SearchAutoComponent,
     HeaderUserComponent,
-    PageLoginComponent,
     PageContentComponent,
     HeaderMenuComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    LoginAyncComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,8 @@ const appRoutes: Routes = [
     SearchService,
     AuthGuard,
     HeaderService,
-    AuthService
+    AuthService,
+    AuthAsyncService
   ],
   bootstrap: [AppComponent]
 })
