@@ -31,7 +31,7 @@
       <span matPrefix>€&nbsp;</span>
     </mat-form-field>
 
-    <table mat-table [dataSource]="lastModificationsArray">
+    <table mat-table [dataSource]="lastModificationsArrayDS">
       <!-- Manager Column -->
       <ng-container matColumnDef="manager">
         <th mat-header-cell *matHeaderCellDef> Manager </th>
@@ -50,11 +50,11 @@
         <td mat-cell *matCellDef="let element"> {{element.action}} </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="lastModifDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: lastModifDisplayedColumns;"></tr>
     </table>
 
-    <mat-form-field>
+    <mat-form-field style="margin-top: 2%;">
       <mat-label>Avis</mat-label>
       <mat-select>
         <mat-optgroup label="ED">
@@ -77,10 +77,61 @@
       <textarea matInput placeholder="Commentaire"></textarea>
     </mat-form-field>
   </div>
+
   <div class="skillsArrays">
-    <p> tableaux compétences </p>
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterSkills($event.target.value)" placeholder="Recherche">
+    </mat-form-field>
+    <table mat-table [dataSource]="skillsArrayDS" class="skillsArray">
+
+      <!-- Category Column -->
+      <ng-container matColumnDef="category">
+        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Grade Column -->
+      <ng-container matColumnDef="grade">
+        <td mat-cell *matCellDef="let element"> {{element.grade}} </td>
+      </ng-container>
+
+      <tr mat-row *matRowDef="let row; columns: skillsDisplayedColumns;"></tr>
+    </table>
+
+    <mat-form-field>
+      <input matInput (keyup)="applyFilterSoftSkills($event.target.value)" placeholder="Recherche">
+    </mat-form-field>
+    <table mat-table [dataSource]="softSkillsArrayDS" class="softSkillsArray">
+
+      <!-- Category Column -->
+      <ng-container matColumnDef="category">
+        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <!-- Grade Column -->
+      <ng-container matColumnDef="grade">
+        <td mat-cell *matCellDef="let element"> {{element.grade}} </td>
+      </ng-container>
+
+      <tr mat-row *matRowDef="let row; columns: softSkillsDisplayedColumns;"></tr>
+    </table>
   </div>
+
   <div class="matrix">
-    <p> matrices </p>
+    <div style="width:270px; height:360px;">
+      <canvas id="myChartCompetence"></canvas>
+    </div>
+    <div style="width:270px; height:360px;">
+      <canvas id="myChartSoftSkill"></canvas>
+    </div>
   </div>
 </div>

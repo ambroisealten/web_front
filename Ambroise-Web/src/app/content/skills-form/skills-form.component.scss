@@ -2,10 +2,31 @@
   display: grid;
   grid-template-columns: auto auto auto;
   padding: 2%;
+  width: 100%;
 }
 
 .infoForm {
   display: flex;
   flex-direction: column;
   padding: 2%;
+  border-right: 1px solid var(--ALTENBlue);
+}
+
+.skillsArrays {
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+  text-align: left;
+  border-right: 1px solid var(--ALTENBlue);
+}
+
+.skillsArray {
+  margin-bottom: 5%;
+}
+
+.matrix {
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+  align-items: center;
 }
