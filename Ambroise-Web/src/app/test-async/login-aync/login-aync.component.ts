@@ -46,27 +46,28 @@ export class LoginAyncComponent implements OnInit {
     return new Promise(
       (resolve, reject) => {
         setTimeout(() => resolve(1), 5000);
-        let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password).subscribe(data => {
+        let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
+          .subscribe(data => {
 
-          console.log("data in promise : "+data);
-          //window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(data))["token"]);
-          this.token = data;
-          if(data!=null) { resolve();}
+            console.log("data in promise : " + data);
+            //window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(data))["token"]);
+            this.token = data;
+            if (this.token != null) {
+              window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(this.token))["token"]);
+              console.log("data in then : " + this.token);
+              this.router.navigate(['content']);
+              resolve('Token reçu');
+            }
 
-        }, error => {
-          switch(error.status){
-            case 0 : alert("500 : internal server error"); break;
-            case 403 : alert("identifiant/mdp incorrect"); break;
-            default : console.log(error);break;
-          }
-        });
+          }, error => {
+            switch (error.status) {
+              case 0: alert("500 : internal server error"); break;
+              case 403: alert("identifiant/mdp incorrect"); break;
+              default: console.log("HEIN?  "+error); break;
+            }
+          });
       }
-    ).then(() => {
-      if(this.token!=null){
-      window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(this.token))["token"]);
-      console.log("data in then : "+this.token);
-      this.router.navigate(['content']);}
-    });
-  }
+    ).catch(error => { console.log(error) });
 
+  }
 }

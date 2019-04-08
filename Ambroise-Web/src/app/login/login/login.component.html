@@ -1,7 +1,7 @@
 <div class="login-page">
   <div class="form">
     <h1>Connexion</h1>
-    <form [formGroup]="validationForm" class="login_form" (submit)="onConnect()">
+    <form [formGroup]="validationForm" class="login_form" (submit)="onSubmit()">
       <div class="md-form">
         <label for="inputEmail" class="sr-only">userEmail</label>
         <input type="email" id="inputEmail" class="form-control" formControlName="email" [pattern]="emailPattern" [ngClass]="{ 'is-invalid': submitted && validationFormControls.email.errors }"

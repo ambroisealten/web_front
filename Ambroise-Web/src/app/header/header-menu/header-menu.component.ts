@@ -22,7 +22,6 @@ export class HeaderMenuComponent implements OnInit {
     }
 
     getMenus() {
-
         let tmpModules: any;
         this.headerService.getModulesFromService((tmp) => {
             tmpModules = JSON.parse(tmp);

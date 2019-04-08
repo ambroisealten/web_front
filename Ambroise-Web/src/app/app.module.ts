@@ -21,7 +21,7 @@ import { LoginAyncComponent } from './test-async/login-aync/login-aync.component
 import { AuthAsyncService } from './services/auth-async.service';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/async', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
   { path: 'async', component: LoginAyncComponent},
   { path:'content', component:PageContentComponent},
