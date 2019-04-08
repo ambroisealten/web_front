@@ -1,5 +1,7 @@
 <app-header-user></app-header-user>
-
+<div class="slider">
+  <mat-slide-toggle color="primary"> Passage consultant </mat-slide-toggle>
+</div>
 <div class="grid-container">
   <div class="infoForm">
     <mat-form-field>
@@ -32,7 +34,7 @@
       <span matPrefix>€&nbsp;</span>
     </mat-form-field>
 
-    <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
+    <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
 
     <mat-form-field style="margin-top: 2%;">
       <mat-label>Avis</mat-label>
@@ -59,17 +61,8 @@
   </div>
 
   <div class="skillsArrays">
-    <mat-form-field>
-      <input matInput (keyup)="applyFilterSkills($event.target.value)" placeholder="Recherche">
-    </mat-form-field>
-    <app-array-skills [displayedColumns]="skillsDisplayedColumns" [dataSource]="skillsArrayDS" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
-
-
-    <mat-form-field>
-      <input matInput (keyup)="applyFilterSoftSkills($event.target.value)" placeholder="Recherche">
-    </mat-form-field>
-    <app-array-skills [displayedColumns]="softSkillsDisplayedColumns" [dataSource]="softSkillsArrayDS" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
-
+    <app-array-skills [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
+    <app-array-skills [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
   </div>
 
   <div class="matrix">

@@ -9,13 +9,13 @@ import { SkillsService } from 'src/app/services/skills.service';
 })
 export class SkillsFormComponent implements OnInit {
 
-  lastModificationsArray: any;
+  lastModificationsArray: any[];
   lastModifDisplayedColumns: string[] = ['manager', 'date', 'action'];
 
-  skillsArrayDS: any;
+  skillsArray: any[];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
 
-  softSkillsArrayDS: any;
+  softSkillsArray: any[];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
 
   headerRowHiddenModif = false;
@@ -24,21 +24,12 @@ export class SkillsFormComponent implements OnInit {
   constructor(private skillsService: SkillsService) { }
 
   ngOnInit() {
-    this.skillsArrayDS = new MatTableDataSource(this.skillsService.skillsArray);
-    this.softSkillsArrayDS = new MatTableDataSource(this.skillsService.softSkillsArray);
-    this.lastModificationsArray = new MatTableDataSource(this.skillsService.lastModificationsArray);
+    this.skillsArray = this.skillsService.skillsArray;
+    this.softSkillsArray = this.skillsService.softSkillsArray;
+    this.lastModificationsArray = this.skillsService.lastModificationsArray;
   }
 
   onSubmitForm() {
     console.log("submit");
   }
-
-  applyFilterSkills(filterValue: string) {
-    this.skillsArrayDS.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilterSoftSkills(filterValue: string) {
-    this.softSkillsArrayDS.filter = filterValue.trim().toLowerCase();
-  }
-
 }
