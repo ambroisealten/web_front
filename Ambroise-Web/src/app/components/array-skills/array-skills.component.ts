@@ -13,6 +13,9 @@ export class ArraySkillsComponent implements OnInit {
   @Input() headerRowHidden: boolean;
 
   dataSource: MatTableDataSource<any[]>;
+  dataSourceSplit: MatTableDataSource<any[]>;
+
+  isArraySplit: boolean = false;
 
   constructor() { }
 
@@ -25,7 +28,9 @@ export class ArraySkillsComponent implements OnInit {
   }
 
   addSkill(event) {
-    this.dataSourceArray.push({skillName: event.target.value, grade: '?'});
-    this.dataSource = new MatTableDataSource(this.dataSourceArray);
+    if(event.target.value != '') {
+      this.dataSourceArray.push({skillName: event.target.value, grade: ''});
+      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+    }
   }
 }

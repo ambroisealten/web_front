@@ -63,6 +63,56 @@ export class SkillsService {
     }
   ];
 
+  candidateFormItems = [
+    {
+      label: 'Diplôme',
+      type: 'text'
+    },
+    {
+      label: 'Employeur',
+      type: 'text'
+    },
+    {
+      label: 'Métier',
+      type: 'text'
+    },
+    {
+      label: 'Disponibilité',
+      type: 'date'
+    },
+    {
+      label: 'Année de diplôme',
+      type: 'text'
+    },
+    {
+      label: 'Années d\'expérience',
+      type: 'number'
+    },
+    {
+      label: 'Prétention salariale',
+      type: 'number'
+    }
+  ];
+
+  consultantFormItems = [
+    {
+      label: 'Diplôme',
+      type: 'text'
+    },
+    {
+      label: 'Métier',
+      type: 'text'
+    },
+    {
+      label: 'Année de diplôme',
+      type: 'text'
+    },
+    {
+      label: 'Salaire',
+      type: 'number'
+    }
+  ];
+
   MatriceCompetence = {
 
   };

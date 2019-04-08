@@ -1,37 +1,15 @@
 <app-header-user></app-header-user>
-<div class="slider">
-  <mat-slide-toggle color="primary"> Passage consultant </mat-slide-toggle>
+
+<div class="currentSheetInfo">
+  <p> {{ skillsSheet.NameOfFiche }} - {{ skillsSheet.NomPersonne }} {{ skillsSheet.PrenomPersonne }} ({{ skillsSheet.StatutPersonne }})</p>
+  <mat-slide-toggle color="primary" (change)="passToConsultant()"> Passage consultant </mat-slide-toggle>
 </div>
+
 <div class="grid-container">
   <div class="infoForm">
-    <mat-form-field>
-      <mat-label>Diplôme</mat-label>
-      <input type="text" placeholder="Diplôme le plus élevé" matInput >
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Employeur</mat-label>
-      <input type="text" matInput >
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Métier</mat-label>
-      <input type="text" matInput >
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Disponibilité</mat-label>
-      <input type="date" matInput >
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Année de diplôme</mat-label>
-      <input type="number" min="1960" max="2100" matInput >
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Années d'expérience</mat-label>
-      <input type="number" matInput >
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Prétention salariale</mat-label>
-      <input type="number" matInput >
-      <span matPrefix>€&nbsp;</span>
+    <mat-form-field *ngFor="let item of formItems">
+      <mat-label> {{ item.label }}</mat-label>
+      <input [type]="item.type" matInput >
     </mat-form-field>
 
     <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
@@ -56,14 +34,16 @@
     </mat-form-field>
 
     <mat-form-field>
-      <textarea matInput placeholder="Commentaire"></textarea>
+      <textarea matInput placeholder="Commentaire" maxlength="110"></textarea>
     </mat-form-field>
   </div>
 
   <div class="skillsArrays">
-    <app-array-skills [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
-    <app-array-skills [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
+    <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
+    <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" ></app-array-skills>
+    <button mat-raised-button>Enregistrer la fiche</button>
   </div>
+
 
   <div class="matrix">
     <div class="chart-container">

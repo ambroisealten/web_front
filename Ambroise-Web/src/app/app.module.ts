@@ -20,7 +20,6 @@ import { HeaderService } from './services/header.services';
 import { SkillsFormComponent } from './content/skills-form/skills-form.component';
 import { ArraySkillsUpdatesComponent } from './components/array-skillsUpdates/array-skillsUpdates.component';
 import { ArraySkillsComponent } from './components/array-skills/array-skills.component';
-import { InlineEditComponent } from './components/inline-edit/inline-edit.component';
 
 const appRoutes: Routes = [
   { path:'content', component: PageContentComponent},
@@ -41,8 +40,7 @@ const appRoutes: Routes = [
     SignupComponent,
     SkillsFormComponent,
     ArraySkillsUpdatesComponent,
-    ArraySkillsComponent,
-    InlineEditComponent
+    ArraySkillsComponent
   ],
   imports: [
     BrowserModule,

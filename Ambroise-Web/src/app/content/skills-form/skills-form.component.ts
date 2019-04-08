@@ -18,6 +18,10 @@ export class SkillsFormComponent implements OnInit {
   softSkillsArray: any[];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
 
+  formItems: any[];
+
+  skillsSheet: any;
+
   headerRowHiddenModif = false;
   headerRowHiddenSkills = true;
 
@@ -27,9 +31,16 @@ export class SkillsFormComponent implements OnInit {
     this.skillsArray = this.skillsService.skillsArray;
     this.softSkillsArray = this.skillsService.softSkillsArray;
     this.lastModificationsArray = this.skillsService.lastModificationsArray;
+    this.formItems = this.skillsService.candidateFormItems;
+    this.skillsSheet = this.skillsService.ficheCompetence[0];
   }
 
   onSubmitForm() {
     console.log("submit");
+  }
+
+  passToConsultant() {
+    this.formItems = this.skillsService.consultantFormItems;
+      console.log('tetet');
   }
 }
