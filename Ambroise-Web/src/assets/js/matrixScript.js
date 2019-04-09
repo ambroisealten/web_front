@@ -10,7 +10,7 @@ function charged(){
                 }
             }
             createMatrix("myChartCompetence", ['c++', 'Java', '',], [3, 3.5, 0]);
-            createMatrix("myChartSoftSkill", ['Scrum', 'Cycle en V', '',], [3, 3, 0]);
+            createMatrix("myChartSoftSkill", ['Scrum', 'Skill', '',], [3, 3, 0]);
         },50);
 }
 

@@ -129,26 +129,26 @@ export class SkillsService {
   .get('http://localhost:4200/')
   .subscribe(data => {
   callback(JSON.stringify(data));
-},  error => {
-console.log(error);
-});
-}
+  },  error => {
+  console.log(error);
+  });
+  }
 
-//this.ficheCompetence = "toto"//requete;
-*/
-getSkillFromService(){
+  //this.ficheCompetence = "toto"//requete;
+  */
+  getSkills() {
+    return this.skillsArray;
+  }
 
-}
+  getSoftSkills() {
+    return this.softSkillsArray;
+  }
 
-getSoftSkillFromService(){
+  updateSkills(newSkillsArray) {
+    this.skillsArray = newSkillsArray;
+  }
 
-}
-
-getMatriceFromService(){
-
-}
-
-getCvfromService(){
-
-}
+  updateSoftSkills(newSoftSkillsArray) {
+    this.softSkillsArray = newSoftSkillsArray;
+  }
 }

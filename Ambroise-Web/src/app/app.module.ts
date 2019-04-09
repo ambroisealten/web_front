@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { DemoMaterialModule } from './material-modules';
 import { SearchAutoComponent } from './content/search-auto/search-auto.component';
 import { SearchService } from './content/services/search.service';
-import { MatAutocompleteModule, MatInputModule, MatNativeDateModule } from '@angular/material';
+import { MatAutocompleteModule, MatInputModule, MatNativeDateModule, MatIconModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
