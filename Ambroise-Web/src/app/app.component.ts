@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoggerService, LogLevel } from 'src/services/logger.service';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
