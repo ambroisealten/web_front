@@ -39,8 +39,8 @@
   </div>
 
   <div class="skillsArrays">
-    <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
-    <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
+    <app-array-skills (messageEvent)="receiveMessage($event)" class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
+    <app-array-skills (messageEvent)="receiveMessage($event)" class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
     <button mat-raised-button>Enregistrer la fiche</button>
   </div>
 
@@ -52,8 +52,8 @@
     <div class="chart-container">
       <canvas id="canvasSkills">{{ chart }}</canvas>
     </div>
-  <!--  <div class="chart-container">
+   <div class="chart-container">
       <canvas id="canvasSoftSkills"></canvas>
-    </div>-->
+    </div>
   </div>
 </div>

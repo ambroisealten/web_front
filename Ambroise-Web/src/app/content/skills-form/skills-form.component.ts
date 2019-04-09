@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SkillsService } from 'src/app/services/skills.service';
 import { Chart } from 'chart.js';
+import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -25,7 +26,8 @@ export class SkillsFormComponent implements OnInit {
 
   skillsSheet: any;
 
-  chart = [];
+  skillsChart = [];
+  softSkillsChart = [];
 
   constructor(private skillsService: SkillsService) { }
 
@@ -35,8 +37,6 @@ export class SkillsFormComponent implements OnInit {
     this.lastModificationsArray = this.skillsService.lastModificationsArray;
     this.formItems = this.skillsService.candidateFormItems;
     this.skillsSheet = this.skillsService.ficheCompetence[0];
-
-    this.updateChartSkills();
   }
 
   onSubmitForm() {
@@ -48,25 +48,53 @@ export class SkillsFormComponent implements OnInit {
   }
 
   refreshCharts() {
-    this.updateChartSkills();
+    //  this.updateChartSkills();
   }
 
-  updateChartSkills() {
+  receiveMessage($skillType) {
+    this.updateChartSkills($skillType);
+    console.log('up');
+  }
+
+  updateChartSkills(skillType) {
     let skillsLabels: string[] = [];
     let skillsData: string[] = [];
 
-    this.skillsService.getSkills().forEach(function(skill) {
-      skillsLabels.push(skill.skillName);
-      skillsData.push(skill.grade);
-    });
+    switch(skillType) {
+      case('skills') :
+      {
+        this.skillsService.getSkills().forEach(function(skill) {
+          skillsLabels.push(skill.skillName);
+          skillsData.push(skill.grade);
+        });
+        this.skillsChart = this.createOrUpdateChart(skillsLabels, skillsData, 'canvasSkills');
+        break;
+      }
+      case('softSkills'):
+      {
+        this.skillsService.getSkills().forEach(function(skill) {
+          skillsLabels.push(skill.skillName);
+          skillsData.push(skill.grade);
+        });
+        this.softSkillsChart = this.createOrUpdateChart(skillsLabels, skillsData, 'canvasSoftSkills');
+        break;
+      }
+      default:
+      {
+        LoggerService.log('No such skillType ' + skillType, LogLevel.DEBUG);
+        break;
+      }
+    }
+  }
 
-    this.chart = new Chart('canvasSkills', {
+  createOrUpdateChart(labels, data, elementId) {
+    return new Chart(elementId, {
       type: 'radar',
       data: {
-        labels: skillsLabels,
+        labels: labels,
         datasets: [{
           label: 'Note',
-          data: skillsData,
+          data: data,
           backgroundColor: [
             'rgba(00, 139, 210, 0.2)',
             'rgba(54, 162, 235, 0.2)'
