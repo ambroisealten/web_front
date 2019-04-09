@@ -5,28 +5,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login/login.component';
-import { SignupComponent } from './login/signup/signup.component';
 
 const appRoutes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    SignupComponent
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(
-      appRoutes
+      appRoutes,
     ),
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
