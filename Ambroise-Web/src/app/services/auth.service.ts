@@ -16,7 +16,10 @@ export class AuthService {
         }
         console.log(postParams.mail + ":::" + postParams.pswd);
 
-        return this.httpClient.post('http://localhost:8080/login', postParams)
+        let data = this.httpClient.post('http://localhost:8080/login', postParams);
+
+        return (data != null) ? JSON.parse(JSON.stringify(data))["token"] : null;
+
     }
 
     signOut() {

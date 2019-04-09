@@ -48,10 +48,10 @@ export class LoginComponent implements OnInit {
       (resolve, reject) => {
         setTimeout(() => resolve(1), 5000);
         let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
-          .subscribe(data => {
+          .subscribe(token => {
 
-            if (data != null) {
-              window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(data))["token"]);
+            if (token != null) {
+              window.sessionStorage.setItem("bearerToken", token);
               this.router.navigate(['content']);
               resolve('Token reçu');
             }
