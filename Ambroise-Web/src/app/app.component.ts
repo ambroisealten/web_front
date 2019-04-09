@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { LoggerService, LogLevel } from 'src/services/logger.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -6,4 +8,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  title = 'Ambroise-Web';
+
+  constructor(){
+    LoggerService.parseLogType(environment.globalLogType);
+    LoggerService.log('PROD', LogLevel.PROD);
+    LoggerService.log('JOKE', LogLevel.JOKE);
+  }
 }
