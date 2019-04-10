@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Injectable()
 export class SearchService {
@@ -6,7 +7,7 @@ export class SearchService {
     private optionsTaken:string[] = [];
 
     filter(value: string): string[] {
-        console.log("Ok");
+        LoggerService.log("Ok", LogLevel.DEBUG);
         if(value.length === 0) return [];
         const filterValue = value.toLowerCase();
         let resulTab = this.options.filter(option => option.toLowerCase().indexOf(filterValue) === 0).sort((one, two) => (one < two ? -1 : 1));

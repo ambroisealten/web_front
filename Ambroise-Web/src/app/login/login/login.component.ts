@@ -47,14 +47,11 @@ export class LoginComponent implements OnInit {
       (resolve, reject) => {
         setTimeout(() => resolve(1), 5000);
         let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
-          .subscribe(data => {
-
-            console.log("data in promise : " + data);
-            //window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(data))["token"]);
-            this.token = data;
-            if (this.token != null) {
-              window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(this.token))["token"]);
-              console.log("data in then : " + this.token);
+          .subscribe(token => {
+            
+            if (token != null) {
+              console.log(typeof token);
+              window.sessionStorage.setItem("bearerToken",token);
               this.router.navigate(['content']);
               resolve('Token reçu');
             }
