@@ -18,6 +18,8 @@ export class AuthService {
 
         let data = this.httpClient.post('http://localhost:8080/login', postParams);
 
+        console.log(JSON.parse(JSON.stringify(data))["token"]);
+
         return (data != null) ? JSON.parse(JSON.stringify(data))["token"] : null;
 
     }
@@ -27,8 +29,4 @@ export class AuthService {
         window.sessionStorage.clear();
     }
 
-    redirectToHomePage() {
-        //TO-DO : Creer un service de redirection
-        this.router.navigate(['content']);
-    }
 }
