@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import * as sha512 from 'js-sha512';
 import { Router } from '@angular/router';
-import { AuthAsyncService } from 'src/app/services/auth-async.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { reject, resolve } from 'q';
 
 
@@ -23,7 +23,7 @@ export class LoginAyncComponent implements OnInit {
   userPswd: string;
 
   constructor(private httpClient: HttpClient, private formBuilder: FormBuilder,
-    private authService: AuthAsyncService, private router: Router) { }
+    private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     // init validators

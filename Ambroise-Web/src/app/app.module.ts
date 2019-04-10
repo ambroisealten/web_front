@@ -9,23 +9,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login/login.component';
-import { SignupComponent } from './login/signup/signup.component';
 import { PageContentComponent } from './content/page-content/page-content.component';
 import { HeaderUserComponent } from './header/header-user/header-user.component';
 import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
-import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
 import { AuthService } from './services/auth.service';
-import { LoginAyncComponent } from './test-async/login-aync/login-aync.component';
-import { AuthAsyncService } from './services/auth-async.service';
+import { LoginComponent } from './login/login/login.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
-  { path: 'async', component: LoginAyncComponent},
   { path:'content', component:PageContentComponent},
-  { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
 @NgModule({
   declarations: [
@@ -35,8 +29,6 @@ const appRoutes: Routes = [
     PageContentComponent,
     HeaderMenuComponent,
     LoginComponent,
-    SignupComponent,
-    LoginAyncComponent
   ],
   imports: [
     BrowserModule,
@@ -49,16 +41,11 @@ const appRoutes: Routes = [
       { enableTracing: false } // <-- debugging purposes only
     ),
     BrowserAnimationsModule
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
   ],
   providers: [
     SearchService,
-    AuthGuard,
     HeaderService,
     AuthService,
-    AuthAsyncService
   ],
   bootstrap: [AppComponent]
 })

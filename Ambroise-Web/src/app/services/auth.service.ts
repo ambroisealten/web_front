@@ -18,7 +18,9 @@ export class AuthService {
 
         let data = this.httpClient.post('http://localhost:8080/login', postParams);
 
-        return (data != null) ? JSON.parse(JSON.stringify(data))["token"] : null;
+        return data;
+
+       // return (data != null) ? JSON.parse(JSON.stringify(data))["token"] : null;
 
     }
 
