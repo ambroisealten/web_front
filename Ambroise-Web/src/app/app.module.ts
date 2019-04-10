@@ -49,9 +49,6 @@ const appRoutes: Routes = [
       { enableTracing: false } // <-- debugging purposes only
     ),
     BrowserAnimationsModule
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
   ],
   providers: [
     SearchService,
