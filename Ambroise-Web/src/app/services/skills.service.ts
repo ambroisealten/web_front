@@ -130,7 +130,6 @@ export class SkillsService {
   .subscribe(data => {
   callback(JSON.stringify(data));
   },  error => {
-  console.log(error);
   });
   }
 

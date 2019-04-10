@@ -26,8 +26,8 @@ export class SkillsFormComponent implements OnInit {
 
   skillsSheet: any;
 
-  skillsChart = [];
-  softSkillsChart = [];
+  skillsChart = Chart;
+  softSkillsChart = Chart;
 
   constructor(private skillsService: SkillsService) { }
 
@@ -37,23 +37,34 @@ export class SkillsFormComponent implements OnInit {
     this.lastModificationsArray = this.skillsService.lastModificationsArray;
     this.formItems = this.skillsService.candidateFormItems;
     this.skillsSheet = this.skillsService.ficheCompetence[0];
+
+    // init charts
+    this.updateChartSkills('skills');
+    this.updateChartSkills('softSkills');
   }
 
   onSubmitForm() {
-    console.log("submit");
+    LoggerService.log("submit", LogLevel.DEBUG);
   }
 
   passToConsultant() {
     this.formItems = this.skillsService.consultantFormItems;
   }
 
-  refreshCharts() {
-    //  this.updateChartSkills();
-  }
-
   receiveMessage($skillType) {
+    switch($skillType) {
+      case('skills') :
+      {
+        this.skillsChart.destroy();
+        break;
+      }
+      case('softSkills') : {
+        this.softSkillsChart.destroy();
+        break;
+      }
+    }
+
     this.updateChartSkills($skillType);
-    console.log('up');
   }
 
   updateChartSkills(skillType) {
@@ -72,7 +83,7 @@ export class SkillsFormComponent implements OnInit {
       }
       case('softSkills'):
       {
-        this.skillsService.getSkills().forEach(function(skill) {
+        this.skillsService.getSoftSkills().forEach(function(skill) {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
@@ -107,8 +118,12 @@ export class SkillsFormComponent implements OnInit {
         }]
       },
       options: {
-        scales: {
-
+        scale: {
+          ticks: {
+            min: 0,
+            max: 4,
+            step: 0.5
+          }
         },
         responsive: true,
         maintainAspectRatio: false

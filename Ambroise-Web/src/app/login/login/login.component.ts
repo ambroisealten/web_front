@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
   userEmail: string;
   userPswd: string;
 
-  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     // init validators

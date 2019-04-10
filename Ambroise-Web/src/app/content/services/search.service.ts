@@ -6,7 +6,6 @@ export class SearchService {
     private optionsTaken:string[] = [];
 
     filter(value: string): string[] {
-        console.log("Ok");
         if(value.length === 0) return [];
         const filterValue = value.toLowerCase();
         let resulTab = this.options.filter(option => option.toLowerCase().indexOf(filterValue) === 0).sort((one, two) => (one < two ? -1 : 1));
