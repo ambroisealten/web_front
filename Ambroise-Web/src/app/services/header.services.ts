@@ -23,7 +23,7 @@ export class HeaderService {
 
     getModulesFromService(callback) {
         let token = window.sessionStorage.getItem("bearerToken");
-
+        console.log("Je me recharge");
         let headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
@@ -37,22 +37,6 @@ export class HeaderService {
             }, error => {
                 console.log(error);// Error getting the data
             });
-    }
-
-    login() { //TO-DELETE : TO-ADAPT
-        let postParams = {
-            mail: 'abc@gmail.com',
-            pswd: 'pass',
-        }
-
-        this.httpClient.post('http://localhost:8080/login', postParams).subscribe(data => {
-            console.log(data);
-            window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(data))["token"]);
-        }, error => {
-            console.log(error);// Error getting the data
-        });
-
-        console.log('mail : '+postParams.mail+'pswd : '+postParams.pswd);
     }
 
 }

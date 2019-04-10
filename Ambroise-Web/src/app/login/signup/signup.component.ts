@@ -14,7 +14,7 @@ import { MustMatch } from '../../utils/must-match.validator';
 export class SignupComponent implements OnInit {
 
   // used to set validators
-  validationForm: FormGroup;
+  validatingForm: FormGroup;
   submitted = false;
 
   userName: string;
@@ -26,10 +26,10 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
     // init validators
-    this.validationForm =this.formBuilder.group({
+    this.validatingForm =this.formBuilder.group({
       name: ['', Validators.required],
       firstname: ['', Validators.required],
-      email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordCheck: ['', [Validators.required]]
     }, {
@@ -38,7 +38,7 @@ export class SignupComponent implements OnInit {
   }
 
   // convenience getter for easy access to form fields
-  get validationFormControls() { return this.validationForm.controls; }
+  get f() { return this.validatingForm.controls; }
 
   /**
     Sends http request with user info when signup form is submitted
@@ -47,15 +47,15 @@ export class SignupComponent implements OnInit {
     this.submitted = true;
 
     // stop here if form is invalid
-    if (this.validationForm.invalid) {
+    if (this.validatingForm.invalid) {
       return;
     }
 
     // init values with form
-    this.userName = this.validationForm.value.name;
-    this.userFirstName = this.validationForm.value.firstname;
-    this.userEmail = this.validationForm.value.email;
-    this.userPswd = this.validationForm.value.password;
+    this.userName = this.validatingForm.value.name;
+    this.userFirstName = this.validatingForm.value.firstname;
+    this.userEmail = this.validatingForm.value.email;
+    this.userPswd = sha512.sha512(this.validatingForm.value.password);
 
     // password hash with sha512 before POST request
     let postParams = {
@@ -64,5 +64,14 @@ export class SignupComponent implements OnInit {
       name: this.userName,
       firstname: this.userFirstName
     }
+
+    // TODO change server ip
+    // send user info to server
+    /*this.httpClient.post('http://localhost:8080/login', postParams).subscribe(data => {
+      // TODO redirect to application home
+    }, error => {
+      console.log(error); // if error getting the data
+    });*/
   }
+
 }

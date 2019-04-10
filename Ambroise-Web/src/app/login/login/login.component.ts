@@ -2,8 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import * as sha512 from 'js-sha512';
-import { AuthService } from 'src/app/services/auth.service';
-import { timeout } from 'q';
 
 @Component({
   selector: 'app-login',
@@ -13,25 +11,24 @@ import { timeout } from 'q';
 export class LoginComponent implements OnInit {
 
   // used to set validators
-  validationForm: FormGroup;
+  validatingForm: FormGroup;
   submitted = false;
 
   userEmail: string;
   userPswd: string;
 
-  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder,
-    private authService: AuthService) { }
+  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     // init validators
-    this.validationForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
+    this.validatingForm =this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
 
   // convenience getter for easy access to form fields
-  get validationFormControls() { return this.validationForm.controls; }
+  get f() { return this.validatingForm.controls; }
 
   /**
     Sends http request with email and password when login form is submitted
@@ -39,20 +36,29 @@ export class LoginComponent implements OnInit {
   onConnect() {
 
     this.submitted = true;
+
     // stop here if form is invalid
-    if (this.validationForm.invalid) {
+    if (this.validatingForm.invalid) {
       return;
     }
-    console.log('form validated');
-    this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password,(result:String)=>{
-      console.log(result);
 
-    });
+    // init values with form
+    this.userEmail = this.validatingForm.value.email;
+    this.userPswd = sha512.sha512(this.validatingForm.value.password);
 
-   /* setTimeout(() => {
-      this.authService.redirectToHomePage();
-    }, 2000)*/
+    // password hash with sha512 before POST request
+    let postParams = {
+      mail: this.userEmail,
+      pswd: sha512.sha512(this.userPswd),
+    }
 
+    // TODO change server ip
+    // send mail and hashed pswd to server and add received token to sessionStorage
+  /*  this.httpClient.post('http://localhost:8080/login', postParams).subscribe(data => {
+      window.sessionStorage.setItem("bearerToken",JSON.parse(JSON.stringify(data))["token"]);
+    }, error => {
+      console.log(error); // if error getting the data
+    });*/
   }
 
 }

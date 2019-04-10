@@ -66,9 +66,10 @@ h1 {
   cursor: pointer;
 }
 .form button:hover,.form button:active,.form button:focus {
-  background: var(--ALTENDarkBlue);
+  background: #043962;
 }
 body {
+  background: #76b852; /* fallback for old browsers */
   background: -webkit-linear-gradient(right, #76b852, #8DC26F);
   background: -moz-linear-gradient(right, #76b852, #8DC26F);
   background: -o-linear-gradient(right, #76b852, #8DC26F);
@@ -79,7 +80,7 @@ body {
 }
 /* set background color */
 :host {
-  background-color: var(--ALTENLightGray);
+  background-color: var(--ALTENBlue);
   position: absolute;
   left: 0;
   right: 0;

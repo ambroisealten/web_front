@@ -28,7 +28,7 @@ export class HeaderUserComponent implements OnInit {
 
   constructor(private titleService: Title, private router: Router,
     private navigationService: HeaderService) {
-    this.navigationService.login(); //TO-DELETE
+    //this.navigationService.login(); //TO-DELETE
 
     setTimeout(() => { //TO-DELETE
       this.getModules();
@@ -68,6 +68,9 @@ export class HeaderUserComponent implements OnInit {
     return this.modules;
   }
 
-
+  accountClick(){
+    window.sessionStorage.clear();
+    this.router.navigate(['/login']);
+  }
 
 }
