@@ -5,6 +5,8 @@ import * as sha512 from 'js-sha512';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { reject, resolve } from 'q';
+import { HeaderService } from 'src/app/services/header.services';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 
 @Component({
@@ -22,7 +24,7 @@ export class LoginComponent implements OnInit {
   userPswd: string;
 
   constructor(private httpClient: HttpClient, private formBuilder: FormBuilder,
-    private authService: AuthService, private router: Router) { }
+    private authService: AuthService, private headerService: HeaderService, private router: Router) { }
 
   ngOnInit() {
     // init validators
@@ -44,14 +46,21 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
+
     this.authService.tokenReceptionObservable.subscribe(tokenReceived => {
 
-      console.log("boolean : "+tokenReceived);
-      if(tokenReceived){
-        this.redirectToHomePage();
+      LoggerService.log("token received : " + tokenReceived, LogLevel.DEBUG);
+      if (tokenReceived) {
+
+        this.headerService.init();
+
+        this.headerService.menuReceptionObservable.subscribe(menusReceived => {
+          LoggerService.log("menus received : " + menusReceived, LogLevel.DEBUG);
+          if (menusReceived) {
+            this.redirectToHomePage();
+          }
+        })
       }
-
-
     })
 
   }

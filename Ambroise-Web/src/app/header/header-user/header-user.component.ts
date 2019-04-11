@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, Navigation } from '@angular/router';
 import { HeaderService } from 'src/app/services/header.services';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 export class Menu {
   name: string;
@@ -23,53 +24,48 @@ export class Menu {
   styleUrls: ['./header-user.component.scss']
 })
 export class HeaderUserComponent implements OnInit {
-  modules: Menu[] = [];
-
+  private modules: Menu[] = [];
+  private done = false;
 
   constructor(private titleService: Title, private router: Router,
-    private navigationService: HeaderService) {
-    //this.navigationService.login(); //TO-DELETE
-
-    setTimeout(() => { //TO-DELETE
-      this.getModules();
-    }, 20);
-
-
-    setTimeout(() => {
-      this.navigationService.setCurrentModuleFromService(this.navigationService.getCurrentModuleFromService());
-      this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
-    }, 40);
-  }
+    private headerService: HeaderService) { }
 
   ngOnInit() {
+    this.headerService.init();
+    this.headerService.menuReceptionObservable.subscribe(menusReceived => {
+      LoggerService.log("menus received in header-user : " + menusReceived, LogLevel.DEBUG);
+      if (menusReceived != undefined && !this.done) {
+        this.initModules(menusReceived);
+        this.done = true;
+      }
+    })
+    this.headerService.setCurrentModuleFromService(this.headerService.getCurrentModuleFromService());
+    this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
   }
 
   setCurrentModule(event) {
-    let tmp = this.navigationService.getCurrentModuleFromService();
-    this.navigationService.setCurrentModuleFromService((event.target.textContent != tmp) ? event.target.textContent : tmp);
-    this.titleService.setTitle("Ambroise - " + this.navigationService.getCurrentModuleFromService());
+    let tmp = this.headerService.getCurrentModuleFromService();
+    this.headerService.setCurrentModuleFromService((event.target.textContent != tmp) ? event.target.textContent : tmp);
+    this.titleService.setTitle("Ambroise - " + this.headerService.getCurrentModuleFromService());
 
   }
 
   getCurrentModule() {
-    return this.navigationService.getCurrentModuleFromService();
+    return this.headerService.getCurrentModuleFromService();
   }
 
-  getModules() {
-    let tmpModules: any;
-    this.navigationService.getModulesFromService((tmp) => {
-      tmpModules = JSON.parse(tmp);
-      for (let module of tmpModules.modules) {
-        let m = new Menu(module.label, module.routerLink);
-        this.modules.push(new Menu(module.label, module.routerLink));
-      }
+  initModules(menuJson) {
 
-    });
+    for (let module of menuJson.modules) {
+      this.modules.push(new Menu(module.label, module.routerLink));
+    }
     return this.modules;
+
   }
 
-  accountClick(){
+  accountClick() {
     window.sessionStorage.clear();
+    this.modules = [];
     this.router.navigate(['/login']);
   }
 
