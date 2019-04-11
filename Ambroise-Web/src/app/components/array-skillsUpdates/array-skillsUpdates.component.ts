@@ -6,13 +6,16 @@ import { MatTableDataSource } from '@angular/material';
   templateUrl: './array-skillsUpdates.component.html',
   styleUrls: ['./array-skillsUpdates.component.scss']
 })
+/**
+ * Component containing an array containing info about the updates of a skillsSheet
+ */
 export class ArraySkillsUpdatesComponent implements OnInit {
 
-  @Input() displayedColumns: string[];
-  @Input() dataSourceArray: any[];
-  @Input() headerRowHidden: boolean;
+  @Input() displayedColumns: string[]; // names of columns to display
+  @Input() dataSourceArray: any[]; // data array
+  @Input() headerRowHidden: boolean; // is header row (columns title) hidden
 
-  dataSource: MatTableDataSource<any[]>;
+  dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
 
   constructor() { }
 

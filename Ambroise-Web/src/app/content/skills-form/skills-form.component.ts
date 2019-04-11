@@ -8,6 +8,10 @@ import { LogLevel, LoggerService } from 'src/app/services/logger.service';
   templateUrl: './skills-form.component.html',
   styleUrls: ['./skills-form.component.scss']
 })
+/**
+ * Component containing the skillsSheet creation form.
+ * @param skillsService service handling back-end communication and data
+ */
 export class SkillsFormComponent implements OnInit {
 
   lastModificationsArray: any[];
@@ -43,14 +47,24 @@ export class SkillsFormComponent implements OnInit {
     this.updateChartSkills('softSkills');
   }
 
+  /**
+   * Calls skills service to save current skillsSheet
+   */
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
   }
 
+  /**
+   * Pass a candidate to consultant, update form
+   */
   passToConsultant() {
     this.formItems = this.skillsService.consultantFormItems;
   }
 
+  /**
+   * Function called when an event is received from ArraySkillsComponent
+   * @param  $skillType 'skills' or 'softSkills'
+   */
   receiveMessage($skillType) {
     switch($skillType) {
       case('skills') :
@@ -67,6 +81,10 @@ export class SkillsFormComponent implements OnInit {
     this.updateChartSkills($skillType);
   }
 
+  /**
+   * Get current data from skills service and updates the matrix
+   * @param  skillType 'skills' or 'softSkills'
+   */
   updateChartSkills(skillType) {
     let skillsLabels: string[] = [];
     let skillsData: string[] = [];
@@ -98,6 +116,13 @@ export class SkillsFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Create a radar chart (skills matrix)
+   * @param  labels    labels to display on the chart
+   * @param  data      data for the chart
+   * @param  elementId 'canvasSkills' or 'canvasSoftSkills'
+   * @return           a radar chart
+   */
   createOrUpdateChart(labels, data, elementId) {
     return new Chart(elementId, {
       type: 'radar',
@@ -120,7 +145,7 @@ export class SkillsFormComponent implements OnInit {
       options: {
         scale: {
           ticks: {
-            min: 0,
+            min: 1,
             max: 4,
             step: 0.5
           }

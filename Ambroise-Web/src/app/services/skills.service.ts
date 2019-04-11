@@ -5,8 +5,14 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Service to handle skillsSheet creation and update
+ */
 export class SkillsService {
 
+  /**
+   * Temporary hardcoded json for data
+   */
   ficheCompetence =  [
     {
       NameOfFiche: "010718MM",
@@ -113,40 +119,36 @@ export class SkillsService {
     }
   ];
 
-  MatriceCompetence = {
+  constructor() { }
 
-  };
-
-  CvCompetence = {
-
-  };
-
-
-  constructor(/*private httpClient: HttpClient*/) { }
-
-  /*getIdentityFromService(callback){
-  this.httpClient
-  .get('http://localhost:4200/')
-  .subscribe(data => {
-  callback(JSON.stringify(data));
-  },  error => {
-  });
-  }
-
-  //this.ficheCompetence = "toto"//requete;
-  */
+  /**
+   * Get skills for current skillsSheet
+   * @return skills array
+   */
   getSkills() {
     return this.skillsArray;
   }
 
+  /**
+   * Get soft skills for current skillsSheet
+   * @return soft skills array
+   */
   getSoftSkills() {
     return this.softSkillsArray;
   }
 
+  /**
+   * Update skills for current skillsSheet
+   * @param newSkillsArray
+   */
   updateSkills(newSkillsArray) {
     this.skillsArray = newSkillsArray;
   }
 
+  /**
+   * Update soft skills for current skillsSheet
+   * @param newSoftSkillsArray
+   */
   updateSoftSkills(newSoftSkillsArray) {
     this.softSkillsArray = newSoftSkillsArray;
   }
