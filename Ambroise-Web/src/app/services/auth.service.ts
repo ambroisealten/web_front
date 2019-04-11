@@ -1,11 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { LoggerService, LogLevel } from './logger.service';
+import { BehaviorSubject } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
 
-    constructor(private httpClient: HttpClient, private router: Router) { }
+    private tokenReceptionState = new BehaviorSubject(false);
+    tokenReceptionObservable = this.tokenReceptionState.asObservable();
+
+    constructor(private httpClient: HttpClient) { }
 
     signIn(formInputMail: String, formInputPswd: String) {
 
@@ -14,13 +19,27 @@ export class AuthService {
             //pswd: sha512.sha512(this.userPswd),
             pswd: formInputPswd
         }
-        console.log(postParams.mail + ":::" + postParams.pswd);
+        LoggerService.log(postParams.mail + ":::" + postParams.pswd, LogLevel.DEBUG);
 
-        let data = this.httpClient.post('http://localhost:8080/login', postParams);
+        this.httpClient.post('http://localhost:8080/login', postParams)
+            .pipe(timeout(5000))
+            .toPromise()
+            .then(token => {
+                if (token != undefined) {
+                    window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(token))["token"]);
+                    this.tokenReceptionState.next(true);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                //  TO-DO : traiter les erreur liée au timeout et les erreur HTTP
+            });
 
-        console.log(JSON.parse(JSON.stringify(data))["token"]);
-
-        return (data != null) ? JSON.parse(JSON.stringify(data))["token"] : null;
+        /*switch (error.status) {
+            case 0: alert("500 : internal server error"); break;
+            case 403: alert("identifiant/mdp incorrect"); break;
+            default: console.log("HEIN?  " + error); break;  //TO-LOG
+        }*/
 
     }
 
@@ -28,5 +47,6 @@ export class AuthService {
         //TO-DO : redirect login page
         window.sessionStorage.clear();
     }
+
 
 }

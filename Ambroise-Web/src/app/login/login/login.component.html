@@ -1,10 +1,10 @@
 <div class="login-page">
   <div class="form">
     <h1>Connexion</h1>
-    <form [formGroup]="validationForm" class="login_form" (submit)="onSubmit()">
+    <form [formGroup]="validationForm" class="login_form" (ngSubmit)="onSubmit()">
       <div class="md-form">
         <label for="inputEmail" class="sr-only">userEmail</label>
-        <input type="email" id="inputEmail" class="form-control" formControlName="email" [pattern]="emailPattern" [ngClass]="{ 'is-invalid': submitted && validationFormControls.email.errors }"
+        <input type="email" id="inputEmail" class="form-control" formControlName="email" [ngClass]="{ 'is-invalid': submitted && validationFormControls.email.errors }"
         placeholder="email" autofocus>
         <div *ngIf="submitted && validationFormControls.email.errors" class="invalid-feedback">
           <p>

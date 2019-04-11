@@ -2,12 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import * as sha512 from 'js-sha512';
-import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { reject, resolve } from 'q';
+import { HeaderService } from 'src/app/services/header.services';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-aync',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -21,7 +24,7 @@ export class LoginComponent implements OnInit {
   userPswd: string;
 
   constructor(private httpClient: HttpClient, private formBuilder: FormBuilder,
-    private authService: AuthService, private router : Router) { }
+    private authService: AuthService, private headerService: HeaderService, private router: Router) { }
 
   ngOnInit() {
     // init validators
@@ -34,9 +37,6 @@ export class LoginComponent implements OnInit {
   // convenience getter for easy access to form fields
   get validationFormControls() { return this.validationForm.controls; }
 
-  /**
-    Sends http request with email and password when login form is submitted
-  **/
   onSubmit() {
     this.submitted = true;
 
@@ -50,22 +50,33 @@ export class LoginComponent implements OnInit {
         let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
           .subscribe(token => {
 
-            if (token != null) {
-              window.sessionStorage.setItem("bearerToken", token);
-              this.router.navigate(['content']);
-              resolve('Token reçu');
-            }
+    this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
 
-          }, error => {
-            switch (error.status) {
-              case 0: alert("500 : internal server error"); break;
-              case 403: alert("identifiant/mdp incorrect"); break;
-              default: console.log("Nouvelle erreur pas dans le switch case" + error);
-            }
-          });
+    this.authService.tokenReceptionObservable.subscribe(tokenReceived => {
+
+      LoggerService.log("token received : " + tokenReceived, LogLevel.DEBUG);
+      if (tokenReceived) {
+
+        this.headerService.init();
+
+        this.headerService.menuReceptionObservable.subscribe(menusReceived => {
+          LoggerService.log("menus received : " + menusReceived, LogLevel.DEBUG);
+          if (menusReceived) {
+            this.redirectToHomePage();
+          }
+        })
       }
-    ).catch(error => { console.log(error) });
+    })
 
   }
+
+  redirectToHomePage() {
+    //  TO-DO : Creer un service de redirection
+    //  changer la redirection après connection en fonction du module de préférence
+    //  de l'utilisateur (Mission par défaut)
+    this.router.navigate(['content']);
+  }
+
+
 
 }
