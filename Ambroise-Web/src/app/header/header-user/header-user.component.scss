@@ -19,6 +19,10 @@
     transition: linear .2s;
 }
 
+.otherModules:hover, #moduleHome:hover{
+    cursor: pointer; 
+}
+
 .surheader nav {
     background-color: var(--ALTENBlue);
     display: grid;

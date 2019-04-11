@@ -11,8 +11,9 @@ export class AppComponent {
   title = 'Ambroise-Web';
 
   constructor(){
+
+    //  Récupération de la variable d'environement "globalLogType" pour initialiser
+    //  le LoggerService
     LoggerService.parseLogType(environment.globalLogType);
-    LoggerService.log('PROD', LogLevel.PROD);
-    LoggerService.log('JOKE', LogLevel.JOKE);
   }
 }

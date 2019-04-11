@@ -17,7 +17,6 @@ export class LoginComponent implements OnInit {
   // used to set validators
   validationForm: FormGroup;
   submitted = false;
-  token;
 
   userEmail: string;
   userPswd: string;
@@ -43,28 +42,27 @@ export class LoginComponent implements OnInit {
     if (this.validationForm.invalid) {
       return;
     }
-    return new Promise(
-      (resolve, reject) => {
-        setTimeout(() => resolve(1), 5000);
-        let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
-          .subscribe(token => {
-            
-            if (token != null) {
-              console.log(typeof token);
-              window.sessionStorage.setItem("bearerToken",token);
-              this.router.navigate(['content']);
-              resolve('Token reçu');
-            }
 
-          }, error => {
-            switch (error.status) {
-              case 0: alert("500 : internal server error"); break;
-              case 403: alert("identifiant/mdp incorrect"); break;
-              default: console.log("HEIN?  "+error); break;
-            }
-          });
+    this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
+    this.authService.tokenReceptionObservable.subscribe(tokenReceived => {
+
+      console.log("boolean : "+tokenReceived);
+      if(tokenReceived){
+        this.redirectToHomePage();
       }
-    ).catch(error => { console.log(error) });
+
+
+    })
 
   }
+
+  redirectToHomePage() {
+    //  TO-DO : Creer un service de redirection
+    //  changer la redirection après connection en fonction du module de préférence
+    //  de l'utilisateur (Mission par défaut)
+    this.router.navigate(['content']);
+  }
+
+
+
 }
