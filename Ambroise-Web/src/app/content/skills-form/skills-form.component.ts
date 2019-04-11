@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { SkillsService } from 'src/app/services/skills.service';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ModalSkillsCandidateComponent } from 'src/app/components/modal-skills-candidate/modal-skills-candidate.component';
+import { ConfirmationDialogComponent } from 'src/app/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -9,9 +12,9 @@ import { LogLevel, LoggerService } from 'src/app/services/logger.service';
   styleUrls: ['./skills-form.component.scss']
 })
 /**
- * Component containing the skillsSheet creation form.
- * @param skillsService service handling back-end communication and data
- */
+* Component containing the skillsSheet creation form.
+* @param skillsService service handling back-end communication and data
+*/
 export class SkillsFormComponent implements OnInit {
 
   lastModificationsArray: any[];
@@ -33,7 +36,9 @@ export class SkillsFormComponent implements OnInit {
   skillsChart = Chart;
   softSkillsChart = Chart;
 
-  constructor(private skillsService: SkillsService) { }
+  showPassToConsultant: boolean = true;
+
+  constructor(private skillsService: SkillsService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.skillsArray = this.skillsService.skillsArray;
@@ -48,23 +53,42 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /**
-   * Calls skills service to save current skillsSheet
-   */
+  * Calls skills service to save current skillsSheet
+  */
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
   }
 
   /**
-   * Pass a candidate to consultant, update form
-   */
+  * Pass a candidate to consultant, update form
+  */
   passToConsultant() {
-    this.formItems = this.skillsService.consultantFormItems;
+    let dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: false
+    });
+    dialogRef.componentInstance.dialogMessage = "Confirmez-vous le passage de " + this.skillsSheet.NomPersonne + " " + this.skillsSheet.PrenomPersonne + " du statut de candidat à celui de consultant ?";
+    dialogRef.componentInstance.dialogTitle = "Confirmation";
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.updatePersonStatus();
+      }
+      dialogRef = null;
+    });
   }
 
   /**
-   * Function called when an event is received from ArraySkillsComponent
-   * @param  $skillType 'skills' or 'softSkills'
+   * Do changes when passing from applicant to consultant : update form and send change to server with skillsService
    */
+  updatePersonStatus() {
+    this.formItems = this.skillsService.consultantFormItems;
+    this.showPassToConsultant = false;
+  }
+
+  /**
+  * Function called when an event is received from ArraySkillsComponent
+  * @param  $skillType 'skills' or 'softSkills'
+  */
   receiveMessage($skillType) {
     switch($skillType) {
       case('skills') :
@@ -82,9 +106,9 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /**
-   * Get current data from skills service and updates the matrix
-   * @param  skillType 'skills' or 'softSkills'
-   */
+  * Get current data from skills service and updates the matrix
+  * @param  skillType 'skills' or 'softSkills'
+  */
   updateChartSkills(skillType) {
     let skillsLabels: string[] = [];
     let skillsData: string[] = [];
@@ -117,12 +141,12 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /**
-   * Create a radar chart (skills matrix)
-   * @param  labels    labels to display on the chart
-   * @param  data      data for the chart
-   * @param  elementId 'canvasSkills' or 'canvasSoftSkills'
-   * @return           a radar chart
-   */
+  * Create a radar chart (skills matrix)
+  * @param  labels    labels to display on the chart
+  * @param  data      data for the chart
+  * @param  elementId 'canvasSkills' or 'canvasSoftSkills'
+  * @return           a radar chart
+  */
   createOrUpdateChart(labels, data, elementId) {
     return new Chart(elementId, {
       type: 'radar',
@@ -154,5 +178,19 @@ export class SkillsFormComponent implements OnInit {
         maintainAspectRatio: false
       }
     });
+  }
+
+  /**
+   * Create a new applicant with his skillsSheet
+   * Temporary function here, will be in header menu or home page
+   */
+  createCandidateModal() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
+
+    this.skillsService.createNewSkillsSheet(dialogRef);
   }
 }

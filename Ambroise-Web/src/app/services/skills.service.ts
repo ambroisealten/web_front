@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { ModalSkillsCandidateComponent } from '../components/modal-skills-candidate/modal-skills-candidate.component';
+import { MatDialogRef } from '@angular/material';
+import { Person } from '../models/person';
+import { LoggerService, LogLevel } from './logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -151,5 +155,19 @@ export class SkillsService {
    */
   updateSoftSkills(newSoftSkillsArray) {
     this.softSkillsArray = newSoftSkillsArray;
+  }
+
+  /**
+   * Create new Person and its skillsSheet
+   * @param  dialogRef dialog of creation sending data on submit
+   */
+  createNewSkillsSheet(dialogRef: MatDialogRef<ModalSkillsCandidateComponent, any>) {
+    let p:  Person;
+
+    dialogRef.afterClosed().subscribe(
+      data => LoggerService.log(data[1], LogLevel.DEBUG)
+    );
+
+    LoggerService.log("Dialog output:" + p, LogLevel.DEBUG);
   }
 }

@@ -2,7 +2,7 @@
 
 <div class="currentSheetInfo">
   <p> {{ skillsSheet.NameOfFiche }} - {{ skillsSheet.NomPersonne }} {{ skillsSheet.PrenomPersonne }} ({{ skillsSheet.StatutPersonne }})</p>
-  <mat-slide-toggle color="primary" (change)="passToConsultant()"> Passage consultant </mat-slide-toggle>
+  <div *ngIf="showPassToConsultant"><button mat-raised-button color="primary" class="toConsultantButton" (click)="passToConsultant()"> Passage consultant </button></div>
 </div>
 
 <div class="grid-container">
@@ -47,7 +47,7 @@
 
   <div class="matrix">
     <div class="chart-container">
-      <canvas id="canvasSkills">{{ chart }}</canvas>
+      <canvas id="canvasSkills"></canvas>
     </div>
    <div class="chart-container">
       <canvas id="canvasSoftSkills"></canvas>

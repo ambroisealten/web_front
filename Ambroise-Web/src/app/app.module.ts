@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { DemoMaterialModule } from './material-modules';
 import { SearchAutoComponent } from './content/search-auto/search-auto.component';
 import { SearchService } from './content/services/search.service';
-import { MatAutocompleteModule, MatInputModule, MatNativeDateModule, MatIconModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
@@ -20,6 +20,8 @@ import { HeaderService } from './services/header.services';
 import { SkillsFormComponent } from './content/skills-form/skills-form.component';
 import { ArraySkillsUpdatesComponent } from './components/array-skillsUpdates/array-skillsUpdates.component';
 import { ArraySkillsComponent } from './components/array-skills/array-skills.component';
+import { ModalSkillsCandidateComponent } from './components/modal-skills-candidate/modal-skills-candidate.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 
 const appRoutes: Routes = [
   { path:'content', component: PageContentComponent},
@@ -40,7 +42,9 @@ const appRoutes: Routes = [
     SignupComponent,
     SkillsFormComponent,
     ArraySkillsUpdatesComponent,
-    ArraySkillsComponent
+    ArraySkillsComponent,
+    ModalSkillsCandidateComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -52,13 +56,15 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
     ),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [
     SearchService,
     AuthGuard,
     HeaderService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalSkillsCandidateComponent, ConfirmationDialogComponent]
 })
 export class AppModule { }
