@@ -1,10 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import * as sha512 from 'js-sha512';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { reject, resolve } from 'q';
 import { HeaderService } from 'src/app/services/header.services';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
@@ -44,11 +42,6 @@ export class LoginComponent implements OnInit {
     if (this.validationForm.invalid) {
       return;
     }
-    return new Promise(
-      (resolve, reject) => {
-        setTimeout(() => resolve(1), 5000);
-        let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
-          .subscribe(token => {
 
     this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
 
@@ -76,7 +69,4 @@ export class LoginComponent implements OnInit {
     //  de l'utilisateur (Mission par défaut)
     this.router.navigate(['content']);
   }
-
-
-
 }
