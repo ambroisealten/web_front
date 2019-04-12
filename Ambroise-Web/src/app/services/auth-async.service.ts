@@ -3,7 +3,10 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+<<<<<<< HEAD
 import { LogLevel, LoggerService } from './logger.service';
+=======
+>>>>>>> header_asynch_kge
 
 @Injectable()
 export class AuthAsyncService {
@@ -18,8 +21,16 @@ export class AuthAsyncService {
             //pswd: sha512.sha512(this.userPswd),
             pswd: formInputPswd
         }
+<<<<<<< HEAD
         LoggerService.log(postParams.mail + ":::" + postParams.pswd, LogLevel.DEBUG);
 
         return this.httpClient.post('http://localhost:8080/login', postParams)
     }
 }
+=======
+        console.log(postParams.mail + ":::" + postParams.pswd);
+
+        return this.httpClient.post('http://localhost:8080/async', postParams)
+    }
+}
+>>>>>>> header_asynch_kge

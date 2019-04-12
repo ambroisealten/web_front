@@ -9,14 +9,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
+<<<<<<< HEAD
 import { LoginComponent } from './login/login/login.component';
 import { SignupComponent } from './login/signup/signup.component';
+=======
+>>>>>>> header_asynch_kge
 import { PageContentComponent } from './content/page-content/page-content.component';
-import { PageLoginComponent } from './content/page-login/page-login.component';
 import { HeaderUserComponent } from './header/header-user/header-user.component';
 import { HeaderMenuComponent } from './header/header-menu/header-menu.component';
-import { AuthGuard } from './services/auth-guard.service';
 import { HeaderService } from './services/header.services';
+<<<<<<< HEAD
 import { SkillsFormComponent } from './content/skills-form/skills-form.component';
 import { ArraySkillsUpdatesComponent } from './components/array-skillsUpdates/array-skillsUpdates.component';
 import { ArraySkillsComponent } from './components/array-skills/array-skills.component';
@@ -32,16 +34,25 @@ const appRoutes: Routes = [
   { path:'skills', component: PageSkillsHomeComponent},
   { path: 'login', component: LoginComponent },
   { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
+=======
+import { AuthService } from './services/auth.service';
+import { LoginComponent } from './login/login/login.component';
+
+const appRoutes: Routes = [
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent},
+  { path:'content', component:PageContentComponent},
+>>>>>>> header_asynch_kge
 ];
 @NgModule({
   declarations: [
     AppComponent,
     SearchAutoComponent,
     HeaderUserComponent,
-    PageLoginComponent,
     PageContentComponent,
     HeaderMenuComponent,
     LoginComponent,
+<<<<<<< HEAD
     SignupComponent,
     SkillsFormComponent,
     ArraySkillsUpdatesComponent,
@@ -49,6 +60,8 @@ const appRoutes: Routes = [
     ModalSkillsCandidateComponent,
     ConfirmationDialogComponent,
     PageSkillsHomeComponent
+=======
+>>>>>>> header_asynch_kge
   ],
   imports: [
     BrowserModule,
@@ -65,9 +78,14 @@ const appRoutes: Routes = [
   ],
   providers: [
     SearchService,
+<<<<<<< HEAD
     AuthGuard,
     HeaderService,
     SkillsSheetService
+=======
+    HeaderService,
+    AuthService,
+>>>>>>> header_asynch_kge
   ],
   bootstrap: [AppComponent],
   entryComponents: [ModalSkillsCandidateComponent, ConfirmationDialogComponent]

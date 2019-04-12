@@ -21,7 +21,7 @@ h1 {
   color: var(--ALTENBlue);
   font-weight: bolder;
 }
-.form input {
+.form input[type=email], input[type=password] {
   font-family: "Roboto", sans-serif;
   outline: 0;
   background: #f2f2f2;
@@ -32,6 +32,22 @@ h1 {
   box-sizing: border-box;
   font-size: 1.2em;
 }
+
+.form input[type=submit] {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: var(--ALTENBlue);
+    width: 100%;
+    border: 0;
+    padding: 3%;
+    color: #FFFFFF;
+    font-size: 1em;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+}
+
 .form .message {
   margin: 15px 0 0;
   color: var(--ALTENDarkGray);
@@ -51,23 +67,15 @@ h1 {
   margin: 50px auto;
   text-align: center;
 }
-.form button {
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  outline: 0;
-  background: var(--ALTENBlue);
-  width: 100%;
-  border: 0;
-  padding: 3%;
-  color: #FFFFFF;
-  font-size: 1em;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.form button:hover,.form button:active,.form button:focus {
+
+.form input[type=submit]:hover,.form [type=submit]:active,.form [type=submit]:focus {
   background: var(--ALTENDarkBlue);
 }
+
+/*.form button:hover,.form button:active,.form button:focus {
+    background: var(--ALTENDarkBlue);
+  }*/
+
 body {
   background: -webkit-linear-gradient(right, #76b852, #8DC26F);
   background: -moz-linear-gradient(right, #76b852, #8DC26F);
@@ -79,7 +87,7 @@ body {
 }
 /* set background color */
 :host {
-  background-color: var(--ALTENBlue);
+  background-color: var(--ALTENLightGray);
   position: absolute;
   left: 0;
   right: 0;

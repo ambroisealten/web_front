@@ -1,16 +1,22 @@
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { LoggerService, LogLevel } from './logger.service';
+import { timeout } from 'rxjs/operators';
 
 @Injectable()
 export class HeaderService {
 
     private currentModule: String;
-    test: any;
+    private defaultModule = 'Missions';
+    private menusJSON: any;
+
+    private menuReceptionState = new BehaviorSubject(undefined);
+    menuReceptionObservable = this.menuReceptionState.asObservable();
 
 
     constructor(private httpClient: HttpClient) {
-        this.currentModule = "Missions";
+        this.currentModule = this.defaultModule;
     }
 
     setCurrentModuleFromService(currentModule: String) {
@@ -21,38 +27,31 @@ export class HeaderService {
         return this.currentModule;
     }
 
-    getModulesFromService(callback) {
+    init() {
+
         let token = window.sessionStorage.getItem("bearerToken");
+        LoggerService.log("Appel de : init()", LogLevel.DEBUG);
 
         let headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
         });
-
         let options = { headers: headers };
+
         this.httpClient
-            .get('http://localhost:8080/configMenu' , options) //En attente du WebService Login pour la récuperation du token
-            .subscribe(data => {
-                callback(JSON.stringify(data));
-            }, error => {
-                console.log(error);// Error getting the data
+            .get('http://localhost:8080/configMenu', options)
+            .pipe(timeout(5000))
+            .toPromise()
+            .then(headerMenus => {
+                if (headerMenus != undefined) {
+                    let menusJSON = JSON.parse(JSON.stringify(headerMenus));
+                    this.menuReceptionState.next(menusJSON);
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                //  TO-DO : traitement des différentes erreurs timeout + HTTP
             });
+
     }
-
-    login() { //TO-DELETE : TO-ADAPT
-        let postParams = {
-            mail: 'abee@gmail.com',
-            pswd: 'pass',
-        }
-
-        this.httpClient.post('http://localhost:8080/login', postParams).subscribe(data => {
-            console.log(data);
-            window.sessionStorage.setItem("bearerToken", JSON.parse(JSON.stringify(data))["token"]);
-        }, error => {
-            console.log(error);// Error getting the data
-        });
-
-        console.log('mail : '+postParams.mail+'pswd : '+postParams.pswd);
-    }
-
 }

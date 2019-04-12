@@ -2,9 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import * as sha512 from 'js-sha512';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { reject, resolve } from 'q';
+import { HeaderService } from 'src/app/services/header.services';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-aync',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -17,11 +23,12 @@ export class LoginComponent implements OnInit {
   userEmail: string;
   userPswd: string;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private httpClient: HttpClient, private formBuilder: FormBuilder,
+    private authService: AuthService, private headerService: HeaderService, private router: Router) { }
 
   ngOnInit() {
     // init validators
-    this.validationForm =this.formBuilder.group({
+    this.validationForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
       password: ['', [Validators.required]]
     });
@@ -30,29 +37,46 @@ export class LoginComponent implements OnInit {
   // convenience getter for easy access to form fields
   get validationFormControls() { return this.validationForm.controls; }
 
-  /**
-    Sends http request with email and password when login form is submitted
-  **/
-  onConnect() {
-
+  onSubmit() {
     this.submitted = true;
 
     // stop here if form is invalid
     if (this.validationForm.invalid) {
       return;
     }
+    return new Promise(
+      (resolve, reject) => {
+        setTimeout(() => resolve(1), 5000);
+        let sub = this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
+          .subscribe(token => {
 
-    // init values with form
-    this.userEmail = this.validationForm.value.email;
-    this.userPswd = this.validationForm.value.password;
+    this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
 
-    // password hash with sha512 before POST request
-    let postParams = {
-      mail: this.userEmail,
-      pswd: sha512.sha512(this.userPswd),
-    }
+    this.authService.tokenReceptionObservable.subscribe(tokenReceived => {
 
-    /** TODO call login Web service with postParams **/
+      LoggerService.log("token received : " + tokenReceived, LogLevel.DEBUG);
+      if (tokenReceived) {
+
+        this.headerService.init();
+
+        this.headerService.menuReceptionObservable.subscribe(menusReceived => {
+          LoggerService.log("menus received : " + menusReceived, LogLevel.DEBUG);
+          if (menusReceived) {
+            this.redirectToHomePage();
+          }
+        })
+      }
+    })
+
   }
+
+  redirectToHomePage() {
+    //  TO-DO : Creer un service de redirection
+    //  changer la redirection après connection en fonction du module de préférence
+    //  de l'utilisateur (Mission par défaut)
+    this.router.navigate(['content']);
+  }
+
+
 
 }

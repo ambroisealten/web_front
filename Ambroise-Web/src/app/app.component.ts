@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { LoggerService } from './services/logger.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -11,8 +11,9 @@ export class AppComponent {
   title = 'Ambroise-Web';
 
   constructor(){
+
+    //  Récupération de la variable d'environement "globalLogType" pour initialiser
+    //  le LoggerService
     LoggerService.parseLogType(environment.globalLogType);
-    LoggerService.log('PROD', LogLevel.PROD);
-    LoggerService.log('JOKE', LogLevel.JOKE);
   }
 }
