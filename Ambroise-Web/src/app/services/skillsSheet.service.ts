@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { ModalSkillsCandidateComponent } from '../components/modal-skills-candidate/modal-skills-candidate.component';
 import { MatDialogRef } from '@angular/material';
 import { Person } from '../models/person';
 import { LoggerService, LogLevel } from './logger.service';
+import { timeout } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 /**
- * Service to handle skillsSheet creation and update
- */
-export class SkillsService {
+* Service to handle skillsSheet creation and update
+*/
+export class SkillsSheetService {
 
   /**
-   * Temporary hardcoded json for data
-   */
+  * Temporary hardcoded json for data
+  */
   ficheCompetence =  [
     {
       NameOfFiche: "010718MM",
@@ -123,51 +124,75 @@ export class SkillsService {
     }
   ];
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
+
+  private personInformation = new BehaviorSubject(undefined);
+  personObservable = this.personInformation.asObservable();
+
+  checkPersonExistence(personMail: String, isApplicant: boolean) {
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    let urlRequest :string;
+    if(isApplicant)
+      urlRequest = 'http://localhost:8080/applicant/' + personMail;
+    else
+      urlRequest = 'http://localhost:8080/consultant/' + personMail;
+
+    this.httpClient
+        .get(urlRequest, options)
+        .pipe(timeout(5000))
+        .toPromise()
+        .then(personData => {
+          if(personData != undefined) {
+            this.personInformation.next(personData); // person information from DB
+          }
+        })
+        .catch(error => {
+          switch(error.status) {
+            case 404 :
+              this.personInformation.next(false); // person not found in DB
+              break;
+            default:
+              LoggerService.log('New error : ' + error, LogLevel.DEBUG); // TODO add errors in switch/case
+              break;
+          }
+    });
+  }
 
   /**
-   * Get skills for current skillsSheet
-   * @return skills array
-   */
+  * Get skills for current skillsSheet
+  * @return skills array
+  */
   getSkills() {
     return this.skillsArray;
   }
 
   /**
-   * Get soft skills for current skillsSheet
-   * @return soft skills array
-   */
+  * Get soft skills for current skillsSheet
+  * @return soft skills array
+  */
   getSoftSkills() {
     return this.softSkillsArray;
   }
 
   /**
-   * Update skills for current skillsSheet
-   * @param newSkillsArray
-   */
+  * Update skills for current skillsSheet
+  * @param newSkillsArray
+  */
   updateSkills(newSkillsArray) {
     this.skillsArray = newSkillsArray;
   }
 
   /**
-   * Update soft skills for current skillsSheet
-   * @param newSoftSkillsArray
-   */
+  * Update soft skills for current skillsSheet
+  * @param newSoftSkillsArray
+  */
   updateSoftSkills(newSoftSkillsArray) {
     this.softSkillsArray = newSoftSkillsArray;
-  }
-
-  /**
-   * Create new Person and its skillsSheet
-   * @param  dialogRef dialog of creation sending data on submit
-   */
-  createNewSkillsSheet(dialogRef: MatDialogRef<ModalSkillsCandidateComponent, any>) {
-    let p:  Person;
-
-    dialogRef.afterClosed().subscribe(
-      data => LoggerService.log(data[1], LogLevel.DEBUG)
-    );
-
-    LoggerService.log("Dialog output:" + p, LogLevel.DEBUG);
   }
 }

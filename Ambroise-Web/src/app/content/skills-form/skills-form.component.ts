@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SkillsService } from 'src/app/services/skills.service';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { ModalSkillsCandidateComponent } from 'src/app/components/modal-skills-candidate/modal-skills-candidate.component';
+import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from 'src/app/components/confirmation-dialog/confirmation-dialog.component';
+import { SkillsSheetService } from 'src/app/services/skillsSheet.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -13,7 +12,7 @@ import { ConfirmationDialogComponent } from 'src/app/components/confirmation-dia
 })
 /**
 * Component containing the skillsSheet creation form.
-* @param skillsService service handling back-end communication and data
+* @param skillsSheetService service handling back-end communication and data
 */
 export class SkillsFormComponent implements OnInit {
 
@@ -38,14 +37,14 @@ export class SkillsFormComponent implements OnInit {
 
   showPassToConsultant: boolean = true;
 
-  constructor(private skillsService: SkillsService, private dialog: MatDialog) { }
+  constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.skillsArray = this.skillsService.skillsArray;
-    this.softSkillsArray = this.skillsService.softSkillsArray;
-    this.lastModificationsArray = this.skillsService.lastModificationsArray;
-    this.formItems = this.skillsService.candidateFormItems;
-    this.skillsSheet = this.skillsService.ficheCompetence[0];
+    this.skillsArray = this.skillsSheetService.skillsArray;
+    this.softSkillsArray = this.skillsSheetService.softSkillsArray;
+    this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
+    this.formItems = this.skillsSheetService.candidateFormItems;
+    this.skillsSheet = this.skillsSheetService.ficheCompetence[0];
 
     // init charts
     this.updateChartSkills('skills');
@@ -78,10 +77,10 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /**
-   * Do changes when passing from applicant to consultant : update form and send change to server with skillsService
+   * Do changes when passing from applicant to consultant : update form and send change to server with skillsSheetService
    */
   updatePersonStatus() {
-    this.formItems = this.skillsService.consultantFormItems;
+    this.formItems = this.skillsSheetService.consultantFormItems;
     this.showPassToConsultant = false;
   }
 
@@ -116,7 +115,7 @@ export class SkillsFormComponent implements OnInit {
     switch(skillType) {
       case('skills') :
       {
-        this.skillsService.getSkills().forEach(function(skill) {
+        this.skillsSheetService.getSkills().forEach(function(skill) {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
@@ -125,7 +124,7 @@ export class SkillsFormComponent implements OnInit {
       }
       case('softSkills'):
       {
-        this.skillsService.getSoftSkills().forEach(function(skill) {
+        this.skillsSheetService.getSoftSkills().forEach(function(skill) {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
@@ -178,19 +177,5 @@ export class SkillsFormComponent implements OnInit {
         maintainAspectRatio: false
       }
     });
-  }
-
-  /**
-   * Create a new applicant with his skillsSheet
-   * Temporary function here, will be in header menu or home page
-   */
-  createCandidateModal() {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.autoFocus = true;
-
-    const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
-
-    this.skillsService.createNewSkillsSheet(dialogRef);
   }
 }

@@ -22,11 +22,14 @@ import { ArraySkillsUpdatesComponent } from './components/array-skillsUpdates/ar
 import { ArraySkillsComponent } from './components/array-skills/array-skills.component';
 import { ModalSkillsCandidateComponent } from './components/modal-skills-candidate/modal-skills-candidate.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { PageSkillsHomeComponent } from './content/page-skills-home/page-skills-home.component';
+import { SkillsSheetService } from './services/skillsSheet.service';
 
 const appRoutes: Routes = [
   { path:'content', component: PageContentComponent},
   { path:'', redirectTo: '/login', pathMatch: 'full'},
-  { path:'skills', component: SkillsFormComponent},
+  { path:'skillsSheet', component: SkillsFormComponent},
+  { path:'skills', component: PageSkillsHomeComponent},
   { path: 'login', component: LoginComponent },
   { path: 'c2lnbnVw', component: SignupComponent } // path 'c2lnbnVw' corresponds to signup
 ];
@@ -44,7 +47,8 @@ const appRoutes: Routes = [
     ArraySkillsUpdatesComponent,
     ArraySkillsComponent,
     ModalSkillsCandidateComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    PageSkillsHomeComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +66,8 @@ const appRoutes: Routes = [
   providers: [
     SearchService,
     AuthGuard,
-    HeaderService
+    HeaderService,
+    SkillsSheetService
   ],
   bootstrap: [AppComponent],
   entryComponents: [ModalSkillsCandidateComponent, ConfirmationDialogComponent]

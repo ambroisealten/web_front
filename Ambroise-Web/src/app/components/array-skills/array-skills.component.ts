@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { SkillsService } from 'src/app/services/skills.service';
+import { SkillsSheetService } from 'src/app/services/skillsSheet.service';
 
 @Component({
   selector: 'app-array-skills',
@@ -21,7 +21,7 @@ export class ArraySkillsComponent implements OnInit {
 
   dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
 
-  constructor(private skillsService: SkillsService) { }
+  constructor(private skillsSheetService: SkillsSheetService) { }
 
   ngOnInit() {
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
@@ -75,8 +75,8 @@ export class ArraySkillsComponent implements OnInit {
    */
   updateDataSourceInService() {
     if(this.datatype == "skills")
-      this.skillsService.updateSkills(this.dataSourceArray);
+      this.skillsSheetService.updateSkills(this.dataSourceArray);
     else
-      this.skillsService.updateSoftSkills(this.dataSourceArray);
+      this.skillsSheetService.updateSoftSkills(this.dataSourceArray);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Person, PersonRole } from 'src/app/models/person';
 import { SkillsSheet } from 'src/app/models/skillsSheet';
 
@@ -56,14 +56,8 @@ export class ModalSkillsCandidateComponent implements OnInit {
     let personRole = this.role ? PersonRole.APPLICANT : PersonRole.CONSULTANT;
 
     let newPerson: Person = new Person(this.lastname, this.firstname, this.email, personRole);
-
-    let skillsSheet: SkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
-
-    let result: any[] = [];
-    result.push(newPerson);
-    result.push(skillsSheet);
-
-    this.dialogRef.close(result);
+    
+    this.dialogRef.close(newPerson);
   }
 
 }
