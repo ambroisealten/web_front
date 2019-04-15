@@ -1,0 +1,56 @@
+<app-header-user></app-header-user>
+
+<div class="currentSheetInfo">
+  <p> {{ skillsSheet.NameOfFiche }} - {{ skillsSheet.NomPersonne }} {{ skillsSheet.PrenomPersonne }} ({{ skillsSheet.StatutPersonne }})</p>
+  <div *ngIf="showPassToConsultant"><button mat-raised-button color="primary" class="toConsultantButton" (click)="passToConsultant()"> Passage consultant </button></div>
+</div>
+
+<div class="grid-container">
+  <div class="infoForm">
+    <mat-form-field *ngFor="let item of formItems">
+      <mat-label> {{ item.label }}</mat-label>
+      <input [type]="item.type" matInput >
+    </mat-form-field>
+
+    <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
+
+    <mat-form-field style="margin-top: 2%;">
+      <mat-label>Avis</mat-label>
+      <mat-select>
+        <mat-optgroup label="ED">
+          <mat-option value>A</mat-option>
+          <mat-option value>B</mat-option>
+          <mat-option value>C</mat-option>
+          <mat-option value>D</mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="EP">
+          <mat-option value>A</mat-option>
+          <mat-option value>B</mat-option>
+          <mat-option value>C</mat-option>
+          <mat-option value>D</mat-option>
+        </mat-optgroup>
+        <mat-option value>NOK</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput placeholder="Commentaire" maxlength="110"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="skillsArrays">
+    <app-array-skills (messageEvent)="receiveMessage($event)" class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
+    <app-array-skills (messageEvent)="receiveMessage($event)" class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
+    <button mat-raised-button>Enregistrer la fiche</button>
+  </div>
+
+
+  <div class="matrix">
+    <div class="chart-container">
+      <canvas id="canvasSkills"></canvas>
+    </div>
+   <div class="chart-container">
+      <canvas id="canvasSoftSkills"></canvas>
+    </div>
+  </div>
+</div>

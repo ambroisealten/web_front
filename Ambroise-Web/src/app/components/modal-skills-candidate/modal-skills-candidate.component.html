@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Création d'une nouvelle fiche</h2>
+
+<mat-dialog-content>
+    <mat-form-field>
+      <input matInput placeholder="Nom" [ngModel]="lastname" (ngModelChange)="lastnameChanged($event)">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Prénom" [ngModel]="firstname" (ngModelChange)="firstnameChanged($event)">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Email" [(ngModel)]="email">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Nom de la fiche" disabled [value]="skillsSheetName">
+    </mat-form-field>
+
+    <mat-slide-toggle color="primary" [(ngModel)]="role" > Est candidat </mat-slide-toggle>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button color="warn" (click)="cancel()">Annuler</button>
+  <button mat-stroked-button color="primary" (click)="save()">Créer la fiche</button>
+</mat-dialog-actions>

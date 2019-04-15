@@ -1,0 +1,91 @@
+#modules{
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+    transition : linear .2s;
+}
+
+#moduleHome{
+    background-color: var(--ALTENWhiteModuleHome);
+    transition: linear .2s;
+}
+
+.otherModules{
+    width: 100%;
+    display : inline;
+    background-color: var(--ALTENWhiteModule);
+    margin: auto;
+    text-align: center;
+    transition: linear .2s;
+}
+
+.otherModules:hover, #moduleHome:hover{
+    cursor: pointer; 
+}
+
+.surheader nav {
+    background-color: var(--ALTENBlue);
+    display: grid;
+    grid-template-columns: 10fr 1fr;
+    flex-direction: column;
+}
+
+#account{
+    width: 40%;
+    margin-left: 50%;
+    min-width: 30px;
+}
+
+#logo{
+    padding : 0.1%;
+    min-height: 85px;
+    width: 4%;
+    min-width: 50px;
+    position: absolute;
+    left: 0;
+    z-index: 5;
+    background-color: rgba(255, 255, 255, 0.95); 
+}
+
+@media (max-width :400px){
+    #logo{
+        margin-top: 15%;
+        margin-left: 2%;
+    }
+}
+
+@media (min-width : 400px) and (max-width:600px){
+    #logo{
+        margin-top: 10%;
+        margin-left: 2%;
+    }
+}
+
+@media (min-width:600px) and (max-width:900px) {
+    #logo{
+        margin-top: 6%;
+        margin-left: 1.7%;
+    }
+}
+
+@media (min-width:900px) and (max-width:1200px){
+    #logo{
+        margin-top: 4.5%;
+        margin-left: 1.4%;
+    }
+} 
+
+@media (min-width:1200px) and (max-width:1500px){
+    #logo{
+        margin-top: 3.3%;
+        margin-left: 1.2%;
+    }
+
+}
+
+@media (min-width:1500px) {
+    #logo{
+        margin-top: 3%;
+        margin-left: 1%;
+    }
+}

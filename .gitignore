@@ -159,3 +159,4 @@ target/
 .history
 
 # End of https://www.gitignore.io/api/git,java,angular,eclipse,java-web,visualstudiocode
+package-lock.json

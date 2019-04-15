@@ -1,0 +1,6 @@
+<h1 md-dialog-title>{{ dialogTitle }}</h1>
+<div md-dialog-content>{{ dialogMessage }}</div>
+<div md-dialog-actions class="buttons">
+  <button mat-flat-button class="confirmButton" color="primary" (click)="dialogRef.close(true)">Confirmer</button>
+  <button mat-button class="cancelButton" (click)="dialogRef.close(false)">Annuler</button>
+</div>

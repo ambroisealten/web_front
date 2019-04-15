@@ -1,0 +1,65 @@
+.currentSheetInfo {
+  display: grid;
+  grid-template-columns: 8fr 2fr;
+  margin: 0 2% 0 2%;
+  text-align: left;
+}
+
+.currentSheetInfo button {
+  margin: auto;
+}
+
+.currentSheetInfo p {
+    margin: 0;
+}
+
+.toConsultantButton {
+  background-color: var(--ALTENBlue);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 2%;
+  width: 100%;
+}
+
+.infoForm {
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+  border-right: 1px solid var(--ALTENBlue);
+}
+
+.mat-form-field {
+  font-size: 80%;
+}
+
+.skillsArrays {
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+  text-align: left;
+  border-right: 1px solid var(--ALTENBlue);
+}
+
+.skillsArray, .softSkillsArray {
+  margin-bottom: 5%;
+}
+
+.mat-raised-button {
+  background-color: var(--ALTENBlue);
+  color: white;
+  vertical-align: bottom;
+}
+
+.matrix {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-container {
+  width: 200px;
+  height: 300px;
+}
