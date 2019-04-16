@@ -7,8 +7,7 @@ import { PageSkillsHomeComponent } from './components/accueil/page-skills-home/p
 const compRoutes: Routes = [
   { path: '', redirectTo:'skills', pathMatch:'full' },
   { path:'skills', children: [
-    { path: '', redirectTo:'home', pathMatch:'full' },
-    { path:'home', component: PageSkillsHomeComponent },
+    { path: '',  component: PageSkillsHomeComponent },
     { path:'skillsheet', component: SkillsFormComponent }
   ]}
 ];

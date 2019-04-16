@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderService } from '../../services/header.services' ; 
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { Menu } from '../../models/menu';
+import { CurrentModuleService } from '../../services/currentModule.services';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-header-menu',
@@ -9,24 +12,36 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 })
 export class HeaderMenuComponent implements OnInit {
 
-    modules: any;
-    private done = false
+    modules: Menu[] ;
+    currentModule: string = 'Missions'; 
+    done: boolean ;
 
-    constructor(private headerService: HeaderService) { }
+    constructor(private headerService: HeaderService,
+        private currentModuleService: CurrentModuleService) { }
 
     ngOnInit() {
-        this.headerService.init();
-        this.headerService.menuReceptionObservable.subscribe(menusReceived => {
-            LoggerService.log("menus received in header-menu: " + menusReceived.modules, LogLevel.DEBUG);
-            if (menusReceived != undefined && !this.done) {
-                this.modules = menusReceived.modules;
-                this.done=true;
-            }
-        })
+        this.headerService.menuReceptionObservable.subscribe(menusReceived => this.setModule(menusReceived)) ; 
+        this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
     }
 
-    getCurrentModule() {
-        return this.headerService.getCurrentModuleFromService();
+    setModule(menu: Menu[]){
+        if(menu != undefined){
+            this.done = true ; 
+            this.modules = menu['modules'] ; 
+        }
     }
+
+    setCurrentModule(currentModule: string){
+        this.currentModule = currentModule ; 
+    }
+
+    getCurrentModule():string{
+        return this.currentModule ; 
+    }
+
+    isDone():boolean{
+        return this.done ;
+    }
+
 
 }

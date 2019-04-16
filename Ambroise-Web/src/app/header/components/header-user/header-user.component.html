@@ -5,12 +5,14 @@
             <div class="collapse navbar-collapse" class="headNavbar">
                 <div id="modules">
                     <p></p>
-                    <ng-container *ngFor="let module of modules">
-                        <a class="nav-link text-light" *ngIf="module.name === getCurrentModule()" id="moduleHome"
-                            (click)="setCurrentModule($event)">{{ module.name }}</a>
-                        <ng-container #elseBlock>
-                            <a class="nav-link text-light otherModules" *ngIf="module.name != getCurrentModule()"
-                                (click)="setCurrentModule($event)">{{ module.name }}</a>
+                    <ng-container *ngIf="isDone()">
+                            <ng-container *ngFor="let module of modules">
+                            <a class="nav-link text-light" *ngIf="module.label === getCurrentModule()" id="moduleHome"
+                                (click)="setCurrentModule($event.target.innerText)">{{ module.label }}</a>
+                            <ng-container #elseBlock>
+                                <a class="nav-link text-light otherModules" *ngIf="module.label!= getCurrentModule()"
+                                (click)="setCurrentModule($event.target.innerText)">{{ module.label}}</a>
+                            </ng-container>
                         </ng-container>
                     </ng-container>
                     <p></p>
@@ -19,6 +21,7 @@
             <img src="assets/images/accountWhite.png" alt="Lien vers la page de connexion" id="account"
                 (click)="accountClick()" />
         </nav>
+        
     </div>
     <app-header-menu></app-header-menu>
 </div>

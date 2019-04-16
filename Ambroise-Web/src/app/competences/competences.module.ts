@@ -1,5 +1,5 @@
 //  MODULES NEEDED
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -19,6 +19,7 @@ import { SkillsFormComponent } from './components/skillsSheet/skills-form/skills
 //  FEATURE MODULE NEEDED
 import { HeaderModule } from '../header/header.module';
 import { SkillsSheetService } from './services/skillsSheet.service';
+import { IsNotLoginService } from '../services/isNotLogin.service';
 
 
 @NgModule({
@@ -50,4 +51,6 @@ import { SkillsSheetService } from './services/skillsSheet.service';
     SkillsSheetService
   ]
 })
-export class CompetencesModule { }
+export class CompetencesModule { 
+
+}

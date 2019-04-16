@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { timeout } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 /**
@@ -134,9 +135,9 @@ export class SkillsSheetService {
 
     let urlRequest :string;
     if(isApplicant)
-      urlRequest = 'http://localhost:8080/applicant/' + personMail;
+      urlRequest = environment.serverAddress + '/applicant/' + personMail;
     else
-      urlRequest = 'http://localhost:8080/consultant/' + personMail;
+      urlRequest = environment.serverAddress + '/consultant/' + personMail;
 
     this.httpClient
         .get(urlRequest, options)

@@ -3,21 +3,9 @@ import { Title } from '@angular/platform-browser';
 import { Router, Navigation } from '@angular/router';
 import { HeaderService } from '../../services/header.services' ; 
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-
-export class Menu {
-
-  name: string;
-  routerLink: string;
-
-  constructor(name: string, routerLink: string) {
-    this.name = name;
-    this.routerLink = routerLink;
-  }
-
-  toString() {
-    return "label : " + this.name + "routerlink : " + this.routerLink;
-  }
-}
+import { Menu } from '../../models/menu' ; 
+import { CurrentModuleService } from '../../services/currentModule.services';
+import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
 
 @Component({
   selector: 'app-header-user',
@@ -25,36 +13,50 @@ export class Menu {
   styleUrls: ['./header-user.component.scss']
 })
 export class HeaderUserComponent implements OnInit {
+
   private modules: Menu[] = [];
-  private done = false;
+  currentModule: string = 'Missions'; 
+  done = false;
 
   constructor(private titleService: Title, private router: Router,
-    private headerService: HeaderService) { }
+    private headerService: HeaderService, private currentModuleService: CurrentModuleService,
+    private isNotLoginService: IsNotLoginService) { }
 
   ngOnInit() {
-    this.headerService.init();
-    this.headerService.menuReceptionObservable.subscribe(menusReceived => {
-      LoggerService.log("menus received in header-user : " + menusReceived, LogLevel.DEBUG);
+    this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
+    //this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
+  }
+
+  setModule(menusReceived: Menu[]){
       if (menusReceived != undefined && !this.done) {
-        this.initModules(menusReceived);
+        this.modules = menusReceived['modules'] ; 
         this.done = true;
+        this.headerService.notifyMenusReceived(menusReceived) ; 
       }
-    })
-    this.headerService.setCurrentModuleFromService(this.headerService.getCurrentModuleFromService());
-    this.titleService.setTitle("Ambroise - " + this.getCurrentModule());
   }
 
-  setCurrentModule(event) {
-    let tmp = this.headerService.getCurrentModuleFromService();
-    this.headerService.setCurrentModuleFromService((event.target.textContent != tmp) ? event.target.textContent : tmp);
-    this.titleService.setTitle("Ambroise - " + this.headerService.getCurrentModuleFromService());
 
+  setCurrentModule(currentModule) {
+    this.currentModule = currentModule ;
+    switch(currentModule){
+      case("Missions"):
+        this.titleService.setTitle("Ambroise - Missions"); 
+        this.router.navigate(['/missions']);
+        break; 
+      case("Compétences"):
+        this.titleService.setTitle("Ambroise - Compétences"); 
+        this.router.navigate(['/skills']);
+        break;
+      case("Forum"):
+        this.titleService.setTitle("Ambroise - Forum"); 
+        this.router.navigate(['/forum']);
+        break;
+      default: 
+        break;
+    }
   }
 
-  getCurrentModule() {
-    return this.headerService.getCurrentModuleFromService();
-  }
-
+  /*
   initModules(menuJson) {
 
     for (let module of menuJson.modules) {
@@ -63,11 +65,22 @@ export class HeaderUserComponent implements OnInit {
     return this.modules;
 
   }
+  */
+
+  getCurrentModule():string{
+    return this.currentModule ;
+  }
 
   accountClick() {
     window.sessionStorage.clear();
     this.modules = [];
+    this.done = false ; 
+    this.isNotLoginService.notifyLoginOut(false) ;
     this.router.navigate(['/login']);
+  }
+
+  isDone():boolean{
+    return this.done ; 
   }
 
 }

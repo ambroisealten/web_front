@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { TokenService } from '../../services/token.service';
+import { Router, Route } from '@angular/router';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { RoutingService } from '../../services/routing.service';
+import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,12 @@ export class LoginComponent implements OnInit {
   userPswd: string;
 
   constructor(private formBuilder: FormBuilder,
-    private authService: AuthService, private router: Router) { }
+    private tokenService: TokenService, 
+    private routingService: RoutingService,
+    private router: Router,
+    private isNotLoginService: IsNotLoginService) { 
+      this.isNotLoginService.notifyLoginOut(false);
+    }
 
   ngOnInit() {
     // init validators
@@ -27,6 +34,8 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
       password: ['', [Validators.required]]
     });
+    
+    this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
   }
 
   // convenience getter for easy access to form fields
@@ -40,9 +49,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.authService.signIn(this.validationForm.value.email, this.validationForm.value.password)
-
-    this.authService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
+    this.tokenService.signIn(this.validationForm.value.email, this.validationForm.value.password) ;
 
   }
 
@@ -50,14 +57,23 @@ export class LoginComponent implements OnInit {
   isRedirect(tokenReceived: boolean){
     LoggerService.log("token received : " + tokenReceived, LogLevel.DEBUG);
     if (tokenReceived) {
-        this.redirectToHomePage() ; 
+        //this.routingService.getRoute().subscribe(routes => this.setRoutes(routes)) ; 
+        this.redirectToHomePage() ;
     }
+  }
+
+  setRoutes(routes: Route[]){
+    LoggerService.log("Routes received: " + routes, LogLevel.DEBUG);
+    this.router.resetConfig(routes) ; 
+    this.redirectToHomePage() ;
   }
 
   redirectToHomePage(){
     //  TO-DO : Creer un service de redirection
     //  changer la redirection après connection en fonction du module de préférence
     //  de l'utilisateur (Mission par défaut)
-    this.router.navigate(['skills']);
+    this.isNotLoginService.notifyLoginOut(true) ; 
+    this.tokenService.notifyTokenReception(false) ; 
+    this.router.navigate(['skills/skillsheet']);
   }
 }

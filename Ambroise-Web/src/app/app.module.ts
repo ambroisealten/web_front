@@ -19,10 +19,13 @@ import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirm
 import { ForumModule } from './forum/forum.module';
 import { MissionsModule } from './missions/missions.module';
 import { FooterModule } from './footer/footer.module';
-import { LoggerService } from './services/logger.service';
 import { LoginModule } from './login/login.module';
 import { HeaderModule } from './header/header.module';
 import { CompetencesModule } from './competences/competences.module';
+
+// SERVICE
+import { LoggerService } from './services/logger.service';
+import { IsNotLoginService } from './services/isNotLogin.service' ;
 
 @NgModule({
   declarations: [
@@ -46,7 +49,8 @@ import { CompetencesModule } from './competences/competences.module';
     MatDialogModule
   ],
   providers: [
-    LoggerService
+    LoggerService,
+    IsNotLoginService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

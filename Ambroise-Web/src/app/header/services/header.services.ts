@@ -1,34 +1,23 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { timeout } from 'rxjs/operators';
 import { HeaderModule } from '../header.module';
+import { Menu } from '../models/menu';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class HeaderService {
-
-    private currentModule: String;
-    private defaultModule = 'Missions';
-    private menusJSON: any;
 
     private menuReceptionState = new BehaviorSubject(undefined);
     menuReceptionObservable = this.menuReceptionState.asObservable();
 
 
     constructor(private httpClient: HttpClient) {
-        this.currentModule = this.defaultModule;
     }
 
-    setCurrentModuleFromService(currentModule: String) {
-        this.currentModule = currentModule;
-    }
-
-    getCurrentModuleFromService() {
-        return this.currentModule;
-    }
-
-    init() {
+    init():Observable<Menu[]> {
 
         let token = window.sessionStorage.getItem("bearerToken");
         LoggerService.log("Appel de : init()", LogLevel.DEBUG);
@@ -39,9 +28,10 @@ export class HeaderService {
         });
         let options = { headers: headers };
 
-        this.httpClient
-            .get('http://localhost:8080/configMenu', options)
+        return this.httpClient
+            .get<Menu[]>(environment.serverAddress + '/configMenu', options)
             .pipe(timeout(5000))
+            /*
             .toPromise()
             .then(headerMenus => {
                 if (headerMenus != undefined) {
@@ -53,6 +43,11 @@ export class HeaderService {
                 console.log(error)
                 //  TO-DO : traitement des différentes erreurs timeout + HTTP
             });
+            */
 
+    }
+
+    notifyMenusReceived(menu: Menu[]){
+        this.menuReceptionState.next(menu) ; 
     }
 }

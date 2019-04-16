@@ -3,14 +3,13 @@ import { Injectable } from '@angular/core';
 import { LoggerService, LogLevel } from '../../services/logger.service';
 import { BehaviorSubject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
-import * as sha512 from 'js-sha512';
-import { LoginModule } from '../login.module';
+import { environment } from 'src/environments/environment';
 
 /**
  * Service pour le login
  */
 @Injectable()
-export class AuthService {
+export class TokenService {
 
     //Observable pour vérifier que le token est reçu
     private tokenReceptionState = new BehaviorSubject(false);
@@ -36,7 +35,7 @@ export class AuthService {
         LoggerService.log(postParams.mail + ":::" + postParams.pswd, LogLevel.DEBUG);
 
         //Requête POST au WS : login => Objectif récupérer un token de session valide
-        return this.httpClient.post('http://localhost:8080/login', postParams)
+        return this.httpClient.post(environment.serverAddress + '/login', postParams)
             //Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
             .pipe(timeout(5000))
             //Effectue une action dès la réception du token
@@ -77,5 +76,9 @@ export class AuthService {
     signOut() {
         //TO-DO : redirect login page
         window.sessionStorage.clear();
+    }
+
+    notifyTokenReception(received:boolean){
+        this.tokenReceptionState.next(received) ; 
     }
 }

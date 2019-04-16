@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  globalLogType : "JOKE"
+  globalLogType: "JOKE",
+  serverAddress: "http://" + "localhost:8080",
+  defaultModule: 'Missions'
 };
 
 /*

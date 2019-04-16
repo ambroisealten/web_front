@@ -17,7 +17,8 @@ import { LoginComponent } from './components/login/login.component' ;
 import { SignupComponent } from './components/signup/signup.component';
 
 //    IMPORT SERVICES
-import { AuthService } from './services/auth.service';
+import { TokenService } from './services/token.service';
+import { RoutingService } from './services/routing.service';
 
 
 
@@ -38,7 +39,8 @@ import { AuthService } from './services/auth.service';
     MatDialogModule
   ],
   providers: [
-    AuthService
+    TokenService,
+    RoutingService
   ]
 })
 export class LoginModule { }
