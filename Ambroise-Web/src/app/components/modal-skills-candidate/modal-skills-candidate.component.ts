@@ -53,10 +53,10 @@ export class ModalSkillsCandidateComponent implements OnInit {
   }
 
   save() {
-    let personRole = this.role ? PersonRole.APPLICANT : PersonRole.CONSULTANT;
+    let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
 
     let newPerson: Person = new Person(this.lastname, this.firstname, this.email, personRole);
-    
+
     this.dialogRef.close(newPerson);
   }
 

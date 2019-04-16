@@ -27,6 +27,13 @@ export class ArraySkillsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
   }
 
+  setToZeroIfEmptyOrInvalid($event) {
+    let grade: string = $event.target.value;
+    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$|^0$"; // number between 1 and 4 (step 0,5) or 0
+    if(!grade.match(pattern) || $event.target.value == '')
+      $event.target.value = 0;
+  }
+
   /**
    * Filters array on input
    * @param  filterValue input string

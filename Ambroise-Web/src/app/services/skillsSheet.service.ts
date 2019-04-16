@@ -80,6 +80,10 @@ export class SkillsSheetService {
       type: 'text'
     },
     {
+      label: 'Année de diplôme',
+      type: 'text'
+    },
+    {
       label: 'Employeur',
       type: 'text'
     },
@@ -90,10 +94,6 @@ export class SkillsSheetService {
     {
       label: 'Disponibilité',
       type: 'date'
-    },
-    {
-      label: 'Année de diplôme',
-      type: 'text'
     },
     {
       label: 'Années d\'expérience',
@@ -111,11 +111,11 @@ export class SkillsSheetService {
       type: 'text'
     },
     {
-      label: 'Métier',
+      label: 'Année de diplôme',
       type: 'text'
     },
     {
-      label: 'Année de diplôme',
+      label: 'Métier',
       type: 'text'
     },
     {
@@ -128,6 +128,8 @@ export class SkillsSheetService {
 
   private personInformation = new BehaviorSubject(undefined);
   personObservable = this.personInformation.asObservable();
+
+  currentPerson: Person;
 
   checkPersonExistence(personMail: String, isApplicant: boolean) {
     let token = window.sessionStorage.getItem("bearerToken");
@@ -150,6 +152,7 @@ export class SkillsSheetService {
         .then(personData => {
           if(personData != undefined) {
             this.personInformation.next(personData); // person information from DB
+            this.currentPerson = personData as Person;
           }
         })
         .catch(error => {
@@ -162,6 +165,14 @@ export class SkillsSheetService {
               break;
           }
     });
+  }
+
+  getCurrentPerson() {
+    return this.currentPerson;
+  }
+
+  setCurrentPerson(person: Person) {
+    this.currentPerson = person;
   }
 
   /**
