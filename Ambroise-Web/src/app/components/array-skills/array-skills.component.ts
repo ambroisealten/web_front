@@ -8,8 +8,8 @@ import { SkillsSheetService } from 'src/app/services/skillsSheet.service';
   styleUrls: ['./array-skills.component.scss']
 })
 /**
- * Component containing an array with skills or soft skills and their grades
- */
+* Component containing an array with skills or soft skills and their grades
+*/
 export class ArraySkillsComponent implements OnInit {
 
   @Input() displayedColumns: string[]; // names of columns to display
@@ -31,44 +31,66 @@ export class ArraySkillsComponent implements OnInit {
     let grade: string = $event.target.value;
     let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$|^0$"; // number between 1 and 4 (step 0,5) or 0
     if(!grade.match(pattern) || $event.target.value == '')
-      $event.target.value = 0;
+    $event.target.value = 0;
   }
 
   /**
-   * Filters array on input
-   * @param  filterValue input string
-   */
+  * Filters array on input
+  * @param  filterValue input string
+  */
   applyFilterSkills(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   /**
-   * Adds a skill into the array
-   * @param  event skillName from input
-   */
+  * Adds a skill into the array
+  * @param  event skillName from input
+  */
   addSkill(event) {
     if(event.target.value != '') {
-      this.dataSourceArray.push({skillName: event.target.value, grade: '0'});
-      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+      let skillName = event.target.value;
 
-      this.updateDataSourceInService();
+      // if skillname not already in array : add it
+      if(this.dataSourceArray.findIndex(skill => skill.skillName.toLowerCase() === skillName.toLowerCase()) == -1) {
+        this.dataSourceArray.push({skillName: skillName, grade: '0'});
+        this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
-      // send message event to parent to update matrixes
-      this.messageEvent.emit(this.datatype);
+        this.updateDataSourceInService();
+
+        // send message event to parent to update matrixes
+        this.messageEvent.emit(this.datatype);
+      }
     }
   }
 
   /**
-   * Handles the stepUp() and stepDown() functions for the grades in the array.
-   * @param  event grade value from input
-   */
+  * Removes a skill from the array
+  * @param  event button clicked in skill row
+  */
+  removeSkill(event) {
+    let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from row
+    let skillIndex = this.dataSourceArray.findIndex(skill => skill.skillName === skillName);
+
+    this.dataSourceArray.splice(skillIndex, 1);
+    this.dataSource = new MatTableDataSource(this.dataSourceArray);
+
+    this.updateDataSourceInService();
+
+    // send message event to parent to update matrixes
+    this.messageEvent.emit(this.datatype);
+  }
+
+  /**
+  * Handles the stepUp() and stepDown() functions for the grades in the array.
+  * @param  event grade value from input
+  */
   updateGradeEvent(event) {
-    let skillName = event.target.parentElement.parentElement.parentElement.childNodes[1].innerText; // get skillName from same row as modified grade
+    let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from same row as modified grade
     let grade = event.target.parentElement.childNodes[1].value;
 
     this.dataSourceArray.forEach(function(skill) {
       if(skill.skillName == skillName)
-        skill.grade = grade;
+      skill.grade = grade;
     });
 
     this.updateDataSourceInService();
@@ -78,12 +100,12 @@ export class ArraySkillsComponent implements OnInit {
   }
 
   /**
-   * Updates skills or softSkills array in skills service
-   */
+  * Updates skills or softSkills array in skills service
+  */
   updateDataSourceInService() {
     if(this.datatype == "skills")
-      this.skillsSheetService.updateSkills(this.dataSourceArray);
+    this.skillsSheetService.updateSkills(this.dataSourceArray);
     else
-      this.skillsSheetService.updateSoftSkills(this.dataSourceArray);
+    this.skillsSheetService.updateSoftSkills(this.dataSourceArray);
   }
 }
