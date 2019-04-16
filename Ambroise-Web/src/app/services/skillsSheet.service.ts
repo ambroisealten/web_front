@@ -77,50 +77,61 @@ export class SkillsSheetService {
   candidateFormItems = [
     {
       label: 'Diplôme',
-      type: 'text'
+      type: 'text',
+      id: 'diploma'
     },
     {
       label: 'Année de diplôme',
-      type: 'text'
+      type: 'text',
+      id: 'diplomaYear'
     },
     {
       label: 'Employeur',
-      type: 'text'
+      type: 'text',
+      id: 'employer'
     },
     {
       label: 'Métier',
-      type: 'text'
+      type: 'text',
+      id: 'job'
     },
     {
       label: 'Disponibilité',
-      type: 'date'
+      type: 'date',
+      id: 'disponibility'
     },
     {
       label: 'Années d\'expérience',
-      type: 'number'
+      type: 'number',
+      id: 'experienceYears'
     },
     {
       label: 'Prétention salariale',
-      type: 'number'
+      type: 'number',
+      id: 'wageClaim'
     }
   ];
 
   consultantFormItems = [
     {
       label: 'Diplôme',
-      type: 'text'
+      type: 'text',
+      id: 'diploma'
     },
     {
       label: 'Année de diplôme',
-      type: 'text'
+      type: 'text',
+      id: 'diplomaYear'
     },
     {
       label: 'Métier',
-      type: 'text'
+      type: 'text',
+      id: 'job'
     },
     {
       label: 'Salaire',
-      type: 'number'
+      type: 'number',
+      id: 'wage'
     }
   ];
 
@@ -165,6 +176,10 @@ export class SkillsSheetService {
               break;
           }
     });
+  }
+
+  resetPersonInformation(){
+    this.personInformation.next(undefined);
   }
 
   getCurrentPerson() {

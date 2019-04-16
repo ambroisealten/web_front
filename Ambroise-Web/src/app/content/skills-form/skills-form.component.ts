@@ -6,6 +6,7 @@ import { ConfirmationDialogComponent } from 'src/app/components/confirmation-dia
 import { SkillsSheetService } from 'src/app/services/skillsSheet.service';
 import { ActivatedRoute } from '@angular/router';
 import { Person } from 'src/app/models/person';
+import { SkillsSheet } from 'src/app/models/skillsSheet';
 
 @Component({
   selector: 'app-skills-form',
@@ -40,6 +41,8 @@ export class SkillsFormComponent implements OnInit {
   showPassToConsultant: boolean = true;
 
   currentPerson: Person;
+
+  avis: string;
 
   constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog) { }
 
@@ -125,7 +128,7 @@ export class SkillsFormComponent implements OnInit {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
-        this.skillsChart = this.createOrUpdateChart(skillsLabels, skillsData, 'canvasSkills');
+        this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
         break;
       }
       case('softSkills'):
@@ -134,7 +137,7 @@ export class SkillsFormComponent implements OnInit {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
-        this.softSkillsChart = this.createOrUpdateChart(skillsLabels, skillsData, 'canvasSoftSkills');
+        this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
         break;
       }
       default:
@@ -192,4 +195,64 @@ export class SkillsFormComponent implements OnInit {
       }
     });
   }
+
+  /* takes a string phrase and breaks it into separate phrases
+  no bigger than 'maxwidth', breaks are made at complete words.*/
+  /**
+  * Breaks labels into arrays to display them in multiple lines in radar chart.
+  * Breaks are made at complete words.
+  * @param  labels   array of labels
+  * @param  maxwidth max width per line
+  * @return          new array with formatted labels
+  */
+  formatLabels(labels, maxwidth){
+    let formattedLabels = [];
+
+    labels.forEach(function(label) {
+      let sections = [];
+      let words = label.split(" ");
+      let temp = "";
+
+      words.forEach(function(item, index){
+        if(temp.length > 0)
+        {
+          let concat = temp + ' ' + item;
+
+          if(concat.length > maxwidth){
+            sections.push(temp);
+            temp = "";
+          }
+          else{
+            if(index == (words.length-1))
+            {
+              sections.push(concat);
+              return;
+            }
+            else{
+              temp = concat;
+              return;
+            }
+          }
+        }
+
+        if(index == (words.length-1))
+        {
+          sections.push(item);
+          return;
+        }
+
+        if(item.length < maxwidth) {
+          temp = item;
+        }
+        else {
+          sections.push(item);
+        }
+
+      });
+      formattedLabels.push(sections);
+    })
+    return formattedLabels;
+  }
+
+
 }

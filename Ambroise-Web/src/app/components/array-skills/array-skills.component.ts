@@ -51,7 +51,7 @@ export class ArraySkillsComponent implements OnInit {
       let skillName = event.target.value;
 
       // if skillname not already in array : add it
-      if(this.dataSourceArray.findIndex(skill => skill.skillName.toLowerCase() === skillName.toLowerCase()) == -1) {
+      if(this.dataSourceArray.findIndex(skill => skill.skillName.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
         this.dataSourceArray.push({skillName: skillName, grade: '0'});
         this.dataSource = new MatTableDataSource(this.dataSourceArray);
 

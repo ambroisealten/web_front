@@ -1,7 +1,7 @@
 <app-header-user></app-header-user>
 
 <div class="currentSheetInfo">
-  <p> {{ skillsSheet.NameOfFiche }} - </p> <!--{{ currentPerson.name }} {{ currentPerson.surname }} ({{ currentPerson.role }})</p>-->
+  <p> {{ skillsSheet.NameOfFiche }} - {{ currentPerson.name }} {{ currentPerson.surname }} ({{ currentPerson.role }})</p>
   <div *ngIf="showPassToConsultant"><button mat-raised-button color="primary" class="toConsultantButton" (click)="passToConsultant()"> Passage consultant </button></div>
 </div>
 
@@ -9,27 +9,21 @@
   <div class="infoForm">
     <mat-form-field *ngFor="let item of formItems">
       <mat-label> {{ item.label }}</mat-label>
-      <input [type]="item.type" matInput >
+      <input [type]="item.type" [id]="item.id" matInput >
     </mat-form-field>
 
     <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
 
     <mat-form-field style="margin-top: 2%;">
       <mat-label>Avis</mat-label>
-      <mat-select>
-        <mat-optgroup label="ED">
-          <mat-option value>A</mat-option>
-          <mat-option value>B</mat-option>
-          <mat-option value>C</mat-option>
-          <mat-option value>D</mat-option>
-        </mat-optgroup>
-        <mat-optgroup label="EP">
-          <mat-option value>A</mat-option>
-          <mat-option value>B</mat-option>
-          <mat-option value>C</mat-option>
-          <mat-option value>D</mat-option>
-        </mat-optgroup>
-        <mat-option value>NOK</mat-option>
+      <mat-select [(ngModel)]="avis">
+          <mat-option value="+++">+++</mat-option>
+          <mat-option value="++">++</mat-option>
+          <mat-option value="+">+</mat-option>
+          <mat-option value="-">-</mat-option>
+          <mat-option value="--">--</mat-option>
+          <mat-option value="---">---</mat-option>
+          <mat-option value="NOK">NOK</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -41,7 +35,7 @@
   <div class="skillsArrays">
     <app-array-skills (messageEvent)="receiveMessage($event)" class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
     <app-array-skills (messageEvent)="receiveMessage($event)" class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
-    <button mat-raised-button>Enregistrer la fiche</button>
+    <button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
   </div>
 
 

@@ -35,6 +35,7 @@ export class PageSkillsHomeComponent implements OnInit {
         this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant);
         this.skillsSheetService.personObservable.subscribe((person: Object) => {
               if(person != undefined) {
+                this.skillsSheetService.resetPersonInformation(); // reset observable value
                 this.redirectToSkillsSheet();
               }
             })
