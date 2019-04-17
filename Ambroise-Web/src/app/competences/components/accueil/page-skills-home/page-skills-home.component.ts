@@ -4,7 +4,7 @@ import { MatDialogConfig, MatDialog } from '@angular/material';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { PersonRole } from 'src/app/competences/models/person';
+import { PersonRole, Person } from 'src/app/competences/models/person';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -28,19 +28,22 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(newPersonData => {
-      if(newPersonData != undefined) {
-        let newPersonMail = newPersonData.mail;
-        let isApplicant = newPersonData.role === PersonRole.APPLICANT;
-        this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant);
-        this.skillsSheetService.personObservable.subscribe((person: Object) => {
-              if(person != undefined) {
-                this.skillsSheetService.resetPersonInformation(); // reset observable value
-                this.redirectToSkillsSheet();
-              }
-            })
-      }
-    });
+    dialogRef.afterClosed().subscribe(newPersonData => this.checkExistence(newPersonData));
+  }
+
+  checkExistence(newPersonData: Person){
+    if(newPersonData != undefined) {
+      let newPersonMail = newPersonData.mail;
+      let isApplicant = newPersonData.role === PersonRole.APPLICANT;
+      this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant).subscribe(person => this.hasToRedirect(person));
+    }
+  }
+
+  hasToRedirect(person: Person){
+    if(person != undefined){
+      this.skillsSheetService.notifyPersoninformation(person); 
+      this.redirectToSkillsSheet ; 
+    }
   }
 
   redirectToSkillsSheet() {

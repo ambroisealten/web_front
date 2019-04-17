@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-import { timeout } from 'rxjs/operators';
+import { timeout, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Person } from '../models/person';
 
@@ -137,9 +137,7 @@ export class SkillsSheetService {
   private personInformation = new BehaviorSubject(undefined);
   personObservable = this.personInformation.asObservable();
 
-  currentPerson: Person;
-
-  checkPersonExistence(personMail: String, isApplicant: boolean) {
+  checkPersonExistence(personMail: String, isApplicant: boolean):Observable<Person> {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -153,10 +151,10 @@ export class SkillsSheetService {
     else
       urlRequest = environment.serverAddress + '/consultant/' + personMail;
 
-    this.httpClient
-        .get(urlRequest, options)
-        .pipe(timeout(5000))
-        .toPromise()
+    return this.httpClient
+        .get<Person>(urlRequest, options)
+        .pipe(timeout(5000), catchError(err => this.handleError(err)))
+        /*.toPromise()
         .then(personData => {
           if(personData != undefined) {
             this.personInformation.next(personData); // person information from DB
@@ -173,18 +171,27 @@ export class SkillsSheetService {
               break;
           }
     });
+    */
+  }
+
+  handleError(err){
+    switch(err.status) {
+      case 404 :
+        this.personInformation.next(false); // person not found in DB
+        break;
+      default:
+        LoggerService.log('New error : ' + err, LogLevel.DEBUG); // TODO add errors in switch/case
+        break;
+    }
+    return undefined ; 
+  }
+
+  notifyPersoninformation(person: Person){
+    this.personInformation.next(person)
   }
 
   resetPersonInformation(){
     this.personInformation.next(undefined);
-  }
-
-  getCurrentPerson() {
-    return this.currentPerson;
-  }
-
-  setCurrentPerson(person: Person) {
-    this.currentPerson = person;
   }
 
   /**

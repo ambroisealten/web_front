@@ -55,7 +55,10 @@ export class SkillsFormComponent implements OnInit {
     this.updateChartSkills('skills');
     this.updateChartSkills('softSkills');
 
-    this.currentPerson = this.skillsSheetService.getCurrentPerson();
+    this.skillsSheetService.personObservable.subscribe(person => {
+      this.currentPerson = person ; 
+      this.skillsSheetService.resetPersonInformation() ;
+    })
   }
 
   /**
