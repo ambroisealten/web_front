@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material';
 import { FormBuilder } from '@angular/forms';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet } from '../../../models/skillsSheet';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
   selector: 'app-modal-skills-candidate',
@@ -20,7 +21,7 @@ export class ModalSkillsCandidateComponent implements OnInit {
   firstnameFirstletter: string = '';
   lastnameFirstLetters: string = '';
 
-  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>, private formBuilder: FormBuilder) { }
+  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>, private formBuilder: FormBuilder, private personSkillsService: PersonSkillsService) { }
 
   ngOnInit() {
     this.updateSkillsSheetName();
@@ -56,8 +57,10 @@ export class ModalSkillsCandidateComponent implements OnInit {
     let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
 
     let newPerson: Person = new Person(this.lastname, this.firstname, this.email, personRole);
+    let newSkillsSheet: SkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
 
-    this.dialogRef.close(newPerson);
+    let personAndSkillsSheet = [newPerson, newSkillsSheet];
+    this.dialogRef.close(personAndSkillsSheet);
   }
 
 }

@@ -5,6 +5,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { timeout, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Person } from '../models/person';
+import { SkillsSheet } from '../models/skillsSheet';
 
 @Injectable()
 /**
@@ -137,7 +138,7 @@ export class SkillsSheetService {
   private personInformation = new BehaviorSubject(undefined);
   personObservable = this.personInformation.asObservable();
 
-  checkPersonExistence(personMail: String, isApplicant: boolean):Observable<Person> {
+  checkPersonExistence(personMail: String, isApplicant: boolean):Observable<{} | Person> {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -153,28 +154,10 @@ export class SkillsSheetService {
 
     return this.httpClient
         .get<Person>(urlRequest, options)
-        .pipe(timeout(5000), catchError(err => this.handleError(err)))
-        /*.toPromise()
-        .then(personData => {
-          if(personData != undefined) {
-            this.personInformation.next(personData); // person information from DB
-            this.currentPerson = personData as Person;
-          }
-        })
-        .catch(error => {
-          switch(error.status) {
-            case 404 :
-              this.personInformation.next(false); // person not found in DB
-              break;
-            default:
-              LoggerService.log('New error : ' + error, LogLevel.DEBUG); // TODO add errors in switch/case
-              break;
-          }
-    });
-    */
+        .pipe(timeout(5000), catchError(err => this.handlePersonError(err)));
   }
 
-  handleError(err){
+  handlePersonError(err){
     switch(err.status) {
       case 404 :
         this.personInformation.next(false); // person not found in DB
@@ -183,15 +166,54 @@ export class SkillsSheetService {
         LoggerService.log('New error : ' + err, LogLevel.DEBUG); // TODO add errors in switch/case
         break;
     }
-    return undefined ; 
+    return undefined ;
   }
 
-  notifyPersoninformation(person: Person){
+  notifyPersoninformation(person: {} | Person){
     this.personInformation.next(person)
   }
 
   resetPersonInformation(){
     this.personInformation.next(undefined);
+  }
+
+  private skillSheetInformation = new BehaviorSubject(undefined);
+  skillsSheetObservable = this.skillSheetInformation.asObservable();
+
+  createNewSkillsSheet(skillsSheet: SkillsSheet):Observable<{} | SkillsSheet> {
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    debugger;
+    let postParams = {
+        name: skillsSheet.name,
+        role: skillsSheet.role,
+        personMail: skillsSheet.personMail,
+        softskills: skillsSheet.softskills,
+        techskills: skillsSheet.techskills,
+        authorMail: skillsSheet.authorMail
+    }
+
+    return this.httpClient
+        .post(environment.serverAddress + '/skillsheet', postParams, options)
+        .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
+  }
+
+  handleSkillsSheetError(error){
+    console.log(error);
+    return undefined;
+  }
+
+  notifySkillsSheetinformation(skillsSheet: {} | SkillsSheet){
+    this.skillSheetInformation.next(skillsSheet)
+  }
+
+  resetSkillsSheetInformation(){
+    this.skillSheetInformation.next(undefined);
   }
 
   /**

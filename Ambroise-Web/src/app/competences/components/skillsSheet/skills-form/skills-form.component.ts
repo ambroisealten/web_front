@@ -56,9 +56,12 @@ export class SkillsFormComponent implements OnInit {
     this.updateChartSkills('softSkills');
 
     this.skillsSheetService.personObservable.subscribe(person => {
-      this.currentPerson = person ; 
-      this.skillsSheetService.resetPersonInformation() ;
-    })
+      if(person != undefined) {
+        this.currentPerson = person;
+        console.log(person);
+        this.skillsSheetService.resetPersonInformation();
+      }
+    });
   }
 
   /**

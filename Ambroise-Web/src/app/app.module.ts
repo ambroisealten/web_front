@@ -26,6 +26,8 @@ import { CompetencesModule } from './competences/competences.module';
 // SERVICE
 import { LoggerService } from './services/logger.service';
 import { IsNotLoginService } from './services/isNotLogin.service' ;
+import { SkillsSheetService } from './competences/services/skillsSheet.service';
+import { PersonSkillsService } from './competences/services/personSkills.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { IsNotLoginService } from './services/isNotLogin.service' ;
   ],
   providers: [
     LoggerService,
-    IsNotLoginService
+    IsNotLoginService,
+    SkillsSheetService,
+    PersonSkillsService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

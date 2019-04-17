@@ -26,6 +26,9 @@ export class SkillsSheet {
       this.name = name;
       this.role = person.role;
       this.personMail = person.mail;
+      this.softskills = [];
+      this.techskills = [];
+      this.authorMail = "";
     }
 }
 

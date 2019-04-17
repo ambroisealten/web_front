@@ -1,0 +1,55 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { Person, PersonRole } from '../models/person';
+import { catchError, timeout } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable()
+/**
+* Service to handle person creation and update in skills module
+*/
+export class PersonSkillsService {
+
+  constructor(private httpClient: HttpClient) { }
+
+  private personInformation = new BehaviorSubject(undefined);
+  personObservable = this.personInformation.asObservable();
+
+  createNewPerson(person: Person) {
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    let postParams = {
+        mail: person.mail,
+        surname: person.surname,
+        name: person.name,
+        monthlyWage: "0",
+        urlDocs: "",
+        personInChargeMail: "abc@gmail.com",
+        highestDiploma: "",
+        highestDiplomaYear: "",
+        job: "",
+        employer: ""
+    }
+
+    let urlRequest :string;
+    if(person.role === PersonRole.APPLICANT)
+      urlRequest = environment.serverAddress + '/applicant';
+    else
+      urlRequest = environment.serverAddress + '/consultant';
+
+    return this.httpClient
+        .post(urlRequest, postParams, options)
+        .pipe(timeout(5000), catchError(err => this.handleError(err)));
+  }
+
+  handleError(error) {
+    console.log(error);
+    return undefined;
+  }
+}

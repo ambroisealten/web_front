@@ -5,6 +5,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { PersonRole, Person } from 'src/app/competences/models/person';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -13,7 +14,7 @@ import { PersonRole, Person } from 'src/app/competences/models/person';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
-  constructor(private dialog: MatDialog, private router: Router, private skillsSheetService: SkillsSheetService) { }
+  constructor(private dialog: MatDialog, private router: Router, private skillsSheetService: SkillsSheetService, private personSkillsService: PersonSkillsService) { }
 
   ngOnInit() {
   }
@@ -28,7 +29,11 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(newPersonData => this.checkExistence(newPersonData));
+    dialogRef.afterClosed().subscribe(newPersonAndSkillsData => {
+      if(newPersonAndSkillsData != undefined)
+        this.personSkillsService.createNewPerson(newPersonAndSkillsData[0]).subscribe(httpResponse => console.log(httpResponse));
+        this.skillsSheetService.createNewSkillsSheet(newPersonAndSkillsData[1]).subscribe(httpResponse => console.log(httpResponse));
+      });
   }
 
   checkExistence(newPersonData: Person){
@@ -39,10 +44,10 @@ export class PageSkillsHomeComponent implements OnInit {
     }
   }
 
-  hasToRedirect(person: Person){
+  hasToRedirect(person: {} | Person){
     if(person != undefined){
-      this.skillsSheetService.notifyPersoninformation(person); 
-      this.redirectToSkillsSheet ; 
+      this.skillsSheetService.notifyPersoninformation(person);
+      this.redirectToSkillsSheet();
     }
   }
 
