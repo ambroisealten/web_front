@@ -3,3 +3,13 @@ mat-dialog-content {
   flex-direction: column;
   padding: 10%;
 }
+
+.slider {
+  display: flex;
+  flex-direction: row;
+}
+
+.slider p {
+  margin-right: 5%;
+  margin-left: 5%;
+}

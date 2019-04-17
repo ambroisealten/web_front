@@ -1,10 +1,10 @@
-import { Person } from './person';
+import { Person, PersonRole } from './person';
 
 export class SkillsSheet {
       id: String;
       name: String;
       versionNumber: String;
-      role: String;
+      role: PersonRole;
       personMail: String;
       softskills: any[];
       techskills: any[];
@@ -27,4 +27,14 @@ export class SkillsSheet {
       this.role = person.role;
       this.personMail = person.mail;
     }
+}
+
+export enum Avis {
+  PPP,
+	PP,
+  P,
+  M,
+  MM,
+  MMM,
+  NOK
 }

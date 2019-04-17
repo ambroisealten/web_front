@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { MatDialog } from '@angular/material';
+import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
-import { SkillsSheetService } from '../../../services/skillsSheet.service';
+import { Person } from 'src/app/competences/models/person';
 
 @Component({
   selector: 'app-skills-form',
@@ -37,6 +38,10 @@ export class SkillsFormComponent implements OnInit {
 
   showPassToConsultant: boolean = true;
 
+  currentPerson: Person;
+
+  avis: string;
+
   constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog) { }
 
   ngOnInit() {
@@ -49,6 +54,8 @@ export class SkillsFormComponent implements OnInit {
     // init charts
     this.updateChartSkills('skills');
     this.updateChartSkills('softSkills');
+
+    this.currentPerson = this.skillsSheetService.getCurrentPerson();
   }
 
   /**
@@ -65,7 +72,7 @@ export class SkillsFormComponent implements OnInit {
     let dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: false
     });
-    dialogRef.componentInstance.dialogMessage = "Confirmez-vous le passage de " + this.skillsSheet.NomPersonne + " " + this.skillsSheet.PrenomPersonne + " du statut de candidat à celui de consultant ?";
+    dialogRef.componentInstance.dialogMessage = "Confirmez-vous le passage de " + this.currentPerson.name + " " + this.currentPerson.surname + " du statut de candidat à celui de consultant ?";
     dialogRef.componentInstance.dialogTitle = "Confirmation";
 
     dialogRef.afterClosed().subscribe(result => {
@@ -77,8 +84,8 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /**
-   * Do changes when passing from applicant to consultant : update form and send change to server with skillsSheetService
-   */
+  * Do changes when passing from applicant to consultant : update form and send change to server with skillsSheetService
+  */
   updatePersonStatus() {
     this.formItems = this.skillsSheetService.consultantFormItems;
     this.showPassToConsultant = false;
@@ -119,7 +126,7 @@ export class SkillsFormComponent implements OnInit {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
-        this.skillsChart = this.createOrUpdateChart(skillsLabels, skillsData, 'canvasSkills');
+        this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
         break;
       }
       case('softSkills'):
@@ -128,7 +135,7 @@ export class SkillsFormComponent implements OnInit {
           skillsLabels.push(skill.skillName);
           skillsData.push(skill.grade);
         });
-        this.softSkillsChart = this.createOrUpdateChart(skillsLabels, skillsData, 'canvasSoftSkills');
+        this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
         break;
       }
       default:
@@ -168,9 +175,17 @@ export class SkillsFormComponent implements OnInit {
       options: {
         scale: {
           ticks: {
-            min: 1,
+            min: 0,
             max: 4,
             step: 0.5
+          }
+        },
+        tooltips: {
+          callbacks: {
+            label: function(tooltipItem, data) {
+              var label = data.labels[tooltipItem.index];
+              return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+            }
           }
         },
         responsive: true,
@@ -178,4 +193,64 @@ export class SkillsFormComponent implements OnInit {
       }
     });
   }
+
+  /* takes a string phrase and breaks it into separate phrases
+  no bigger than 'maxwidth', breaks are made at complete words.*/
+  /**
+  * Breaks labels into arrays to display them in multiple lines in radar chart.
+  * Breaks are made at complete words.
+  * @param  labels   array of labels
+  * @param  maxwidth max width per line
+  * @return          new array with formatted labels
+  */
+  formatLabels(labels, maxwidth){
+    let formattedLabels = [];
+
+    labels.forEach(function(label) {
+      let sections = [];
+      let words = label.split(" ");
+      let temp = "";
+
+      words.forEach(function(item, index){
+        if(temp.length > 0)
+        {
+          let concat = temp + ' ' + item;
+
+          if(concat.length > maxwidth){
+            sections.push(temp);
+            temp = "";
+          }
+          else{
+            if(index == (words.length-1))
+            {
+              sections.push(concat);
+              return;
+            }
+            else{
+              temp = concat;
+              return;
+            }
+          }
+        }
+
+        if(index == (words.length-1))
+        {
+          sections.push(item);
+          return;
+        }
+
+        if(item.length < maxwidth) {
+          temp = item;
+        }
+        else {
+          sections.push(item);
+        }
+
+      });
+      formattedLabels.push(sections);
+    })
+    return formattedLabels;
+  }
+
+
 }

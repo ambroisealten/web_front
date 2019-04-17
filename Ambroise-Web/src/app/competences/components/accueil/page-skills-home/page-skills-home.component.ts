@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
+import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheetService } from '../../../services/skillsSheet.service';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -35,15 +35,16 @@ export class PageSkillsHomeComponent implements OnInit {
         this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant);
         this.skillsSheetService.personObservable.subscribe((person: Object) => {
               if(person != undefined) {
-                this.redirectToSkillsSheet(person);
+                this.skillsSheetService.resetPersonInformation(); // reset observable value
+                this.redirectToSkillsSheet();
               }
             })
       }
     });
   }
 
-  redirectToSkillsSheet(person: Object) {
-    this.router.navigate(['skills/skillsheet', person]);
+  redirectToSkillsSheet() {
+    this.router.navigate(['skillsSheet']);
   }
 
 }

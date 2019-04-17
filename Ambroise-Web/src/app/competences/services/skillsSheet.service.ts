@@ -73,50 +73,61 @@ export class SkillsSheetService {
   candidateFormItems = [
     {
       label: 'Diplôme',
-      type: 'text'
-    },
-    {
-      label: 'Employeur',
-      type: 'text'
-    },
-    {
-      label: 'Métier',
-      type: 'text'
-    },
-    {
-      label: 'Disponibilité',
-      type: 'date'
+      type: 'text',
+      id: 'diploma'
     },
     {
       label: 'Année de diplôme',
-      type: 'text'
+      type: 'text',
+      id: 'diplomaYear'
+    },
+    {
+      label: 'Employeur',
+      type: 'text',
+      id: 'employer'
+    },
+    {
+      label: 'Métier',
+      type: 'text',
+      id: 'job'
+    },
+    {
+      label: 'Disponibilité',
+      type: 'date',
+      id: 'disponibility'
     },
     {
       label: 'Années d\'expérience',
-      type: 'number'
+      type: 'number',
+      id: 'experienceYears'
     },
     {
       label: 'Prétention salariale',
-      type: 'number'
+      type: 'number',
+      id: 'wageClaim'
     }
   ];
 
   consultantFormItems = [
     {
       label: 'Diplôme',
-      type: 'text'
-    },
-    {
-      label: 'Métier',
-      type: 'text'
+      type: 'text',
+      id: 'diploma'
     },
     {
       label: 'Année de diplôme',
-      type: 'text'
+      type: 'text',
+      id: 'diplomaYear'
+    },
+    {
+      label: 'Métier',
+      type: 'text',
+      id: 'job'
     },
     {
       label: 'Salaire',
-      type: 'number'
+      type: 'number',
+      id: 'wage'
     }
   ];
 
@@ -124,6 +135,8 @@ export class SkillsSheetService {
 
   private personInformation = new BehaviorSubject(undefined);
   personObservable = this.personInformation.asObservable();
+
+  currentPerson: Person;
 
   checkPersonExistence(personMail: String, isApplicant: boolean) {
     let token = window.sessionStorage.getItem("bearerToken");
@@ -146,6 +159,7 @@ export class SkillsSheetService {
         .then(personData => {
           if(personData != undefined) {
             this.personInformation.next(personData); // person information from DB
+            this.currentPerson = personData as Person;
           }
         })
         .catch(error => {
@@ -158,6 +172,18 @@ export class SkillsSheetService {
               break;
           }
     });
+  }
+
+  resetPersonInformation(){
+    this.personInformation.next(undefined);
+  }
+
+  getCurrentPerson() {
+    return this.currentPerson;
+  }
+
+  setCurrentPerson(person: Person) {
+    this.currentPerson = person;
   }
 
   /**

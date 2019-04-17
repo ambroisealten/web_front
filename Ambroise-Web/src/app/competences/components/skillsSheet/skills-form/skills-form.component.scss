@@ -19,7 +19,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 1fr 1fr 1fr;
   padding: 2%;
   width: 100%;
 }
@@ -60,6 +60,10 @@
 }
 
 .chart-container {
+  width: 50%;
+  height: 50%;
+  /*
   width: 200px;
   height: 300px;
+  */
 }
