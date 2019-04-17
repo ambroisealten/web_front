@@ -4,6 +4,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { timeout } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { Person } from '../models/person';
 
 @Injectable()
 /**

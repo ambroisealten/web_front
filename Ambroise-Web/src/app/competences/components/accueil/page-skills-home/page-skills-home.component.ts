@@ -44,7 +44,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   redirectToSkillsSheet() {
-    this.router.navigate(['skillsSheet']);
+    this.router.navigate(['skills/skillsheet']);
   }
 
 }

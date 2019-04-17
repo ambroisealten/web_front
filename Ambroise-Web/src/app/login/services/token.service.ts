@@ -4,6 +4,7 @@ import { LoggerService, LogLevel } from '../../services/logger.service';
 import { BehaviorSubject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import * as sha512 from 'js-sha512';
 
 /**
  * Service pour le login
@@ -20,16 +21,16 @@ export class TokenService {
     /**
      * Permet de récupérer un token de session valide si l'utilisateur rentre le bon
      * mot de passe et le bon mail associé
-     * @param formInputMail 
-     * @param formInputPswd 
+     * @param formInputMail
+     * @param formInputPswd
      */
     signIn(formInputMail: string, formInputPswd: string) {
 
         //Paramètres à envoyée au serveur pour vérifier la connexion
         let postParams = {
             mail: formInputMail,
-            //pswd: sha512.sha512(formInputPswd),
-            pswd: formInputPswd
+            pswd: sha512.sha512(formInputPswd),
+            //pswd: formInputPswd
         }
 
         LoggerService.log(postParams.mail + ":::" + postParams.pswd, LogLevel.DEBUG);
@@ -52,7 +53,7 @@ export class TokenService {
             .toPromise()
             .then(token => {
                 if (token != undefined) {
-                    //console.log("Property token exist ? : " + token['token'])  ; 
+                    //console.log("Property token exist ? : " + token['token'])  ;
                     window.sessionStorage.setItem("bearerToken",token['token']);
                     this.tokenReceptionState.next(true);
                 }
@@ -79,6 +80,6 @@ export class TokenService {
     }
 
     notifyTokenReception(received:boolean){
-        this.tokenReceptionState.next(received) ; 
+        this.tokenReceptionState.next(received) ;
     }
 }
