@@ -1,4 +1,25 @@
-<p>
-  admin-document works!
-  
-</p>
+<div class="admin-document">
+
+  <h1>Documents</h1>
+  <hr>
+
+  <table id="documentsTable">
+    <thead>
+      <tr>
+        <th>Uri</th>
+        <th>Dernière date de modification</th>
+        <th>Pour forums</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let document of getDocuments() ">
+        <tr>
+          <td><span id="download" (click)="visualize(document.getUri())">{{document.getUri()}}</span></td>
+          <td>{{document.getDateOfModification() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
+          <td><input type="checkbox" [checked]="document.isForForum" (change)="document.toogleStatus()"></td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+</div>

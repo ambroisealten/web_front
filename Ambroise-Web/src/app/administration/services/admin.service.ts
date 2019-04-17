@@ -8,6 +8,21 @@ export class AdminService {
 
     baseUrl = 'http://localhost:8080/';
 
+    downloadFile(uri: string, callback) {
+        const token = window.sessionStorage.getItem('bearerToken');
+
+        const headerParams = new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: token !== '' ? token : ''
+        });
+        const options = {
+            headers: headerParams,
+        };
+        this.httpClient.get(uri, options).subscribe(data => {
+            callback(data);
+        });
+    }
+
     makeRequest(url: string, method: string, postParams, callback) {
         const token = window.sessionStorage.getItem('bearerToken');
 
