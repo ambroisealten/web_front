@@ -35,7 +35,7 @@ export class PageSkillsHomeComponent implements OnInit {
     if(newPersonData != undefined) {
       let newPersonMail = newPersonData.mail;
       let isApplicant = newPersonData.role === PersonRole.APPLICANT;
-      this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant).subscribe(person => this.hasToRedirect(person));
+      //this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant).subscribe(person => this.hasToRedirect(person));
     }
   }
 

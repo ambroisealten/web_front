@@ -137,7 +137,7 @@ export class SkillsSheetService {
   private personInformation = new BehaviorSubject(undefined);
   personObservable = this.personInformation.asObservable();
 
-  checkPersonExistence(personMail: String, isApplicant: boolean):Observable<Person> {
+  checkPersonExistence(personMail: String, isApplicant: boolean) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',

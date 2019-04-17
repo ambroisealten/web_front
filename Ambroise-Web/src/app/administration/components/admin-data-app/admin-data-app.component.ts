@@ -1,38 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataAgencyDialogComponent } from 'src/app/administration/components/data-agency-dialog/data-agency-dialog.component';
-import { AdminService } from 'src/app/administration/services/admin.services';
-
-
-export class Agency {
-
-  constructor(private name: string, private place: string, private placeType: string) { }
-
-  getName() {
-    return this.name;
-  }
-
-  setName(name: string) {
-    this.name = name;
-  }
-
-  getPlace() {
-    return this.place;
-  }
-
-  setPlace(place: string) {
-    this.place = place;
-  }
-
-  getPlaceType() {
-    return this.placeType;
-  }
-
-  setPlaceType(placeType: string) {
-    this.placeType = placeType;
-  }
-
-}
+import { AdminService } from 'src/app/administration/services/admin.service';
+import { Agency } from '../../models/Agency';
 
 @Component({
   selector: 'app-admin-data-app',
@@ -41,8 +11,6 @@ export class Agency {
 })
 export class AdminDataAppComponent implements OnInit {
   agencies: Agency[];
-
-
 
   constructor(private adminService: AdminService, private dialog: MatDialog) {
   }
