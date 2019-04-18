@@ -4,16 +4,14 @@ export class SkillsSheet {
       id: String;
       name: string;
       versionNumber: String;
-      role: PersonRole;
-      personMail: String;
+      mailPersonAttachedTo: String;
       softskills: any[];
       techskills: any[];
       authorMail: String;
 
     constructor(name: string, person: Person) {
       this.name = name;
-      this.role = person.role;
-      this.personMail = person.mail;
+      this.mailPersonAttachedTo = person.mail;
       this.softskills = [];
       this.techskills = [];
       this.authorMail = "";

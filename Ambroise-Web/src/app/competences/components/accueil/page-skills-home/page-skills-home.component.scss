@@ -1,0 +1,28 @@
+.newSheetButton {
+}
+
+.searchBar {
+  width: 90%;
+  margin-left:10%;
+}
+
+.motCles {
+  border-right: 1px solid var(--ALTENBlue);
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 2fr 8fr;
+}
+
+.tableRow {
+  cursor: pointer;
+}
+
+.tableRow :hover {
+  background: #f5f5f5;
+}
+
+td {
+  padding: 5%;
+}

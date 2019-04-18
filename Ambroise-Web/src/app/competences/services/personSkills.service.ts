@@ -26,32 +26,27 @@ export class PersonSkillsService {
     let options = { headers: headers };
 
     let postParams = {
-        mail: person.mail,
-        surname: person.surname,
-        name: person.name,
-        monthlyWage: "0",
-        urlDocs: "",
-        personInChargeMail: "abc@gmail.com",
-        highestDiploma: "",
-        highestDiplomaYear: "",
-        job: "",
-        employer: ""
+      mail: person.mail,
+      surname: person.surname,
+      name: person.name,
+      monthlyWage: "0",
+      urlDocs: "",
+      personInChargeMail: "abc@gmail.com",
+      highestDiploma: "",
+      highestDiplomaYear: "",
+      job: "",
+      employer: ""
     }
 
     let urlRequest :string;
     if(person.role === PersonRole.APPLICANT)
-      urlRequest = environment.serverAddress + '/applicant';
+    urlRequest = environment.serverAddress + '/applicant';
     else
-      urlRequest = environment.serverAddress + '/consultant';
+    urlRequest = environment.serverAddress + '/consultant';
 
     return this.httpClient
-        .post(urlRequest, postParams, options)
-        .pipe(timeout(5000), catchError(err => this.handleError(err)));
-  }
-
-  handleError(error) {
-    LoggerService.log(error, LogLevel.DEBUG);
-    return undefined;
+      .post(urlRequest, postParams, options)
+      .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 
   notifyPersoninformation(person: {} | Person){
@@ -60,5 +55,30 @@ export class PersonSkillsService {
 
   resetPersonInformation(){
     this.personInformation.next(undefined);
+  }
+
+
+  getPersonByMail(mail: string, role: PersonRole) {
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    let urlRequest :string;
+    if(role === PersonRole.APPLICANT)
+      urlRequest = environment.serverAddress + '/applicant/' + mail;
+    else
+      urlRequest = environment.serverAddress + '/consultant/' + mail;
+
+    return this.httpClient
+      .get<Person>(urlRequest, options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+    }
+
+  handleError(error) {
+    LoggerService.log(error, LogLevel.DEBUG);
+    return undefined;
   }
 }

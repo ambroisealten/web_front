@@ -110,8 +110,7 @@ export class SkillsSheetService {
 
     let postParams = {
         name: skillsSheet.name,
-        role: skillsSheet.role,
-        personMail: skillsSheet.personMail,
+        personMail: skillsSheet.mailPersonAttachedTo,
         softskills: skillsSheet.softskills,
         techskills: skillsSheet.techskills,
         authorMail: skillsSheet.authorMail
