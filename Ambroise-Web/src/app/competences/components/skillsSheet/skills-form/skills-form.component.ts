@@ -4,7 +4,7 @@ import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { MatDialog } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
-import { Person } from 'src/app/competences/models/person';
+import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
@@ -47,22 +47,48 @@ export class SkillsFormComponent implements OnInit {
 
   ngOnInit() {
     this.skillsSheetService.skillsSheetObservable.subscribe(skillsSheet => {
-      this.currentPerson = skillsSheet.getPerson() ;
+      console.log(skillsSheet);
+      this.personSkillsService.getPersonByMail(skillsSheet.mailPersonAttachedTo, skillsSheet.rolePersonAttachedTo).subscribe(currPerson => {
+        if(currPerson != undefined) {
+          this.currentPerson = currPerson as Person;
+
+          this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
+          let labelSalaire = this.currentPerson.role == PersonRole.APPLICANT ? 'Prétention salariale : ' : 'Salaire : ';
+          this.formItems = [
+            {
+              label: 'Diplôme : ',
+              text: this.currentPerson.highestDiploma
+            },
+            {
+              label: 'Année de diplôme : ',
+              text: this.currentPerson.highestDiplomaYear
+            },
+            {
+              label: 'Employeur : ',
+              text: this.currentPerson.employer
+            },
+            {
+              label: 'Métier : ',
+              text: this.currentPerson.job
+            },
+            {
+              label: labelSalaire,
+              text: this.currentPerson.monthlyWage
+            }
+          ];
+        }
+      });
       this.currentSkillsSheet = skillsSheet ;
+      this.skillsArray = this.currentSkillsSheet.techSkillsList;
+      this.softSkillsArray = this.currentSkillsSheet.softSkillsList;
+
+      this.skillsSheetService.updateSkills(this.currentSkillsSheet.techSkillsList);
+      this.skillsSheetService.updateSoftSkills(this.currentSkillsSheet.softSkillsList);
+
+      // init charts
+      this.updateChartSkills('skills');
+      this.updateChartSkills('softSkills');
     })
-
-    this.skillsArray = this.currentSkillsSheet.techSkillsList;
-    this.softSkillsArray = this.currentSkillsSheet.softSkillsList;
-
-    this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-    this.formItems = this.skillsSheetService.candidateFormItems;
-
-    this.skillsSheetService.updateSkills(this.currentSkillsSheet.techSkillsList);
-    this.skillsSheetService.updateSoftSkills(this.currentSkillsSheet.softSkillsList);
-
-    // init charts
-    this.updateChartSkills('skills');
-    this.updateChartSkills('softSkills');
   }
 
   translate(roleName) {

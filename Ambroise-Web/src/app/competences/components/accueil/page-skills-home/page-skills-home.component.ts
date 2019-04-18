@@ -51,9 +51,10 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-  /*  this.skillsSheetService.notifySkillsSheetinformation(skillsSheetData);
     console.log(skillsSheetData);
-    this.redirectToSkillsSheet();*/
+
+    this.skillsSheetService.notifySkillsSheetinformation(skillsSheetData);
+    this.redirectToSkillsSheet();
   }
 
   /**
