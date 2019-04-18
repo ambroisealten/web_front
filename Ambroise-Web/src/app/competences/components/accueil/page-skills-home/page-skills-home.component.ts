@@ -4,7 +4,7 @@ import { MatDialogConfig, MatDialog, MatTableDataSource } from '@angular/materia
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person } from 'src/app/competences/models/person';
+import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 
@@ -23,21 +23,23 @@ export class PageSkillsHomeComponent implements OnInit {
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
       this.skillsSheetDataSource = new MatTableDataSource(skillsSheetList as SkillsSheet[]);
+      let tmpSkillsSheetList = skillsSheetList as SkillsSheet[];
+      tmpSkillsSheetList.forEach(sheet => {
+        if(sheet != undefined) {
+          this.personSkillsService.getPersonByMail(sheet.mailPersonAttachedTo, sheet.rolePersonAttachedTo).subscribe(currPerson => {
+            if(currPerson != undefined) {
+              let tmpPerson = currPerson as Person;
+              // TODO update datasource with person information + separate methods for subscribe
+          }
+        });
+      }
+      });
     })
   }
 
   initDataSource(skillsSheetsList) {
-    let skillsSheets = skillsSheetsList;
+    let skillsSheets = skillsSheetsList as SkillsSheet[];
     let personsList: Person[] = [];
-
-    skillsSheets.forEach(sheet => {
-      if(sheet != undefined) {
-        this.personSkillsService.getPersonByMail(sheet.mailPersonAttachedTo, sheet.role).subscribe(currPerson => {
-          let ah = currPerson as Person;
-          console.log(ah.surname);
-        })
-      }
-    });
   }
 
   /**
@@ -49,11 +51,9 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo, skillsSheetData.role).subscribe(currPerson => {
-      let ah = currPerson as Person;
-      console.log(ah.surname);
-    });
+  /*  this.skillsSheetService.notifySkillsSheetinformation(skillsSheetData);
     console.log(skillsSheetData);
+    this.redirectToSkillsSheet();*/
   }
 
   /**
@@ -89,7 +89,7 @@ export class PageSkillsHomeComponent implements OnInit {
       skillSheetsList.forEach(skillsSheet => {
         skillSheetsNamesList.push(skillsSheet.name);
       });
- 
+
       let i = 1;
       while(skillSheetsNamesList.indexOf(tmpSkillsSheetName.toUpperCase()) != -1) {
         trigramme = trigramme.substring(0,2) + i.toString();
@@ -100,8 +100,8 @@ export class PageSkillsHomeComponent implements OnInit {
     let currentSkillsSheet = new SkillsSheet(tmpSkillsSheetName,person)
     this.skillsSheetService.createNewSkillsSheet(currentSkillsSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
-        this.skillsSheetService.notifySkillsSheetinformation(currentSkillsSheet) ; 
-        this.redirectToSkillsSheet() ; 
+        this.skillsSheetService.notifySkillsSheetinformation(currentSkillsSheet) ;
+        this.redirectToSkillsSheet() ;
       }
     })
 

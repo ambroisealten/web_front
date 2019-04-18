@@ -5,7 +5,7 @@ export class Person {
   name: String;
   job: String;
   employer: String;
-  monthlyWage: Number;
+  monthlyWage: String;
   role: PersonRole;
   personInChargeMail: String;
   urlDocs: String[];
@@ -19,11 +19,11 @@ export class Person {
     this.role = role;
     this.job = "" ;
     this.employer = "" ;
-    this.monthlyWage = 0 ; 
-    this.personInChargeMail = "" ; 
-    this.urlDocs = [] ; 
+    this.monthlyWage = "0" ;
+    this.personInChargeMail = "" ;
+    this.urlDocs = [] ;
     this.highestDiploma = "" ;
-    this.highestDiplomaYear = "" ; 
+    this.highestDiplomaYear = "" ;
   }
 }
 

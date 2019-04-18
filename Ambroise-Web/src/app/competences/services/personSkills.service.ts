@@ -68,23 +68,7 @@ export class PersonSkillsService {
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 
-
-  handleError(error) {
-    LoggerService.log(error, LogLevel.DEBUG);
-    return undefined;
-  }
-
-  /*
-  notifyPersoninformation(person: {} | Person){
-    this.personInformation.next(person);
-  }
-
-  resetPersonInformation(){
-    this.personInformation.next(undefined);
-  }
-
-
-  getPersonByMail(mail: string, role: PersonRole) {
+  getPersonByMail(mail: String, role: PersonRole) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -107,4 +91,5 @@ export class PersonSkillsService {
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
+
 }

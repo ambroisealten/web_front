@@ -104,16 +104,17 @@ export class SkillsSheetService {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+      'Authorization': token != "" ? token : ''
     });
     let options = { headers: headers };
 
     let postParams = {
         name: skillsSheet.name,
-        personMail: skillsSheet.mailPersonAttachedTo,
-        softskills: skillsSheet.softskills,
-        techskills: skillsSheet.techskills,
-        authorMail: skillsSheet.authorMail
+        rolePersonAttachedTo: skillsSheet.rolePersonAttachedTo,
+        mailPersonAttachedTo: skillsSheet.mailPersonAttachedTo,
+        softSkillsList: skillsSheet.softSkillsList,
+        techSkillsList: skillsSheet.techSkillsList,
+        mailVersionAuthor: skillsSheet.mailVersionAuthor
     }
 
     return this.httpClient
@@ -125,24 +126,24 @@ export class SkillsSheetService {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+      'Authorization': token != "" ? token : ''
     });
     let options = { headers: headers };
 
     let postParams = {
         name: skillsSheet.name,
-        role: skillsSheet.role,
-        personMail: skillsSheet.personMail,
-        softskills: skillsSheet.softskills,
-        techskills: skillsSheet.techskills,
-        authorMail: skillsSheet.authorMail
+        rolePersonAttachedTo: skillsSheet.rolePersonAttachedTo,
+        mailPersonAttachedTo: skillsSheet.mailPersonAttachedTo,
+        softSkillsList: skillsSheet.softSkillsList,
+        techSkillsList: skillsSheet.techSkillsList,
+        mailVersionAuthor: skillsSheet.mailVersionAuthor
     }
 
     return this.httpClient
         .patch(environment.serverAddress + '/skillsheet', postParams, options)
         .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
   }
-  
+
   handleSkillsSheetError(error){
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;

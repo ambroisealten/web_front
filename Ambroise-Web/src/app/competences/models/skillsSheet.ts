@@ -5,42 +5,44 @@ export class SkillsSheet {
       name: string;
       versionNumber: String;
       mailPersonAttachedTo: String;
-      softskills: any[];
-      techskills: any[];
-      authorMail: String;
+      softSkillsList: any[];
+      techSkillsList: any[];
+      mailVersionAuthor: String;
       person: Person;
+      rolePersonAttachedTo: PersonRole;
 
     constructor(name: string, person: Person) {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
-      this.softskills = [];
-      this.techskills = [];
-      this.authorMail = "";
-      this.person = person ; 
+      this.softSkillsList = [];
+      this.techSkillsList = [];
+      this.mailVersionAuthor = "";
+      this.person = person ;
+      this.rolePersonAttachedTo = person.role;
     }
 
     addTechSkill(skill: Skill) {
-      this.techskills.push(skill);
+      this.techSkillsList.push(skill);
     }
 
     getPerson(){
-      return this.person ; 
+      return this.person ;
     }
 
     removeTechSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.techskills.findIndex(skill => skill.skillName === skillToRemove);
+      let skillToRemoveIndex = this.techSkillsList.findIndex(skill => skill.skillName === skillToRemove);
 
-      this.techskills.splice(skillToRemoveIndex, 1);
+      this.techSkillsList.splice(skillToRemoveIndex, 1);
     }
 
     addSoftSkill(skill: Skill) {
-      this.softskills.push(skill);
+      this.softSkillsList.push(skill);
     }
 
     removeSoftSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.softskills.findIndex(skill => skill.skillName === skillToRemove);
+      let skillToRemoveIndex = this.softSkillsList.findIndex(skill => skill.skillName === skillToRemove);
 
-      this.softskills.splice(skillToRemoveIndex, 1);
+      this.softSkillsList.splice(skillToRemoveIndex, 1);
     }
 }
 

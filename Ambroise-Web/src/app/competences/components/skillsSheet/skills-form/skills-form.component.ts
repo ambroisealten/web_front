@@ -47,18 +47,18 @@ export class SkillsFormComponent implements OnInit {
 
   ngOnInit() {
     this.skillsSheetService.skillsSheetObservable.subscribe(skillsSheet => {
-      this.currentPerson = skillsSheet.getPerson() ; 
-      this.currentSkillsSheet = skillsSheet ; 
+      this.currentPerson = skillsSheet.getPerson() ;
+      this.currentSkillsSheet = skillsSheet ;
     })
 
-    this.skillsArray = this.currentSkillsSheet.techskills;
-    this.softSkillsArray = this.currentSkillsSheet.softskills;
+    this.skillsArray = this.currentSkillsSheet.techSkillsList;
+    this.softSkillsArray = this.currentSkillsSheet.softSkillsList;
 
     this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
     this.formItems = this.skillsSheetService.candidateFormItems;
 
-    this.skillsSheetService.updateSkills(this.currentSkillsSheet.techskills);
-    this.skillsSheetService.updateSoftSkills(this.currentSkillsSheet.softskills);
+    this.skillsSheetService.updateSkills(this.currentSkillsSheet.techSkillsList);
+    this.skillsSheetService.updateSoftSkills(this.currentSkillsSheet.softSkillsList);
 
     // init charts
     this.updateChartSkills('skills');
