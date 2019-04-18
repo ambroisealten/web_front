@@ -13,10 +13,10 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 export class PersonSkillsService {
 
   constructor(private httpClient: HttpClient) { }
-
+  /*
   private personInformation = new BehaviorSubject(undefined);
   personObservable = this.personInformation.asObservable();
-
+  */
   createNewPerson(person: Person) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
@@ -45,15 +45,36 @@ export class PersonSkillsService {
       urlRequest = environment.serverAddress + '/consultant';
 
     return this.httpClient
-        .post(urlRequest, postParams, options)
+        .post<Person>(urlRequest, person, options)
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
+
+  updatePerson(person: Person) {
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    let urlRequest :string;
+    if(person.role === PersonRole.APPLICANT)
+      urlRequest = environment.serverAddress + '/applicant';
+    else
+      urlRequest = environment.serverAddress + '/consultant';
+
+    return this.httpClient
+        .patch(urlRequest, person, options)
+        .pipe(timeout(5000), catchError(err => this.handleError(err)));
+  }
+
 
   handleError(error) {
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
 
+  /*
   notifyPersoninformation(person: {} | Person){
     this.personInformation.next(person);
   }
@@ -61,4 +82,5 @@ export class PersonSkillsService {
   resetPersonInformation(){
     this.personInformation.next(undefined);
   }
+  */
 }

@@ -6,6 +6,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { PersonRole, Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
+import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -34,18 +35,40 @@ export class PageSkillsHomeComponent implements OnInit {
       {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
           if(httpResponse != undefined) {
-            this.hasToRedirect(newPerson);
+            this.skillsSheetService.getAllSkillSheets().subscribe(skillSheetsListData => this.checkNameUnicity(skillSheetsListData,newPerson));
           }
         });
       }
     });
   }
 
-  hasToRedirect(person: {} | Person){
-    if(person != undefined){
-      this.personSkillsService.notifyPersoninformation(person);
-      this.redirectToSkillsSheet();
+  checkNameUnicity(skillSheetsListData,person){
+    let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
+    let trigramme = person.name.substring(0,1) + person.surname.substring(0,2);
+    let tmpSkillsSheetName =  date + '-' + trigramme;
+    let skillSheetsList: SkillsSheet[];
+    let skillSheetsNamesList = [];
+    if(skillSheetsListData != undefined) {
+      skillSheetsList = skillSheetsListData as SkillsSheet[];
+      skillSheetsList.forEach(skillsSheet => {
+        skillSheetsNamesList.push(skillsSheet.name);
+      });
+ 
+      let i = 1;
+      while(skillSheetsNamesList.indexOf(tmpSkillsSheetName.toUpperCase()) != -1) {
+        trigramme = trigramme.substring(0,2) + i.toString();
+        tmpSkillsSheetName =  date + '-' + trigramme;
+        i++;
+      }
     }
+    let currentSkillsSheet = new SkillsSheet(tmpSkillsSheetName,person)
+    this.skillsSheetService.createNewSkillsSheet(currentSkillsSheet).subscribe(httpResponse => {
+      if(httpResponse != undefined) {
+        this.skillsSheetService.notifySkillsSheetinformation(currentSkillsSheet) ; 
+        this.redirectToSkillsSheet() ; 
+      }
+    })
+
   }
 
   redirectToSkillsSheet() {

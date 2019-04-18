@@ -9,6 +9,7 @@ export class SkillsSheet {
       softskills: any[];
       techskills: any[];
       authorMail: String;
+      person: Person;
 
     constructor(name: string, person: Person) {
       this.name = name;
@@ -17,10 +18,15 @@ export class SkillsSheet {
       this.softskills = [];
       this.techskills = [];
       this.authorMail = "";
+      this.person = person ; 
     }
 
     addTechSkill(skill: Skill) {
       this.techskills.push(skill);
+    }
+
+    getPerson(){
+      return this.person ; 
     }
 
     removeTechSkill(skillToRemove: Skill) {
