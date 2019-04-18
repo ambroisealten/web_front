@@ -16,48 +16,10 @@ export class SkillsSheetService {
   /**
   * Temporary hardcoded json for data
   */
-  ficheCompetence =  [
-    {
-      NameOfFiche: "010718MM",
-      NomPersonne: "MAQUINGHEN",
-      PrenomPersonne: "Maxime",
-      StatutPersonne: "Consultant",
-      DiplomeFiche: "Epitech",
-      EmployeurFiche: "Alten",
-      metierFiche: "Chef de Projet",
-      DisponibiliteFiche: "07/01/2019",
-      AnneediplomeFiche: "2019",
-      SalaireFiche: "15000€/an",
-      AvisFiche: "A",
-      CommentaireFiche: "ça va",
-    }
-  ];
 
-  skillsArray = [
-    {
-      skillName: 'Python',
-      grade: "4",
-    },
-    {
-      skillName: 'C++',
-      grade: "3",
-    },
-    {
-      skillName: "Angular",
-      grade: "2",
-    }
-  ];
+  skillsArray = [];
 
-  softSkillsArray = [
-    {
-      skillName: 'Gestion de Projet',
-      grade: "4",
-    },
-    {
-      skillName: 'Cycle en V',
-      grade: "4",
-    }
-  ];
+  softSkillsArray = [];
 
   lastModificationsArray = [
     {
@@ -135,48 +97,6 @@ export class SkillsSheetService {
 
   constructor(private httpClient: HttpClient) { }
 
-  private personInformation = new BehaviorSubject(undefined);
-  personObservable = this.personInformation.asObservable();
-
-  checkPersonExistence(personMail: String, isApplicant: boolean):Observable<{} | Person> {
-    let token = window.sessionStorage.getItem("bearerToken");
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-    });
-    let options = { headers: headers };
-
-    let urlRequest :string;
-    if(isApplicant)
-      urlRequest = environment.serverAddress + '/applicant/' + personMail;
-    else
-      urlRequest = environment.serverAddress + '/consultant/' + personMail;
-
-    return this.httpClient
-        .get<Person>(urlRequest, options)
-        .pipe(timeout(5000), catchError(err => this.handlePersonError(err)));
-  }
-
-  handlePersonError(err){
-    switch(err.status) {
-      case 404 :
-        this.personInformation.next(false); // person not found in DB
-        break;
-      default:
-        LoggerService.log('New error : ' + err, LogLevel.DEBUG); // TODO add errors in switch/case
-        break;
-    }
-    return undefined ;
-  }
-
-  notifyPersoninformation(person: {} | Person){
-    this.personInformation.next(person)
-  }
-
-  resetPersonInformation(){
-    this.personInformation.next(undefined);
-  }
-
   private skillSheetInformation = new BehaviorSubject(undefined);
   skillsSheetObservable = this.skillSheetInformation.asObservable();
 
@@ -188,7 +108,6 @@ export class SkillsSheetService {
     });
     let options = { headers: headers };
 
-    debugger;
     let postParams = {
         name: skillsSheet.name,
         role: skillsSheet.role,
@@ -204,16 +123,34 @@ export class SkillsSheetService {
   }
 
   handleSkillsSheetError(error){
-    console.log(error);
+    LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
 
   notifySkillsSheetinformation(skillsSheet: {} | SkillsSheet){
-    this.skillSheetInformation.next(skillsSheet)
+    this.skillSheetInformation.next(skillsSheet);
   }
 
   resetSkillsSheetInformation(){
     this.skillSheetInformation.next(undefined);
+  }
+
+  getAllSkillSheets():Observable<{} | SkillsSheet[]>{
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    return this.httpClient
+        .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheets', options)
+        .pipe(timeout(5000), catchError(error => this.handleskillSheetsListError(error)));
+  }
+
+  handleskillSheetsListError(error){
+    LoggerService.log(error, LogLevel.DEBUG); // TODO add errors in switch/case
+    return undefined;
   }
 
   /**

@@ -57,10 +57,8 @@ export class ModalSkillsCandidateComponent implements OnInit {
     let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
 
     let newPerson: Person = new Person(this.lastname, this.firstname, this.email, personRole);
-    let newSkillsSheet: SkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
 
-    let personAndSkillsSheet = [newPerson, newSkillsSheet];
-    this.dialogRef.close(personAndSkillsSheet);
+    this.dialogRef.close(newPerson);
   }
 
 }

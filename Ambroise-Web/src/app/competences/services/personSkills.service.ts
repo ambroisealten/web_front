@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Person, PersonRole } from '../models/person';
 import { catchError, timeout } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Injectable()
 /**
@@ -49,7 +50,15 @@ export class PersonSkillsService {
   }
 
   handleError(error) {
-    console.log(error);
+    LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
+  }
+
+  notifyPersoninformation(person: {} | Person){
+    this.personInformation.next(person);
+  }
+
+  resetPersonInformation(){
+    this.personInformation.next(undefined);
   }
 }

@@ -5,6 +5,8 @@ import { MatDialog } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Person } from 'src/app/competences/models/person';
+import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -31,37 +33,74 @@ export class SkillsFormComponent implements OnInit {
 
   formItems: any[];
 
-  skillsSheet: any;
-
   skillsChart = Chart;
   softSkillsChart = Chart;
 
   showPassToConsultant: boolean = true;
 
   currentPerson: Person;
+  currentSkillsSheet: SkillsSheet;
 
   avis: string;
 
-  constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog) { }
+  constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog, private personSkillsService: PersonSkillsService) { }
 
   ngOnInit() {
-    this.skillsArray = this.skillsSheetService.skillsArray;
-    this.softSkillsArray = this.skillsSheetService.softSkillsArray;
+    this.personSkillsService.personObservable.subscribe(person => {
+      if(person != undefined) {
+        this.currentPerson = person;
+        this.currentSkillsSheet = new SkillsSheet(this.setSkillsSheetName(person), person);
+        this.personSkillsService.resetPersonInformation();
+      }
+    });
+
+    this.skillsArray = this.currentSkillsSheet.techskills;
+    this.softSkillsArray = this.currentSkillsSheet.softskills;
+
     this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
     this.formItems = this.skillsSheetService.candidateFormItems;
-    this.skillsSheet = this.skillsSheetService.ficheCompetence[0];
+
+    this.skillsSheetService.updateSkills(this.currentSkillsSheet.techskills);
+    this.skillsSheetService.updateSoftSkills(this.currentSkillsSheet.softskills);
 
     // init charts
     this.updateChartSkills('skills');
     this.updateChartSkills('softSkills');
+  }
 
-    this.skillsSheetService.personObservable.subscribe(person => {
-      if(person != undefined) {
-        this.currentPerson = person;
-        console.log(person);
-        this.skillsSheetService.resetPersonInformation();
+  setSkillsSheetName(person: Person) {
+    let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
+    let trigramme = this.currentPerson.name.substring(0,1) + this.currentPerson.surname.substring(0,2);
+
+    let tmpSkillsSheetName =  date + '-' + trigramme;
+
+    let skillSheetsList: SkillsSheet[];
+    let skillSheetsNamesList = [];
+
+    // get all skillsheets names to check unicity
+    this.skillsSheetService.getAllSkillSheets().subscribe(skillSheetsListData => {
+     if(skillSheetsListData != undefined) {
+        skillSheetsList = skillSheetsListData as SkillsSheet[];
+        skillSheetsList.forEach(skillsSheet => {
+          skillSheetsNamesList.push(skillsSheet.name);
+        });
+
+        let i = 1;
+        while(skillSheetsNamesList.indexOf(tmpSkillsSheetName.toUpperCase()) != -1) {
+          trigramme = trigramme.substring(0,2) + i.toString();
+          tmpSkillsSheetName =  date + '-' + trigramme;
+          i++;
+        }
+        return tmpSkillsSheetName;
       }
     });
+
+
+    return undefined;
+  }
+
+  translate(roleName) {
+    return roleName === 'applicant' ? 'Candidat' : 'Consultant';
   }
 
   /**

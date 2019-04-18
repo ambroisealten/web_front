@@ -11,12 +11,6 @@ export class Person {
   urlDocs: String[];
   highestDiploma: String;
 
-  StatutPersonne: String;
-  DisponibiliteFiche: String;
-  AnneediplomeFiche: String;
-  AvisFiche: String;
-  CommentaireFiche: String;
-
   constructor(surname:String, name:String, mail:String, role:PersonRole) {
     this.surname = surname;
     this.name = name;

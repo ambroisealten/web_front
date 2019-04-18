@@ -1,5 +1,5 @@
 <div class="currentSheetInfo">
-  <p> {{ skillsSheet.NameOfFiche }} - {{ currentPerson.name }} {{ currentPerson.surname }} ({{ currentPerson.role }})</p>
+  <p> {{ currentSkillsSheet.name }} - {{ currentPerson.name }} {{ currentPerson.surname }} ({{ translate(currentPerson.role) }})</p>
   <div *ngIf="showPassToConsultant"><button mat-raised-button color="primary" class="toConsultantButton" (click)="passToConsultant()"> Passage consultant </button></div>
 </div>
 

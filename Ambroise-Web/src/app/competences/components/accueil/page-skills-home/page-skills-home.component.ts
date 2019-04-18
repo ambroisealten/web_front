@@ -29,24 +29,21 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(newPersonAndSkillsData => {
-      if(newPersonAndSkillsData != undefined)
-        this.personSkillsService.createNewPerson(newPersonAndSkillsData[0]).subscribe(httpResponse => console.log(httpResponse));
-        this.skillsSheetService.createNewSkillsSheet(newPersonAndSkillsData[1]).subscribe(httpResponse => console.log(httpResponse));
-      });
-  }
-
-  checkExistence(newPersonData: Person){
-    if(newPersonData != undefined) {
-      let newPersonMail = newPersonData.mail;
-      let isApplicant = newPersonData.role === PersonRole.APPLICANT;
-      this.skillsSheetService.checkPersonExistence(newPersonMail, isApplicant).subscribe(person => this.hasToRedirect(person));
-    }
+    dialogRef.afterClosed().subscribe(newPerson => {
+      if(newPerson != undefined)
+      {
+        this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
+          if(httpResponse != undefined) {
+            this.hasToRedirect(newPerson);
+          }
+        });
+      }
+    });
   }
 
   hasToRedirect(person: {} | Person){
     if(person != undefined){
-      this.skillsSheetService.notifyPersoninformation(person);
+      this.personSkillsService.notifyPersoninformation(person);
       this.redirectToSkillsSheet();
     }
   }
