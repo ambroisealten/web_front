@@ -100,7 +100,7 @@ export class SkillsSheetService {
   private skillSheetInformation = new BehaviorSubject(undefined);
   skillsSheetObservable = this.skillSheetInformation.asObservable();
 
-  createNewSkillsSheet(skillsSheet: SkillsSheet):Observable<{} | SkillsSheet> {
+  createNewSkillsSheet(skillsSheet: SkillsSheet) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -121,12 +121,34 @@ export class SkillsSheetService {
         .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
   }
 
+  updateSkillsSheet(skillsSheet: SkillsSheet){
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    let postParams = {
+        name: skillsSheet.name,
+        role: skillsSheet.role,
+        personMail: skillsSheet.personMail,
+        softskills: skillsSheet.softskills,
+        techskills: skillsSheet.techskills,
+        authorMail: skillsSheet.authorMail
+    }
+
+    return this.httpClient
+        .patch(environment.serverAddress + '/skillsheet', postParams, options)
+        .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
+  }
+  
   handleSkillsSheetError(error){
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
 
-  notifySkillsSheetinformation(skillsSheet: {} | SkillsSheet){
+  notifySkillsSheetinformation(skillsSheet: SkillsSheet){
     this.skillSheetInformation.next(skillsSheet);
   }
 

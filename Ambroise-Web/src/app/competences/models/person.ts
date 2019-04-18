@@ -5,17 +5,25 @@ export class Person {
   name: String;
   job: String;
   employer: String;
-  monthlyWage: number;
+  monthlyWage: Number;
   role: PersonRole;
-  personInCharge: String;
+  personInChargeMail: String;
   urlDocs: String[];
   highestDiploma: String;
+  highestDiplomaYear: String ;
 
   constructor(surname:String, name:String, mail:String, role:PersonRole) {
     this.surname = surname;
     this.name = name;
     this.mail = mail;
     this.role = role;
+    this.job = "" ;
+    this.employer = "" ;
+    this.monthlyWage = 0 ; 
+    this.personInChargeMail = "" ; 
+    this.urlDocs = [] ; 
+    this.highestDiploma = "" ;
+    this.highestDiplomaYear = "" ; 
   }
 }
 

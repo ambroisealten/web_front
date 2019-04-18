@@ -46,13 +46,10 @@ export class SkillsFormComponent implements OnInit {
   constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog, private personSkillsService: PersonSkillsService) { }
 
   ngOnInit() {
-    this.personSkillsService.personObservable.subscribe(person => {
-      if(person != undefined) {
-        this.currentPerson = person;
-        this.currentSkillsSheet = new SkillsSheet(this.setSkillsSheetName(person), person);
-        this.personSkillsService.resetPersonInformation();
-      }
-    });
+    this.skillsSheetService.skillsSheetObservable.subscribe(skillsSheet => {
+      this.currentPerson = skillsSheet.getPerson() ; 
+      this.currentSkillsSheet = skillsSheet ; 
+    })
 
     this.skillsArray = this.currentSkillsSheet.techskills;
     this.softSkillsArray = this.currentSkillsSheet.softskills;
@@ -66,37 +63,6 @@ export class SkillsFormComponent implements OnInit {
     // init charts
     this.updateChartSkills('skills');
     this.updateChartSkills('softSkills');
-  }
-
-  setSkillsSheetName(person: Person) {
-    let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
-    let trigramme = this.currentPerson.name.substring(0,1) + this.currentPerson.surname.substring(0,2);
-
-    let tmpSkillsSheetName =  date + '-' + trigramme;
-
-    let skillSheetsList: SkillsSheet[];
-    let skillSheetsNamesList = [];
-
-    // get all skillsheets names to check unicity
-    this.skillsSheetService.getAllSkillSheets().subscribe(skillSheetsListData => {
-     if(skillSheetsListData != undefined) {
-        skillSheetsList = skillSheetsListData as SkillsSheet[];
-        skillSheetsList.forEach(skillsSheet => {
-          skillSheetsNamesList.push(skillsSheet.name);
-        });
-
-        let i = 1;
-        while(skillSheetsNamesList.indexOf(tmpSkillsSheetName.toUpperCase()) != -1) {
-          trigramme = trigramme.substring(0,2) + i.toString();
-          tmpSkillsSheetName =  date + '-' + trigramme;
-          i++;
-        }
-        return tmpSkillsSheetName;
-      }
-    });
-
-
-    return undefined;
   }
 
   translate(roleName) {
