@@ -1,6 +1,6 @@
 <div class="admin-document">
 
-  <h1>Documents</h1>
+  <h1>Documents de l'application</h1>
   <hr>
 
   <table id="documentsTable">
@@ -14,7 +14,7 @@
     <tbody>
       <ng-container *ngFor="let document of getDocuments() ">
         <tr>
-          <td><span id="download" (click)="visualize(document.getUri())">{{document.getUri()}}</span><button class="removeButton" mat-icon-button (click)="removeDocument(document)">x</button></td>
+          <td><span class="download" (click)="visualize(document.getUri())">{{document.getUri()}}</span><button class="removeButton" mat-icon-button (click)="removeDocument(document)">x</button></td>
           <td>{{document.getDateOfModification() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
           <td><input type="checkbox" [checked]="document.isForForum" (change)="document.toogleStatus()"></td>
         </tr>
@@ -22,4 +22,42 @@
     </tbody>
   </table>
 
+</div>
+
+<div class="admin-document-forum">
+    <h2>Documents affichés dans le menu Forum</h2>
+
+    <div class="example-container">
+      <h2>Documents en stock</h2>
+      <div
+      cdkDropList
+      #docsList="cdkDropList"
+      [cdkDropListData]="filesForForum"
+      [cdkDropListConnectedTo]="[docsForumList]"
+      class="example-list"
+      (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of filesForForum" cdkDrag [cdkDragDisabled]="!item.getIsForForum()">
+          {{ item.uri }}
+        </div>
+      </div>
+    </div>
+    
+    <div class="example-container">
+      <h2>Documents dans le menu</h2>
+      <div
+        cdkDropList
+        #docsForumList="cdkDropList"
+        [cdkDropListData]="filesForum"
+        [cdkDropListConnectedTo]="[docsList]"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let item of filesForum" cdkDrag>
+            {{ item.getUri() }}
+          </div>
+      </div>
+    </div>
+
+    <form (submit)="submitListForum()">
+      <input class="mat-raised-button customButton" type="submit" value="Enregistrer">
+    </form>  
 </div>

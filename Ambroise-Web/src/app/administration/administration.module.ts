@@ -8,10 +8,11 @@ import { MatDialogModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoMaterialModule } from '../utils/material-modules';
 import { AdminService } from './services/admin.service';
+import { AdminDocumentMenuForumComponent } from './components/admin-document-menu-forum/admin-document-menu-forum.component';
 
 
 @NgModule({
-  declarations: [AdminDocumentComponent, AdminDataAppComponent, DataAgencyDialogComponent],
+  declarations: [AdminDocumentComponent, AdminDataAppComponent, DataAgencyDialogComponent, AdminDocumentMenuForumComponent],
   imports: [
     CommonModule,
     AdministrationRoutingModule,

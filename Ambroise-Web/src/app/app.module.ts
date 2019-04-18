@@ -25,7 +25,7 @@ import { CompetencesModule } from './competences/competences.module';
 
 // SERVICE
 import { LoggerService } from './services/logger.service';
-import { IsNotLoginService } from './services/isNotLogin.service' ;
+import { IsNotLoginService } from './services/isNotLogin.service';
 
 @NgModule({
   declarations: [
