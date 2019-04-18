@@ -14,7 +14,7 @@
     <tbody>
       <ng-container *ngFor="let document of getDocuments() ">
         <tr>
-          <td><span id="download" (click)="visualize(document.getUri())">{{document.getUri()}}</span></td>
+          <td><span id="download" (click)="visualize(document.getUri())">{{document.getUri()}}</span><button class="removeButton" mat-icon-button (click)="removeDocument(document)">x</button></td>
           <td>{{document.getDateOfModification() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
           <td><input type="checkbox" [checked]="document.isForForum" (change)="document.toogleStatus()"></td>
         </tr>
