@@ -4,9 +4,7 @@
 
 <div class="grid-container">
   <div class="infoForm">
-    <mat-form-field *ngFor="let item of formItems; let index = index;">
-      <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" >
-    </mat-form-field>
+    <mat-label class="labelInfos" *ngFor="let item of formItems"> {{ item.label }} {{ currentPerson[item.id] }}</mat-label>
 
     <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
 

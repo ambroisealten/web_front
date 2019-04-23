@@ -3,13 +3,13 @@
         {
           "label" : "Diplôme",
           "type": "text",
-          "id": "diploma",
+          "id": "highestDiploma",
           "model": "" 
         },
         {
           "label": "Année de diplôme",
           "type": "text",
-          "id": "diplomaYear",
+          "id": "highestDiplomaYear",
           "model": "" 
         },
         {
@@ -39,7 +39,7 @@
         {
           "label": "Prétention salariale",
           "type": "number",
-          "id": "wageClaim",
+          "id": "monthlyWage",
           "model": "" 
         }
       ],
@@ -48,12 +48,12 @@
         {
           "label": "Diplôme",
          "type": "text",
-          "id": "diploma"
+          "id": "highestDiploma"
         },
         {
           "label": "Année de diplôme",
           "type": "text",
-          "id": "diplomaYear"
+          "id": "highestDiplomaYear"
         },
         {
           "label": "Métier",
@@ -63,7 +63,7 @@
         {
           "label": "Salaire",
           "type": "number",
-          "id": "wage"
+          "id": "monthlyWage"
         }
       ]
 }

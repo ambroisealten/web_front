@@ -17,6 +17,8 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
+
+
   skillsSheetDataSource: MatTableDataSource<SkillsSheet>;
   displayedColumns: string[] = ['Mail', 'Nom fiche', 'Moyenne Soft Skills'];
 
@@ -30,6 +32,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
+      if (skillsSheetList != undefined){
       this.skillsSheetDataSource = this.initDataSource(skillsSheetList); //new MatTableDataSource(skillsSheetList as SkillsSheet[]);
 
       // TEMP FOR PAGINATION TESTS
@@ -51,6 +54,7 @@ export class PageSkillsHomeComponent implements OnInit {
         });
       }
       });
+      }
     });
 
     setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
@@ -88,6 +92,13 @@ export class PageSkillsHomeComponent implements OnInit {
   */
   applyFilterSkillsSheets(filterValue: string) {
     this.skillsSheetDataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  navigateToSkillsSheet(skillsSheetData) {
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo, skillsSheetData.rolePersonAttachedTo).subscribe( person => {   
+        this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
+        this.redirectToSkillsSheet();
+      });
   }
 
   /**

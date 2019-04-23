@@ -5,10 +5,11 @@ import { MatDialog } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router } from '@angular/router';
+import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
 
 @Component({
   selector: 'app-skills-form',
@@ -61,10 +62,13 @@ export class SkillsFormComponent implements OnInit {
       this.skillsArray = this.currentSkillsSheet.techSkillsList;
       this.softSkillsArray = this.currentSkillsSheet.softSkillsList;
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
+      this.arrayObsService.notifySkills(this.currentSkillsSheet.techSkillsList) ; 
+      this.arrayObsService.notifySoftSkills(this.currentSkillsSheet.softSkillsList)
       }
     })
-    
     let formItemsJSON = require('../../../resources/formItems.json');
+    let a = "1" ;
+    console.log("Mon rôle est : " +  this.currentPerson.role + " / Je suis un consultant ?  " );
     if(this.currentPerson.role == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
     } else if (this.currentPerson.role == PersonRole.CONSULTANT ){
@@ -116,22 +120,22 @@ export class SkillsFormComponent implements OnInit {
     this.showPassToConsultant = false;
   }
 
-  updateChartSkills(arraySkills: any[]){
+  updateChartSkills(arraySkills: Skill[]){
     let skillsLabels: string[] = [];
-    let skillsData: string[] = [];
+    let skillsData: number[] = [];
     arraySkills.forEach(function(skill) {
-      skillsLabels.push(skill.skillName);
+      skillsLabels.push(skill.name);
       skillsData.push(skill.grade);
     });
     this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
     this.currentSkillsSheet.techSkillsList = arraySkills ; 
   }
 
-  updateChartSoftSkills(arraySoftSkills: any[]){
+  updateChartSoftSkills(arraySoftSkills: Skill[]){
     let skillsLabels: string[] = [];
-    let skillsData: string[] = [];
+    let skillsData: number[] = [];
     arraySoftSkills.forEach(function(skill) {
-      skillsLabels.push(skill.skillName);
+      skillsLabels.push(skill.name);
       skillsData.push(skill.grade);
     });
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
@@ -167,7 +171,7 @@ export class SkillsFormComponent implements OnInit {
       options: {
         scale: {
           ticks: {
-            min: 0,
+            min: 1,
             max: 4,
             step: 0.5
           }
