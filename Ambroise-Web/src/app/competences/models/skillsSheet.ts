@@ -5,11 +5,12 @@ export class SkillsSheet {
       name: string;
       versionNumber: String;
       mailPersonAttachedTo: String;
-      softSkillsList: any[];
-      techSkillsList: any[];
+      softSkillsList: Skill[];
+      techSkillsList: Skill[];
       mailVersionAuthor: String;
       person: Person;
       rolePersonAttachedTo: PersonRole;
+      averageSoftSkillsGrade: number;
 
     constructor(name: string, person: Person) {
       this.name = name;
@@ -19,6 +20,7 @@ export class SkillsSheet {
       this.mailVersionAuthor = "";
       this.person = person ;
       this.rolePersonAttachedTo = person.role;
+      this.averageSoftSkillsGrade = 0;
     }
 
     addTechSkill(skill: Skill) {
@@ -30,7 +32,7 @@ export class SkillsSheet {
     }
 
     removeTechSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.techSkillsList.findIndex(skill => skill.skillName === skillToRemove);
+      let skillToRemoveIndex = this.techSkillsList.findIndex(skill => skill === skillToRemove);
 
       this.techSkillsList.splice(skillToRemoveIndex, 1);
     }
@@ -40,9 +42,17 @@ export class SkillsSheet {
     }
 
     removeSoftSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.softSkillsList.findIndex(skill => skill.skillName === skillToRemove);
+      let skillToRemoveIndex = this.softSkillsList.findIndex(skill => skill === skillToRemove);
 
       this.softSkillsList.splice(skillToRemoveIndex, 1);
+    }
+
+    getAverageSoftSkillGrade() {
+      let sumGrades = 0;
+      for(let softSkill of this.softSkillsList) {
+        sumGrades += softSkill.grade;
+      }
+      return sumGrades / this.softSkillsList.length;
     }
 }
 

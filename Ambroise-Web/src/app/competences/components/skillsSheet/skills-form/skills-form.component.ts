@@ -47,7 +47,6 @@ export class SkillsFormComponent implements OnInit {
 
   ngOnInit() {
     this.skillsSheetService.skillsSheetObservable.subscribe(skillsSheet => {
-      console.log(skillsSheet);
       this.personSkillsService.getPersonByMail(skillsSheet.mailPersonAttachedTo, skillsSheet.rolePersonAttachedTo).subscribe(currPerson => {
         if(currPerson != undefined) {
           this.currentPerson = currPerson as Person;

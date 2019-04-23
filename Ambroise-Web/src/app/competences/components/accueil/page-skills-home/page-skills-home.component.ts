@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
-import { MatDialogConfig, MatDialog, MatTableDataSource } from '@angular/material';
+import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
@@ -16,13 +16,24 @@ import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 export class PageSkillsHomeComponent implements OnInit {
 
   skillsSheetDataSource: MatTableDataSource<SkillsSheet>;
-  displayedColumns: string[] = ['Mail', 'Nom fiche'];
+  displayedColumns: string[] = ['Mail', 'Nom fiche', 'Moyenne Soft Skills'];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private dialog: MatDialog, private router: Router, private skillsSheetService: SkillsSheetService, private personSkillsService: PersonSkillsService) { }
 
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
-      this.skillsSheetDataSource = new MatTableDataSource(skillsSheetList as SkillsSheet[]);
+      this.skillsSheetDataSource = this.initDataSource(skillsSheetList); //new MatTableDataSource(skillsSheetList as SkillsSheet[]);
+
+      // TEMP FOR PAGINATION TESTS
+      for(let i = 0; i < 10; i++)
+       {
+        this.skillsSheetDataSource.data.push(skillsSheetList[0] as SkillsSheet);
+      }
+
+
+
       let tmpSkillsSheetList = skillsSheetList as SkillsSheet[];
       tmpSkillsSheetList.forEach(sheet => {
         if(sheet != undefined) {
@@ -34,12 +45,35 @@ export class PageSkillsHomeComponent implements OnInit {
         });
       }
       });
-    })
+    });
+
+    setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
   }
 
   initDataSource(skillsSheetsList) {
     let skillsSheets = skillsSheetsList as SkillsSheet[];
-    let personsList: Person[] = [];
+    let dataSource = new MatTableDataSource(skillsSheets);
+
+    for(let elt of dataSource.data) {
+      let sumSoftSkills = 0;
+      for(let softSkill of elt.softSkillsList) {
+        sumSoftSkills += this.literalToNumericGrade(softSkill.grade);
+      }
+      elt.averageSoftSkillsGrade = Math.round((sumSoftSkills / elt.softSkillsList.length) * 10) / 10;
+    }
+
+    return dataSource;
+  }
+
+  literalToNumericGrade(grade) {
+    switch(grade) {
+      case 'ONE': return 1;
+      case 'ONEANDAHALF': return 1.5;
+      case 'TWO': return 2;
+      case 'THREE': return 3;
+      case 'FOUR': return 4;
+      default: return 0;
+    }
   }
 
   /**
@@ -51,15 +85,12 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    console.log(skillsSheetData);
-
     this.skillsSheetService.notifySkillsSheetinformation(skillsSheetData);
     this.redirectToSkillsSheet();
   }
 
   /**
-  * Create a new applicant/consultant with his skillsSheet
-  * Temporary function here, will be in header menu or home page
+  * Create a new skillsSheet
   */
   createSkillsSheetModal() {
     const dialogConfig = new MatDialogConfig();
