@@ -85,11 +85,10 @@ export class PersonSkillsService {
     return this.httpClient
       .get<Person>(urlRequest, options)
       .pipe(timeout(5000), catchError(error => this.handleError(error)));
-    }
+  }
 
   handleError(error) {
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
-
 }

@@ -141,12 +141,7 @@ export class SkillsSheetService {
 
     return this.httpClient
         .patch(environment.serverAddress + '/skillsheet', postParams, options)
-        .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
-  }
-
-  handleSkillsSheetError(error){
-    LoggerService.log(error, LogLevel.DEBUG);
-    return undefined;
+        .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
   notifySkillsSheetinformation(skillsSheet: SkillsSheet){
@@ -167,10 +162,23 @@ export class SkillsSheetService {
 
     return this.httpClient
         .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheets', options)
-        .pipe(timeout(5000), catchError(error => this.handleskillSheetsListError(error)));
+        .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
-  handleskillSheetsListError(error){
+  checkSkillsSheetExistenceByMail(mail: string) {
+    let token = window.sessionStorage.getItem("bearerToken");
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    });
+    let options = { headers: headers };
+
+    return this.httpClient
+      .get<Person>(environment.serverAddress + "/skillsheetMail/" + mail, options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+  }
+
+  handleError(error){
     LoggerService.log(error, LogLevel.DEBUG); // TODO add errors in switch/case
     return undefined;
   }

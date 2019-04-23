@@ -98,7 +98,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(newPerson => {
+    /*dialogRef.afterClosed().subscribe(newPerson => {
       if(newPerson != undefined)
       {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
@@ -107,7 +107,13 @@ export class PageSkillsHomeComponent implements OnInit {
           }
         });
       }
-    });
+    });*/
+
+    dialogRef.afterClosed().subscribe(response => {
+      if(response != undefined) {
+        this.redirectToSkillsSheet();
+      }
+    })
   }
 
   checkNameUnicity(skillSheetsListData,person){
