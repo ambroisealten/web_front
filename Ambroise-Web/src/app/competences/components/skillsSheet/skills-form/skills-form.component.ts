@@ -6,7 +6,9 @@ import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.ser
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
-import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
+import { SkillsService } from 'src/app/competences/services/skills.service';
+import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-skills-form',
@@ -43,51 +45,37 @@ export class SkillsFormComponent implements OnInit {
 
   avis: string;
 
-  constructor(private skillsSheetService: SkillsSheetService, private dialog: MatDialog, private personSkillsService: PersonSkillsService) { }
+  constructor(private skillsService: SkillsService, 
+              private dialog: MatDialog,
+              private skillsSheetService: SkillsSheetService,
+              private arrayObsService: ArrayObsService,
+              private router: Router) { }
 
   ngOnInit() {
-    this.skillsSheetService.skillsSheetObservable.subscribe(skillsSheet => {
-      this.personSkillsService.getPersonByMail(skillsSheet.mailPersonAttachedTo, skillsSheet.rolePersonAttachedTo).subscribe(currPerson => {
-        if(currPerson != undefined) {
-          this.currentPerson = currPerson as Person;
-
-          this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-          let labelSalaire = this.currentPerson.role == PersonRole.APPLICANT ? 'Prétention salariale : ' : 'Salaire : ';
-          this.formItems = [
-            {
-              label: 'Diplôme : ',
-              text: this.currentPerson.highestDiploma
-            },
-            {
-              label: 'Année de diplôme : ',
-              text: this.currentPerson.highestDiplomaYear
-            },
-            {
-              label: 'Employeur : ',
-              text: this.currentPerson.employer
-            },
-            {
-              label: 'Métier : ',
-              text: this.currentPerson.job
-            },
-            {
-              label: labelSalaire,
-              text: this.currentPerson.monthlyWage
-            }
-          ];
-        }
-      });
-      this.currentSkillsSheet = skillsSheet ;
+    this.skillsService.skillsObservable.subscribe(skills => {
+      if(skills == undefined){
+        this.router.navigate(['skills']);
+      } else {
+      this.currentPerson = skills.person ; 
+      this.currentSkillsSheet = skills.skillsSheet ; 
       this.skillsArray = this.currentSkillsSheet.techSkillsList;
       this.softSkillsArray = this.currentSkillsSheet.softSkillsList;
-
-      this.skillsSheetService.updateSkills(this.currentSkillsSheet.techSkillsList);
-      this.skillsSheetService.updateSoftSkills(this.currentSkillsSheet.softSkillsList);
-
-      // init charts
-      this.updateChartSkills('skills');
-      this.updateChartSkills('softSkills');
+      this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
+      }
     })
+    
+    let formItemsJSON = require('../../../resources/formItems.json');
+    if(this.currentPerson.role == PersonRole.APPLICANT){
+      this.formItems = formItemsJSON["candidateFormItems"];
+    } else if (this.currentPerson.role == PersonRole.CONSULTANT ){
+      this.formItems = formItemsJSON["consultantFormItems"]
+    } else {
+      this.formItems = null ;
+    }
+
+    this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
+    this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ; 
+
   }
 
   translate(roleName) {
@@ -99,6 +87,7 @@ export class SkillsFormComponent implements OnInit {
   */
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
+    this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1) ; 
   }
 
   /**
@@ -123,63 +112,30 @@ export class SkillsFormComponent implements OnInit {
   * Do changes when passing from applicant to consultant : update form and send change to server with skillsSheetService
   */
   updatePersonStatus() {
-    this.formItems = this.skillsSheetService.consultantFormItems;
+    //this.formItems = this.skillsSheetService.consultantFormItems;
     this.showPassToConsultant = false;
   }
 
-  /**
-  * Function called when an event is received from ArraySkillsComponent
-  * @param  $skillType 'skills' or 'softSkills'
-  */
-  receiveMessage($skillType) {
-    switch($skillType) {
-      case('skills') :
-      {
-        this.skillsChart.destroy();
-        break;
-      }
-      case('softSkills') : {
-        this.softSkillsChart.destroy();
-        break;
-      }
-    }
-
-    this.updateChartSkills($skillType);
-  }
-
-  /**
-  * Get current data from skills service and updates the matrix
-  * @param  skillType 'skills' or 'softSkills'
-  */
-  updateChartSkills(skillType) {
+  updateChartSkills(arraySkills: any[]){
     let skillsLabels: string[] = [];
     let skillsData: string[] = [];
+    arraySkills.forEach(function(skill) {
+      skillsLabels.push(skill.skillName);
+      skillsData.push(skill.grade);
+    });
+    this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
+    this.currentSkillsSheet.techSkillsList = arraySkills ; 
+  }
 
-    switch(skillType) {
-      case('skills') :
-      {
-        this.skillsSheetService.getSkills().forEach(function(skill) {
-          skillsLabels.push(skill.skillName);
-          skillsData.push(skill.grade);
-        });
-        this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
-        break;
-      }
-      case('softSkills'):
-      {
-        this.skillsSheetService.getSoftSkills().forEach(function(skill) {
-          skillsLabels.push(skill.skillName);
-          skillsData.push(skill.grade);
-        });
-        this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
-        break;
-      }
-      default:
-      {
-        LoggerService.log('No such skillType ' + skillType, LogLevel.DEBUG);
-        break;
-      }
-    }
+  updateChartSoftSkills(arraySoftSkills: any[]){
+    let skillsLabels: string[] = [];
+    let skillsData: string[] = [];
+    arraySoftSkills.forEach(function(skill) {
+      skillsLabels.push(skill.skillName);
+      skillsData.push(skill.grade);
+    });
+    this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
+    this.currentSkillsSheet.softSkillsList = arraySoftSkills ; 
   }
 
   /**

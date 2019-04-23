@@ -7,6 +7,8 @@ import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.ser
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
+import { SkillsService } from 'src/app/competences/services/skills.service';
+import { Skills } from 'src/app/competences/models/skills';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -20,7 +22,11 @@ export class PageSkillsHomeComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private dialog: MatDialog, private router: Router, private skillsSheetService: SkillsSheetService, private personSkillsService: PersonSkillsService) { }
+  constructor(private dialog: MatDialog, 
+    private router: Router, 
+    private skillsSheetService: SkillsSheetService, 
+    private personSkillsService: PersonSkillsService,
+    private skillsService: SkillsService) { }
 
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
@@ -84,11 +90,6 @@ export class PageSkillsHomeComponent implements OnInit {
     this.skillsSheetDataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  navigateToSkillsSheet(skillsSheetData) {
-    this.skillsSheetService.notifySkillsSheetinformation(skillsSheetData);
-    this.redirectToSkillsSheet();
-  }
-
   /**
   * Create a new skillsSheet
   */
@@ -120,6 +121,7 @@ export class PageSkillsHomeComponent implements OnInit {
     let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
     let trigramme = person.name.substring(0,1) + person.surname.substring(0,2);
     let tmpSkillsSheetName =  date + '-' + trigramme;
+    tmpSkillsSheetName = tmpSkillsSheetName.toUpperCase() ;
     let skillSheetsList: SkillsSheet[];
     let skillSheetsNamesList = [];
     if(skillSheetsListData != undefined) {
@@ -135,11 +137,11 @@ export class PageSkillsHomeComponent implements OnInit {
         i++;
       }
     }
-    let currentSkillsSheet = new SkillsSheet(tmpSkillsSheetName,person)
+    let currentSkillsSheet = new SkillsSheet(tmpSkillsSheetName.toUpperCase(),person)
     this.skillsSheetService.createNewSkillsSheet(currentSkillsSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
-        this.skillsSheetService.notifySkillsSheetinformation(currentSkillsSheet) ;
-        this.redirectToSkillsSheet() ;
+        this.skillsService.notifySkills(new Skills(person,currentSkillsSheet));
+        this.redirectToSkillsSheet() ; 
       }
     })
 

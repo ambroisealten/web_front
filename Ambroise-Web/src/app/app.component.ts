@@ -30,7 +30,6 @@ export class AppComponent {
       try{
         this.componentRef.destroy() ; 
       } catch(e) {
-
       }
     } else {
       this.entry.clear() ;

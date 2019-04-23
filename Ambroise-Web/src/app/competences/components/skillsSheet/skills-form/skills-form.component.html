@@ -4,7 +4,9 @@
 
 <div class="grid-container">
   <div class="infoForm">
-    <mat-label class="labelInfos" *ngFor="let item of formItems"> {{ item.label }} {{ item. text }}</mat-label>
+    <mat-form-field *ngFor="let item of formItems; let index = index;">
+      <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" >
+    </mat-form-field>
 
     <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
 
@@ -27,8 +29,8 @@
   </div>
 
   <div class="skillsArrays">
-    <app-array-skills (messageEvent)="receiveMessage($event)" class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
-    <app-array-skills (messageEvent)="receiveMessage($event)" class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
+    <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
+    <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
     <button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
   </div>
 

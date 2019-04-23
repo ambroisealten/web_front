@@ -3,12 +3,11 @@ import { Person, PersonRole } from './person';
 export class SkillsSheet {
       id: String;
       name: string;
-      versionNumber: String;
+      versionNumber: number;
       mailPersonAttachedTo: String;
       softSkillsList: Skill[];
       techSkillsList: Skill[];
       mailVersionAuthor: String;
-      person: Person;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
 
@@ -17,18 +16,14 @@ export class SkillsSheet {
       this.mailPersonAttachedTo = person.mail;
       this.softSkillsList = [];
       this.techSkillsList = [];
+      this.versionNumber = 1 ; 
       this.mailVersionAuthor = "";
-      this.person = person ;
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }
 
     addTechSkill(skill: Skill) {
       this.techSkillsList.push(skill);
-    }
-
-    getPerson(){
-      return this.person ;
     }
 
     removeTechSkill(skillToRemove: Skill) {

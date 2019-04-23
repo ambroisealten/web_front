@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SkillsSheetService } from '../../../services/skillsSheet.service';
+import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 
 @Component({
   selector: 'app-array-skills',
@@ -17,14 +18,17 @@ export class ArraySkillsComponent implements OnInit {
   @Input() headerRowHidden: boolean; // is header row (columns title) hidden
   @Input() datatype: string; // 'skills' or 'softSkills'
 
-  @Output() messageEvent = new EventEmitter<string>(); // event when array is updated
-
   dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
 
-  constructor(private skillsSheetService: SkillsSheetService) { }
+  constructor(private skillsSheetService: SkillsSheetService,
+              private arrayObsService: ArrayObsService) { }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.dataSourceArray);
+    if(this.datatype == "skills"){
+      this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.dataSource = new MatTableDataSource(arraySkills));
+    } else {
+      this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.dataSource = new MatTableDataSource(arraySoftSkills));
+    }
   }
 
   setToZeroIfEmptyOrInvalid($event) {
@@ -56,9 +60,6 @@ export class ArraySkillsComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
         this.updateDataSourceInService();
-
-        // send message event to parent to update matrixes
-        this.messageEvent.emit(this.datatype);
       }
     }
   }
@@ -76,8 +77,6 @@ export class ArraySkillsComponent implements OnInit {
 
     this.updateDataSourceInService();
 
-    // send message event to parent to update matrixes
-    this.messageEvent.emit(this.datatype);
   }
 
   /**
@@ -89,23 +88,23 @@ export class ArraySkillsComponent implements OnInit {
     let grade = event.target.parentElement.childNodes[1].value;
 
     this.dataSourceArray.forEach(function(skill) {
-      if(skill.skillName == skillName)
-      skill.grade = grade;
+      if(skill.skillName == skillName){
+        skill.grade = grade;
+      }
     });
 
     this.updateDataSourceInService();
 
-    // send message event to parent to update matrixes
-    this.messageEvent.emit(this.datatype);
   }
 
   /**
   * Updates skills or softSkills array in skills service
   */
   updateDataSourceInService() {
-    if(this.datatype == "skills")
-    this.skillsSheetService.updateSkills(this.dataSourceArray);
-    else
-    this.skillsSheetService.updateSoftSkills(this.dataSourceArray);
+    if(this.datatype == "skills"){
+      this.arrayObsService.notifySkills(this.dataSourceArray);
+    } else { 
+      this.arrayObsService.notifySoftSkills(this.dataSourceArray);
+    }
   }
 }
