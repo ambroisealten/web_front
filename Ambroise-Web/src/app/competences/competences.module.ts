@@ -20,6 +20,9 @@ import { SkillsFormComponent } from './components/skillsSheet/skills-form/skills
 import { HeaderModule } from '../header/header.module';
 import { SkillsSheetService } from './services/skillsSheet.service';
 import { IsNotLoginService } from '../services/isNotLogin.service';
+import { SkillsService } from './services/skills.service';
+import { PersonSkillsService } from './services/personSkills.service';
+import { ArrayObsService } from './services/arrayObs.service';
 
 
 @NgModule({
@@ -48,7 +51,10 @@ import { IsNotLoginService } from '../services/isNotLogin.service';
     //ConfirmationDialogComponent
   ],
   providers: [
-    SkillsSheetService
+    SkillsSheetService,
+    SkillsService,
+    PersonSkillsService,
+    ArrayObsService
   ]
 })
 export class CompetencesModule { 

@@ -18,27 +18,15 @@ export class PersonSkillsService {
   personObservable = this.personInformation.asObservable();
   */
   createNewPerson(person: Person) {
+
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+      'Authorization': token != null ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
     });
     let options = { headers: headers };
-
-    let postParams = {
-        mail: person.mail,
-        surname: person.surname,
-        name: person.name,
-        monthlyWage: "0",
-        urlDocs: "",
-        personInChargeMail: "abc@gmail.com",
-        highestDiploma: "",
-        highestDiplomaYear: "",
-        job: "",
-        employer: ""
-    }
-
     let urlRequest :string;
+
     if(person.role === PersonRole.APPLICANT)
       urlRequest = environment.serverAddress + '/applicant';
     else
@@ -50,7 +38,9 @@ export class PersonSkillsService {
   }
 
   updatePerson(person: Person) {
+    
     let token = window.sessionStorage.getItem("bearerToken");
+
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
@@ -64,7 +54,7 @@ export class PersonSkillsService {
       urlRequest = environment.serverAddress + '/consultant';
 
     return this.httpClient
-        .patch(urlRequest, person, options)
+        .put<Person>(urlRequest, person, options)
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 

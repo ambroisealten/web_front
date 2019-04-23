@@ -1,0 +1,70 @@
+{
+    "candidateFormItems": [
+        {
+          "label" : "Diplôme",
+          "type": "text",
+          "id": "diploma",
+          "model": "" 
+        },
+        {
+          "label": "Année de diplôme",
+          "type": "text",
+          "id": "diplomaYear",
+          "model": "" 
+        },
+        {
+          "label": "Employeur",
+          "type": "text",
+          "id": "employer",
+          "model": "" 
+        },
+        {
+          "label": "Métier",
+          "type": "text",
+          "id": "job",
+          "model": "" 
+        },
+        {
+          "label": "Disponibilité",
+          "type": "date",
+          "id": "disponibility",
+          "model": "" 
+        },
+        {
+          "label": "Années d'expérience",
+          "type": "number",
+          "id": "experienceYears",
+          "model": "" 
+        },
+        {
+          "label": "Prétention salariale",
+          "type": "number",
+          "id": "wageClaim",
+          "model": "" 
+        }
+      ],
+
+      "consultantFormItems": [
+        {
+          "label": "Diplôme",
+         "type": "text",
+          "id": "diploma"
+        },
+        {
+          "label": "Année de diplôme",
+          "type": "text",
+          "id": "diplomaYear"
+        },
+        {
+          "label": "Métier",
+         "type": "text",
+          "id": "job"
+        },
+        {
+          "label": "Salaire",
+          "type": "number",
+          "id": "wage"
+        }
+      ]
+}
+    

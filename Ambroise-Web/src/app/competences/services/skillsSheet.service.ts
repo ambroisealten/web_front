@@ -17,10 +17,6 @@ export class SkillsSheetService {
   * Temporary hardcoded json for data
   */
 
-  skillsArray = [];
-
-  softSkillsArray = [];
-
   lastModificationsArray = [
     {
       manager: 'Joyce',
@@ -34,71 +30,7 @@ export class SkillsSheetService {
     }
   ];
 
-  candidateFormItems = [
-    {
-      label: 'Diplôme',
-      type: 'text',
-      id: 'diploma'
-    },
-    {
-      label: 'Année de diplôme',
-      type: 'text',
-      id: 'diplomaYear'
-    },
-    {
-      label: 'Employeur',
-      type: 'text',
-      id: 'employer'
-    },
-    {
-      label: 'Métier',
-      type: 'text',
-      id: 'job'
-    },
-    {
-      label: 'Disponibilité',
-      type: 'date',
-      id: 'disponibility'
-    },
-    {
-      label: 'Années d\'expérience',
-      type: 'number',
-      id: 'experienceYears'
-    },
-    {
-      label: 'Prétention salariale',
-      type: 'number',
-      id: 'wageClaim'
-    }
-  ];
-
-  consultantFormItems = [
-    {
-      label: 'Diplôme',
-      type: 'text',
-      id: 'diploma'
-    },
-    {
-      label: 'Année de diplôme',
-      type: 'text',
-      id: 'diplomaYear'
-    },
-    {
-      label: 'Métier',
-      type: 'text',
-      id: 'job'
-    },
-    {
-      label: 'Salaire',
-      type: 'number',
-      id: 'wage'
-    }
-  ];
-
   constructor(private httpClient: HttpClient) { }
-
-  private skillSheetInformation = new BehaviorSubject(undefined);
-  skillsSheetObservable = this.skillSheetInformation.asObservable();
 
   createNewSkillsSheet(skillsSheet: SkillsSheet) {
     let token = window.sessionStorage.getItem("bearerToken");
@@ -108,17 +40,8 @@ export class SkillsSheetService {
     });
     let options = { headers: headers };
 
-    let postParams = {
-        name: skillsSheet.name,
-        role: skillsSheet.role,
-        personMail: skillsSheet.personMail,
-        softskills: skillsSheet.softskills,
-        techskills: skillsSheet.techskills,
-        authorMail: skillsSheet.authorMail
-    }
-
     return this.httpClient
-        .post(environment.serverAddress + '/skillsheet', postParams, options)
+        .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, options)
         .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
   }
 
@@ -130,17 +53,8 @@ export class SkillsSheetService {
     });
     let options = { headers: headers };
 
-    let postParams = {
-        name: skillsSheet.name,
-        role: skillsSheet.role,
-        personMail: skillsSheet.personMail,
-        softskills: skillsSheet.softskills,
-        techskills: skillsSheet.techskills,
-        authorMail: skillsSheet.authorMail
-    }
-
     return this.httpClient
-        .patch(environment.serverAddress + '/skillsheet', postParams, options)
+        .put<SkillsSheet>(environment.serverAddress + '/skillsheet' , skillsSheet, options)
         .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
   }
   
@@ -148,15 +62,7 @@ export class SkillsSheetService {
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
-
-  notifySkillsSheetinformation(skillsSheet: SkillsSheet){
-    this.skillSheetInformation.next(skillsSheet);
-  }
-
-  resetSkillsSheetInformation(){
-    this.skillSheetInformation.next(undefined);
-  }
-
+  
   getAllSkillSheets():Observable<{} | SkillsSheet[]>{
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
@@ -175,35 +81,4 @@ export class SkillsSheetService {
     return undefined;
   }
 
-  /**
-  * Get skills for current skillsSheet
-  * @return skills array
-  */
-  getSkills() {
-    return this.skillsArray;
-  }
-
-  /**
-  * Get soft skills for current skillsSheet
-  * @return soft skills array
-  */
-  getSoftSkills() {
-    return this.softSkillsArray;
-  }
-
-  /**
-  * Update skills for current skillsSheet
-  * @param newSkillsArray
-  */
-  updateSkills(newSkillsArray) {
-    this.skillsArray = newSkillsArray;
-  }
-
-  /**
-  * Update soft skills for current skillsSheet
-  * @param newSoftSkillsArray
-  */
-  updateSoftSkills(newSoftSkillsArray) {
-    this.softSkillsArray = newSoftSkillsArray;
-  }
 }

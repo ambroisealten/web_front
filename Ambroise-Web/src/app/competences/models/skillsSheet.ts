@@ -3,46 +3,41 @@ import { Person, PersonRole } from './person';
 export class SkillsSheet {
       id: String;
       name: string;
-      versionNumber: String;
-      role: PersonRole;
-      personMail: String;
-      softskills: any[];
-      techskills: any[];
-      authorMail: String;
-      person: Person;
+      versionNumber: number;
+      rolePersonAttachedTo: PersonRole;
+      mailPersonAttachedTo: String;
+      softSkillsList: any[];
+      techSkillsList: any[];
+      mailVersionAuthor: String;
 
     constructor(name: string, person: Person) {
       this.name = name;
-      this.role = person.role;
-      this.personMail = person.mail;
-      this.softskills = [];
-      this.techskills = [];
-      this.authorMail = "";
-      this.person = person ; 
+      this.rolePersonAttachedTo = person.role;
+      this.mailPersonAttachedTo = person.mail;
+      this.softSkillsList = [];
+      this.techSkillsList= [];
+      this.mailVersionAuthor = "";
+      this.versionNumber = 1 ;
     }
 
     addTechSkill(skill: Skill) {
-      this.techskills.push(skill);
-    }
-
-    getPerson(){
-      return this.person ; 
+      this. techSkillsList.push(skill);
     }
 
     removeTechSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.techskills.findIndex(skill => skill.skillName === skillToRemove);
+      let skillToRemoveIndex = this. techSkillsList.findIndex(skill => skill.skillName === skillToRemove);
 
-      this.techskills.splice(skillToRemoveIndex, 1);
+      this. techSkillsList.splice(skillToRemoveIndex, 1);
     }
 
     addSoftSkill(skill: Skill) {
-      this.softskills.push(skill);
+      this.softSkillsList.push(skill);
     }
 
     removeSoftSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.softskills.findIndex(skill => skill.skillName === skillToRemove);
+      let skillToRemoveIndex = this.softSkillsList.findIndex(skill => skill.skillName === skillToRemove);
 
-      this.softskills.splice(skillToRemoveIndex, 1);
+      this.softSkillsList.splice(skillToRemoveIndex, 1);
     }
 }
 
