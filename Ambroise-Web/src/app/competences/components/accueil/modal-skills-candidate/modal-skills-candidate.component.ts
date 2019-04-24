@@ -3,6 +3,9 @@ import { MatDialogRef } from '@angular/material';
 import { SkillsSheet } from '../../../models/skillsSheet';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Router } from '@angular/router';
+import { Validators, FormControl } from '@angular/forms';
+import { Person, PersonRole } from 'src/app/competences/models/person';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
   selector: 'app-modal-skills-candidate',
@@ -15,12 +18,19 @@ export class ModalSkillsCandidateComponent implements OnInit {
   //lastname: string;
   //skillsSheetName: string = '';
   email: string;
+  emailValidator =  new FormControl('', [Validators.required, Validators.email]);
+  emailExists: boolean = false;
+  skillsSheetPerson: Person;
   //role: boolean = false;
 
   //firstnameFirstletter: string = '';
   //lastnameFirstLetters: string = '';
 
-  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>, private router: Router, private skillsSheetService: SkillsSheetService) { }
+  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>,
+    private router: Router,
+    private skillsSheetService: SkillsSheetService,
+    private personSkillsService: PersonSkillsService
+  ) { }
 
   ngOnInit() {
     //this.updateSkillsSheetName();
@@ -48,16 +58,30 @@ export class ModalSkillsCandidateComponent implements OnInit {
     }
   }*/
 
-  emailChanged($event) {
+
+
+  emailChanged($event, emailForm) {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
     if($event.match(emailPattern)) {
       this.skillsSheetService.checkSkillsSheetExistenceByMail($event).subscribe(skillsSheetExists => {
-        if(skillsSheetExists)
+        if(skillsSheetExists) {
           console.log('exists');
-        else
-          console.log('new');
+          this.emailExists = true;
+        //  this.emailValidator.setErrors({'exists' : true});
+        }
+        else {
+          this.emailExists = false;
+          //this.emailValidator.setErrors({'exists' : false});
+        }
       });
     }
+  }
+
+  getErrorMessage() {
+    //console.log(this.emailValidator.invalid);
+    return 'oui';/*this.emailValidator.hasError('required') ? 'Email obligatoire' :
+           this.emailValidator.hasError('email') ? 'Email invalide' :
+            '';*/
   }
 
   cancel() {
@@ -65,11 +89,17 @@ export class ModalSkillsCandidateComponent implements OnInit {
   }
 
   save() {
-    //let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
-
-    //let newPerson: Person = new Person(this.lastname, this.firstname, this.email, personRole);
-
-    this.dialogRef.close('saved');//newPerson);
+    if(this.emailExists) {
+      return;
+    }
+    else {
+      this.personSkillsService.getPersonByMail(this.email, PersonRole.APPLICANT).subscribe(person => {
+        if(person != undefined) {
+          this.skillsSheetPerson = person as Person;
+          this.dialogRef.close(this.skillsSheetPerson);
+        }
+      });
+    }
   }
 
 }

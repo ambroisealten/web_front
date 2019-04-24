@@ -2,7 +2,8 @@
 
 <mat-dialog-content>
   <mat-form-field>
-    <input matInput placeholder="Email" [ngModel]="email" (ngModelChange)="emailChanged($event)">
+    <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="email" (ngModelChange)="emailChanged($event)" >
+    <mat-error *ngIf="emailValidator.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
 </mat-dialog-content>
 

@@ -29,8 +29,8 @@ export class TokenService {
         //Paramètres à envoyée au serveur pour vérifier la connexion
         let postParams = {
             mail: formInputMail,
-            pswd: sha512.sha512(formInputPswd),
-            //pswd: formInputPswd
+            //pswd: sha512.sha512(formInputPswd),
+            pswd: formInputPswd
         }
 
         LoggerService.log(postParams.mail + ":::" + postParams.pswd, LogLevel.DEBUG);
