@@ -1,26 +1,43 @@
 export class File {
-    constructor(private uri: string, private dateOfModification: string, private isForForum: boolean) { }
-    getUri() {
-        return this.uri;
-    }
-    setUri(uri: string) {
-        this.uri = uri;
-    }
-    getDateOfModification() {
-        return new Date(parseInt(this.dateOfModification, 10));
-    }
-    setDateOfModification(dateOfModification: string) {
-        this.dateOfModification = dateOfModification;
-    }
-    getIsForForum() {
-        return this.isForForum;
-    }
-    setIsForForum(isForForum: boolean) {
-        this.isForForum = isForForum;
+    constructor(private _id : string, private path : string, private extension : string, private dateOfCreation: string, private displayName: string) { }
+    
+    get_id(){
+        return this._id;
     }
 
-    toogleStatus() {
-        this.isForForum = !this.isForForum;
+    set_id(_id : string){
+        this._id = _id;
     }
 
+    getPath(){
+        return this.path;
+    }
+
+    setPath(path : string){
+        this.path = path;
+    }
+
+    getExtension(){
+        return this.extension;
+    }
+
+    setExtension(extension : string){
+        this.extension = extension;
+    }
+
+    getDateOfCreation() {
+        return new Date(parseInt(this.dateOfCreation, 10));
+    }
+
+    setDateOfCreation(dateOfCreation: string) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    getDisplayName(){
+        return this.displayName;
+    }
+
+    setDisplayName(displayName : string){
+        this.displayName = displayName;
+    }
 }

@@ -6,17 +6,17 @@
   <table id="documentsTable">
     <thead>
       <tr>
-        <th>Uri</th>
-        <th>Dernière date de modification</th>
-        <th>Pour forums</th>
+        <th>Nom</th>
+        <th>Date de création</th>
+        <th>Collection</th>
       </tr>
     </thead>
     <tbody>
       <ng-container *ngFor="let document of getDocuments() ">
         <tr>
-          <td><span class="download" (click)="visualize(document.getUri())">{{document.getUri()}}</span><button class="removeButton" mat-icon-button (click)="removeDocument(document)">x</button></td>
-          <td>{{document.getDateOfModification() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
-          <td><input type="checkbox" [checked]="document.isForForum" (change)="document.toogleStatus()"></td>
+          <td>{{document.getDisplayName()}}<button class="removeButton btn" mat-icon-button (click)="removeDocument($event)">x</button></td>
+          <td>{{document.getDateOfCreation() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
+          <td>{{document.getPath()}}<button (click)="editCollection($event)" class="btn" mat-icon-button><i class="material-icons">edit</i></button></td>
         </tr>
       </ng-container>
     </tbody>
@@ -36,11 +36,25 @@
       [cdkDropListConnectedTo]="[docsForumList]"
       class="example-list"
       (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of filesForForum" cdkDrag [cdkDragDisabled]="!item.getIsForForum()">
-          {{ item.uri }}
+        <div class="example-box" *ngFor="let file of filesForForum" cdkDrag>
+          Titre : {{ file.getDisplayName() }}<span class="document-id"> {{ file.get_id() }}</span>
+          <ng-container *ngIf="file.getExtension() == 'png'; then iconImage else elseIcon">
+          </ng-container>
+          <ng-template #elseIcon>
+              <ng-container *ngIf="file.getExtension() == 'pdf'; else iconDoc">
+                  <mat-icon>picture_as_pdf</mat-icon>
+              </ng-container>
+          </ng-template>
         </div>
       </div>
     </div>
+
+    <ng-template #iconImage>
+        <mat-icon>image</mat-icon>
+    </ng-template>
+    <ng-template #iconDoc>
+        <mat-icon>insert_drive_file</mat-icon>
+    </ng-template>
     
     <div class="example-container">
       <h2>Documents dans le menu</h2>
@@ -51,8 +65,16 @@
         [cdkDropListConnectedTo]="[docsList]"
         class="example-list"
         (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let item of filesForum" cdkDrag>
-            {{ item.getUri() }}
+          <div class="example-box" *ngFor="let file of filesForum" cdkDrag>
+            Titre : {{ file.getDisplayName() }}<span class="document-id"> {{ file.get_id() }}</span>
+            <ng-container *ngIf="file.getExtension() == 'png'; then iconImage else elseIcon">
+                <mat-icon>image</mat-icon>
+            </ng-container>
+            <ng-template #elseIcon>
+                <ng-container *ngIf="file.getExtension() == 'pdf'; else iconDoc">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                </ng-container>
+            </ng-template>
           </div>
       </div>
     </div>

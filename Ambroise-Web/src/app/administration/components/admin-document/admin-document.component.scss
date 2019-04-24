@@ -3,11 +3,32 @@ td, th {
     border: 1px solid #333;
 }
 
+td p{
+  margin: auto;
+}
+
 .download{
     color:steelblue; 
     text-decoration:none; 
     font-weight:bold; 
     padding-bottom:4px; 
+}
+
+.admin-document-forum{
+  margin-top: 5%;
+  padding-top: 5%;
+}
+
+.document-id{
+  display: none;
+}
+
+.example-container .example-box mat-icon{
+  color: black;
+}
+
+td button{
+  float: right;
 }
 
 .download{
@@ -56,8 +77,8 @@ td, th {
   
   .example-box {
     padding: 20px 10px;
+    color: var(--ALTENDarkGray);
     border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
     display: flex;
     flex-direction: row;
     align-items: center;

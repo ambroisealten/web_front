@@ -8,6 +8,7 @@ function charged(){
     setCloseTag();
 }
 
+
 function changed(){
     /*
     * Lorsque la page est changée, lance les fonctions de setup d'EventListeners
