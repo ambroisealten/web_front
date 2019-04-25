@@ -17,6 +17,13 @@ td p{
 .admin-document-forum{
   margin-top: 5%;
   padding-top: 5%;
+  display: grid;
+  grid-template-columns: repeat(1,1fr);
+}
+
+mat-form-field{
+  width: 20%;
+  margin: auto;
 }
 
 .document-id{

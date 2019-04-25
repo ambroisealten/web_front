@@ -9,14 +9,16 @@
         <th>Nom</th>
         <th>Date de création</th>
         <th>Collection</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <ng-container *ngFor="let document of getDocuments() ">
-        <tr>
-          <td>{{document.getDisplayName()}}<button class="removeButton btn" mat-icon-button (click)="removeDocument($event)">x</button></td>
+        <tr id="{{document.get_id()}}">
+          <td>{{document.getDisplayName()}}</td>
           <td>{{document.getDateOfCreation() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
-          <td>{{document.getPath()}}<button (click)="editCollection($event)" class="btn" mat-icon-button><i class="material-icons">edit</i></button></td>
+          <td>{{document.getPath()}}</td>
+          <td><button class="removeButton btn" mat-icon-button (click)="removeDocument($event)">x</button><button (click)="editDocument($event)" class="btn" mat-icon-button><i class="material-icons">edit</i></button></td>
         </tr>
       </ng-container>
     </tbody>
@@ -26,7 +28,16 @@
 
 <div class="admin-document-forum">
     <h2>Documents affichés dans le menu Forum</h2>
+    <mat-form-field>
+      <mat-label>Set de document</mat-label>
+      <mat-select [(value)]="currentSet">
+        <mat-option value="{{currentSet}}" selected>
+          2019 - Global
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <div class="lists">
     <div class="example-container">
       <h2>Documents en stock</h2>
       <div
@@ -58,6 +69,7 @@
     
     <div class="example-container">
       <h2>Documents dans le menu</h2>
+      
       <div
         cdkDropList
         #docsForumList="cdkDropList"
@@ -78,6 +90,7 @@
           </div>
       </div>
     </div>
+  </div>
 
     <form (submit)="submitListForum()">
       <input class="mat-raised-button customButton" type="submit" value="Enregistrer">

@@ -11,13 +11,19 @@ import { LoggerService, LogLevel } from '../../../services/logger.service';
 })
 export class AdminDocumentComponent implements OnInit {
 
-  files = [new File("id54dfs54dgfs54dg5sg",'/forum/2019/test/', 'png', '1555511830668',"Logo ALTEN"), new File("id546dgs546gs7546fqe8",'/global/2019/','pdf', '1555511830716', "Cahier de test"), new File("iddvs546375g",'/forum/2015/test/','docx', '1555511874438', "Login Documentation")];
+  files = [new File("id54dfs54dgfs54dg5sg",'/forum/2019/global/', 'png', '1555511830668',"Logo ALTEN"), new File("id546dgs546gs7546fqe8",'/global/2019/','pdf', '1555511830716', "Cahier de test"), new File("iddvs546375g",'/forum/2015/global/','docx', '1555511874438', "Login Documentation"),new File("id4d4hf754874",'/forum/2019/global/','pdf','1555511830668',"Presentation ALTEN"), new File("id5468546gfh4dh",'/forum/2019/global/','png','1555511830667',"Bienvenue à ALTEN")];
   filesForForum = [];
-  filesForum = [new File("id4d4hf754874",'/forum/2019/global/','pdf','1555511830668',"Presentation ALTEN"), new File("id5468546gfh4dh",'/forum/2018/epitech/','png','1555511830667',"Bienvenue à ALTEN")]
+  filesForum = [new File("id4d4hf754874",'/forum/2019/global/','pdf','1555511830668',"Presentation ALTEN"), new File("id5468546gfh4dh",'/forum/2019/global/','png','1555511830667',"Bienvenue à ALTEN")]
+  allFilesIdForum = ["id4d4hf754874","id5468546gfh4dh"];
+  allSets = {"/2019/global/" :  this.filesForum};
+  currentSet = "";
 
   constructor(private adminService: AdminService) { 
+    let currentYear = new Date().getFullYear().toString();
+    this.currentSet = '/'+currentYear+'/global/';
     for(let file of this.files){
-      if(file.getPath().startsWith('/forum/')){
+      let filePath = file.getPath();
+      if(filePath.startsWith('/forum/') && !this.allFilesIdForum.includes(file.get_id())){
         this.filesForForum.push(file);
       }
     }
@@ -32,14 +38,22 @@ export class AdminDocumentComponent implements OnInit {
     return this.files;
   }
 
-  removeDocument(event){
-    let message = event.target.parentNode.textContent.replace("x","");
-    LoggerService.log("We want to supress this doc : "+message,LogLevel.DEBUG);
+  removeDocument(event : MouseEvent){
+    let target = event.target;
+    while(target.tagName != "BUTTON"){
+      target = target.parentNode;
+    }
+    let idDoc = target.parentNode.parentNode.id;
+    LoggerService.log("We want to supress this doc : "+idDoc,LogLevel.DEBUG);
   }
 
-  editCollection(event){
-    let message = event.target.parentNode.textContent.replace("edit","");
-    LoggerService.log("We want to edit the current collection : "+message,LogLevel.DEBUG);  
+  editDocument(event : MouseEvent){
+    let target = event.target;
+    while(target.tagName != "BUTTON"){
+      target = target.parentNode;
+    }
+    let idDoc = target.parentNode.parentNode.id;
+    LoggerService.log("We want to edit the current doc : "+idDoc,LogLevel.DEBUG);  
   }
 
   
