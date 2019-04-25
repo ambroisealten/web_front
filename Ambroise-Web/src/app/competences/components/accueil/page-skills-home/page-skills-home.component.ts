@@ -45,12 +45,13 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
+      console.log(skillsSheetList)
       if (skillsSheetList != undefined){
         this.createDataSource(skillsSheetList)
+        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
     });
 
-    setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
   }
 
   /**
@@ -151,7 +152,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * Ajoute une colonne au tableau + appelle au WS pour trier 
+   * Ajoute une colonne au tableau + appel au WS pour trier 
    * @author Quentin Della-Pasqua
    */
   doAddSkill(){
