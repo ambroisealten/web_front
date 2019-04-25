@@ -3,6 +3,11 @@ import { MatDialogRef } from '@angular/material';
 import { SkillsSheet } from '../../../models/skillsSheet';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Router } from '@angular/router';
+import { Validators, FormControl } from '@angular/forms';
+import { Person, PersonRole } from 'src/app/competences/models/person';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { Skills } from 'src/app/competences/models/skills';
 
 @Component({
   selector: 'app-modal-skills-candidate',
@@ -11,22 +16,29 @@ import { Router } from '@angular/router';
 })
 export class ModalSkillsCandidateComponent implements OnInit {
 
-  //firstname: string;
-  //lastname: string;
-  //skillsSheetName: string = '';
+  firstname: string;
+  lastname: string;
+  skillsSheetName: string = '';
   email: string;
-  //role: boolean = false;
+  emailValidator =  new FormControl('', [Validators.required, Validators.email]);
+  skillsSheetExists: boolean = false;
+  skillsSheetPerson: Person;
+  role: boolean = false;
 
-  //firstnameFirstletter: string = '';
-  //lastnameFirstLetters: string = '';
+  firstnameFirstletter: string = '';
+  lastnameFirstLetters: string = '';
 
-  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>, private router: Router, private skillsSheetService: SkillsSheetService) { }
+  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>,
+    private router: Router,
+    private skillsSheetService: SkillsSheetService,
+    private personSkillsService: PersonSkillsService
+  ) { }
 
   ngOnInit() {
-    //this.updateSkillsSheetName();
+    this.updateSkillsSheetName();
   }
 
-/*  updateSkillsSheetName() {
+  updateSkillsSheetName() {
     let month = String("0" + (new Date().getMonth()+1)).slice(-2);
     let year = new Date().getFullYear();
     this.skillsSheetName =  month + year + '-' + this.firstnameFirstletter + this.lastnameFirstLetters;
@@ -46,18 +58,29 @@ export class ModalSkillsCandidateComponent implements OnInit {
 
       this.updateSkillsSheetName();
     }
-  }*/
+  }
 
-  emailChanged($event) {
+  emailChanged($event, emailForm) {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
     if($event.match(emailPattern)) {
       this.skillsSheetService.checkSkillsSheetExistenceByMail($event).subscribe(skillsSheetExists => {
-        if(skillsSheetExists)
-          console.log('exists');
-        else
-          console.log('new');
+        if(skillsSheetExists) {
+          this.skillsSheetExists = true;
+        //  this.emailValidator.setErrors({'exists' : true});
+        }
+        else {
+          this.skillsSheetExists = false;
+          //this.emailValidator.setErrors({'exists' : false});
+        }
       });
     }
+  }
+
+  getErrorMessage() {
+    //console.log(this.emailValidator.invalid);
+    return 'oui';/*this.emailValidator.hasError('required') ? 'Email obligatoire' :
+           this.emailValidator.hasError('email') ? 'Email invalide' :
+            '';*/
   }
 
   cancel() {
@@ -65,11 +88,22 @@ export class ModalSkillsCandidateComponent implements OnInit {
   }
 
   save() {
-    //let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
-
-    //let newPerson: Person = new Person(this.lastname, this.firstname, this.email, personRole);
-
-    this.dialogRef.close('saved');//newPerson);
+    let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
+    if(this.skillsSheetExists) {
+      return;
+    }
+    else {
+      this.personSkillsService.getPersonByMail(this.email).subscribe(person => {
+        if(person != undefined) {
+          if(person.hasOwnProperty('mail')) { // person exists
+            //ERROR
+          }
+          else { // create person
+            this.dialogRef.close(new Person(this.firstname, this.lastname, this.email, personRole));
+          }
+        }
+      });
+    }
   }
 
 }

@@ -94,13 +94,16 @@ export class ArraySkillsComponent implements OnInit {
   * @param  event grade value from input
   */
   updateGradeEvent(event) {
+    console.log(event)
     let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from same row as modified grade
     let grade = event.target.parentElement.childNodes[1].value;
 
     this.dataSourceArray.forEach(function(skill) {
       if(skill.name == skillName){
-        if(grade == 1.5 ){
+        if(grade == 1.5 && event.target.className == "incrementButton" ){
           skill.grade = 2
+        } else if (grade == 1.5 && event.target.className == "decrementButton") {
+          skill.grade = 1
         } else {
           skill.grade = grade;
         }

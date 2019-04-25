@@ -99,7 +99,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo, skillsSheetData.rolePersonAttachedTo).subscribe( person => {   
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {   
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
         this.redirectToSkillsSheet();
       });
