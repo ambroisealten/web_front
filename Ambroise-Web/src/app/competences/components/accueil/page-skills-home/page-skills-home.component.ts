@@ -33,9 +33,9 @@ export class PageSkillsHomeComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private dialog: MatDialog, 
-    private router: Router, 
-    private skillsSheetService: SkillsSheetService, 
+  constructor(private dialog: MatDialog,
+    private router: Router,
+    private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
     private skillsService: SkillsService) { }
 
@@ -99,7 +99,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo, skillsSheetData.rolePersonAttachedTo).subscribe( person => {   
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
         this.redirectToSkillsSheet();
       });
@@ -115,7 +115,7 @@ export class PageSkillsHomeComponent implements OnInit {
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(newPerson => {
-      if(newPerson != "canceled")
+      if(newPerson != "canceled" && newPerson != undefined)
       {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
           if(httpResponse != undefined) {

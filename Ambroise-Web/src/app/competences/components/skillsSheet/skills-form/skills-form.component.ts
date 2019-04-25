@@ -46,7 +46,7 @@ export class SkillsFormComponent implements OnInit {
 
   avis: string;
 
-  constructor(private skillsService: SkillsService, 
+  constructor(private skillsService: SkillsService,
               private dialog: MatDialog,
               private skillsSheetService: SkillsSheetService,
               private arrayObsService: ArrayObsService,
@@ -74,19 +74,19 @@ export class SkillsFormComponent implements OnInit {
     let formItemsJSON = require('../../../resources/formItems.json');
     if(this.currentPerson.role == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
-    } else if (this.currentPerson.role == PersonRole.CONSULTANT ){
+    } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT ){
       this.formItems = formItemsJSON["consultantFormItems"]
     } else {
       this.formItems = null ;
     }
 
     this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
-    this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ; 
+    this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ;
 
   }
 
   translate(roleName) {
-    return roleName === 'applicant' ? 'Candidat' : 'Consultant';
+    return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
   }
 
   /**
@@ -94,33 +94,8 @@ export class SkillsFormComponent implements OnInit {
   */
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
-    this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1) ; 
-  }
-
-  /**
-  * Pass a candidate to consultant, update form
-  */
-  passToConsultant() {
-    let dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      disableClose: false
-    });
-    dialogRef.componentInstance.dialogMessage = "Confirmez-vous le passage de " + this.currentPerson.name + " " + this.currentPerson.surname + " du statut de candidat à celui de consultant ?";
-    dialogRef.componentInstance.dialogTitle = "Confirmation";
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result) {
-        this.updatePersonStatus();
-      }
-      dialogRef = null;
-    });
-  }
-
-  /**
-  * Do changes when passing from applicant to consultant : update form and send change to server with skillsSheetService
-  */
-  updatePersonStatus() {
-    //this.formItems = this.skillsSheetService.consultantFormItems;
-    this.showPassToConsultant = false;
+    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1) ;
   }
 
   updateChartSkills(arraySkills: Skill[]){

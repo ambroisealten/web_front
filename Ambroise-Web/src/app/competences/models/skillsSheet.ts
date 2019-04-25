@@ -14,7 +14,8 @@ export class SkillsSheet {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
       this.versionNumber = 1 ; 
-      this.mailVersionAuthor = "";
+      this.skillsList = [] ; 
+      this.mailVersionAuthor = "cunmail@mail.com";
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }

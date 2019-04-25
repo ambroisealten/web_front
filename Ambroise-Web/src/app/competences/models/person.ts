@@ -28,7 +28,7 @@ export class Person {
 }
 
 export enum PersonRole {
-  DEMISSIONAIRE = "demissionaire",
-	APPLICANT = "applicant",
+  DEMISSIONAIRE = "DEMISSIONAIRE",
+	APPLICANT = "APPLICANT",
 	CONSULTANT = "CONSULTANT"
 }

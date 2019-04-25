@@ -27,7 +27,7 @@ export class PersonSkillsService {
     let options = { headers: headers };
     let urlRequest :string;
 
-    if(person.role === PersonRole.APPLICANT)
+    if(person.role.toUpperCase() === PersonRole.APPLICANT)
     urlRequest = environment.serverAddress + '/applicant';
     else
     urlRequest = environment.serverAddress + '/consultant';
@@ -38,7 +38,7 @@ export class PersonSkillsService {
   }
 
   updatePerson(person: Person) {
-    
+
     let token = window.sessionStorage.getItem("bearerToken");
 
     let headers = new HttpHeaders({
@@ -48,7 +48,7 @@ export class PersonSkillsService {
     let options = { headers: headers };
 
     let urlRequest :string;
-    if(person.role === PersonRole.APPLICANT)
+    if(person.role.toUpperCase() === PersonRole.APPLICANT)
       urlRequest = environment.serverAddress + '/applicant';
     else
       urlRequest = environment.serverAddress + '/consultant';
@@ -58,7 +58,7 @@ export class PersonSkillsService {
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 
-  getPersonByMail(mail: String, role: PersonRole) {
+  getPersonByMail(mail: String) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -66,14 +66,8 @@ export class PersonSkillsService {
     });
     let options = { headers: headers };
 
-    let urlRequest :string;
-    if(role === PersonRole.APPLICANT)
-      urlRequest = environment.serverAddress + '/applicant/' + mail;
-    else
-      urlRequest = environment.serverAddress + '/consultant/' + mail;
-
     return this.httpClient
-      .get<Person>(urlRequest, options)
+      .get<Person>(environment.serverAddress + '/person/' + mail, options)
       .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
