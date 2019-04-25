@@ -27,7 +27,7 @@ export class PersonSkillsService {
     let options = { headers: headers };
     let urlRequest :string;
 
-    if(person.role === PersonRole.APPLICANT)
+    if(person.role.toUpperCase() === PersonRole.APPLICANT)
     urlRequest = environment.serverAddress + '/applicant';
     else
     urlRequest = environment.serverAddress + '/consultant';
@@ -38,7 +38,7 @@ export class PersonSkillsService {
   }
 
   updatePerson(person: Person) {
-    
+
     let token = window.sessionStorage.getItem("bearerToken");
 
     let headers = new HttpHeaders({
@@ -48,7 +48,7 @@ export class PersonSkillsService {
     let options = { headers: headers };
 
     let urlRequest :string;
-    if(person.role === PersonRole.APPLICANT)
+    if(person.role.toUpperCase() === PersonRole.APPLICANT)
       urlRequest = environment.serverAddress + '/applicant';
     else
       urlRequest = environment.serverAddress + '/consultant';
@@ -67,7 +67,7 @@ export class PersonSkillsService {
     let options = { headers: headers };
 
     let urlRequest :string;
-    if(role === PersonRole.APPLICANT)
+    if(role.toUpperCase() === PersonRole.APPLICANT)
       urlRequest = environment.serverAddress + '/applicant/' + mail;
     else
       urlRequest = environment.serverAddress + '/consultant/' + mail;

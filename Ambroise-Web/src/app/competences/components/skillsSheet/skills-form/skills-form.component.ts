@@ -67,11 +67,9 @@ export class SkillsFormComponent implements OnInit {
       }
     })
     let formItemsJSON = require('../../../resources/formItems.json');
-    let a = "1" ;
-    console.log("Mon rôle est : " +  this.currentPerson.role + " / Je suis un consultant ?  " );
-    if(this.currentPerson.role == PersonRole.APPLICANT){
+    if(this.currentPerson.role.toUpperCase() == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
-    } else if (this.currentPerson.role == PersonRole.CONSULTANT ){
+    } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT ){
       this.formItems = formItemsJSON["consultantFormItems"]
     } else {
       this.formItems = null ;
@@ -91,6 +89,7 @@ export class SkillsFormComponent implements OnInit {
   */
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
+    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1) ;
   }
 
