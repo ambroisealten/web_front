@@ -5,8 +5,7 @@ export class SkillsSheet {
       name: string;
       versionNumber: number;
       mailPersonAttachedTo: String;
-      softSkillsList: Skill[];
-      techSkillsList: Skill[];
+      skillsList: Skill[] ; 
       mailVersionAuthor: String;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
@@ -14,40 +13,34 @@ export class SkillsSheet {
     constructor(name: string, person: Person) {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
-      this.softSkillsList = [];
-      this.techSkillsList = [];
       this.versionNumber = 1 ; 
       this.mailVersionAuthor = "";
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }
 
-    addTechSkill(skill: Skill) {
-      this.techSkillsList.push(skill);
+    addSkill(skillToAdd: Skill){
+      this.skillsList.push(skillToAdd) ; 
+    }
+    removeSkill(skillToRemove: Skill) {
+      let skillToRemoveIndex = this.skillsList.findIndex(skill => skill === skillToRemove);
+
+      this.skillsList.splice(skillToRemoveIndex, 1);
     }
 
-    removeTechSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.techSkillsList.findIndex(skill => skill === skillToRemove);
-
-      this.techSkillsList.splice(skillToRemoveIndex, 1);
-    }
-
-    addSoftSkill(skill: Skill) {
-      this.softSkillsList.push(skill);
-    }
-
-    removeSoftSkill(skillToRemove: Skill) {
-      let skillToRemoveIndex = this.softSkillsList.findIndex(skill => skill === skillToRemove);
-
-      this.softSkillsList.splice(skillToRemoveIndex, 1);
-    }
-
-    getAverageSoftSkillGrade() {
+    getAverageSoftSkillGrade():number {
       let sumGrades = 0;
-      for(let softSkill of this.softSkillsList) {
-        sumGrades += softSkill.grade;
+      let countSoft = 0; 
+      for(let softSkill of this.skillsList) {
+        if(softSkill.hasOwnProperty('isSoft')){
+          sumGrades += softSkill.grade;
+          countSoft += 1 ; 
+        }
       }
-      return sumGrades / this.softSkillsList.length;
+      if(countSoft != 0){
+        return sumGrades / countSoft ;
+      }
+      return 0 ;
     }
 }
 

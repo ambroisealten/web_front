@@ -48,22 +48,26 @@
         {
           "label": "Diplôme",
          "type": "text",
-          "id": "highestDiploma"
+          "id": "highestDiploma",
+          "model": ""
         },
         {
           "label": "Année de diplôme",
           "type": "text",
-          "id": "highestDiplomaYear"
+          "id": "highestDiplomaYear",
+          "model": ""
         },
         {
           "label": "Métier",
          "type": "text",
-          "id": "job"
+          "id": "job",
+          "model": ""
         },
         {
           "label": "Salaire",
           "type": "number",
-          "id": "monthlyWage"
+          "id": "monthlyWage",
+          "model": ""
         }
       ]
 }

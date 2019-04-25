@@ -17,10 +17,19 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
+  skillsSheetDataSource: MatTableDataSource<any[]>;
+  //Tableau countenant les headers
+  displayedColumns: string[]  = ['Nom Prénom','Métier','Avis','Disponibilité','Moyenne Soft Skills','JEE','C++','.NET','PHP','SQL'];
+  //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
+  //Tableau contenant les compétences
+  compColumns: string[] = ['JEE','C++','.NET','PHP','SQL'] ;
 
+  //Tableau contenant les compétences recherchées
+  compFilter: string[] ; 
+  //Tableau contenant les autres filtres
+  filter: string[] ; 
 
-  skillsSheetDataSource: MatTableDataSource<SkillsSheet>;
-  displayedColumns: string[] = ['Mail', 'Nom fiche', 'Moyenne Soft Skills'];
+  rechercheInput:string; 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -30,60 +39,55 @@ export class PageSkillsHomeComponent implements OnInit {
     private personSkillsService: PersonSkillsService,
     private skillsService: SkillsService) { }
 
+
+  /**
+   * TO CHANGE 
+   */
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
       if (skillsSheetList != undefined){
-      this.skillsSheetDataSource = this.initDataSource(skillsSheetList); //new MatTableDataSource(skillsSheetList as SkillsSheet[]);
-
-      // TEMP FOR PAGINATION TESTS
-      for(let i = 0; i < 10; i++)
-       {
-        this.skillsSheetDataSource.data.push(skillsSheetList[0] as SkillsSheet);
-      }
-
-
-
-      let tmpSkillsSheetList = skillsSheetList as SkillsSheet[];
-      tmpSkillsSheetList.forEach(sheet => {
-        if(sheet != undefined) {
-          this.personSkillsService.getPersonByMail(sheet.mailPersonAttachedTo, sheet.rolePersonAttachedTo).subscribe(currPerson => {
-            if(currPerson != undefined) {
-              let tmpPerson = currPerson as Person;
-              // TODO update datasource with person information + separate methods for subscribe
-          }
-        });
-      }
-      });
+        this.createDataSource(skillsSheetList)
       }
     });
 
     setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
   }
 
-  initDataSource(skillsSheetsList) {
-    let skillsSheets = skillsSheetsList as SkillsSheet[];
-    let dataSource = new MatTableDataSource(skillsSheets);
-
-    for(let elt of dataSource.data) {
-      let sumSoftSkills = 0;
-      for(let softSkill of elt.softSkillsList) {
-        sumSoftSkills += this.literalToNumericGrade(softSkill.grade);
+  /**
+   * Modeler les données reçu du serveur pour les faire correspondre au Mat Table
+   * @param skillsList 
+   * @author Quentin Della-Pasqua
+   */
+  createDataSource(skillsList){
+    let skillSheet: any[];
+    skillsList.forEach(skills => {
+      let tmpSkillSheet: any;
+      if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
+        tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
+        tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ; 
+        tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ; 
+        tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
+        tmpSkillSheet['Moyenne Soft Skills'] = skills['skillsSheet'].getAverageSoftSkillgrade() ;
+        this.compColumns.forEach(comp => {
+          let tmpCompResult = skills.skillsList.filter(skill => skill.name == comp) ; 
+          if (tmpCompResult != []){
+            tmpSkillSheet[comp] = tmpCompResult[0] ; 
+          } else {
+            tmpSkillSheet[comp] = "" ; 
+          }
+        })
+        tmpSkillSheet['skills'] = skills ; 
+        skillSheet.push(tmpSkillSheet) ; 
       }
-      elt.averageSoftSkillsGrade = Math.round((sumSoftSkills / elt.softSkillsList.length) * 10) / 10;
-    }
-
-    return dataSource;
+    })
+    this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ; 
   }
 
-  literalToNumericGrade(grade) {
-    switch(grade) {
-      case 'ONE': return 1;
-      case 'ONEANDAHALF': return 1.5;
-      case 'TWO': return 2;
-      case 'THREE': return 3;
-      case 'FOUR': return 4;
-      default: return 0;
+  instantiateProperty(property,testedProperty:String):any{
+    if(property.hasOwnProperty(testedProperty)){
+      return property['testProperty'] ;
     }
+    return "" ; 
   }
 
   /**
@@ -102,7 +106,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-  * Create a new skillsSheet
+  * Ouvre une modal pour créer une nouvelle personne 
   */
   createSkillsSheetModal() {
     const dialogConfig = new MatDialogConfig();
@@ -110,48 +114,32 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    /*dialogRef.afterClosed().subscribe(newPerson => {
-      if(newPerson != undefined)
+    dialogRef.afterClosed().subscribe(newPerson => {
+      if(newPerson != "canceled")
       {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
           if(httpResponse != undefined) {
-            this.skillsSheetService.getAllSkillSheets().subscribe(skillSheetsListData => this.checkNameUnicity(skillSheetsListData,newPerson));
+            this.createNewSkillSheet(newPerson); 
           }
         });
       }
-    });*/
-
-    dialogRef.afterClosed().subscribe(response => {
-      if(response != undefined) {
-        this.redirectToSkillsSheet();
-      }
-    })
+    });
   }
 
-  checkNameUnicity(skillSheetsListData,person){
+  /**
+   * Crée le nom et fais la requête pour post la skillSheet
+   * @param person 
+   * @author Quentin Della-Pasqua
+   */
+  createNewSkillSheet(person){
     let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
     let trigramme = person.name.substring(0,1) + person.surname.substring(0,2);
     let tmpSkillsSheetName =  date + '-' + trigramme;
     tmpSkillsSheetName = tmpSkillsSheetName.toUpperCase() ;
-    let skillSheetsList: SkillsSheet[];
-    let skillSheetsNamesList = [];
-    if(skillSheetsListData != undefined) {
-      skillSheetsList = skillSheetsListData as SkillsSheet[];
-      skillSheetsList.forEach(skillsSheet => {
-        skillSheetsNamesList.push(skillsSheet.name);
-      });
-
-      let i = 1;
-      while(skillSheetsNamesList.indexOf(tmpSkillsSheetName.toUpperCase()) != -1) {
-        trigramme = trigramme.substring(0,2) + i.toString();
-        tmpSkillsSheetName =  date + '-' + trigramme;
-        i++;
-      }
-    }
-    let currentSkillsSheet = new SkillsSheet(tmpSkillsSheetName.toUpperCase(),person)
-    this.skillsSheetService.createNewSkillsSheet(currentSkillsSheet).subscribe(httpResponse => {
+    let tmpSkillSheet = new SkillsSheet(tmpSkillsSheetName,person)
+    this.skillsSheetService.createNewSkillsSheet(tmpSkillSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
-        this.skillsService.notifySkills(new Skills(person,currentSkillsSheet));
+        this.skillsService.notifySkills(new Skills(person,tmpSkillSheet));
         this.redirectToSkillsSheet() ; 
       }
     })
@@ -160,6 +148,16 @@ export class PageSkillsHomeComponent implements OnInit {
 
   redirectToSkillsSheet() {
     this.router.navigate(['skills/skillsheet']);
+  }
+
+  /**
+   * Ajoute une colonne au tableau + appelle au WS pour trier 
+   * @author Quentin Della-Pasqua
+   */
+  doAddSkill(){
+    this.displayedColumns.push(this.rechercheInput) ; 
+    this.compColumns.push(this.rechercheInput) ; 
+    this.compFilter.push(this.rechercheInput) ; 
   }
 
 }

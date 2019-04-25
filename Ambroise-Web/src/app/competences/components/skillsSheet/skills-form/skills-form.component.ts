@@ -59,16 +59,19 @@ export class SkillsFormComponent implements OnInit {
       } else {
       this.currentPerson = skills.person ; 
       this.currentSkillsSheet = skills.skillsSheet ; 
-      this.skillsArray = this.currentSkillsSheet.techSkillsList;
-      this.softSkillsArray = this.currentSkillsSheet.softSkillsList;
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-      this.arrayObsService.notifySkills(this.currentSkillsSheet.techSkillsList) ; 
-      this.arrayObsService.notifySoftSkills(this.currentSkillsSheet.softSkillsList)
+      skills.skillsSheet.skills.forEach(skill => {
+        if(skill.hasOwnProperty('isSoft')){
+          this.softSkillsArray.push(skill); 
+        } else {
+          this.skillsArray.push(skill)
+        }
+      });
+      this.arrayObsService.notifySkills(this.softSkillsArray) ; 
+      this.arrayObsService.notifySoftSkills(this.skillsArray)
       }
     })
     let formItemsJSON = require('../../../resources/formItems.json');
-    let a = "1" ;
-    console.log("Mon rôle est : " +  this.currentPerson.role + " / Je suis un consultant ?  " );
     if(this.currentPerson.role == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
     } else if (this.currentPerson.role == PersonRole.CONSULTANT ){
@@ -128,7 +131,8 @@ export class SkillsFormComponent implements OnInit {
       skillsData.push(skill.grade);
     });
     this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
-    this.currentSkillsSheet.techSkillsList = arraySkills ; 
+    this.skillsArray = arraySkills ; 
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ; 
   }
 
   updateChartSoftSkills(arraySoftSkills: Skill[]){
@@ -139,7 +143,8 @@ export class SkillsFormComponent implements OnInit {
       skillsData.push(skill.grade);
     });
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
-    this.currentSkillsSheet.softSkillsList = arraySoftSkills ; 
+    this.softSkillsArray = arraySoftSkills ; 
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ; 
   }
 
   /**

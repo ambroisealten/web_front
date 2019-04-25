@@ -28,37 +28,22 @@ export class ArraySkillsComponent implements OnInit {
   ngOnInit() {
     if(this.datatype == "skills"){
       this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => { 
-        arraySkills.forEach(skills => skills.grade = this.literalToNumericGrade(skills.grade))
-        this.dataSource = new MatTableDataSource(arraySkills) ; 
-        
+        this.dataSource = new MatTableDataSource(arraySkills) ;       
       });
     } else {
       this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  { 
-        arraySoftSkills.forEach(skills => skills.grade = this.literalToNumericGrade(skills.grade))
-        this.dataSource = new MatTableDataSource(arraySoftSkills) ; 
-        
+        this.dataSource = new MatTableDataSource(arraySoftSkills) ;        
       });
     }
   }
 
-  literalToNumericGrade(grade) {
-    console.log(typeof grade)
-    if(typeof grade == "number"){
-      return grade
-    }
-    switch(grade) {
-      case 'ONE': return 1;
-      case 'ONEANDAHALF': return 1.5;
-      case 'TWO': return 2;
-      case 'THREE': return 3;
-      case 'FOUR': return 4;
-      default: return 1;
-    }
+  setDataSource(arraySkills: Skill[][]){
+    this.dataSource = new MatTableDataSource(arraySkills) ;        
   }
 
   setToOneIfEmptyOrInvalid($event) {
     let grade: string = $event.target.value;
-    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$|^0$"; // number between 1 and 4 (step 0,5) or 0
+    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$"; // number between 1 and 4 (step 0,5) or 0
     if(!grade.match(pattern) || $event.target.value == '')
     $event.target.value = 1;
   }
@@ -114,7 +99,7 @@ export class ArraySkillsComponent implements OnInit {
 
     this.dataSourceArray.forEach(function(skill) {
       if(skill.name == skillName){
-        if(grade == 1.5){
+        if(grade == 1.5 ){
           skill.grade = 2
         } else {
           skill.grade = grade;
