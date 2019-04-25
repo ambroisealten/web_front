@@ -95,7 +95,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo, skillsSheetData.rolePersonAttachedTo).subscribe( person => {
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
         this.redirectToSkillsSheet();
       });
@@ -110,9 +110,13 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(person => {
-      if(person != undefined && person != 'canceled') {
-        this.skillsSheetService.getAllSkillSheets().subscribe(skillSheetsListData => this.checkNameUnicity(skillSheetsListData,person));
+    dialogRef.afterClosed().subscribe(skills => {
+      if(skills != undefined && skills != 'canceled') {
+        this.skillsSheetService.getAllSkillSheets().subscribe(skillSheetsListData => {
+          LoggerService.log(skills, LogLevel.DEBUG);
+          LoggerService.log(skillSheetsListData, LogLevel.DEBUG);
+          this.checkNameUnicity(skillSheetsListData,skills.person)
+        });
       }
     })
   }

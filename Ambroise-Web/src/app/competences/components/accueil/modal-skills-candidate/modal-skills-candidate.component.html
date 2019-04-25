@@ -2,9 +2,27 @@
 
 <mat-dialog-content>
   <mat-form-field>
+    <input matInput placeholder="Nom" [ngModel]="lastname" (ngModelChange)="lastnameChanged($event)">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Prénom" [ngModel]="firstname" (ngModelChange)="firstnameChanged($event)">
+  </mat-form-field>
+
+  <mat-form-field>
     <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="email" (ngModelChange)="emailChanged($event)" >
     <mat-error *ngIf="emailValidator.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Nom de la fiche" disabled [value]="skillsSheetName">
+  </mat-form-field>
+
+  <div class="slider">
+    <p> Candidat </p>
+    <mat-slide-toggle color="primary" [(ngModel)]="role"></mat-slide-toggle>
+    <p> Consultant </p>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>

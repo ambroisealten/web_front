@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Validators, FormControl } from '@angular/forms';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { Skills } from 'src/app/competences/models/skills';
 
 @Component({
   selector: 'app-modal-skills-candidate',
@@ -14,17 +16,17 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 })
 export class ModalSkillsCandidateComponent implements OnInit {
 
-  //firstname: string;
-  //lastname: string;
-  //skillsSheetName: string = '';
+  firstname: string;
+  lastname: string;
+  skillsSheetName: string = '';
   email: string;
   emailValidator =  new FormControl('', [Validators.required, Validators.email]);
-  emailExists: boolean = false;
+  skillsSheetExists: boolean = false;
   skillsSheetPerson: Person;
-  //role: boolean = false;
+  role: boolean = false;
 
-  //firstnameFirstletter: string = '';
-  //lastnameFirstLetters: string = '';
+  firstnameFirstletter: string = '';
+  lastnameFirstLetters: string = '';
 
   constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>,
     private router: Router,
@@ -33,10 +35,10 @@ export class ModalSkillsCandidateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //this.updateSkillsSheetName();
+    this.updateSkillsSheetName();
   }
 
-/*  updateSkillsSheetName() {
+  updateSkillsSheetName() {
     let month = String("0" + (new Date().getMonth()+1)).slice(-2);
     let year = new Date().getFullYear();
     this.skillsSheetName =  month + year + '-' + this.firstnameFirstletter + this.lastnameFirstLetters;
@@ -56,21 +58,18 @@ export class ModalSkillsCandidateComponent implements OnInit {
 
       this.updateSkillsSheetName();
     }
-  }*/
-
-
+  }
 
   emailChanged($event, emailForm) {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
     if($event.match(emailPattern)) {
       this.skillsSheetService.checkSkillsSheetExistenceByMail($event).subscribe(skillsSheetExists => {
         if(skillsSheetExists) {
-          console.log('exists');
-          this.emailExists = true;
+          this.skillsSheetExists = true;
         //  this.emailValidator.setErrors({'exists' : true});
         }
         else {
-          this.emailExists = false;
+          this.skillsSheetExists = false;
           //this.emailValidator.setErrors({'exists' : false});
         }
       });
@@ -89,14 +88,22 @@ export class ModalSkillsCandidateComponent implements OnInit {
   }
 
   save() {
-    if(this.emailExists) {
+    let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
+    if(this.skillsSheetExists) {
       return;
     }
     else {
-      this.personSkillsService.getPersonByMail(this.email, PersonRole.APPLICANT).subscribe(person => {
+      this.personSkillsService.getPersonByMail(this.email).subscribe(person => {
         if(person != undefined) {
-          this.skillsSheetPerson = person as Person;
-          this.dialogRef.close(this.skillsSheetPerson);
+          if(person.hasOwnProperty('mail')) { // person exists
+            this.skillsSheetPerson = person as Person;
+          }
+          else { // create person
+            this.skillsSheetPerson = new Person(this.firstname, this.lastname, this.email, personRole);
+          }
+          let skillsSheet = new SkillsSheet(this.skillsSheetName, this.skillsSheetPerson);
+          let skills = new Skills(this.skillsSheetPerson, skillsSheet);
+          this.dialogRef.close(skills);
         }
       });
     }
