@@ -5,7 +5,7 @@ export class SkillsSheet {
       name: string;
       versionNumber: number;
       mailPersonAttachedTo: String;
-      skillsList: Skill[] ; 
+      skillsList: Skill[] ;
       mailVersionAuthor: String;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
@@ -13,20 +13,15 @@ export class SkillsSheet {
     constructor(name: string, person: Person) {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
-      this.versionNumber = 1 ; 
-<<<<<<< HEAD
+      this.versionNumber = 1 ;
       this.skillsList = [] ; 
       this.mailVersionAuthor = "cunmail@mail.com";
-=======
-      this.skillsList = [] ;
-      this.mailVersionAuthor = "";
->>>>>>> skillsHomePage_qde
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }
 
     addSkill(skillToAdd: Skill){
-      this.skillsList.push(skillToAdd) ; 
+      this.skillsList.push(skillToAdd) ;
     }
     removeSkill(skillToRemove: Skill) {
       let skillToRemoveIndex = this.skillsList.findIndex(skill => skill === skillToRemove);
@@ -36,11 +31,11 @@ export class SkillsSheet {
 
     getAverageSoftSkillGrade():number {
       let sumGrades = 0;
-      let countSoft = 0; 
+      let countSoft = 0;
       for(let softSkill of this.skillsList) {
         if(softSkill.hasOwnProperty('isSoft')){
           sumGrades += softSkill.grade;
-          countSoft += 1 ; 
+          countSoft += 1 ;
         }
       }
       if(countSoft != 0){

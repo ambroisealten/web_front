@@ -25,11 +25,11 @@ export class PageSkillsHomeComponent implements OnInit {
   compColumns: string[] = ['JEE','C++','.NET','PHP','SQL'] ;
 
   //Tableau contenant les compétences recherchées
-  compFilter: string[] ; 
+  compFilter: string[] ;
   //Tableau contenant les autres filtres
-  filter: string[] ; 
+  filter: string[] ;
 
-  rechercheInput:string; 
+  rechercheInput:string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -41,7 +41,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
 
   /**
-   * TO CHANGE 
+   * TO CHANGE
    */
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
@@ -56,7 +56,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   /**
    * Modeler les données reçu du serveur pour les faire correspondre au Mat Table
-   * @param skillsList 
+   * @param skillsList
    * @author Quentin Della-Pasqua
    */
   createDataSource(skillsList){
@@ -65,30 +65,30 @@ export class PageSkillsHomeComponent implements OnInit {
       let tmpSkillSheet: any;
       if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
         tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
-        tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ; 
-        tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ; 
+        tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ;
+        tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ;
         tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
         tmpSkillSheet['Moyenne Soft Skills'] = skills['skillsSheet'].getAverageSoftSkillgrade() ;
         this.compColumns.forEach(comp => {
-          let tmpCompResult = skills.skillsList.filter(skill => skill.name == comp) ; 
+          let tmpCompResult = skills.skillsList.filter(skill => skill.name == comp) ;
           if (tmpCompResult != []){
-            tmpSkillSheet[comp] = tmpCompResult[0] ; 
+            tmpSkillSheet[comp] = tmpCompResult[0] ;
           } else {
-            tmpSkillSheet[comp] = "" ; 
+            tmpSkillSheet[comp] = "" ;
           }
         })
-        tmpSkillSheet['skills'] = skills ; 
-        skillSheet.push(tmpSkillSheet) ; 
+        tmpSkillSheet['skills'] = skills ;
+        skillSheet.push(tmpSkillSheet) ;
       }
     })
-    this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ; 
+    this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ;
   }
 
   instantiateProperty(property,testedProperty:String):any{
     if(property.hasOwnProperty(testedProperty)){
       return property['testProperty'] ;
     }
-    return "" ; 
+    return "" ;
   }
 
   /**
@@ -100,18 +100,14 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-<<<<<<< HEAD
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {
-=======
     this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {   
->>>>>>> skillsHomePage_qde
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
         this.redirectToSkillsSheet();
       });
   }
 
   /**
-  * Ouvre une modal pour créer une nouvelle personne 
+  * Ouvre une modal pour créer une nouvelle personne
   */
   createSkillsSheetModal() {
     const dialogConfig = new MatDialogConfig();
@@ -124,7 +120,7 @@ export class PageSkillsHomeComponent implements OnInit {
       {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
           if(httpResponse != undefined) {
-            this.createNewSkillSheet(newPerson); 
+            this.createNewSkillSheet(newPerson);
           }
         });
       }
@@ -133,7 +129,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   /**
    * Crée le nom et fais la requête pour post la skillSheet
-   * @param person 
+   * @param person
    * @author Quentin Della-Pasqua
    */
   createNewSkillSheet(person){
@@ -145,7 +141,7 @@ export class PageSkillsHomeComponent implements OnInit {
     this.skillsSheetService.createNewSkillsSheet(tmpSkillSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
         this.skillsService.notifySkills(new Skills(person,tmpSkillSheet));
-        this.redirectToSkillsSheet() ; 
+        this.redirectToSkillsSheet() ;
       }
     })
 
@@ -156,13 +152,13 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * Ajoute une colonne au tableau + appel au WS pour trier 
+   * Ajoute une colonne au tableau + appel au WS pour trier
    * @author Quentin Della-Pasqua
    */
   doAddSkill(){
-    this.displayedColumns.push(this.rechercheInput) ; 
-    this.compColumns.push(this.rechercheInput) ; 
-    this.compFilter.push(this.rechercheInput) ; 
+    this.displayedColumns.push(this.rechercheInput) ;
+    this.compColumns.push(this.rechercheInput) ;
+    this.compFilter.push(this.rechercheInput) ;
   }
 
 }
