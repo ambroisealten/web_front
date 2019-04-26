@@ -204,7 +204,7 @@ a{
 }
 
 .allTagWords{
-    width: 95%;
+    width: 50%;
     display: grid;
     grid-template-columns: repeat(2,1fr);
     grid-row-gap: 3%;
@@ -226,6 +226,18 @@ a{
 
 .tagWord p{
     margin:auto;
+}
+
+div.searchBar {
+    margin-left: 0%;
+}
+
+div.mat-expansion-panel-body  {
+    padding-left: 2% !important;
+  }
+
+div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
+    padding-left: 0% !important;
 }
 
 .closeTag{

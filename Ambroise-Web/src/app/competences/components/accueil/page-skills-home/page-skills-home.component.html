@@ -1,8 +1,14 @@
 <!-- <button mat-raised-button class="newSheetButton" color="primary" (click)="createSkillsSheetModal()">Créer</button>-->
-<div class="tagWord" *ngFor="let tagWord of compFilter">
-    <img class="closeTag" src='../../assets/images/close.png' alt="{{ tagWord }}" (click)="deleteTagWord($event)">
-    <p>{{ tagWord }}</p>
-  </div>
+
+<mat-form-field class="searchBar">
+    <input matInput placeholder="Compétence et Soft Skill " (keyup.enter)="doAddSkill()" [(ngModel)]="rechercheInput">
+  </mat-form-field>
+  <div class="allTagWords">
+      <div class="tagWord" *ngFor="let compFilter of compFilter">
+        <img class="closeTag" src='../../assets/images/close.png' alt="{{ compFilter }}" (click)="deleteSkillWord($event)">
+        <p>{{ compFilter }}</p>
+      </div>
+    </div>
 
 <div class =gridContainer>
     <div class =gridContainer>
@@ -11,7 +17,7 @@
     
           <mat-expansion-panel>
             <mat-expansion-panel-header>
-              <p>Filtres : </p>
+              <h6>Filtres : </h6>
               
             </mat-expansion-panel-header>
         
@@ -30,9 +36,9 @@
           <mat-expansion-panel>
               <mat-expansion-panel-header>
 
-            <p>
+            <h6>
               Note de fiabilité : 
-            </p>
+            </h6>
           </mat-expansion-panel-header>
         
           <div class="container inline">

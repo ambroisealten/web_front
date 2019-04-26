@@ -39,18 +39,19 @@ body
 }
 
 .searchBar {
-  //width: 90%;
-  margin-left:10%;
+  width: 100%;
+  margin-left:0%;
 }
+
 
 .motCles {
   border-right: 1px solid var(--ALTENBlue);
+  width: 15vw;
 }
 
 .gridContainer {
   display: grid;
-  grid-template-columns: 2fr 8fr;
-  width: 100%;
+  grid-template-columns: 2fr 10fr;
 }
 
 .tableRow {

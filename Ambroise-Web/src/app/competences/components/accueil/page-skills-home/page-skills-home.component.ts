@@ -159,15 +159,19 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   doAddSkill(){
     this.displayedColumns.push(this.rechercheInput) ;
-    this.compColumns.push(this.rechercheInput) ;
+    this.compFilter.push(this.rechercheInput);
+    this.rechercheInput = "";
   }
 
   doAddFilter(){
+    if ( this.filter.findIndex(filterTag => filterTag === this.rechercheInput ) == -1)
     this.filter.push(this.rechercheInput);
     this.rechercheInput = "";
-    
   }
 
+  deleteSkillWord(event) {
+    this.compFilter = this.compFilter.filter(el => el !== event.srcElement.alt); 
+  }
   deleteTagWord(event) {
     this.filter = this.filter.filter(el => el !== event.srcElement.alt); 
   }
