@@ -38,6 +38,7 @@ export class HeaderUserComponent implements OnInit {
 
   setCurrentModule(currentModule) {
     this.currentModule = currentModule ;
+    this.currentModuleService.notifyCurrentModule(currentModule);
     switch(currentModule){
       case("Missions"):
         this.titleService.setTitle("Ambroise - Missions"); 
