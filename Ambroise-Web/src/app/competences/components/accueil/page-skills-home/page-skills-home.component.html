@@ -1,11 +1,65 @@
-<button mat-raised-button class="newSheetButton" color="primary" (click)="createSkillsSheetModal()">Créer</button>
-<mat-form-field class="searchBar">
-  <input matInput (keyup)="applyFilterSkillsSheets($event.target.value)" placeholder="Recherche" (keyup.enter)="doAddSkill()" [(ngModel)]="rechercheInput">
-</mat-form-field>
+<!-- <button mat-raised-button class="newSheetButton" color="primary" (click)="createSkillsSheetModal()">Créer</button>-->
+
 
 <div class =gridContainer>
-  <div class="motCles">
-    <p>cc cv</p>
+    <div class =gridContainer>
+      <div class="motCles">
+        <mat-accordion>
+    
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <p>Filtres : </p>
+              
+            </mat-expansion-panel-header>
+        
+            <mat-form-field class="searchBar">
+                <input matInput (keyup)="applyFilterSkillsSheets($event.target.value)" placeholder="ville, métier, disponibilité ..." (keyup.enter)="doAddSkill()" [(ngModel)]="rechercheInput">
+              </mat-form-field>
+            <p>Thierry Henry</p>
+            <p>Chef de projet</p>
+        
+            <h2>Exemple d'un champ d'auto-complétion simple</h2>
+<form (ngSubmit)="onSubmitForm()">
+  <mat-form-field>
+    <input type="text" placeholder="Rechercher" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
+<h3>Mots-clés pris en compte :</h3>
+<div class="allTagWords">
+  <div class="tagWord" *ngFor="let tagWord of tagWords">
+    <img class="closeTag" src='../../assets/images/close.png' alt="Supprimer {{ tagWord }} en tant que mot-clé" (click)="deleteTagWord($event)">
+    <p>{{ tagWord }}</p>
+  </div>
+</div>
+<div *ngIf="result !== undefined" id="results">
+  <p>{{ result.name }} {{ result.forname }}, mail : {{ result.mail }}</p>
+</div>
+          </mat-expansion-panel>
+        
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+
+            <p>
+              Note de fiabilité : 
+            </p>
+          </mat-expansion-panel-header>
+        
+          <div class="container">
+              <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
+                  <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 star">4</label>
+                  <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 star">3 ou +</label>
+                  <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 star">2 ou +</label>
+                  <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">1 ou +</label>
+              </div>
+        </div>	
+          </mat-expansion-panel>
+        
+        </mat-accordion>
   </div>
 
   <div class="skillSheetInformation">
