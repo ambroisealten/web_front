@@ -25,10 +25,10 @@ export class SkillsFormComponent implements OnInit {
   lastModificationsArray: any[];
   lastModifDisplayedColumns: string[] = ['manager', 'date', 'action'];
 
-  skillsArray: any[];
+  skillsArray: any[] = [];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
 
-  softSkillsArray: any[];
+  softSkillsArray: any[] = [];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
 
   headerRowHiddenModif = false;
@@ -60,7 +60,7 @@ export class SkillsFormComponent implements OnInit {
       this.currentPerson = skills.person ; 
       this.currentSkillsSheet = skills.skillsSheet ; 
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-      skills.skillsSheet.skills.forEach(skill => {
+      skills.skillsSheet.skillsList.forEach(skill => {
         if(skill.hasOwnProperty('isSoft')){
           this.softSkillsArray.push(skill); 
         } else {
@@ -99,6 +99,10 @@ export class SkillsFormComponent implements OnInit {
   }
 
   updateChartSkills(arraySkills: Skill[]){
+    console.log(typeof this.skillsChart)
+    if (typeof this.skillsChart != "function"){
+      this.skillsChart.destroy() ; 
+    }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
     arraySkills.forEach(function(skill) {
@@ -111,6 +115,9 @@ export class SkillsFormComponent implements OnInit {
   }
 
   updateChartSoftSkills(arraySoftSkills: Skill[]){
+    if(typeof this.softSkillsChart != "function"){
+      this.softSkillsChart.destroy() ; 
+    }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
     arraySoftSkills.forEach(function(skill) {

@@ -14,8 +14,13 @@ export class SkillsSheet {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
       this.versionNumber = 1 ; 
+<<<<<<< HEAD
       this.skillsList = [] ; 
       this.mailVersionAuthor = "cunmail@mail.com";
+=======
+      this.skillsList = [] ;
+      this.mailVersionAuthor = "";
+>>>>>>> skillsHomePage_qde
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }

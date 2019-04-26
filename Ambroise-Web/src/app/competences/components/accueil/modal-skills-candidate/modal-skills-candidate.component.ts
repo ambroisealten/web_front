@@ -96,6 +96,7 @@ export class ModalSkillsCandidateComponent implements OnInit {
       this.personSkillsService.getPersonByMail(this.email).subscribe(person => {
         if(person != undefined) {
           if(person.hasOwnProperty('mail')) { // person exists
+<<<<<<< HEAD
             this.skillsSheetPerson = person as Person;
           }
           else { // create person
@@ -104,6 +105,13 @@ export class ModalSkillsCandidateComponent implements OnInit {
           let skillsSheet = new SkillsSheet(this.skillsSheetName, this.skillsSheetPerson);
           let skills = new Skills(this.skillsSheetPerson, skillsSheet);
           this.dialogRef.close(skills);
+=======
+            //ERROR
+          }
+          else { // create person
+            this.dialogRef.close(new Person(this.firstname, this.lastname, this.email, personRole));
+          }
+>>>>>>> skillsHomePage_qde
         }
       });
     }

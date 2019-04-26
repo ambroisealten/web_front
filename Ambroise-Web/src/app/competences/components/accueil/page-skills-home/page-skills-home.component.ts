@@ -100,7 +100,11 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
+<<<<<<< HEAD
     this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {
+=======
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {   
+>>>>>>> skillsHomePage_qde
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
         this.redirectToSkillsSheet();
       });
