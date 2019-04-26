@@ -45,7 +45,6 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
-      console.log(skillsSheetList)
       if (skillsSheetList != undefined){
         this.createDataSource(skillsSheetList)
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);

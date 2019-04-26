@@ -27,18 +27,18 @@ export class ArraySkillsComponent implements OnInit {
 
   ngOnInit() {
     if(this.datatype == "skills"){
-      this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => { 
-        this.dataSource = new MatTableDataSource(arraySkills) ;       
+      this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
+        this.dataSource = new MatTableDataSource(arraySkills) ;
       });
     } else {
-      this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  { 
-        this.dataSource = new MatTableDataSource(arraySoftSkills) ;        
+      this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
+        this.dataSource = new MatTableDataSource(arraySoftSkills) ;
       });
     }
   }
 
   setDataSource(arraySkills: Skill[][]){
-    this.dataSource = new MatTableDataSource(arraySkills) ;        
+    this.dataSource = new MatTableDataSource(arraySkills) ;
   }
 
   setToOneIfEmptyOrInvalid($event) {
@@ -94,7 +94,6 @@ export class ArraySkillsComponent implements OnInit {
   * @param  event grade value from input
   */
   updateGradeEvent(event) {
-    console.log(event)
     let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from same row as modified grade
     let grade = event.target.parentElement.childNodes[1].value;
 
@@ -120,7 +119,7 @@ export class ArraySkillsComponent implements OnInit {
   updateDataSourceInService() {
     if(this.datatype == "skills"){
       this.arrayObsService.notifySkills(this.dataSourceArray);
-    } else { 
+    } else {
       this.arrayObsService.notifySoftSkills(this.dataSourceArray);
     }
   }

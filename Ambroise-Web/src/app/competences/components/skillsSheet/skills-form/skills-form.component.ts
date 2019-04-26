@@ -46,6 +46,10 @@ export class SkillsFormComponent implements OnInit {
 
   avis: string;
 
+  isEditButtonHidden: boolean = false;
+  isPersonDataDisabled: boolean = true;
+  isSkillsSheetNameEditable: boolean = false;
+
   constructor(private skillsService: SkillsService,
               private dialog: MatDialog,
               private skillsSheetService: SkillsSheetService,
@@ -57,17 +61,17 @@ export class SkillsFormComponent implements OnInit {
       if(skills == undefined){
         this.router.navigate(['skills']);
       } else {
-      this.currentPerson = skills.person ; 
-      this.currentSkillsSheet = skills.skillsSheet ; 
+      this.currentPerson = skills.person ;
+      this.currentSkillsSheet = skills.skillsSheet ;
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
       skills.skillsSheet.skillsList.forEach(skill => {
         if(skill.hasOwnProperty('isSoft')){
-          this.softSkillsArray.push(skill); 
+          this.softSkillsArray.push(skill);
         } else {
           this.skillsArray.push(skill)
         }
       });
-      this.arrayObsService.notifySkills(this.softSkillsArray) ; 
+      this.arrayObsService.notifySkills(this.softSkillsArray) ;
       this.arrayObsService.notifySoftSkills(this.skillsArray)
       }
     })
@@ -89,6 +93,34 @@ export class SkillsFormComponent implements OnInit {
     return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
   }
 
+  editSkillsSheetName() {
+    this.isSkillsSheetNameEditable = true;
+  }
+
+  checkIfNameEmpty(event) {
+    let newSkillsSheetName = event.target.innerText;
+    if(newSkillsSheetName == "") {
+      event.target.innerText = this.currentSkillsSheet.name;
+    }
+    else {
+      this.currentSkillsSheet.name = newSkillsSheetName;
+    }
+  }
+
+  editPerson() {
+    this.isEditButtonHidden = true;
+    this.isPersonDataDisabled = false;
+  }
+
+  savePerson() {
+    console.log('saved');
+  }
+
+  cancelEditPerson() {
+    this.isEditButtonHidden = false;
+    this.isPersonDataDisabled = true;
+  }
+
   /**
   * Calls skills service to save current skillsSheet
   */
@@ -99,9 +131,8 @@ export class SkillsFormComponent implements OnInit {
   }
 
   updateChartSkills(arraySkills: Skill[]){
-    console.log(typeof this.skillsChart)
     if (typeof this.skillsChart != "function"){
-      this.skillsChart.destroy() ; 
+      this.skillsChart.destroy() ;
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
@@ -110,13 +141,13 @@ export class SkillsFormComponent implements OnInit {
       skillsData.push(skill.grade);
     });
     this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
-    this.skillsArray = arraySkills ; 
-    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ; 
+    this.skillsArray = arraySkills ;
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
   }
 
   updateChartSoftSkills(arraySoftSkills: Skill[]){
     if(typeof this.softSkillsChart != "function"){
-      this.softSkillsChart.destroy() ; 
+      this.softSkillsChart.destroy() ;
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
@@ -125,8 +156,8 @@ export class SkillsFormComponent implements OnInit {
       skillsData.push(skill.grade);
     });
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
-    this.softSkillsArray = arraySoftSkills ; 
-    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ; 
+    this.softSkillsArray = arraySoftSkills ;
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
   }
 
   /**
