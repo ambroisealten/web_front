@@ -25,9 +25,11 @@ export class PageSkillsHomeComponent implements OnInit {
   compColumns: string[] = ['JEE','C++','.NET','PHP','SQL'] ;
 
   //Tableau contenant les compétences recherchées
-  compFilter: string[] ;
+  compFilter: string[] = [];
   //Tableau contenant les autres filtres
-  filter: string[] ;
+  filter: string[] = [];
+
+
 
   rechercheInput:string;
 
@@ -158,7 +160,19 @@ export class PageSkillsHomeComponent implements OnInit {
   doAddSkill(){
     this.displayedColumns.push(this.rechercheInput) ;
     this.compColumns.push(this.rechercheInput) ;
-    this.compFilter.push(this.rechercheInput) ;
   }
 
+  doAddFilter(){
+    this.filter.push(this.rechercheInput);
+    this.rechercheInput = "";
+    
+  }
+
+  deleteTagWord(event) {
+    this.filter = this.filter.filter(el => el !== event.srcElement.alt); 
+  }
+
+  minRatingValue(event){
+    LoggerService.log(event.srcElement.value,LogLevel.DEVDEBUG)
+  }
 }

@@ -202,3 +202,40 @@ a{
         font-size: 1.6vw;
     }
 }
+
+.allTagWords{
+    width: 95%;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-row-gap: 3%;
+}
+
+.tagWord{
+    color :#043962;
+    margin: auto;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    width: 50%;
+    background-color: var(--ALTENGray);
+    border-radius: 5px;
+    margin-bottom: 1%; 
+    transition: linear .2s;
+    min-width: 75px;
+}
+
+.tagWord p{
+    margin:auto;
+}
+
+.closeTag{
+    filter : brightness(55%);
+    margin: auto;   
+    width: 60%;
+    min-width: 10px;
+    transition : linear .2s;
+}
+
+.closeTag:hover{
+    filter : brightness(0) invert(1);
+}

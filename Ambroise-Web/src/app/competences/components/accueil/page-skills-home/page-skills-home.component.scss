@@ -11,6 +11,10 @@ body
   background: #4a4a4c !important;
 }
 
+.inline{
+  display: inline-block; 
+}
+
 .starrating > input {display: none;}  /* Remove radio buttons */
 
 .starrating > label:before { 
@@ -18,7 +22,6 @@ body
   margin: 2px;
   font-size: 1em;
   font-family: FontAwesome;
-  display: inline-block; 
 }
 
 .starrating > label
@@ -36,7 +39,7 @@ body
 }
 
 .searchBar {
-  width: 90%;
+  //width: 90%;
   margin-left:10%;
 }
 
@@ -47,6 +50,7 @@ body
 .gridContainer {
   display: grid;
   grid-template-columns: 2fr 8fr;
+  width: 100%;
 }
 
 .tableRow {
@@ -59,4 +63,14 @@ body
 
 td {
   padding: 5%;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
 }

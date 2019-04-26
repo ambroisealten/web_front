@@ -14,7 +14,7 @@ function changed(){
     */
     setTimeout(() => {
         setCloseTag();
-    },50);
+    },100);
 }
 
 function setCloseTag(){
