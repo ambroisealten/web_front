@@ -100,7 +100,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {   
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
         this.redirectToSkillsSheet();
       });
@@ -115,12 +115,13 @@ export class PageSkillsHomeComponent implements OnInit {
 
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(newPerson => {
-      if(newPerson != "canceled" && newPerson != undefined)
+    dialogRef.afterClosed().subscribe(skills => {
+      let currentSkills = skills as Skills;
+      if(skills != "canceled" && skills != undefined)
       {
-        this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
+        this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
           if(httpResponse != undefined) {
-            this.createNewSkillSheet(newPerson);
+            this.createNewSkillSheet(currentSkills.person, currentSkills.skillsSheet);
           }
         });
       }
@@ -132,15 +133,10 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param person
    * @author Quentin Della-Pasqua
    */
-  createNewSkillSheet(person){
-    let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
-    let trigramme = person.name.substring(0,1) + person.surname.substring(0,2);
-    let tmpSkillsSheetName =  date + '-' + trigramme;
-    tmpSkillsSheetName = tmpSkillsSheetName.toUpperCase() ;
-    let tmpSkillSheet = new SkillsSheet(tmpSkillsSheetName,person)
-    this.skillsSheetService.createNewSkillsSheet(tmpSkillSheet).subscribe(httpResponse => {
+  createNewSkillSheet(person, skillsSheet){
+    this.skillsSheetService.createNewSkillsSheet(skillsSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
-        this.skillsService.notifySkills(new Skills(person,tmpSkillSheet));
+        this.skillsService.notifySkills(new Skills(person,skillsSheet));
         this.redirectToSkillsSheet() ;
       }
     })
