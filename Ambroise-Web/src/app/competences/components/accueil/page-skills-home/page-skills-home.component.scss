@@ -26,3 +26,50 @@
 td {
   padding: 5%;
 }
+
+mat-cell {
+  font-size: 12px;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-column-position {
+  flex: 0 0 15%;
+}
+
+.mat-column-battery {
+  flex: 0 0 5%;
+}
+  
+.mat-column-size {
+  flex: 0 0 5%;
+
+}
+
+.mat-column-status {
+  flex: 0 0 5%;
+
+}
+
+.mat-column-product {
+  flex: 0 0 30%;
+
+}
+
+.mat-column-select{
+  flex: 0 0 5%;
+
+}
+.mat-header-cell{
+  font-weight: bold;
+  color: --ALTENBlack;;
+  font-size: 12px;
+}
+
+.mat-row:nth-child(even){
+  background-color: --ALTENLightGray;
+}
