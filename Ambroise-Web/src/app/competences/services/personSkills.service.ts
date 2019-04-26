@@ -38,7 +38,7 @@ export class PersonSkillsService {
   }
 
   updatePerson(person: Person) {
-
+    person.oldMail = person.mail; // TODO change when back is ready
     let token = window.sessionStorage.getItem("bearerToken");
 
     let headers = new HttpHeaders({

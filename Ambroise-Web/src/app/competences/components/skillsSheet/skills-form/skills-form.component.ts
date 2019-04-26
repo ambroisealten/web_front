@@ -10,6 +10,7 @@ import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router } from '@angular/router';
 import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -42,6 +43,7 @@ export class SkillsFormComponent implements OnInit {
   showPassToConsultant: boolean = true;
 
   currentPerson: Person;
+  tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
 
   avis: string;
@@ -53,6 +55,7 @@ export class SkillsFormComponent implements OnInit {
   constructor(private skillsService: SkillsService,
               private dialog: MatDialog,
               private skillsSheetService: SkillsSheetService,
+              private personSkillsService: PersonSkillsService,
               private arrayObsService: ArrayObsService,
               private router: Router) { }
 
@@ -110,15 +113,97 @@ export class SkillsFormComponent implements OnInit {
   editPerson() {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
+    this.tmpCurrentPerson = this.currentPerson;
   }
 
   savePerson() {
-    console.log('saved');
+    this.isEditButtonHidden = false;
+    this.isPersonDataDisabled = true;
+    this.currentPerson = this.updatePersonFromFormItems();
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if(httpResponse != undefined) {
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
   }
 
   cancelEditPerson() {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
+    this.currentPerson = this.tmpCurrentPerson;
+    this.updateFormItemsFromPerson(this.currentPerson);
+  }
+
+  updateFormItemsFromPerson(person: Person) {
+    if(person.role == PersonRole.APPLICANT) {
+      this.formItems.forEach(item => {
+        switch(item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'employer':
+            item.model = person.employer;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+    });
+    }
+    else if(person.role == PersonRole.CONSULTANT) {
+      this.formItems.forEach(item => {
+        switch(item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }
+
+  updatePersonFromFormItems() {
+    let personToUpdate = this.currentPerson;
+    this.formItems.forEach(item => {
+      switch(item.id) {
+        case 'highestDiploma':
+          personToUpdate.highestDiploma = item.model ;
+          break;
+        case 'highestDiplomaYear':
+          personToUpdate.highestDiplomaYear = item.model ;
+          break;
+        case 'employer':
+          personToUpdate.employer = item.model;
+          break;
+        case 'job':
+          personToUpdate.job = item.model ;
+          break;
+        case 'monthlyWage':
+          personToUpdate.monthlyWage = item.model ;
+          break;
+        default:
+          break;
+      }
+    });
+    return personToUpdate;
   }
 
   /**
