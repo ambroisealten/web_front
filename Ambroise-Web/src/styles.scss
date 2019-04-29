@@ -259,8 +259,9 @@ div.searchBar {
     margin-left: 0%;
 }
 
-div.mat-expansion-panel-body  {
+div .mat-expansion-panel-body  {
     padding-left: 2% !important;
+    padding-bottom: 5% !important;
   }
 
 div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {

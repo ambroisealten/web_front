@@ -159,7 +159,6 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   doAddSkill(){
-    console.log(this.compFilter + "MDR" +this.rechercheInputCpt);
     if ( this.compFilter.findIndex(filterTag => filterTag === this.rechercheInputCpt ) == -1)
     this.compFilter.push(this.rechercheInputCpt);
     this.displayedColumns.push(this.rechercheInputCpt);
@@ -170,6 +169,12 @@ export class PageSkillsHomeComponent implements OnInit {
     if ( this.filter.findIndex(filterTag => filterTag === this.rechercheInput ) == -1)
     this.filter.push(this.rechercheInput);
     this.rechercheInput = "";
+
+    let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
+
+    //console.log(totalPadding+10);
+    document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding+1.5)+"%";
+    //console.log(document.getElementsByClassName("allTagWords")[0].style);
   }
 
   deleteSkillWord(event) {
@@ -177,6 +182,8 @@ export class PageSkillsHomeComponent implements OnInit {
   }
   deleteTagWord(event) {
     this.filter = this.filter.filter(el => el !== event.srcElement.alt); 
+    let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
+    document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding-3.5)+"%";
   }
 
   minRatingValue(event){
