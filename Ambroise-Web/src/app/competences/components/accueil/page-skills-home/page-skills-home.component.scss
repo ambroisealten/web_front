@@ -66,8 +66,9 @@ mat-cell {
 }
 .mat-header-cell{
   font-weight: bold;
-  color: --ALTENBlack;;
+  color: var(--ALTENLightGray);
   font-size: 12px;
+  background: var(--ALTENBlue);
 }
 
 .mat-row:nth-child(even){

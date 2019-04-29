@@ -21,7 +21,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   skillsSheetDataSource: MatTableDataSource<any[]>;
   //Tableau countenant les headers
-  displayedColumns: string[]  = ['Nom Prénom','Métier','Avis','Disponibilité','Moyenne Soft Skills','JEE','C++','.NET','PHP','SQL'];
+  displayedColumns: string[]  = ['Nom Prénom','Métier','Avis','Disponibilité','Moyenne Soft Skills','JEE','C++','.NET','PHP','SQL','C#','Python','Angular','HTTp',"HTIK","LDKSL","DKJSJKDSQI","dlqkdqdkql","kdjs","klklk"];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
   //Tableau contenant les compétences
   compColumns: string[] = ['JEE','C++','.NET','PHP','SQL'] ;
