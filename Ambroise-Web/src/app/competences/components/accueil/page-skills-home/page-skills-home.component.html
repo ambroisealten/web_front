@@ -9,7 +9,7 @@
   </div>
 
   <div class="skillSheetInformation">
-    <table mat-table [dataSource]="skillsSheetDataSource">
+    <table mat-table [dataSource]="skillsSheetDataSource" class="container">
 <!-- 
         <ng-container [matColumnDef]="fixDisplayedColumns[0]" class="firstColumn">
             <th mat-header-cell *matHeaderCellDef> {{fixDisplayedColumns[0] | titlecase }} </th>
@@ -25,11 +25,12 @@
             <th mat-header-cell *matHeaderCellDef> {{fixDisplayedColumns[2] | titlecase }} </th>
             <td mat-cell *matCellDef="let element"> {{ element.averageSoftSkillsGrade }} </td>
           </ng-container> -->
-    
 
       <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+        <div class='col'>
           <th mat-header-cell *matHeaderCellDef> {{column}} </th>
           <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        </div>
       </ng-container>
         
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
