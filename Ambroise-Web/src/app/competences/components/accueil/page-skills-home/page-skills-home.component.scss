@@ -1,6 +1,10 @@
 .newSheetButton {
 }
 
+.skillSheetInformation{
+  overflow: auto;
+}
+
 .searchBar {
   width: 90%;
   margin-left:10%;
@@ -72,5 +76,5 @@ mat-cell {
 }
 
 .mat-row:nth-child(even){
-  background-color: --ALTENLightGray;
+  background-color: var(--ALTENLightGray);
 }

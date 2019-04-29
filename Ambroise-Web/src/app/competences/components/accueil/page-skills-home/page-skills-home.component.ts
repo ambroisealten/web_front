@@ -17,6 +17,7 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
+  oneOutOfTwo: boolean = true;
   skills: Skills[] = []; 
 
   skillsSheetDataSource: MatTableDataSource<any[]>;
@@ -168,4 +169,18 @@ export class PageSkillsHomeComponent implements OnInit {
     this.compFilter.push(this.rechercheInput) ;
   }
 
+  /**
+   * @author Thomas Decamp
+   */
+  isOneOutOfTwo():boolean{
+    this.setIsOneOutOfTwo();
+    return this.oneOutOfTwo;
+  }
+
+  /**
+   * @author Thomas Decamp
+   */
+  setIsOneOutOfTwo(){
+    this.oneOutOfTwo = !this.oneOutOfTwo;
+  }
 }
