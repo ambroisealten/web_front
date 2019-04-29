@@ -154,11 +154,29 @@ export class PageSkillsHomeComponent implements OnInit {
     this.router.navigate(['skills/skillsheet']);
   }
 
+  handlingLongWord() {
+    if (this.rechercheInput.length >= 8 && this.rechercheInput[7] != " " && this.rechercheInput[7] != "-") {
+      let test = this.rechercheInput.slice(0,7);
+      let test2 = this.rechercheInput.slice(7);
+      this.rechercheInput = test+"- "+test2;
+   }
+   return;
+  }
+  handlingLongWordCpt() {
+    if (this.rechercheInputCpt.length >= 8 && this.rechercheInputCpt[7] != " " && this.rechercheInputCpt[7] != "-") {
+      let test = this.rechercheInputCpt.slice(0,7);
+      let test2 = this.rechercheInputCpt.slice(7);
+      this.rechercheInputCpt = test+"- "+test2;
+   }
+   return;
+  }
+
   /**
    * Ajoute une colonne au tableau + appel au WS pour trier
    * @author Quentin Della-Pasqua
    */
   doAddSkill(){
+    this.handlingLongWordCpt();
     if ( this.compFilter.findIndex(filterTag => filterTag === this.rechercheInputCpt ) == -1)
     this.compFilter.push(this.rechercheInputCpt);
     this.displayedColumns.push(this.rechercheInputCpt);
@@ -166,15 +184,13 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   doAddFilter(){
-    if ( this.filter.findIndex(filterTag => filterTag === this.rechercheInput ) == -1)
-    this.filter.push(this.rechercheInput);
+    //this.handlingLongWord();
+    if ( this.filter.findIndex(filterTag => filterTag === this.rechercheInput ) == -1){
+      this.filter.push(this.rechercheInput);
+      let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
+      document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding+1.5)+"%";
+    }
     this.rechercheInput = "";
-
-    let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
-
-    //console.log(totalPadding+10);
-    document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding+1.5)+"%";
-    //console.log(document.getElementsByClassName("allTagWords")[0].style);
   }
 
   deleteSkillWord(event) {
@@ -183,7 +199,7 @@ export class PageSkillsHomeComponent implements OnInit {
   deleteTagWord(event) {
     this.filter = this.filter.filter(el => el !== event.srcElement.alt); 
     let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
-    document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding-3.5)+"%";
+    document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding-2.5)+"%";
   }
 
   minRatingValue(event){

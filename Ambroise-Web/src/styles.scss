@@ -203,25 +203,24 @@ a{
     }
 }
 
+.img {
+    vertical-align: middle;
+}
 .allTagWords{
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-row-gap: 3%;
+    //width: 100%;
+    //float: left;
+    display: inline-block;
 }
 
 .tagWord{
     color :#043962;
-    margin: auto;
-    text-align: center;
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    width: 50%;
+    display: inline;
+    //text-align: left;
     background-color: var(--ALTENGray);
     border-radius: 5px;
-    margin-bottom: 1%; 
     transition: linear .2s;
-    min-width: 75px;
+    max-width: 75px;
+    margin: 2%;
 }
 
 .allTagWordsCpt {
@@ -247,9 +246,6 @@ a{
     min-width: 75px;
 }
 
-.tagWord p{
-    margin:auto;
-}
 
 .tagWordCpt p{
     margin:auto;
@@ -270,8 +266,7 @@ div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
 
 .closeTag{
     filter : brightness(55%);
-    margin: auto;   
-    width: 60%;
+    width: 5%;
     min-width: 10px;
     transition : linear .2s;
 }

@@ -17,8 +17,10 @@
               </mat-form-field>
             <div class="allTagWords">
                 <div class="tagWord" *ngFor="let tagWord of filter">
+                      
+                  
+                  <span>{{ tagWord }}</span>
                   <img class="closeTag" src='../../assets/images/close.png' alt="{{ tagWord }}" (click)="deleteTagWord($event)">
-                  <p>{{ tagWord }}</p>
                 </div>
               </div>
         
