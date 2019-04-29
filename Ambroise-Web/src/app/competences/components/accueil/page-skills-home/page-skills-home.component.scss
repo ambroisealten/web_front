@@ -40,13 +40,18 @@ body
 
 .searchBar {
   width: 100%;
-  margin-left:0%;
+  margin-left:2%;
+}
+
+.searchBarCpt {
+  width: 100%;
+  margin-left: 4%;
 }
 
 
 .motCles {
   border-right: 1px solid var(--ALTENBlue);
-  width: 15vw;
+  width: 20vw;
 }
 
 .gridContainer {
@@ -74,4 +79,9 @@ td {
 
 .example-full-width {
   width: 100%;
+}
+
+.titreCpt{
+  margin-top: 2%;
+  color: var(--ALTENDarkBlue);
 }

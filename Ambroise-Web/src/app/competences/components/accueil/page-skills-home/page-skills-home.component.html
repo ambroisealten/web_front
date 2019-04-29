@@ -1,18 +1,9 @@
 <!-- <button mat-raised-button class="newSheetButton" color="primary" (click)="createSkillsSheetModal()">Créer</button>-->
 
-<mat-form-field class="searchBar">
-    <input matInput placeholder="Compétence et Soft Skill " (keyup.enter)="doAddSkill()" [(ngModel)]="rechercheInput">
-  </mat-form-field>
-  <div class="allTagWords">
-      <div class="tagWord" *ngFor="let compFilter of compFilter">
-        <img class="closeTag" src='../../assets/images/close.png' alt="{{ compFilter }}" (click)="deleteSkillWord($event)">
-        <p>{{ compFilter }}</p>
-      </div>
-    </div>
 
 <div class =gridContainer>
     <div class =gridContainer>
-      <div class="motCles">
+      <div class="motCles" >
         <mat-accordion>
     
           <mat-expansion-panel>
@@ -30,7 +21,8 @@
                   <p>{{ tagWord }}</p>
                 </div>
               </div>
-            
+        
+              
           </mat-expansion-panel>
         
           <mat-expansion-panel>
@@ -53,12 +45,24 @@
         </div>	
           </mat-expansion-panel>
         
+          <h5  class="titreCpt">Filtres Compétences : </h5>
+          <div class="allTagWordsCpt">
+              <div class="tagWordCpt" *ngFor="let filter of compFilter">
+                <img class="closeTag" src='../../assets/images/close.png' alt="{{ filter }}" (click)="deleteSkillWord($event)">
+                <p>{{ filter }}</p>
+              </div>
+            </div>
         </mat-accordion>
   </div>
 
   <div class="skillSheetInformation">
-    <table mat-table [dataSource]="skillsSheetDataSource">
-<!-- 
+      <mat-form-field class="searchBarCpt">
+          <input matInput placeholder="Compétence et Soft Skill " (keyup.enter)="doAddSkill()" [(ngModel)]="rechercheInputCpt">
+        </mat-form-field>
+        
+      
+<!--     <table mat-table [dataSource]="skillsSheetDataSource">
+
         <ng-container [matColumnDef]="fixDisplayedColumns[0]" class="firstColumn">
             <th mat-header-cell *matHeaderCellDef> {{fixDisplayedColumns[0] | titlecase }} </th>
             <td mat-cell *matCellDef="let element"> {{ element.mailPersonAttachedTo }} </td>
@@ -72,7 +76,7 @@
           <ng-container [matColumnDef]="fixDisplayedColumns[2]" class="thirdColumn">
             <th mat-header-cell *matHeaderCellDef> {{fixDisplayedColumns[2] | titlecase }} </th>
             <td mat-cell *matCellDef="let element"> {{ element.averageSoftSkillsGrade }} </td>
-          </ng-container> -->
+          </ng-container>
     
 
       <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
@@ -85,7 +89,7 @@
 
     </table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 30]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5, 10, 30]" showFirstLastButtons></mat-paginator> -->
 
   </div>
 </div>

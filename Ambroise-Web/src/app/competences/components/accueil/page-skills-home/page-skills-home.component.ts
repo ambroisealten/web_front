@@ -32,6 +32,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
 
   rechercheInput:string;
+  rechercheInputCpt:string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -158,9 +159,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   doAddSkill(){
-    this.displayedColumns.push(this.rechercheInput) ;
-    this.compFilter.push(this.rechercheInput);
-    this.rechercheInput = "";
+    console.log(this.compFilter + "MDR" +this.rechercheInputCpt);
+    if ( this.compFilter.findIndex(filterTag => filterTag === this.rechercheInputCpt ) == -1)
+    this.compFilter.push(this.rechercheInputCpt);
+    this.displayedColumns.push(this.rechercheInputCpt);
+    this.rechercheInputCpt = "";
   }
 
   doAddFilter(){
