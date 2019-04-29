@@ -1,5 +1,8 @@
 import { Person, PersonRole } from './person';
 
+/**
+ * Class containing skillSheet data
+ */
 export class SkillsSheet {
       id: String;
       name: string;
@@ -14,7 +17,7 @@ export class SkillsSheet {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
       this.versionNumber = 1 ;
-      this.skillsList = [] ; 
+      this.skillsList = [] ;
       this.mailVersionAuthor = "cunmail@mail.com";
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;

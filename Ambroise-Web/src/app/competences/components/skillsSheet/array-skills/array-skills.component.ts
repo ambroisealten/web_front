@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SkillsSheetService } from '../../../services/skillsSheet.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
-import { literal } from '@angular/compiler/src/output/output_ast';
 import { Skill } from 'src/app/competences/models/skillsSheet';
 
 @Component({
@@ -22,9 +21,11 @@ export class ArraySkillsComponent implements OnInit {
 
   dataSource: MatTableDataSource<Skill[]>; // data as MatTableDataSource
 
-  constructor(private skillsSheetService: SkillsSheetService,
-              private arrayObsService: ArrayObsService) { }
+  constructor(private arrayObsService: ArrayObsService) { }
 
+  /**
+   * Inits dataSource of array : skills or soft skills
+   */
   ngOnInit() {
     if(this.datatype == "skills"){
       this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
@@ -41,11 +42,16 @@ export class ArraySkillsComponent implements OnInit {
     this.dataSource = new MatTableDataSource(arraySkills) ;
   }
 
+  /**
+   * Checks input of grade and sets to 1 if empty or invalid
+   * @param  $event input grade
+   */
   setToOneIfEmptyOrInvalid($event) {
     let grade: string = $event.target.value;
     let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$"; // number between 1 and 4 (step 0,5) or 0
-    if(!grade.match(pattern) || $event.target.value == '')
-    $event.target.value = 1;
+    if(!grade.match(pattern) || $event.target.value == '') {
+      $event.target.value = 1;
+    }
   }
 
   /**

@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
 import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole } from 'src/app/competences/models/person';
+import { Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
 

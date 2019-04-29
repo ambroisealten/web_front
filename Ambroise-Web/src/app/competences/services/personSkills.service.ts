@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Person, PersonRole } from '../models/person';
 import { catchError, timeout } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Injectable()
@@ -13,10 +12,11 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 export class PersonSkillsService {
 
   constructor(private httpClient: HttpClient) { }
-  /*
-  private personInformation = new BehaviorSubject(undefined);
-  personObservable = this.personInformation.asObservable();
-  */
+
+  /**
+   * HTTP Post request to create a new Person in db
+   * @param  person Person to create
+   */
   createNewPerson(person: Person) {
 
     let token = window.sessionStorage.getItem("bearerToken");
@@ -37,6 +37,10 @@ export class PersonSkillsService {
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 
+  /**
+   * HTTP Put request to update a person in db
+   * @param  person Person to update
+   */
   updatePerson(person: Person) {
     person.oldMail = person.mail; // TODO change when back is ready
     let token = window.sessionStorage.getItem("bearerToken");
@@ -58,6 +62,10 @@ export class PersonSkillsService {
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 
+  /**
+   * HTTP Get request to get a Person given its mail
+   * @param  mail Person's mail
+   */
   getPersonByMail(mail: String) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({

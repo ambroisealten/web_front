@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
-import { MatDialog } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router } from '@angular/router';
-import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
@@ -40,25 +37,25 @@ export class SkillsFormComponent implements OnInit {
   skillsChart = Chart;
   softSkillsChart = Chart;
 
-  showPassToConsultant: boolean = true;
-
   currentPerson: Person;
   tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
-
-  avis: string;
 
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
 
   constructor(private skillsService: SkillsService,
-              private dialog: MatDialog,
               private skillsSheetService: SkillsSheetService,
               private personSkillsService: PersonSkillsService,
               private arrayObsService: ArrayObsService,
               private router: Router) { }
 
+  /**
+   * Init : - check if a skillsObservable is present then inits current data (Person and Skills) else redirects to skills home
+   *        - init form items of a Person (different inputs whether it's an applicant or a consultant)
+   *        - init both charts of skills and soft skills
+   */
   ngOnInit() {
     this.skillsService.skillsObservable.subscribe(skills => {
       if(skills == undefined){
@@ -92,6 +89,10 @@ export class SkillsFormComponent implements OnInit {
 
   }
 
+  /**
+   * Translates Person role
+   * @param  roleName role to translate
+   */
   translate(roleName) {
     return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
   }
@@ -100,6 +101,10 @@ export class SkillsFormComponent implements OnInit {
     this.isSkillsSheetNameEditable = true;
   }
 
+  /**
+   * Checks if skillsSheetName is empty and sets old name if it is
+   * @param  event input name of skillsSheet
+   */
   checkIfNameEmpty(event) {
     let newSkillsSheetName = event.target.innerText;
     if(newSkillsSheetName == "") {
@@ -110,12 +115,18 @@ export class SkillsFormComponent implements OnInit {
     }
   }
 
+  /**
+   * On click on edit person button
+   */
   editPerson() {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
     this.tmpCurrentPerson = this.currentPerson;
   }
 
+  /**
+   * On click on save edit button : Person is updated in db
+   */
   savePerson() {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
@@ -127,6 +138,9 @@ export class SkillsFormComponent implements OnInit {
     });
   }
 
+  /**
+   * On click on cancel edit button
+   */
   cancelEditPerson() {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
@@ -134,6 +148,10 @@ export class SkillsFormComponent implements OnInit {
     this.updateFormItemsFromPerson(this.currentPerson);
   }
 
+  /**
+   * Updates form data of a skillSheet given a Person
+   * @param  person Person containing data to display
+   */
   updateFormItemsFromPerson(person: Person) {
     if(person.role == PersonRole.APPLICANT) {
       this.formItems.forEach(item => {
@@ -180,6 +198,10 @@ export class SkillsFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Updates a Person with data retrieved from the "edit person form" of a skillsheet
+   * @return Person updated
+   */
   updatePersonFromFormItems() {
     let personToUpdate = this.currentPerson;
     this.formItems.forEach(item => {
@@ -215,6 +237,10 @@ export class SkillsFormComponent implements OnInit {
     this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1) ;
   }
 
+  /**
+   * Updates the radar chart for skills
+   * @param  arraySkills Array containing updated skills
+   */
   updateChartSkills(arraySkills: Skill[]){
     if (typeof this.skillsChart != "function"){
       this.skillsChart.destroy() ;
@@ -230,6 +256,10 @@ export class SkillsFormComponent implements OnInit {
     this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
   }
 
+  /**
+   * Updates the radar chart for soft skills
+   * @param  arraySkills Array containing updated soft skills
+   */
   updateChartSoftSkills(arraySoftSkills: Skill[]){
     if(typeof this.softSkillsChart != "function"){
       this.softSkillsChart.destroy() ;

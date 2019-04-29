@@ -1,3 +1,6 @@
+/**
+ * Class containing a Person's data
+ */
 export class Person {
   id: String;
   mail: String;
