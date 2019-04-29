@@ -116,11 +116,16 @@ export class PageSkillsHomeComponent implements OnInit {
       let currentSkills = skills as Skills;
       if(skills != "canceled" && skills != undefined)
       {
-        this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
-          if(httpResponse != undefined) {
-            this.createNewSkillSheet(currentSkills.person, currentSkills.skillsSheet);
-          }
-        });
+        if(currentSkills.skillsSheet.hasOwnProperty('versionDate')) {
+          this.navigateToSkillsSheet(currentSkills.skillsSheet);
+        }
+        else {
+          this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
+            if(httpResponse != undefined) {
+              this.createNewSkillSheet(currentSkills.person, currentSkills.skillsSheet);
+            }
+          });
+        }
       }
     });
   }

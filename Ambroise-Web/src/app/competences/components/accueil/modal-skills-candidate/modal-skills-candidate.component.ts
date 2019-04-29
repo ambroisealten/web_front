@@ -17,8 +17,7 @@ export class ModalSkillsCandidateComponent implements OnInit {
   firstname: string;
   lastname: string;
   skillsSheetName: string = '';
-  email: string;
-  emailValidator =  new FormControl('', [Validators.required, Validators.email]);
+  emailInput: string;
   skillsSheetExists: boolean = false;
   skillsSheetPerson: Person;
   role: boolean = false;
@@ -78,20 +77,12 @@ export class ModalSkillsCandidateComponent implements OnInit {
       this.skillsSheetService.checkSkillsSheetExistenceByMail($event).subscribe(skillsSheetExists => {
         if(skillsSheetExists) {
           this.skillsSheetExists = true;
-        //  this.emailValidator.setErrors({'exists' : true});
         }
         else {
           this.skillsSheetExists = false;
-          //this.emailValidator.setErrors({'exists' : false});
         }
       });
     }
-  }
-
-  getErrorMessage() {
-    return 'oui';/*this.emailValidator.hasError('required') ? 'Email obligatoire' :
-           this.emailValidator.hasError('email') ? 'Email invalide' :
-            '';*/
   }
 
   /**
@@ -104,25 +95,35 @@ export class ModalSkillsCandidateComponent implements OnInit {
   /**
    * On click on create button : close dialog with object Skills containing the created Person and an empty skillSheet
    */
-  save() {
+  save(isNewSkillsSheet) {
     let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
-    if(this.skillsSheetExists) {
-      return;
-    }
-    else {
-      this.personSkillsService.getPersonByMail(this.email).subscribe(person => {
-        if(person != undefined) {
-          if(person.hasOwnProperty('mail')) { // person exists
-            //ERROR
-          }
-          else { // create person
-            let person = new Person(this.firstname, this.lastname, this.email, personRole);
-            let skills = new Skills(person, new SkillsSheet(this.skillsSheetName, person));
-            this.dialogRef.close(skills);
-          }
+    this.personSkillsService.getPersonByMail(this.emailInput).subscribe(person => {
+      if(person != undefined) {
+        let newPerson : Person;
+        if(person.hasOwnProperty('mail')) { // person exists
+          newPerson = person as Person;
         }
-      });
-    }
+        else { // create person
+          newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole);
+        }
+
+        let skillsSheet : SkillsSheet;
+        if(isNewSkillsSheet) { // create skillsSheet
+          this.dialogRef.close(new Skills(newPerson, new SkillsSheet(this.skillsSheetName, newPerson)))
+        }
+        else { // skillsSheet exists
+          this.closeWithExistantSkillsSheet(newPerson);
+        }
+      }
+    });
+  }
+
+  closeWithExistantSkillsSheet(person: Person) {
+    this.skillsSheetService.getSkillsSheetsByMail(this.emailInput).subscribe(skillsSheetsList => {
+      if(skillsSheetsList != undefined) {
+        this.dialogRef.close(new Skills(person, skillsSheetsList[0] as SkillsSheet));
+      }
+    })
   }
 
 }
