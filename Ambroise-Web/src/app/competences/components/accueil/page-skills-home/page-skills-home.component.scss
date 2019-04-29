@@ -27,8 +27,11 @@
   background: #f5f5f5;
 }
 
-td {
+th, td, tr {
+  overflow: auto;
   padding: 5%;
+  width: 200px;
+  text-overflow: ellipsis;
 }
 
 mat-cell {
