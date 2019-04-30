@@ -19,17 +19,20 @@ export class PageSkillsHomeComponent implements OnInit {
 
   skillsSheetDataSource: MatTableDataSource<any[]>;
   //Tableau countenant les headers
-  displayedColumns: string[]  = ['Nom Prénom','Métier','Avis','Disponibilité','Moyenne Soft Skills','JEE','C++','.NET','PHP','SQL'];
+  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills', 'JEE', 'C++', '.NET', 'PHP', 'SQL'];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
   //Tableau contenant les compétences
-  compColumns: string[] = ['JEE','C++','.NET','PHP','SQL'] ;
+  compColumns: string[] = ['JEE', 'C++', '.NET', 'PHP', 'SQL'];
 
   //Tableau contenant les compétences recherchées
-  compFilter: string[] ;
+  compFilter: string[] = [];
   //Tableau contenant les autres filtres
-  filter: string[] ;
+  filter: string[] = [];
 
-  rechercheInput:string;
+
+
+  rechercheInput: string;
+  rechercheInputCpt: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -46,7 +49,7 @@ export class PageSkillsHomeComponent implements OnInit {
   ngOnInit() {
     this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
       console.log(skillsSheetList)
-      if (skillsSheetList != undefined){
+      if (skillsSheetList != undefined) {
         this.createDataSource(skillsSheetList)
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
@@ -59,36 +62,36 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param skillsList
    * @author Quentin Della-Pasqua
    */
-  createDataSource(skillsList){
+  createDataSource(skillsList) {
     let skillSheet: any[];
     skillsList.forEach(skills => {
       let tmpSkillSheet: any;
-      if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
-        tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
-        tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ;
-        tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ;
-        tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
-        tmpSkillSheet['Moyenne Soft Skills'] = skills['skillsSheet'].getAverageSoftSkillgrade() ;
+      if (skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')) {
+        tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
+        tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
+        tmpSkillSheet['Avis'] = this.instantiateProperty(skills['skillsSheet'], 'avis');
+        tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'disponibility');
+        tmpSkillSheet['Moyenne Soft Skills'] = skills['skillsSheet'].getAverageSoftSkillgrade();
         this.compColumns.forEach(comp => {
-          let tmpCompResult = skills.skillsList.filter(skill => skill.name == comp) ;
-          if (tmpCompResult != []){
-            tmpSkillSheet[comp] = tmpCompResult[0] ;
+          let tmpCompResult = skills.skillsList.filter(skill => skill.name == comp);
+          if (tmpCompResult != []) {
+            tmpSkillSheet[comp] = tmpCompResult[0];
           } else {
-            tmpSkillSheet[comp] = "" ;
+            tmpSkillSheet[comp] = "";
           }
         })
-        tmpSkillSheet['skills'] = skills ;
-        skillSheet.push(tmpSkillSheet) ;
+        tmpSkillSheet['skills'] = skills;
+        skillSheet.push(tmpSkillSheet);
       }
     })
-    this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ;
+    this.skillsSheetDataSource = new MatTableDataSource(skillSheet);
   }
 
-  instantiateProperty(property,testedProperty:String):any{
-    if(property.hasOwnProperty(testedProperty)){
-      return property['testProperty'] ;
+  instantiateProperty(property, testedProperty: String): any {
+    if (property.hasOwnProperty(testedProperty)) {
+      return property['testProperty'];
     }
-    return "" ;
+    return "";
   }
 
   /**
@@ -100,10 +103,10 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {   
-        this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
-        this.redirectToSkillsSheet();
-      });
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe(person => {
+      this.skillsService.notifySkills(new Skills(person as Person, skillsSheetData))
+      this.redirectToSkillsSheet();
+    });
   }
 
   /**
@@ -116,10 +119,9 @@ export class PageSkillsHomeComponent implements OnInit {
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(newPerson => {
-      if(newPerson != "canceled" && newPerson != undefined)
-      {
+      if (newPerson != "canceled" && newPerson != undefined) {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
-          if(httpResponse != undefined) {
+          if (httpResponse != undefined) {
             this.createNewSkillSheet(newPerson);
           }
         });
@@ -132,16 +134,16 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param person
    * @author Quentin Della-Pasqua
    */
-  createNewSkillSheet(person){
-    let date = String("0" + (new Date().getMonth()+1)).slice(-2) + new Date().getFullYear();
-    let trigramme = person.name.substring(0,1) + person.surname.substring(0,2);
-    let tmpSkillsSheetName =  date + '-' + trigramme;
-    tmpSkillsSheetName = tmpSkillsSheetName.toUpperCase() ;
-    let tmpSkillSheet = new SkillsSheet(tmpSkillsSheetName,person)
+  createNewSkillSheet(person) {
+    let date = String("0" + (new Date().getMonth() + 1)).slice(-2) + new Date().getFullYear();
+    let trigramme = person.name.substring(0, 1) + person.surname.substring(0, 2);
+    let tmpSkillsSheetName = date + '-' + trigramme;
+    tmpSkillsSheetName = tmpSkillsSheetName.toUpperCase();
+    let tmpSkillSheet = new SkillsSheet(tmpSkillsSheetName, person)
     this.skillsSheetService.createNewSkillsSheet(tmpSkillSheet).subscribe(httpResponse => {
-      if(httpResponse != undefined) {
-        this.skillsService.notifySkills(new Skills(person,tmpSkillSheet));
-        this.redirectToSkillsSheet() ;
+      if (httpResponse != undefined) {
+        this.skillsService.notifySkills(new Skills(person, tmpSkillSheet));
+        this.redirectToSkillsSheet();
       }
     })
 
@@ -155,10 +157,51 @@ export class PageSkillsHomeComponent implements OnInit {
    * Ajoute une colonne au tableau + appel au WS pour trier
    * @author Quentin Della-Pasqua
    */
-  doAddSkill(){
-    this.displayedColumns.push(this.rechercheInput) ;
-    this.compColumns.push(this.rechercheInput) ;
-    this.compFilter.push(this.rechercheInput) ;
+  doAddSkill() {
+    if (this.compFilter.findIndex(filterTag => filterTag === this.rechercheInputCpt) == -1)
+      this.compFilter.push(this.rechercheInputCpt);
+    this.displayedColumns.push(this.rechercheInputCpt);
+    this.rechercheInputCpt = "";
   }
 
+  /**
+   * Ajoute le filter a la liste 
+   * @author Maxime Maquinghen
+   */
+  doAddFilter() {
+    if (this.filter.findIndex(filterTag => filterTag === this.rechercheInput) == -1) {
+      this.filter.push(this.rechercheInput);
+      let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
+      document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : " + (totalPadding + 1.5) + "%";
+    }
+    this.rechercheInput = "";
+  }
+
+  /**
+   * 
+   * @param event catch the delete event on tagWord of Competence
+   * @author Maxime Maquinghen
+   */
+  deleteSkillWord(event) {
+    this.compFilter = this.compFilter.filter(el => el !== event.srcElement.alt);
+  }
+
+  /**
+   * 
+   * @param event catch the delete event on tagWord of filter
+   * @autho Maxime Maquinghen
+   */
+  deleteTagWord(event) {
+    this.filter = this.filter.filter(el => el !== event.srcElement.alt);
+    let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
+    document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : " + (totalPadding - 2.5) + "%";
+  }
+
+  /**
+   * Get the value of the rating 
+   * @param event catch the click event on star
+   */
+  minRatingValue(event) {
+    LoggerService.log(event.srcElement.value, LogLevel.DEVDEBUG)
+  }
 }
