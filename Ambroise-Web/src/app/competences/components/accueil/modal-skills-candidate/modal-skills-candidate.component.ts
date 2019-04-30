@@ -99,7 +99,9 @@ export class ModalSkillsCandidateComponent implements OnInit {
             //ERROR
           }
           else { // create person
-            this.dialogRef.close(new Person(this.firstname, this.lastname, this.email, personRole));
+            let person = new Person(this.firstname, this.lastname, this.email, personRole);
+            let skills = new Skills(person, new SkillsSheet(this.skillsSheetName, person));
+            this.dialogRef.close(skills);
           }
         }
       });
