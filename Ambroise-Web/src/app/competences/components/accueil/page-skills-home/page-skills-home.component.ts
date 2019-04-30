@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
 
@@ -17,10 +17,7 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
-  oneOutOfTwo: boolean = true;
-  skills: Skills[] = [];
-
-  skillsSheetDataSource: MatTableDataSource<any[]>;
+  skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
   displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills', 'JEE', 'C++', '.NET', 'PHP', 'SQL'];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
@@ -28,9 +25,9 @@ export class PageSkillsHomeComponent implements OnInit {
   compColumns: string[] = ['JEE', 'C++', '.NET', 'PHP', 'SQL'];
 
   //Tableau contenant les compétences recherchées
-  compFilter: string[] = [];
+  compFilter: string[] = [] ; 
   //Tableau contenant les autres filtres
-  filter: string[] = [];
+  filter: string[] = [] ; 
 
 
 
@@ -45,26 +42,14 @@ export class PageSkillsHomeComponent implements OnInit {
     private personSkillsService: PersonSkillsService,
     private skillsService: SkillsService) { }
 
-
-  /**
-   * TO CHANGE
-   */
   ngOnInit() {
-    /*
-    this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
-      console.log(skillsSheetList)
-      if (skillsSheetList != undefined) {
-        this.createDataSource(skillsSheetList)
+    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
+      if (skillsList != undefined){
+        console.log(skillsList)
+        this.createDataSource(skillsList['results'] as Skills[])
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
-    });
-    */
-    let person = new Person("Surname", "Name", "Mail", PersonRole.APPLICANT)
-    let skillSheet = new SkillsSheet("nameSkillsSheet", person)
-    for (let i = 0; i < 15; i++) {
-      this.skills.push(new Skills(person, skillSheet))
-    }
-    this.createDataSource(this.skills)
+    })
   }
 
   /**
@@ -72,36 +57,51 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param skillsList
    * @author Quentin Della-Pasqua
    */
-  createDataSource(skillsList) {
+  createDataSource(skillsList: Skills[]){
     let skillSheet: any[] = [];
-    skillsList.forEach(skills => {
-      let tmpSkillSheet: any = {};
-      if (skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')) {
-        tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
-        tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
-        tmpSkillSheet['Avis'] = this.instantiateProperty(skills['skillsSheet'], 'avis');
-        tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'disponibility');
-        tmpSkillSheet['Moyenne Soft Skills'] = skills['skillsSheet'].getAverageSoftSkillGrade();
-        this.compColumns.forEach(comp => {
-          let tmpCompResult = skills.skillsSheet.skillsList.filter(skill => skill.name == comp);
-          if (tmpCompResult != []) {
-            tmpSkillSheet[comp] = tmpCompResult[0];
-          } else {
-            tmpSkillSheet[comp] = "";
-          }
-        })
-        tmpSkillSheet['skills'] = skills;
-        skillSheet.push(tmpSkillSheet);
-      }
-    })
-    this.skillsSheetDataSource = new MatTableDataSource(skillSheet);
-
-    setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+    if(skillsList != []){
+      skillsList.forEach(skills => {
+        let tmpSkillSheet: any = {};
+        if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
+          tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
+          tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ; 
+          tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ; 
+          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
+          tmpSkillSheet['Moyenne Soft Skills'] = this.getAverageSoftSkillGrade(skills['skillsSheet']['skillsList']);
+          this.compColumns.forEach(comp => {
+            let tmpCompResult = skills.skillsSheet.skillsList.filter(skill => skill.name == comp) ; 
+            if (tmpCompResult.length != 0){
+              tmpSkillSheet[comp] = tmpCompResult[0] ; 
+            } else {
+              tmpSkillSheet[comp] = "" ; 
+            }
+          })
+          tmpSkillSheet['skills'] = skills ; 
+          skillSheet.push(tmpSkillSheet) ; 
+        }
+      })
+      this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ; 
+    }
   }
 
-  instantiateProperty(property, testedProperty: String): any {
-    if (property.hasOwnProperty(testedProperty)) {
-      return property['testProperty'];
+  getAverageSoftSkillGrade(skillsList: Skill[]):number {
+    let sumGrades = 0;
+    let countSoft = 0; 
+    for(let softSkill of skillsList) {
+      if(softSkill.hasOwnProperty('isSoft')){
+        sumGrades += softSkill.grade;
+        countSoft += 1 ; 
+      }
+    }
+    if(countSoft != 0){
+      return sumGrades / countSoft ;
+    }
+    return 0 ;
+  }
+
+  instantiateProperty(property,testedProperty:string):any{
+    if(property.hasOwnProperty(testedProperty)){
+      return property[testedProperty] ;
     }
     return "";
   }
@@ -157,8 +157,8 @@ export class PageSkillsHomeComponent implements OnInit {
 
   }
 
-  redirectToSkillsSheet() {
-    this.router.navigate(['skills/skillsheet']);
+  redirectToSkillsSheet(name:string, version:number) {
+    this.router.navigate(['skills/skillsheet/'+name+'/'+version]);
   }
 
   /**

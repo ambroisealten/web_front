@@ -58,7 +58,7 @@ export class PersonSkillsService {
         .pipe(timeout(5000), catchError(err => this.handleError(err)));
   }
 
-  getPersonByMail(mail: String) {
+  getPersonByMail(mail: string) {
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Menu } from '../../models/menu' ; 
 import { CurrentModuleService } from '../../services/currentModule.services';
 import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
+import { SubMenusService } from 'src/app/services/subMenus.service';
 
 @Component({
   selector: 'app-header-user',
@@ -20,11 +21,24 @@ export class HeaderUserComponent implements OnInit {
 
   constructor(private titleService: Title, private router: Router,
     private headerService: HeaderService, private currentModuleService: CurrentModuleService,
-    private isNotLoginService: IsNotLoginService) { }
+    private isNotLoginService: IsNotLoginService,
+    private subMenusService: SubMenusService) { }
 
   ngOnInit() {
     this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
+    this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
     //this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
+  }
+
+  setSubMenus(subMenus: Menu){
+    if(subMenus != null){
+      this.modules.forEach(menu => {
+        if(menu.label === subMenus.label){
+          menu.menus = subMenus.menus ; 
+        }
+      })
+      this.headerService.notifyMenusReceived(this.modules);
+    }
   }
 
   setModule(menusReceived: Menu[]){
@@ -38,6 +52,7 @@ export class HeaderUserComponent implements OnInit {
 
   setCurrentModule(currentModule) {
     this.currentModule = currentModule ;
+    this.currentModuleService.notifyCurrentModule(currentModule);
     switch(currentModule){
       case("Missions"):
         this.titleService.setTitle("Ambroise - Missions"); 
