@@ -1,27 +1,27 @@
 export class File {
-    constructor(private _id : string, private path : string, private extension : string, private dateOfCreation: string, private displayName: string) { }
-    
-    get_id(){
+    constructor(private _id: string, private path: string, private extension: string, private dateOfCreation: string, private displayName: string) { }
+
+    get_id() {
         return this._id;
     }
 
-    set_id(_id : string){
+    set_id(_id: string) {
         this._id = _id;
     }
 
-    getPath(){
+    getPath() {
         return this.path;
     }
 
-    setPath(path : string){
+    setPath(path: string) {
         this.path = path;
     }
 
-    getExtension(){
+    getExtension() {
         return this.extension;
     }
 
-    setExtension(extension : string){
+    setExtension(extension: string) {
         this.extension = extension;
     }
 
@@ -33,11 +33,11 @@ export class File {
         this.dateOfCreation = dateOfCreation;
     }
 
-    getDisplayName(){
+    getDisplayName() {
         return this.displayName;
     }
 
-    setDisplayName(displayName : string){
+    setDisplayName(displayName: string) {
         this.displayName = displayName;
     }
 }

@@ -8,19 +8,19 @@ export class AdminService {
 
     baseUrl = 'http://localhost:8080/';
 
-    downloadFile(uri: string, callback) {
+    deleteFile(postParams, callback) {
         const token = window.sessionStorage.getItem('bearerToken');
 
         const headerParams = new HttpHeaders({
             'Content-Type': 'application/json',
             Authorization: token !== '' ? token : ''
         });
+
         const options = {
             headers: headerParams,
+            body: postParams
         };
-        this.httpClient.get(uri, options).subscribe(data => {
-            callback(data);
-        });
+        this.httpClient.delete(this.baseUrl + 'file', options);
     }
 
     makeRequest(url: string, method: string, postParams, callback) {

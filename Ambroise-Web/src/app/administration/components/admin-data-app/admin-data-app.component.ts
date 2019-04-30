@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataAgencyDialogComponent } from 'src/app/administration/components/data-agency-dialog/data-agency-dialog.component';
 import { AdminService } from 'src/app/administration/services/admin.service';

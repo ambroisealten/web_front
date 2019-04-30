@@ -9,10 +9,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoMaterialModule } from '../utils/material-modules';
 import { AdminService } from './services/admin.service';
 import { AdminDocumentMenuForumComponent } from './components/admin-document-menu-forum/admin-document-menu-forum.component';
+import { DataFileDialogComponent } from './components/data-file-dialog/data-file-dialog.component';
 
 
 @NgModule({
-  declarations: [AdminDocumentComponent, AdminDataAppComponent, DataAgencyDialogComponent, AdminDocumentMenuForumComponent],
+  declarations: [
+    AdminDocumentComponent,
+    AdminDataAppComponent,
+    DataAgencyDialogComponent,
+    AdminDocumentMenuForumComponent,
+    DataFileDialogComponent
+  ],
+  entryComponents: [
+    DataFileDialogComponent,
+    DataAgencyDialogComponent
+  ],
   imports: [
     CommonModule,
     AdministrationRoutingModule,

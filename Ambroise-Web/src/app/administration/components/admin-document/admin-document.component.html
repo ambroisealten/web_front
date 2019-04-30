@@ -18,7 +18,7 @@
           <td>{{document.getDisplayName()}}</td>
           <td>{{document.getDateOfCreation() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
           <td>{{document.getPath()}}</td>
-          <td><button class="removeButton btn" mat-icon-button (click)="removeDocument($event)">x</button><button (click)="editDocument($event)" class="btn" mat-icon-button><i class="material-icons">edit</i></button></td>
+          <td><button class="removeButton btn" mat-icon-button (click)="removeDocument(document)">x</button><button (click)="editDocument(document)" class="btn" mat-icon-button><i class="material-icons">edit</i></button></td>
         </tr>
       </ng-container>
     </tbody>
