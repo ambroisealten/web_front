@@ -63,7 +63,7 @@ export class SkillsSheetService {
     return undefined;
   }
   
-  getAllSkillSheets():Observable<{} | SkillsSheet[]>{
+  getAllSkillSheets(mail: string):Observable<{} | SkillsSheet[]>{
     let token = window.sessionStorage.getItem("bearerToken");
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export class SkillsSheetService {
     let options = { headers: headers };
 
     return this.httpClient
-        .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheets', options)
+        .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheetMail/'+mail, options)
         .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 

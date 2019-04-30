@@ -26,7 +26,8 @@ export class SkillsService {
         this.skillsInformation.next(undefined); 
     }
 
-    getAllSkills(noCompFilter:string[], compFilter: string[]):Observable<Skills[]>{
+    getAllSkills(noCompFilter:string[], compFilter: string[]):Observable<{} | Skills[]>{
+
         let token = window.sessionStorage.getItem("bearerToken");
         let headers = new HttpHeaders({
           'Content-Type': 'application/json',
@@ -34,17 +35,24 @@ export class SkillsService {
         });
         let options = { headers: headers };
 
-        let noComp: string;
+        let noComp: string = "";
         noCompFilter.forEach(filter => {
             noComp += filter+","
         })
-        let comp: string;
+        if(noComp == ""){
+            noComp = " "
+        }
+
+        let comp: string = "";
         compFilter.forEach(filter => {
             comp += filter+','
         })
-    
+        if(comp== ""){
+            comp = " "
+        }
+
         return this.httpClient
-            .get<Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/", options)
+            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/", options)
             .pipe(timeout(5000), catchError(error => this.handleError(error)));
       }
 
