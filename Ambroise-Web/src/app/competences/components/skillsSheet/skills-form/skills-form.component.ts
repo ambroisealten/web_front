@@ -3,7 +3,7 @@ import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router } from '@angular/router';
@@ -64,22 +64,25 @@ export class SkillsFormComponent implements OnInit {
       this.currentPerson = skills.person ;
       this.currentSkillsSheet = skills.skillsSheet ;
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-      skills.skillsSheet.skillsList.forEach(skill => {
-        if(skill.hasOwnProperty('isSoft')){
-          this.softSkillsArray.push(skill);
+      skills.skillsSheet.skillsList.forEach(skillData => {
+        let skillGraduated = new SkillGraduated(skillData.skill, skillData.grade);
+        if(skillData.skill.hasOwnProperty('isSoft')){
+          this.softSkillsArray.push(skillGraduated);
         } else {
-          this.skillsArray.push(skill)
+          this.skillsArray.push(skillGraduated);
         }
       });
-      this.arrayObsService.notifySkills(this.softSkillsArray) ;
-      this.arrayObsService.notifySoftSkills(this.skillsArray)
+      this.arrayObsService.notifySkills(this.skillsArray) ;
+      this.arrayObsService.notifySoftSkills(this.softSkillsArray) ;
       }
     })
     let formItemsJSON = require('../../../resources/formItems.json');
     if(this.currentPerson.role == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
+      this.updateFormItemsFromPerson(this.currentPerson);
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT ){
-      this.formItems = formItemsJSON["consultantFormItems"]
+      this.formItems = formItemsJSON["consultantFormItems"];
+      this.updateFormItemsFromPerson(this.currentPerson);
     } else {
       this.formItems = null ;
     }
@@ -241,15 +244,15 @@ export class SkillsFormComponent implements OnInit {
    * Updates the radar chart for skills
    * @param  arraySkills Array containing updated skills
    */
-  updateChartSkills(arraySkills: Skill[]){
+  updateChartSkills(arraySkills: SkillGraduated[]){
     if (typeof this.skillsChart != "function"){
       this.skillsChart.destroy() ;
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
-    arraySkills.forEach(function(skill) {
-      skillsLabels.push(skill.name);
-      skillsData.push(skill.grade);
+    arraySkills.forEach(function(skillGraduated) {
+      skillsLabels.push(skillGraduated.skill.name);
+      skillsData.push(skillGraduated.grade);
     });
     this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
     this.skillsArray = arraySkills ;
@@ -260,15 +263,15 @@ export class SkillsFormComponent implements OnInit {
    * Updates the radar chart for soft skills
    * @param  arraySkills Array containing updated soft skills
    */
-  updateChartSoftSkills(arraySoftSkills: Skill[]){
+  updateChartSoftSkills(arraySoftSkills: SkillGraduated[]){
     if(typeof this.softSkillsChart != "function"){
       this.softSkillsChart.destroy() ;
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
-    arraySoftSkills.forEach(function(skill) {
-      skillsLabels.push(skill.name);
-      skillsData.push(skill.grade);
+    arraySoftSkills.forEach(function(skillGraduated) {
+      skillsLabels.push(skillGraduated.skill.name);
+      skillsData.push(skillGraduated.grade);
     });
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
     this.softSkillsArray = arraySoftSkills ;

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SkillsSheetService } from '../../../services/skillsSheet.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
-import { Skill } from 'src/app/competences/models/skillsSheet';
+import { Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 
 @Component({
   selector: 'app-array-skills',
@@ -38,10 +38,6 @@ export class ArraySkillsComponent implements OnInit {
     }
   }
 
-  setDataSource(arraySkills: Skill[][]){
-    this.dataSource = new MatTableDataSource(arraySkills) ;
-  }
-
   /**
    * Checks input of grade and sets to 1 if empty or invalid
    * @param  $event input grade
@@ -71,8 +67,8 @@ export class ArraySkillsComponent implements OnInit {
       let skillName = event.target.value;
 
       // if skillname not already in array : add it
-      if(this.dataSourceArray.findIndex(skill => skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
-        this.dataSourceArray.push({name: skillName, grade: 1});
+      if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
+        this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
         this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
         this.updateDataSourceInService();
@@ -86,7 +82,7 @@ export class ArraySkillsComponent implements OnInit {
   */
   removeSkill(event) {
     let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from row
-    let skillIndex = this.dataSourceArray.findIndex(skill => skill.name === skillName);
+    let skillIndex = this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name === skillName);
 
     this.dataSourceArray.splice(skillIndex, 1);
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
@@ -103,14 +99,14 @@ export class ArraySkillsComponent implements OnInit {
     let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from same row as modified grade
     let grade = event.target.parentElement.childNodes[1].value;
 
-    this.dataSourceArray.forEach(function(skill) {
-      if(skill.name == skillName){
+    this.dataSourceArray.forEach(function(skillGraduated) {
+      if(skillGraduated.skill.name == skillName){
         if(grade == 1.5 && event.target.className == "incrementButton" ){
-          skill.grade = 2
+          skillGraduated.grade = 2
         } else if (grade == 1.5 && event.target.className == "decrementButton") {
-          skill.grade = 1
+          skillGraduated.grade = 1
         } else {
-          skill.grade = grade;
+          skillGraduated.grade = +grade;
         }
       }
     });

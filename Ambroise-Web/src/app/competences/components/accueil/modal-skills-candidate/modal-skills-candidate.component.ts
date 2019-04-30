@@ -74,12 +74,15 @@ export class ModalSkillsCandidateComponent implements OnInit {
   emailChanged($event) {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
     if($event.match(emailPattern)) {
-      this.skillsSheetService.checkSkillsSheetExistenceByMail($event).subscribe(skillsSheetExists => {
-        if(skillsSheetExists) {
-          this.skillsSheetExists = true;
-        }
-        else {
-          this.skillsSheetExists = false;
+      this.skillsSheetService.getSkillsSheetsByMail($event).subscribe(skillsSheetList => {
+        if(skillsSheetList != undefined) {
+          let list = skillsSheetList as SkillsSheet[];
+          if( list.length != 0) {
+            this.skillsSheetExists = true;
+          }
+          else {
+            this.skillsSheetExists = false;
+          }
         }
       });
     }

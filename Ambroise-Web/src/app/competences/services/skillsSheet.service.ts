@@ -69,22 +69,12 @@ export class SkillsSheetService {
   }
 
   /**
-   * HTTP Get request to check if a skillsSheet exists given a mail
-   * @param  mail skillsSheet's associated mail
-   */
-  checkSkillsSheetExistenceByMail(mail: string) {
-    return this.httpClient
-      .get<Boolean>(environment.serverAddress + "/skillsheetMail/" + mail, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
-  }
-
-  /**
    * HTTP Get request to get skillsSheets given a mail
    * @param  mail skillsSheets's associated mail
    */
   getSkillsSheetsByMail(mail: string) {
     return this.httpClient
-      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheet/" + mail, this.options)
+      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetMail/" + mail, this.options)
       .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 

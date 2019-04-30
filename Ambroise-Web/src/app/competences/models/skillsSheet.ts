@@ -8,7 +8,7 @@ export class SkillsSheet {
       name: string;
       versionNumber: number;
       mailPersonAttachedTo: String;
-      skillsList: Skill[] ;
+      skillsList: SkillGraduated[] ;
       mailVersionAuthor: String;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
@@ -23,10 +23,11 @@ export class SkillsSheet {
       this.averageSoftSkillsGrade = 0;
     }
 
-    addSkill(skillToAdd: Skill){
+    addSkill(skillToAdd: SkillGraduated){
       this.skillsList.push(skillToAdd) ;
     }
-    removeSkill(skillToRemove: Skill) {
+
+    removeSkill(skillToRemove: SkillGraduated) {
       let skillToRemoveIndex = this.skillsList.findIndex(skill => skill === skillToRemove);
 
       this.skillsList.splice(skillToRemoveIndex, 1);
@@ -48,13 +49,21 @@ export class SkillsSheet {
     }
 }
 
-export class Skill {
-  name: string;
+export class SkillGraduated {
+  skill: Skill;
   grade: number;
 
-  constructor(name: string, grade: number) {
+  constructor(skill: Skill, grade: number) {
+    this.skill = skill;
+    this. grade = grade;
+  }
+}
+
+export class Skill {
+  name: string;
+
+  constructor(name: string) {
     this.name = name;
-    this.grade = grade;
   }
 }
 

@@ -14,7 +14,6 @@ export class Person {
   urlDocs: String[];
   highestDiploma: String;
   highestDiplomaYear: String ;
-  oldMail: String;
 
   constructor(surname:String, name:String, mail:String, role:PersonRole) {
     this.surname = surname;
@@ -28,7 +27,6 @@ export class Person {
     this.urlDocs = [] ;
     this.highestDiploma = "" ;
     this.highestDiplomaYear = "" ;
-    this.oldMail = "";
   }
 }
 
