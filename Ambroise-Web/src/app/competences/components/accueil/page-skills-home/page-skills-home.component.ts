@@ -33,9 +33,9 @@ export class PageSkillsHomeComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private dialog: MatDialog, 
-    private router: Router, 
-    private skillsSheetService: SkillsSheetService, 
+  constructor(private dialog: MatDialog,
+    private router: Router,
+    private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
     private skillsService: SkillsService) { }
 
@@ -44,13 +44,12 @@ export class PageSkillsHomeComponent implements OnInit {
    * TO CHANGE 
    */
   ngOnInit() {
-    this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheetList => {
-      if (skillsSheetList != undefined){
-        this.createDataSource(skillsSheetList)
+    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
+      if (skillsList != undefined){
+        this.createDataSource(skillsList)
+        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
-    });
-
-    setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+    })
   }
 
   /**
@@ -83,7 +82,7 @@ export class PageSkillsHomeComponent implements OnInit {
     this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ; 
   }
 
-  instantiateProperty(property,testedProperty:String):any{
+  instantiateProperty(property,testedProperty:string):any{
     if(property.hasOwnProperty(testedProperty)){
       return property['testProperty'] ;
     }
@@ -99,9 +98,9 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {   
+    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe( person => {
         this.skillsService.notifySkills(new Skills(person as Person,skillsSheetData))
-        this.redirectToSkillsSheet();
+        this.redirectToSkillsSheet(skillsSheetData.name,skillsSheetData.versionNumber);
       });
   }
 
@@ -115,7 +114,7 @@ export class PageSkillsHomeComponent implements OnInit {
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(newPerson => {
-      if(newPerson != "canceled")
+      if(newPerson != "canceled" && newPerson != undefined)
       {
         this.personSkillsService.createNewPerson(newPerson).subscribe(httpResponse => {
           if(httpResponse != undefined) {
@@ -136,22 +135,22 @@ export class PageSkillsHomeComponent implements OnInit {
     let trigramme = person.name.substring(0,1) + person.surname.substring(0,2);
     let tmpSkillsSheetName =  date + '-' + trigramme;
     tmpSkillsSheetName = tmpSkillsSheetName.toUpperCase() ;
-    let tmpSkillSheet = new SkillsSheet(tmpSkillsSheetName,person)
-    this.skillsSheetService.createNewSkillsSheet(tmpSkillSheet).subscribe(httpResponse => {
+    let tmpSkillsSheet = new SkillsSheet(tmpSkillsSheetName,person)
+    this.skillsSheetService.createNewSkillsSheet(tmpSkillsSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
-        this.skillsService.notifySkills(new Skills(person,tmpSkillSheet));
-        this.redirectToSkillsSheet() ; 
+        this.skillsService.notifySkills(new Skills(person,tmpSkillsSheet));
+        this.redirectToSkillsSheet(tmpSkillsSheet.name,tmpSkillsSheet.versionNumber) ; 
       }
     })
 
   }
 
-  redirectToSkillsSheet() {
-    this.router.navigate(['skills/skillsheet']);
+  redirectToSkillsSheet(name:string, version:number) {
+    this.router.navigate(['skills/skillsheet/'+name+'/'+version]);
   }
 
   /**
-   * Ajoute une colonne au tableau + appelle au WS pour trier 
+   * Ajoute une colonne au tableau + appel au WS pour trier 
    * @author Quentin Della-Pasqua
    */
   doAddSkill(){

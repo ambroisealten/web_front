@@ -1,18 +1,18 @@
 export class Person {
-  id: String;
-  mail: String;
-  surname: String;
-  name: String;
-  job: String;
-  employer: String;
-  monthlyWage: String;
+  id: string;
+  mail: string;
+  surname: string;
+  name: string;
+  job: string;
+  employer: string;
+  monthlyWage: string;
   role: PersonRole;
-  personInChargeMail: String;
-  urlDocs: String[];
-  highestDiploma: String;
-  highestDiplomaYear: String ;
+  personInChargeMail: string;
+  urlDocs: string[];
+  highestDiploma: string;
+  highestDiplomaYear: string ;
 
-  constructor(surname:String, name:String, mail:String, role:PersonRole) {
+  constructor(surname:string, name:string, mail:string, role:PersonRole) {
     this.surname = surname;
     this.name = name;
     this.mail = mail;

@@ -1,12 +1,12 @@
 import { Person, PersonRole } from './person';
 
 export class SkillsSheet {
-      id: String;
+      id: string;
       name: string;
       versionNumber: number;
-      mailPersonAttachedTo: String;
+      mailPersonAttachedTo: string;
       skillsList: Skill[] ; 
-      mailVersionAuthor: String;
+      mailVersionAuthor: string;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
 
@@ -14,8 +14,8 @@ export class SkillsSheet {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
       this.versionNumber = 1 ; 
-      this.skillsList = [] ;
-      this.mailVersionAuthor = "";
+      this.skillsList = [] ; 
+      this.mailVersionAuthor = "cunmail@mail.com";
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }

@@ -2,7 +2,7 @@
     "menus" : [
         {
             "label" : "Menu 1",
-            "submenus" : [
+            "subSubMenus" : [
                 {
                     "label" : "submenu1"
                 },
@@ -13,7 +13,7 @@
         },
         {
             "label" : "Menu 2",
-            "submenus" : [
+            "subSubMenus" : [
                 {
                     "label" : "submenu1"
                 },
@@ -24,7 +24,7 @@
         },
         {
             "label" : "Menu 3",
-            "submenus" : [
+            "subSubMenus" : [
                 {
                     "label" : "submenu1"
                 },

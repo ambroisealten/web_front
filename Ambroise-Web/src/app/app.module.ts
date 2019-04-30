@@ -28,6 +28,7 @@ import { LoggerService } from './services/logger.service';
 import { IsNotLoginService } from './services/isNotLogin.service' ;
 import { SkillsSheetService } from './competences/services/skillsSheet.service';
 import { PersonSkillsService } from './competences/services/personSkills.service';
+import { SubMenusService } from './services/subMenus.service';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { PersonSkillsService } from './competences/services/personSkills.service
     LoggerService,
     IsNotLoginService,
     SkillsSheetService,
-    PersonSkillsService
+    PersonSkillsService,
+    SubMenusService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

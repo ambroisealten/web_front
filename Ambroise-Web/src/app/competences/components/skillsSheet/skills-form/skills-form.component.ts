@@ -8,8 +8,9 @@ import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
+import { Skills } from 'src/app/competences/models/skills';
 
 @Component({
   selector: 'app-skills-form',
@@ -41,8 +42,12 @@ export class SkillsFormComponent implements OnInit {
 
   showPassToConsultant: boolean = true;
 
+  currentSkills: Skills ; 
   currentPerson: Person;
   currentSkillsSheet: SkillsSheet;
+
+  name: string;
+  version: number ; 
 
   avis: string;
 
@@ -50,27 +55,26 @@ export class SkillsFormComponent implements OnInit {
               private dialog: MatDialog,
               private skillsSheetService: SkillsSheetService,
               private arrayObsService: ArrayObsService,
-              private router: Router) { }
+              private router: Router,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.skillsService.skillsObservable.subscribe(skills => {
-      if(skills == undefined){
-        this.router.navigate(['skills']);
+
+    this.name = this.route.snapshot.paramMap.get("name") ;
+    this.version = +this.route.snapshot.paramMap.get("version") ;
+
+    if (window.sessionStorage.getItem('person') != null){
+      this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person  ; 
+      if(window.sessionStorage.getItem('skills') != null){
+        this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[])
+        this.initializeView(new Skills(this.currentPerson,this.currentSkillsSheet),true) ; 
       } else {
-      this.currentPerson = skills.person ; 
-      this.currentSkillsSheet = skills.skillsSheet ; 
-      this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-      skills.skillsSheet.skillsList.forEach(skill => {
-        if(skill.hasOwnProperty('isSoft')){
-          this.softSkillsArray.push(skill); 
-        } else {
-          this.skillsArray.push(skill)
-        }
-      });
-      this.arrayObsService.notifySkills(this.softSkillsArray) ; 
-      this.arrayObsService.notifySoftSkills(this.skillsArray)
+        this.skillsSheetService.getAllSkillSheets().subscribe(skillsSheets  => this.setupSkillsSheet(skillsSheets as SkillsSheet[]))
       }
-    })
+    } else {
+      this.skillsService.skillsObservable.subscribe(skills => this.initializeView(skills,false))
+    }
+
     let formItemsJSON = require('../../../resources/formItems.json');
     if(this.currentPerson.role == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
@@ -83,6 +87,44 @@ export class SkillsFormComponent implements OnInit {
     this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
     this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ; 
 
+  }
+
+  /**
+   * Check among skillsSheet the one which correspond to the url 
+   * @param skillsSheets 
+   */
+  setupSkillsSheet(skillsSheets: SkillsSheet[]){
+    skillsSheets.forEach(skillsSheet => {
+      if(skillsSheet.versionNumber == this.version && skillsSheet.name == this.name){
+        this.currentSkillsSheet = skillsSheet ; 
+      }
+    })
+  }
+
+  /**
+   * Initialize components
+   * @param skills 
+   */
+  initializeView(skills,personStored:boolean){
+    if(skills == undefined){
+      this.router.navigate(['skills']);
+    } else {
+      this.currentPerson = skills.person ; 
+      this.currentSkillsSheet = skills.skillsSheet ; 
+      this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
+      skills.skillsSheet.skillsList.forEach(skill => {
+        if(skill.hasOwnProperty('isSoft')){
+          this.softSkillsArray.push(skill); 
+        } else {
+          this.skillsArray.push(skill)
+        }
+      });
+    this.arrayObsService.notifySkills(this.softSkillsArray) ; 
+    this.arrayObsService.notifySoftSkills(this.skillsArray)
+    }
+    if(!personStored){
+      window.sessionStorage.setItem('person',JSON.stringify(this.currentPerson)); 
+    }
   }
 
   translate(roleName) {
