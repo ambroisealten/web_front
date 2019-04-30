@@ -2,6 +2,8 @@
 }
 
 .skillSheetInformation{
+  height:50vh;
+  width:60vw;
   overflow: auto;
 }
 
@@ -27,13 +29,6 @@
   background: #f5f5f5;
 }
 
-th, td, tr {
-  overflow: auto;
-  padding: 5%;
-  width: 200px;
-  text-overflow: ellipsis;
-}
-
 mat-cell {
   font-size: 12px;
 }
@@ -44,39 +39,15 @@ mat-cell {
   margin-right: auto;
 }
 
-.mat-column-position {
-  flex: 0 0 15%;
-}
-
-.mat-column-battery {
-  flex: 0 0 5%;
-}
-  
-.mat-column-size {
-  flex: 0 0 5%;
-
-}
-
-.mat-column-status {
-  flex: 0 0 5%;
-
-}
-
-.mat-column-product {
-  flex: 0 0 30%;
-
-}
-
-.mat-column-select{
-  flex: 0 0 5%;
-
-}
 .mat-header-cell{
   font-weight: bold;
   color: var(--ALTENLightGray);
   font-size: 12px;
   background: var(--ALTENBlue);
+  padding-left: 10px !important; 
+  padding-right: 10px !important; 
 }
+
 
 .mat-row:nth-child(even){
   background-color: var(--ALTENLightGray);
