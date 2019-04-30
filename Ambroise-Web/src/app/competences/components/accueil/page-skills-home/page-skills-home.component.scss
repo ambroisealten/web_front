@@ -35,6 +35,12 @@ body
 .starrating > input:hover ~ label
 { color: #ffca08 ;  } /* Set yellow color when star hover */
 
+.skillSheetInformation{
+  height:50vh;
+  width:60vw;
+  overflow: auto;
+}
+
 .searchBar {
   width: 100%;
   margin-left:2%;
@@ -63,8 +69,8 @@ body
   background: #f5f5f5;
 }
 
-td {
-  padding: 5%;
+mat-cell {
+  font-size: 12px;
 }
 
 .example-form {
@@ -80,4 +86,23 @@ td {
 .titreCpt{
   margin-top: 2%;
   color: var(--ALTENDarkBlue);
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-header-cell{
+  font-weight: bold;
+  color: var(--ALTENLightGray);
+  font-size: 12px;
+  background: var(--ALTENBlue);
+  padding-left: 10px !important; 
+  padding-right: 10px !important; 
+}
+
+
+.mat-row:nth-child(even){
+  background-color: var(--ALTENLightGray);
 }
