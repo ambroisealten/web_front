@@ -185,7 +185,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   doAddFilter(){
     //this.handlingLongWord();
-    if ( this.filter.findIndex(filterTag => filterTag === this.rechercheInput ) == -1){
+    if (this.filter.findIndex(filterTag => filterTag === this.rechercheInput ) == -1 ){
       this.filter.push(this.rechercheInput);
       let totalPadding = (document.getElementsByClassName("allTagWords")[0].style["padding-bottom"] != "") ? parseInt(document.getElementsByClassName("allTagWords")[0].style["padding-bottom"]) : 0;
       document.getElementsByClassName("allTagWords")[0].style = "padding-bottom : "+ (totalPadding+1.5)+"%";

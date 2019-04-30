@@ -35,19 +35,15 @@ body
 .starrating > input:hover ~ label
 { color: #ffca08 ;  } /* Set yellow color when star hover */
 
-.newSheetButton {
-}
-
 .searchBar {
   width: 100%;
   margin-left:2%;
 }
 
 .searchBarCpt {
-  width: 100%;
-  margin-left: 4%;
+  width: 40vw;
+  margin-left: 40%;
 }
-
 
 .motCles {
   border-right: 1px solid var(--ALTENBlue);

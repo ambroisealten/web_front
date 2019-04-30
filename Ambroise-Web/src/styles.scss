@@ -203,37 +203,53 @@ a{
     }
 }
 
-.img {
-    vertical-align: middle;
-}
 .allTagWords{
     //width: 100%;
-    //float: left;
+    //float: right;
     display: inline-block;
+    max-height: 20vh;
+    overflow: auto;
 }
 
 .tagWord{
     color :#043962;
-    display: inline;
-    //text-align: left;
+    //display: inline;
+    text-align: center;
     background-color: var(--ALTENGray);
-    border-radius: 5px;
+    border-radius: 10px;
     transition: linear .2s;
-    max-width: 75px;
-    margin: 2%;
+    width: fit-content !important;
+    margin-bottom: 3%;
+    max-width: 17vw;
+    margin-left: 7%;
+    margin-bottom: 2%;
 }
 
 .allTagWordsCpt {
-    width: 100%;
+    /*width: 100%;
     display: grid;
     grid-template-columns: repeat(2,1fr);
     grid-row-gap: 3%;
     margin-top: 2%;
-    margin-bottom: 5%;
+    margin-bottom: 5%;*/
+    display: inline-block;
+    max-height: 20vh;
+    overflow: auto;
 }
 
 .tagWordCpt {
     color :#043962;
+    //display: inline;
+    text-align: left;
+    background-color: var(--ALTENGray);
+    border-radius: 10px;
+    transition: linear .2s;
+    width: fit-content !important;
+    margin-bottom: 3%;
+    max-width: 17vw;
+    margin-left: 7%;
+    margin-bottom: 2%;
+    /*color :#043962;
     margin: auto;
     text-align: center;
     display: grid;
@@ -243,17 +259,9 @@ a{
     border-radius: 5px;
     margin-bottom: 1%; 
     transition: linear .2s;
-    min-width: 75px;
+    min-width: 75px;*/
 }
 
-
-.tagWordCpt p{
-    margin:auto;
-}
-
-div.searchBar {
-    margin-left: 0%;
-}
 
 div .mat-expansion-panel-body  {
     padding-left: 2% !important;
@@ -266,9 +274,12 @@ div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
 
 .closeTag{
     filter : brightness(55%);
-    width: 5%;
-    min-width: 10px;
+    width: 7%;
+    min-width: 20px;
     transition : linear .2s;
+    //margin: auto;
+    float: left;
+    //align-self: center;
 }
 
 .closeTag:hover{

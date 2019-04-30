@@ -4,9 +4,8 @@
 <div class =gridContainer>
     <div class =gridContainer>
       <div class="motCles" >
-        <mat-accordion>
     
-          <mat-expansion-panel>
+          <mat-expansion-panel >
             <mat-expansion-panel-header>
               <h6>Filtres : </h6>
               
@@ -18,15 +17,25 @@
             <div class="allTagWords">
                 <div class="tagWord" *ngFor="let tagWord of filter">
                       
-                  
+                    <img class="closeTag" src='../../assets/images/close.png' alt="{{ tagWord }}" (click)="deleteTagWord($event)">
                   <span>{{ tagWord }}</span>
-                  <img class="closeTag" src='../../assets/images/close.png' alt="{{ tagWord }}" (click)="deleteTagWord($event)">
+                  
                 </div>
               </div>
         
               
           </mat-expansion-panel>
-        
+          <mat-expansion-panel >
+            <mat-expansion-panel-header>
+          <h6  class="titreCpt">Filtres Compétences : </h6>
+        </mat-expansion-panel-header>
+          <div class="allTagWordsCpt">
+              <div class="tagWordCpt" *ngFor="let filter of compFilter">
+                <img class="closeTag" src='../../assets/images/close.png' alt="{{ filter }}" (click)="deleteSkillWord($event)">
+                <span>{{ filter }}</span>
+              </div>
+            </div>
+          </mat-expansion-panel>
           <mat-expansion-panel>
               <mat-expansion-panel-header>
 
@@ -46,15 +55,7 @@
               </div>
         </div>	
           </mat-expansion-panel>
-        
-          <h5  class="titreCpt">Filtres Compétences : </h5>
-          <div class="allTagWordsCpt">
-              <div class="tagWordCpt" *ngFor="let filter of compFilter">
-                <img class="closeTag" src='../../assets/images/close.png' alt="{{ filter }}" (click)="deleteSkillWord($event)">
-                <p>{{ filter }}</p>
-              </div>
-            </div>
-        </mat-accordion>
+       
   </div>
 
   <div class="skillSheetInformation">
