@@ -43,13 +43,7 @@ export class PageSkillsHomeComponent implements OnInit {
     private skillsService: SkillsService) { }
 
   ngOnInit() {
-    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
-      if (skillsList != undefined){
-        console.log(skillsList)
-        this.createDataSource(skillsList['results'] as Skills[])
-        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
-      }
-    })
+    this.searchSkillSheets();
   }
 
   /**
@@ -69,9 +63,9 @@ export class PageSkillsHomeComponent implements OnInit {
           tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
           tmpSkillSheet['Moyenne Soft Skills'] = this.getAverageSoftSkillGrade(skills['skillsSheet']['skillsList']);
           this.compColumns.forEach(comp => {
-            let tmpCompResult = skills.skillsSheet.skillsList.filter(skill => skill.name == comp) ; 
-            if (tmpCompResult.length != 0){
-              tmpSkillSheet[comp] = tmpCompResult[0] ; 
+            let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'] == comp)
+            if (tmpCompResult != undefined){
+              tmpSkillSheet[comp] = tmpCompResult.grade; 
             } else {
               tmpSkillSheet[comp] = "" ; 
             }
@@ -88,13 +82,13 @@ export class PageSkillsHomeComponent implements OnInit {
     let sumGrades = 0;
     let countSoft = 0; 
     for(let softSkill of skillsList) {
-      if(softSkill.hasOwnProperty('isSoft')){
+      if(softSkill['skill'].hasOwnProperty('isSoft')){
         sumGrades += softSkill.grade;
         countSoft += 1 ; 
       }
     }
     if(countSoft != 0){
-      return sumGrades / countSoft ;
+      return +(sumGrades / countSoft).toFixed(2);
     }
     return 0 ;
   }
@@ -117,7 +111,7 @@ export class PageSkillsHomeComponent implements OnInit {
   navigateToSkillsSheet(skillsSheetData) {
     this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe(person => {
       this.skillsService.notifySkills(new Skills(person as Person, skillsSheetData))
-      this.redirectToSkillsSheet();
+      this.redirectToSkillsSheet(skillsSheetData.name, skillsSheetData.version);
     });
   }
 
@@ -151,7 +145,7 @@ export class PageSkillsHomeComponent implements OnInit {
     this.skillsSheetService.createNewSkillsSheet(skillsSheet).subscribe(httpResponse => {
       if (httpResponse != undefined) {
         this.skillsService.notifySkills(new Skills(person, skillsSheet));
-        this.redirectToSkillsSheet();
+        this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.version);
       }
     })
 
@@ -168,7 +162,9 @@ export class PageSkillsHomeComponent implements OnInit {
   doAddSkill() {
     if (this.compFilter.findIndex(filterTag => filterTag === this.rechercheInputCpt) == -1 &&  this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
       this.compFilter.push(this.rechercheInputCpt);
+      this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
+      this.searchSkillSheets();
     }
     this.rechercheInputCpt = "";
   }
@@ -179,8 +175,8 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   doAddFilter() {
     if (this.filter.findIndex(filterTag => filterTag === this.rechercheInput) == -1 &&  this.rechercheInput != null && !this.rechercheInput.match("^\ +")  && this.rechercheInput != "") {
-      console.log("pas vide");
       this.filter.push(this.rechercheInput);
+      this.searchSkillSheets();
     }
     this.rechercheInput = "";
   }
@@ -193,6 +189,7 @@ export class PageSkillsHomeComponent implements OnInit {
   deleteSkillWord(event) {
     this.compFilter = this.compFilter.filter(el => el !== event.srcElement.alt);
     this.displayedColumns = this.displayedColumns.filter(el => el !== event.srcElement.alt);
+    this.searchSkillSheets();
   }
 
   /**
@@ -202,6 +199,7 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   deleteTagWord(event) {
     this.filter = this.filter.filter(el => el !== event.srcElement.alt);
+    this.searchSkillSheets();
   }
 
   /**
@@ -210,5 +208,14 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   minRatingValue(event) {
     LoggerService.log(event.srcElement.value, LogLevel.DEVDEBUG)
+  }
+
+  searchSkillSheets() {
+    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
+      if (skillsList != undefined){
+        this.createDataSource(skillsList['results'] as Skills[])
+        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+      }
+    })
   }
 }
