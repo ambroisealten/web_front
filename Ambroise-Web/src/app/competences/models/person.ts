@@ -23,7 +23,7 @@ export class Person {
     this.job = "" ;
     this.employer = "" ;
     this.monthlyWage = "0" ;
-    this.personInChargeMail = "" ;
+    this.personInChargeMail = "tempUserAdminManager@mail.com" ;
     this.urlDocs = [] ;
     this.highestDiploma = "" ;
     this.highestDiplomaYear = "" ;
