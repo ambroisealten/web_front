@@ -121,6 +121,7 @@ export class SkillsFormComponent implements OnInit {
     let subMenu: SubMenu[] = []; 
     subMenu.push(this.subMenusService.createMenu('Accueil',[],'home','redirect/skills'))
     subMenu.push(this.subMenusService.createMenu('Nouvelle',[],'note_add','create'))
+   
     skillsSheets.forEach(skillsSheet => {
       subMenu.push(this.subMenusService.createMenu(skillsSheet.name,[],null,'redirect/skills/skillsSheet'+skillsSheet.name+'/'+skillsSheet.versionNumber))
     })

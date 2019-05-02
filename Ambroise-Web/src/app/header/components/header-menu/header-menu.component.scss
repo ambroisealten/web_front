@@ -74,9 +74,19 @@ li {
     height: 50%;
 }
 
-.submenu {
+.submenu:hover .submenuicon, .submenu:hover p {
+    color: var(--ALTENDarkBlue)
+}
+
+.submenu{
     display: flex;
     align-items: center;
     margin: auto;
     text-align: center;
+}
+
+
+
+.nav-item .submenu:hover {
+    color: var(--ALTENDarkBlue);
 }
