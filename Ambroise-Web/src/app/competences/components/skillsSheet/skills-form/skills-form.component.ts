@@ -192,15 +192,17 @@ export class SkillsFormComponent implements OnInit {
       this.currentPerson = skills.person ;
       this.currentSkillsSheet = skills.skillsSheet ;
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
-      skills.skillsSheet.skillsList.forEach(skill => {
-        if(skill['skill'].hasOwnProperty('isSoft')){
-          this.softSkillsArray.push(skill);
-        } else {
-          this.skillsArray.push(skill)
-        }
-      });
-    this.arrayObsService.notifySkills(this.skillsArray) ;
-    this.arrayObsService.notifySoftSkills(this.softSkillsArray);
+      if(skills.skillsSheet.skillsList.length > 0) {
+          skills.skillsSheet.skillsList.forEach(skill => {
+            if(skill['skill'].hasOwnProperty('isSoft')){
+              this.softSkillsArray.push(skill);
+            } else {
+              this.skillsArray.push(skill)
+            }
+          });
+      }
+      this.arrayObsService.notifySkills(this.skillsArray) ;
+      this.arrayObsService.notifySoftSkills(this.softSkillsArray);
     }
     if(!personStored){
       window.sessionStorage.setItem('person',JSON.stringify(this.currentPerson));
