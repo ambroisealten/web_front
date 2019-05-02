@@ -14,7 +14,11 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 })
 export class HeaderMenuComponent implements OnInit {
 
-    modules: Menu[] ;
+    modules: Menu[] = [
+        {label: 'Missions', menus: []},
+        {label: 'Compétences', menus: []},
+        {label: 'Forum', menus: []}
+      ];
     currentModule: string = 'Missions'; 
     done: boolean ;
 
@@ -25,7 +29,6 @@ export class HeaderMenuComponent implements OnInit {
 
     ngOnInit() {
         this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
-        this.headerService.menuReceptionObservable.subscribe(menusReceived => this.setModule(menusReceived)) ; 
         this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
     }
 

@@ -5,6 +5,8 @@ import { IsNotLoginService } from './services/isNotLogin.service';
 import { HeaderUserComponent } from './header/components/header-user/header-user.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SubMenusService } from './services/subMenus.service';
+import { Menu } from './header/models/menu';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +22,8 @@ export class AppComponent {
 
   constructor(private isNotLoginService: IsNotLoginService, 
     private componentFactoryResolver: ComponentFactoryResolver,
-    private router: Router){
+    private router: Router,
+    private subMenusService: SubMenusService){
     //  Récupération de la variable d'environement "globalLogType" pour initialiser
     //  le LoggerService
     LoggerService.parseLogType(environment.globalLogType);
@@ -38,7 +41,8 @@ export class AppComponent {
   clearSkillsSheetStorage(urlAfterRedirects: string){
     if(this.previousRoute.includes("skills/skillsheet") && !urlAfterRedirects.includes("skills/skillsheet")){
       window.sessionStorage.removeItem('skills') ;
-      window.sessionStorage.removeItem('person') 
+      window.sessionStorage.removeItem('person') ;
+      this.subMenusService.notifySubMenu(new Menu('Compétences',[]));
     }
     this.previousRoute = urlAfterRedirects ; 
   }
