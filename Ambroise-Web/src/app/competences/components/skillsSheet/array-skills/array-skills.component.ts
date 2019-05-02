@@ -21,6 +21,9 @@ export class ArraySkillsComponent implements OnInit {
 
   dataSource: MatTableDataSource<Skill[]>; // data as MatTableDataSource
 
+  //Subscription ; 
+  skillsSubscription ; 
+
   constructor(private arrayObsService: ArrayObsService) { }
 
   /**
@@ -28,14 +31,20 @@ export class ArraySkillsComponent implements OnInit {
    */
   ngOnInit() {
     if(this.datatype == "skills"){
-      this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
+      this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
         this.dataSource = new MatTableDataSource(arraySkills) ;
       });
     } else {
-      this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
+      this.skillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
         this.dataSource = new MatTableDataSource(arraySoftSkills) ;
       });
     }
+  }
+
+  ngOnDestroy(){
+    this.skillsSubscription.unsubscribe() ; 
+    this.arrayObsService.resetSkills() ; 
+    this.arrayObsService.resetSoftSkills() ;
   }
 
   /**

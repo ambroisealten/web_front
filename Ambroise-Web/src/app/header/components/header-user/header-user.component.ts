@@ -15,7 +15,7 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 })
 export class HeaderUserComponent implements OnInit {
 
-  private modules: Menu[] = [
+  modules: Menu[] = [
     {label: 'Missions', menus: []},
     {label: 'Compétences', menus: []},
     {label: 'Forum', menus: []}
@@ -29,7 +29,7 @@ export class HeaderUserComponent implements OnInit {
     private subMenusService: SubMenusService) { }
 
   ngOnInit() {
-    this.headerService.notifyMenusReceived(this.modules) ;
+    //this.headerService.notifyMenusReceived(this.modules) ;
     //this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
     //this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
   }

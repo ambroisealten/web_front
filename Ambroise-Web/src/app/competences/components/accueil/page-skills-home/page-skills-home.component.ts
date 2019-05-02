@@ -4,12 +4,10 @@ import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpans
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { SkillsSheet, Skill, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -44,8 +42,7 @@ export class PageSkillsHomeComponent implements OnInit {
     private router: Router,
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
-    private skillsService: SkillsService,
-    private arrayObsService: ArrayObsService) { }
+    private skillsService: SkillsService) { }
 
   ngOnInit() {
     this.searchSkillSheets();
@@ -180,7 +177,7 @@ export class PageSkillsHomeComponent implements OnInit {
         versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
         versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate));
       });
-      this.arrayObsService.notifySkillsVersions(versions);
+      //this.arrayObsService.notifySkillsVersions(versions);
       this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.versionNumber) ;
     });
   }
