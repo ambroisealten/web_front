@@ -28,15 +28,15 @@ export class PageSkillsHomeComponent implements OnInit {
   compColumns: string[] = ['JEE', 'C++', '.NET', 'PHP', 'SQL'];
 
   //Tableau contenant les compétences recherchées
-  compFilter: string[] = [] ; 
+  compFilter: string[] = [] ;
   //Tableau contenant les autres filtres
-  filter: string[] = [] ; 
+  filter: string[] = [] ;
 
   rechercheInput: string;
   rechercheInputCpt: string;
 
   //current skills[]
-  currentSkills: Skills[] ; 
+  currentSkills: Skills[] ;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -63,40 +63,40 @@ export class PageSkillsHomeComponent implements OnInit {
       skillsList.forEach(skills => {
         let tmpSkillSheet: any = {};
         if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
-          tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'] ; 
+          tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'] ;
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
-          tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ; 
-          tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ; 
+          tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ;
+          tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ;
           tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
           tmpSkillSheet['Moyenne Soft Skills'] = this.getAverageSoftSkillGrade(skills['skillsSheet']['skillsList']);
           this.compColumns.forEach(comp => {
             let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'] == comp)
             if (tmpCompResult != undefined){
-              tmpSkillSheet[comp] = tmpCompResult.grade; 
+              tmpSkillSheet[comp] = tmpCompResult.grade;
             } else {
-              tmpSkillSheet[comp] = "" ; 
+              tmpSkillSheet[comp] = "" ;
             }
           })
-          tmpSkillSheet['skills'] = skills ; 
-          skillSheet.push(tmpSkillSheet) ; 
+          tmpSkillSheet['skills'] = skills ;
+          skillSheet.push(tmpSkillSheet) ;
         }
       })
-      this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ; 
+      this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ;
     }
   }
 
   /**
    * Calcul de la moyenne des soft skills
-   * @param skillsList 
+   * @param skillsList
    * @author Quentin Della-Pasqua, Camille Schnell
    */
   getAverageSoftSkillGrade(skillsList: SkillGraduated[]):number {
     let sumGrades = 0;
-    let countSoft = 0; 
+    let countSoft = 0;
     for(let softSkill of skillsList) {
       if(softSkill['skill'].hasOwnProperty('isSoft')){
         sumGrades += softSkill.grade;
-        countSoft += 1 ; 
+        countSoft += 1 ;
       }
     }
     if(countSoft != 0){
@@ -121,9 +121,15 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    let skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] == skillsSheetData['nameSkillsSheet'] )
-    this.skillsService.notifySkills(skills)
-    this.redirectToSkillsSheet(skills['skillsSheet']['name'],skills['skillsSheet']['versionNumber']);
+    /*if(skillsSheetData.hasOwnProperty('nameSkillsSheet')){
+      let skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] == skillsSheetData['nameSkillsSheet'] );
+      this.skillsService.notifySkills(skills);
+      this.redirectToSkillsSheet(skills['skillsSheet']['name'],skills['skillsSheet']['versionNumber']);
+    }
+    else {
+      this.skillsService.notifySkills(skillsSheetData);
+      this.redirectToSkillsSheet(skillsSheetData.name, skillsSheetData.versionNumber);*/
+
   }
 
   /**
@@ -140,7 +146,10 @@ export class PageSkillsHomeComponent implements OnInit {
       if(skills != "canceled" && skills != undefined)
       {
         if(currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
-          this.navigateToSkillsSheet(currentSkills.skillsSheet);
+          this.personSkillsService.getPersonByMail(currentSkills.skillsSheet.mailPersonAttachedTo).subscribe( person => {
+            this.skillsService.notifySkills(new Skills(person as Person,currentSkills.skillsSheet))
+          });
+          this.initVersionsArray(currentSkills.skillsSheet);
         }
         else {
           this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
@@ -165,7 +174,6 @@ export class PageSkillsHomeComponent implements OnInit {
         this.initVersionsArray(skillsSheet);
       }
     })
-
   }
 
   /**
@@ -205,7 +213,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * Ajoute le filter a la liste 
+   * Ajoute le filter a la liste
    * @author Maxime Maquinghen
    */
   doAddFilter() {
@@ -217,7 +225,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    * @param event catch the delete event on tagWord of Competence
    * @author Maxime Maquinghen
    */
@@ -228,7 +236,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * 
+   *
    * @param event catch the delete event on tagWord of filter
    * @autho Maxime Maquinghen
    */
@@ -238,7 +246,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * Get the value of the rating 
+   * Get the value of the rating
    * @param event catch the click event on star
    */
   minRatingValue(event) {
