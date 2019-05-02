@@ -67,3 +67,16 @@ li {
     background-color: transparent;
     border: 0;
 }
+
+.submenuicon {
+    margin-right: 5%;
+    //width: 50%;
+    height: 50%;
+}
+
+.submenu {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    text-align: center;
+}

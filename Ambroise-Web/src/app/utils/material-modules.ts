@@ -87,7 +87,7 @@ import {
     MatTooltipModule,
     MatTreeModule,
     PortalModule,
-    ScrollingModule,
+    ScrollingModule
   ]
 })
 export class DemoMaterialModule {}

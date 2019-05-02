@@ -9,6 +9,7 @@ import { HeaderUserComponent } from './components/header-user/header-user.compon
 //  Services 
 import { HeaderService } from './services/header.services';
 import { CurrentModuleService } from './services/currentModule.services' ;
+import { MatIconModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { CurrentModuleService } from './services/currentModule.services' ;
     HeaderUserComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatIconModule
   ],
   exports: [
     HeaderMenuComponent,
