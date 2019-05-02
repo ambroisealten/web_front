@@ -12,13 +12,16 @@ export class ArrayObsService {
 
     private arraySoftSkillsInformation = new BehaviorSubject([]);
     arraySoftSkillsObservable = this.arraySoftSkillsInformation.asObservable();
-  
+
+    private arraySkillsVersionsInformation = new BehaviorSubject([]);
+    arraySkillsVersionsObservable = this.arraySkillsVersionsInformation.asObservable();
+
     notifySkills(arraySkills: any[]){
         this.arraySkillsInformation.next(arraySkills);
     }
 
     resetSkills(){
-        this.arraySkillsInformation.next([]); 
+        this.arraySkillsInformation.next([]);
     }
 
     notifySoftSkills(arraySoftSkills: any[]){
@@ -27,6 +30,14 @@ export class ArrayObsService {
 
     resetSoftSkills(){
         this.arraySoftSkillsInformation.next([]);
+    }
+
+    notifySkillsVersions(arraySkillsVersions: any[]) {
+      this.arraySkillsVersionsInformation.next(arraySkillsVersions);
+    }
+
+    resetSkillsVersions() {
+      this.arraySkillsVersionsInformation.next([]);
     }
 
 }

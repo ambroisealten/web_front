@@ -83,7 +83,13 @@ export class SkillsSheetService {
       .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
-  handleError(error) {
+  getAllSkillsSheetVersions(skillsSheetName: String, mailPersonAttachedTo: String) {
+    return this.httpClient
+      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetVersion/" + skillsSheetName + "/" + mailPersonAttachedTo, this.options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+  }
+
+  handleError(error){
     LoggerService.log(error, LogLevel.DEBUG); // TODO add errors in switch/case
     return undefined;
   }

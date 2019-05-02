@@ -7,6 +7,7 @@ export class SkillsSheet {
       id: string;
       name: string;
       versionNumber: number;
+      versionDate: string;
       skillsList: SkillGraduated[] ;
       mailPersonAttachedTo: string;
       mailVersionAuthor: string;
@@ -17,6 +18,7 @@ export class SkillsSheet {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
       this.versionNumber = 1 ;
+      this.versionDate = "";
       this.skillsList = [] ;
       this.mailVersionAuthor = "tempUserAdminManager@mail.com";
       this.rolePersonAttachedTo = person.role;
@@ -64,6 +66,16 @@ export class Skill {
 
   constructor(name: string) {
     this.name = name;
+  }
+}
+
+export class SkillsSheetVersions {
+  manager: string;
+  date: string;
+
+  constructor(manager: string, date: string) {
+    this.manager = manager;
+    this.date = date;
   }
 }
 

@@ -4,7 +4,7 @@ import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { MatDialog, MatDialogActions } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet, Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -26,7 +26,7 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 export class SkillsFormComponent implements OnInit {
 
   lastModificationsArray: any[];
-  lastModifDisplayedColumns: string[] = ['manager', 'date', 'action'];
+  lastModifDisplayedColumns: string[] = ['manager', 'date'];
 
   //Information of tech skills
   skillsArray: any[] = [];
@@ -109,6 +109,7 @@ export class SkillsFormComponent implements OnInit {
     this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
     this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ; 
     this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action)); 
+    this.arrayObsService.arraySkillsVersionsObservable.subscribe(arraySkillsVersions => this.lastModificationsArray = arraySkillsVersions);
   }
 
   /**
@@ -124,6 +125,12 @@ export class SkillsFormComponent implements OnInit {
       subMenu.push(this.subMenusService.createMenu(skillsSheet.name,[],null,'redirect/skills/skillsSheet'+skillsSheet.name+'/'+skillsSheet.versionNumber))
     })
     this.subMenusService.notifySubMenu(new Menu("Compétences",subMenu))
+  }
+
+  ngOnDestroy() {
+    this.arrayObsService.resetSkills();
+    this.arrayObsService.resetSoftSkills();
+    this.arrayObsService.resetSkillsVersions();
   }
 
   /**
