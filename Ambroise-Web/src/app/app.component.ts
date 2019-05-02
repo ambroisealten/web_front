@@ -16,11 +16,11 @@ import { Menu } from './header/models/menu';
 export class AppComponent {
 
   @ViewChild('headerHost', { read: ViewContainerRef }) entry: ViewContainerRef;
-  componentRef: any ; 
+  componentRef: any ;
   previousRoute: any = "" ;
   title = 'Ambroise-Web';
 
-  constructor(private isNotLoginService: IsNotLoginService, 
+  constructor(private isNotLoginService: IsNotLoginService,
     private componentFactoryResolver: ComponentFactoryResolver,
     private router: Router,
     private subMenusService: SubMenusService){
@@ -30,11 +30,11 @@ export class AppComponent {
   }
 
   ngOnInit(){
-    this.isNotLoginService.inLoginObservable.subscribe(isNotLogin => this.handleHeader(isNotLogin)); 
+    this.isNotLoginService.inLoginObservable.subscribe(isNotLogin => this.handleHeader(isNotLogin));
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(({urlAfterRedirects}: NavigationEnd) => {
-        this.clearSkillsSheetStorage(urlAfterRedirects) ; 
+        this.clearSkillsSheetStorage(urlAfterRedirects) ;
       });
   }
 
@@ -42,20 +42,20 @@ export class AppComponent {
     if(this.previousRoute.includes("skills/skillsheet") && !urlAfterRedirects.includes("skills/skillsheet")){
       window.sessionStorage.removeItem('skills') ;
       window.sessionStorage.removeItem('person') ;
-      this.subMenusService.notifySubMenu(new Menu('Compétences',[]));
+      this.subMenusService.notifySubMenu([]);
     }
-    this.previousRoute = urlAfterRedirects ; 
+    this.previousRoute = urlAfterRedirects ;
   }
   handleHeader(isNotLogin:boolean){
     if(!isNotLogin){
       try{
-        this.componentRef.destroy() ; 
+        this.componentRef.destroy() ;
       } catch(e) {
       }
     } else {
       this.entry.clear() ;
-      let componentFactory = this.componentFactoryResolver.resolveComponentFactory(HeaderUserComponent) ; 
-      this.componentRef = this.entry.createComponent(componentFactory) ; 
+      let componentFactory = this.componentFactoryResolver.resolveComponentFactory(HeaderUserComponent) ;
+      this.componentRef = this.entry.createComponent(componentFactory) ;
     }
   }
 
