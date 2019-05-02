@@ -9,6 +9,7 @@ import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/compet
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
+import { Person } from 'src/app/competences/models/person';
 
 @Component({
   selector: 'app-page-skills-home',

@@ -67,6 +67,7 @@ export class SkillsFormComponent implements OnInit {
   constructor(private skillsService: SkillsService,
               private skillsSheetService: SkillsSheetService,
               private arrayObsService: ArrayObsService,
+              private personSkillsService: PersonSkillsService,
               private router: Router,
               private route: ActivatedRoute,
               private subMenusService: SubMenusService) { }
