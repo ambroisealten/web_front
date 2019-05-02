@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
 
@@ -88,7 +88,7 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param skillsList 
    * @author Quentin Della-Pasqua, Camille Schnell
    */
-  getAverageSoftSkillGrade(skillsList: Skill[]):number {
+  getAverageSoftSkillGrade(skillsList: SkillGraduated[]):number {
     let sumGrades = 0;
     let countSoft = 0; 
     for(let softSkill of skillsList) {
