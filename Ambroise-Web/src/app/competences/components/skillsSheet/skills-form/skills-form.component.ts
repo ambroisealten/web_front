@@ -3,7 +3,7 @@ import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet, Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 export class SkillsFormComponent implements OnInit {
 
   lastModificationsArray: any[];
-  lastModifDisplayedColumns: string[] = ['manager', 'date', 'action'];
+  lastModifDisplayedColumns: string[] = ['manager', 'date'];
 
   skillsArray: any[] = [];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
@@ -63,7 +63,6 @@ export class SkillsFormComponent implements OnInit {
       } else {
       this.currentPerson = skills.person ;
       this.currentSkillsSheet = skills.skillsSheet ;
-      this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
       skills.skillsSheet.skillsList.forEach(skillData => {
         let skillGraduated = new SkillGraduated(skillData.skill, skillData.grade);
         if(skillData.skill.hasOwnProperty('isSoft')){
@@ -89,7 +88,14 @@ export class SkillsFormComponent implements OnInit {
 
     this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
     this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ;
+    this.arrayObsService.arraySkillsVersionsObservable.subscribe(arraySkillsVersions => this.lastModificationsArray = arraySkillsVersions);
 
+  }
+
+  ngOnDestroy() {
+    this.arrayObsService.resetSkills();
+    this.arrayObsService.resetSoftSkills();
+    this.arrayObsService.resetSkillsVersions();
   }
 
   /**

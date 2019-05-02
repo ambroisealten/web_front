@@ -7,6 +7,8 @@ import { Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
+import { SkillsSheet, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -35,7 +37,8 @@ export class PageSkillsHomeComponent implements OnInit {
     private router: Router,
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
-    private skillsService: SkillsService) { }
+    private skillsService: SkillsService,
+    private arrayObsService: ArrayObsService) { }
 
 
   /**
@@ -116,7 +119,7 @@ export class PageSkillsHomeComponent implements OnInit {
       let currentSkills = skills as Skills;
       if(skills != "canceled" && skills != undefined)
       {
-        if(currentSkills.skillsSheet.hasOwnProperty('versionDate')) {
+        if(currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
           this.navigateToSkillsSheet(currentSkills.skillsSheet);
         }
         else {
@@ -139,10 +142,27 @@ export class PageSkillsHomeComponent implements OnInit {
     this.skillsSheetService.createNewSkillsSheet(skillsSheet).subscribe(httpResponse => {
       if(httpResponse != undefined) {
         this.skillsService.notifySkills(new Skills(person,skillsSheet));
-        this.redirectToSkillsSheet() ;
+        this.initVersionsArray(skillsSheet);
       }
     })
 
+  }
+
+  /**
+   * Init observable to fill the skillsSheet's versions array
+   * @param  skillsSheet skillsSheet to display
+   */
+  initVersionsArray(skillsSheet: SkillsSheet) {
+    this.skillsSheetService.getAllSkillsSheetVersions(skillsSheet.name, skillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
+      let versionDate = "";
+      let versions:SkillsSheetVersions[] = [];
+      (skillsSheetVersions as SkillsSheet[]).forEach(version => {
+        versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
+        versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate));
+      });
+      this.arrayObsService.notifySkillsVersions(versions);
+      this.redirectToSkillsSheet() ;
+    });
   }
 
   redirectToSkillsSheet() {
