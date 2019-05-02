@@ -6,10 +6,9 @@ import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { SkillsSheet, Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { SkillsSheet, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 
 @Component({
@@ -182,7 +181,7 @@ export class PageSkillsHomeComponent implements OnInit {
         versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate));
       });
       this.arrayObsService.notifySkillsVersions(versions);
-      this.redirectToSkillsSheet() ;
+      this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.versionNumber) ;
     });
   }
 

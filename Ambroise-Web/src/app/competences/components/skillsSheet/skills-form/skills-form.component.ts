@@ -191,8 +191,8 @@ export class SkillsFormComponent implements OnInit {
           this.skillsArray.push(skill)
         }
       });
-    this.arrayObsService.notifySkills(this.softSkillsArray) ; 
-    this.arrayObsService.notifySoftSkills(this.skillsArray)
+    this.arrayObsService.notifySkills(this.skillsArray) ; 
+    this.arrayObsService.notifySoftSkills(this.softSkillsArray)
     }
     if(!personStored){
       window.sessionStorage.setItem('person',JSON.stringify(this.currentPerson));
