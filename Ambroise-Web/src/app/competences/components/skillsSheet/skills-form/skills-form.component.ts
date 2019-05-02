@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
-import { MatDialog, MatDialogActions } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet, Skill, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
 import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { Menu, SubMenu } from 'src/app/header/models/menu';
@@ -81,15 +79,16 @@ export class SkillsFormComponent implements OnInit {
    */
   ngOnInit() {
     this.route.params.subscribe(param => {
-      this.name = param['name'];
-      this.version = +param['version'];
-      //Check if data already exists, person is more important than skillsSheet 
-      if (window.sessionStorage.getItem('person') != null) {
-        this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
-        if (window.sessionStorage.getItem('skills') != null) {
-          this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[], true)
-          this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
-          this.createMenu();
+      //Get param in the url
+      this.name = this.route.snapshot.paramMap.get("name") ;
+      this.version = +this.route.snapshot.paramMap.get("version") ;
+      //Check if data already exists, person is more important than skillsSheet
+      if (window.sessionStorage.getItem('person') != null){
+        this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person  ;
+        if(window.sessionStorage.getItem('skills') != null){
+          this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true)
+          this.initializeView(new Skills(this.currentPerson,this.currentSkillsSheet),true) ;
+          this.createMenu() ;
         } else {
           this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
             this.setupSkillsSheet(skillsSheets as SkillsSheet[], false);
@@ -111,13 +110,13 @@ export class SkillsFormComponent implements OnInit {
       } else {
         this.formItems = null;
       }
-      //Update chart 
+      //Update chart
       this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
       this.softSkillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills));
       this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
       this.skillsVersionSubscription = this.arrayObsService.arraySkillsVersionsObservable.subscribe(arraySkillsVersions => this.lastModificationsArray = arraySkillsVersions);
     })
-    //Get param in the url 
+    //Get param in the url
     // this.name = this.route.snapshot.paramMap.get("name") ;
     // this.version = +this.route.snapshot.paramMap.get("version") ;
 
@@ -163,7 +162,7 @@ export class SkillsFormComponent implements OnInit {
    */
   /**
    * Check s'il doit faire l'action, si oui, la réalise
-   * @param action 
+   * @param action
    * @author Quentin Della-Pasqua
    */
   doAction(action: string) {
@@ -190,8 +189,8 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /**
-   * Check among skillsSheet the one which correspond to the url 
-   * @param skillsSheets 
+   * Check among skillsSheet the one which correspond to the url
+   * @param skillsSheets
    * @author Quentin Della-Pasqua
    */
   setupSkillsSheet(skillsSheets: SkillsSheet[], skillsSheetStored) {
@@ -208,7 +207,7 @@ export class SkillsFormComponent implements OnInit {
   /**
    * Initialize components (creating soft and tech skills array, set up var, etc..)
    * @param skills
-   * @author Quentin Della-Pasqua 
+   * @author Quentin Della-Pasqua
    */
   initializeView(skills, personStored: boolean) {
     if (skills == undefined) {
