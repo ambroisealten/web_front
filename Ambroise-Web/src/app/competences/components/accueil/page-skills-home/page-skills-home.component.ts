@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
-import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpansionPanel } from '@angular/material';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
@@ -17,6 +17,8 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
+  @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel ;
+
   skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
   displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills', 'JEE', 'C++', '.NET', 'PHP', 'SQL'];
@@ -29,6 +31,8 @@ export class PageSkillsHomeComponent implements OnInit {
   //Tableau contenant les autres filtres
   filter: string[] = [] ; 
 
+  // pop menu when a value is enter
+  public popMenu: String = "false";
 
 
   rechercheInput: string;
@@ -165,6 +169,7 @@ export class PageSkillsHomeComponent implements OnInit {
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
+      this.expansionCPT.expanded = true ;
     }
     this.rechercheInputCpt = "";
   }
