@@ -23,7 +23,7 @@ export class SkillsService {
     }
 
     resetSkills(){
-        this.skillsInformation.next(undefined); 
+        this.skillsInformation.next(undefined);
     }
 
     getAllSkills(noCompFilter:string[], compFilter: string[]):Observable<{} | Skills[]>{

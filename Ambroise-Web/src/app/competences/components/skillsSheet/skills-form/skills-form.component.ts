@@ -3,9 +3,8 @@ import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { MatDialog, MatDialogActions } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,6 +12,7 @@ import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
 import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { Menu, SubMenu } from 'src/app/header/models/menu';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -46,10 +46,8 @@ export class SkillsFormComponent implements OnInit {
   skillsChart = Chart;
   softSkillsChart = Chart;
 
-  showPassToConsultant: boolean = true;
-
-  //current Info 
   currentPerson: Person;
+  tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
 
   //information contains in the path
@@ -58,16 +56,23 @@ export class SkillsFormComponent implements OnInit {
 
   //
   avis: string;
+  isEditButtonHidden: boolean = false;
+  isPersonDataDisabled: boolean = true;
+  isSkillsSheetNameEditable: boolean = false;
 
   constructor(private skillsService: SkillsService,
-              private dialog: MatDialog,
               private skillsSheetService: SkillsSheetService,
+              private personSkillsService: PersonSkillsService,
               private arrayObsService: ArrayObsService,
               private router: Router,
               private route: ActivatedRoute,
               private subMenusService: SubMenusService) { }
 
-
+  /**
+   * Init : - check if a skillsObservable is present then inits current data (Person and Skills) else redirects to skills home
+   *        - init form items of a Person (different inputs whether it's an applicant or a consultant)
+   *        - init both charts of skills and soft skills
+   */
   ngOnInit() {
     //Get param in the url 
     this.name = this.route.snapshot.paramMap.get("name") ;
@@ -93,8 +98,10 @@ export class SkillsFormComponent implements OnInit {
     let formItemsJSON = require('../../../resources/formItems.json');
     if(this.currentPerson.role == PersonRole.APPLICANT){
       this.formItems = formItemsJSON["candidateFormItems"];
+      this.updateFormItemsFromPerson(this.currentPerson);
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT ){
-      this.formItems = formItemsJSON["consultantFormItems"]
+      this.formItems = formItemsJSON["consultantFormItems"];
+      this.updateFormItemsFromPerson(this.currentPerson);
     } else {
       this.formItems = null ;
     }
@@ -119,6 +126,10 @@ export class SkillsFormComponent implements OnInit {
     this.subMenusService.notifySubMenu(new Menu("Compétences",subMenu))
   }
 
+  /**
+   * Translates Person role
+   * @param  roleName role to translate
+   */
   /**
    * Check s'il doit faire l'action, si oui, la réalise
    * @param action 
@@ -189,6 +200,137 @@ export class SkillsFormComponent implements OnInit {
     return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
   }
 
+  editSkillsSheetName() {
+    this.isSkillsSheetNameEditable = true;
+  }
+
+  /**
+   * Checks if skillsSheetName is empty and sets old name if it is
+   * @param  event input name of skillsSheet
+   */
+  checkIfNameEmpty(event) {
+    let newSkillsSheetName = event.target.innerText;
+    if(newSkillsSheetName == "") {
+      event.target.innerText = this.currentSkillsSheet.name;
+    }
+    else {
+      this.currentSkillsSheet.name = newSkillsSheetName;
+    }
+  }
+
+  /**
+   * On click on edit person button
+   */
+  editPerson() {
+    this.isEditButtonHidden = true;
+    this.isPersonDataDisabled = false;
+    this.tmpCurrentPerson = this.currentPerson;
+  }
+
+  /**
+   * On click on save edit button : Person is updated in db
+   */
+  savePerson() {
+    this.isEditButtonHidden = false;
+    this.isPersonDataDisabled = true;
+    this.currentPerson = this.updatePersonFromFormItems();
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if(httpResponse != undefined) {
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
+  }
+
+  /**
+   * On click on cancel edit button
+   */
+  cancelEditPerson() {
+    this.isEditButtonHidden = false;
+    this.isPersonDataDisabled = true;
+    this.currentPerson = this.tmpCurrentPerson;
+    this.updateFormItemsFromPerson(this.currentPerson);
+  }
+
+  /**
+   * Updates form data of a skillSheet given a Person
+   * @param  person Person containing data to display
+   */
+  updateFormItemsFromPerson(person: Person) {
+    if(person.role == PersonRole.APPLICANT) {
+      this.formItems.forEach(item => {
+        switch(item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'employer':
+            item.model = person.employer;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+    });
+    }
+    else if(person.role == PersonRole.CONSULTANT) {
+      this.formItems.forEach(item => {
+        switch(item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }
+
+  /**
+   * Updates a Person with data retrieved from the "edit person form" of a skillsheet
+   * @return Person updated
+   */
+  updatePersonFromFormItems() {
+    let personToUpdate = this.currentPerson;
+    this.formItems.forEach(item => {
+      switch(item.id) {
+        case 'highestDiploma':
+          personToUpdate.highestDiploma = item.model ;
+          break;
+        case 'highestDiplomaYear':
+          personToUpdate.highestDiplomaYear = item.model ;
+          break;
+        case 'employer':
+          personToUpdate.employer = item.model;
+          break;
+        case 'job':
+          personToUpdate.job = item.model ;
+          break;
+        case 'monthlyWage':
+          personToUpdate.monthlyWage = item.model ;
+          break;
+        default:
+          break;
+      }
+    });
+    return personToUpdate;
+  }
+
   /**
   * Calls skills service to save current skillsSheet
   */
@@ -198,34 +340,42 @@ export class SkillsFormComponent implements OnInit {
     this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1) ;
   }
 
-  updateChartSkills(arraySkills: Skill[]){
+  /**
+   * Updates the radar chart for skills
+   * @param  arraySkills Array containing updated skills
+   */
+  updateChartSkills(arraySkills: SkillGraduated[]){
     if (typeof this.skillsChart != "function"){
-      this.skillsChart.destroy() ; 
+      this.skillsChart.destroy() ;
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
-    arraySkills.forEach(function(skill) {
-      skillsLabels.push(skill['skill'].name);
-      skillsData.push(skill.grade);
+    arraySkills.forEach(function(skillGraduated) {
+      skillsLabels.push(skillGraduated.skill.name);
+      skillsData.push(skillGraduated.grade);
     });
     this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
-    this.skillsArray = arraySkills ; 
-    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ; 
+    this.skillsArray = arraySkills ;
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
   }
 
-  updateChartSoftSkills(arraySoftSkills: Skill[]){
+  /**
+   * Updates the radar chart for soft skills
+   * @param  arraySkills Array containing updated soft skills
+   */
+  updateChartSoftSkills(arraySoftSkills: SkillGraduated[]){
     if(typeof this.softSkillsChart != "function"){
-      this.softSkillsChart.destroy() ; 
+      this.softSkillsChart.destroy() ;
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
-    arraySoftSkills.forEach(function(skill) {
-      skillsLabels.push(skill['skill'].name);
-      skillsData.push(skill.grade);
+    arraySoftSkills.forEach(function(skillGraduated) {
+      skillsLabels.push(skillGraduated.skill.name);
+      skillsData.push(skillGraduated.grade);
     });
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
-    this.softSkillsArray = arraySoftSkills ; 
-    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ; 
+    this.softSkillsArray = arraySoftSkills ;
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
   }
 
   /**

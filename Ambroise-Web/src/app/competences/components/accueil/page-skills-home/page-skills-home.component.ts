@@ -4,7 +4,7 @@ import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpans
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole } from 'src/app/competences/models/person';
+import { Person } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
@@ -135,12 +135,18 @@ export class PageSkillsHomeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(skills => {
       let currentSkills = skills as Skills;
-      if (skills != "canceled" && skills != undefined) {
-        this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
-          if (httpResponse != undefined) {
-            this.createNewSkillSheet(currentSkills.person, currentSkills.skillsSheet);
-          }
-        });
+      if(skills != "canceled" && skills != undefined)
+      {
+        if(currentSkills.skillsSheet.hasOwnProperty('versionDate')) {
+          this.navigateToSkillsSheet(currentSkills.skillsSheet);
+        }
+        else {
+          this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
+            if(httpResponse != undefined) {
+              this.createNewSkillSheet(currentSkills.person, currentSkills.skillsSheet);
+            }
+          });
+        }
       }
     });
   }

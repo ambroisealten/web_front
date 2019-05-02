@@ -1,11 +1,14 @@
 import { Person, PersonRole } from './person';
 
+/**
+ * Class containing skillSheet data
+ */
 export class SkillsSheet {
       id: string;
       name: string;
       versionNumber: number;
+      skillsList: SkillGraduated[] ;
       mailPersonAttachedTo: string;
-      skillsList: Skill[] ; 
       mailVersionAuthor: string;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
@@ -13,17 +16,18 @@ export class SkillsSheet {
     constructor(name: string, person: Person) {
       this.name = name;
       this.mailPersonAttachedTo = person.mail;
-      this.versionNumber = 1 ; 
-      this.skillsList = [] ; 
-      this.mailVersionAuthor = "cunmail@mail.com";
+      this.versionNumber = 1 ;
+      this.skillsList = [] ;
+      this.mailVersionAuthor = "tempUserAdminManager@mail.com";
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
     }
 
-    addSkill(skillToAdd: Skill){
+    addSkill(skillToAdd: SkillGraduated){
       this.skillsList.push(skillToAdd) ;
     }
-    removeSkill(skillToRemove: Skill) {
+
+    removeSkill(skillToRemove: SkillGraduated) {
       let skillToRemoveIndex = this.skillsList.findIndex(skill => skill === skillToRemove);
 
       this.skillsList.splice(skillToRemoveIndex, 1);
@@ -45,13 +49,21 @@ export class SkillsSheet {
     }
 }
 
-export class Skill {
-  name: string;
+export class SkillGraduated {
+  skill: Skill;
   grade: number;
 
-  constructor(name: string, grade: number) {
+  constructor(skill: Skill, grade: number) {
+    this.skill = skill;
+    this. grade = grade;
+  }
+}
+
+export class Skill {
+  name: string;
+
+  constructor(name: string) {
     this.name = name;
-    this.grade = grade;
   }
 }
 
