@@ -13,9 +13,9 @@ import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.co
 })
 export class AdminDocumentComponent implements OnInit {
 
-  files = [new File('id54dfs54dgfs54dg5sg', '/forum/2019/global/', 'png', '1555511830668', 'Logo ALTEN'), new File('id546dgs546gs7546fqe8', '/global/2019/', 'pdf', '1555511830716', 'Cahier de test'), new File('iddvs546375g', '/forum/2015/global/', 'docx', '1555511874438', 'Login Documentation'), new File('id4d4hf754874', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('id5468546gfh4dh', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
+  files = [new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830668', 'Logo ALTEN'), new File('5ccb112c88af202e58811dff', '/global/2019/', 'pdf', '1555511830716', 'Cahier de test'), new File('5ccb112c88af202e58811dff', '/forum/2015/global/', 'docx', '1555511874438', 'Login Documentation'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
   filesForForum = [];
-  filesForum = [new File('id4d4hf754874', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('id5468546gfh4dh', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
+  filesForum = [new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
   allFilesIdForum = ['id4d4hf754874', 'id5468546gfh4dh'];
   allSets = { '/2019/global/': this.filesForum };
   currentSet = '';
@@ -44,6 +44,7 @@ export class AdminDocumentComponent implements OnInit {
     const params = {
       _id: document.get_id(),
       extension: document.getExtension(),
+      path: document.getPath(),
     };
     this.adminService.deleteFile(params, null);
   }
@@ -65,7 +66,7 @@ export class AdminDocumentComponent implements OnInit {
             _id: document.get_id(),
             extension: document.getExtension()
           };
-          this.adminService.makeRequest('file', 'put', postParams, '');
+          this.adminService.updateFile(postParams, '');
         }
       });
   }

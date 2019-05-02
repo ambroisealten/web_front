@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Injectable()
 export class AdminService {
@@ -18,9 +19,26 @@ export class AdminService {
 
         const options = {
             headers: headerParams,
-            body: postParams
+            params: postParams
         };
-        this.httpClient.delete(this.baseUrl + 'file', options);
+        this.httpClient.delete(this.baseUrl + 'file', options).subscribe(data => {
+        });
+    }
+
+    updateFile(postParams, callback) {
+        const token = window.sessionStorage.getItem('bearerToken');
+
+        const headerParams = new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: token !== '' ? token : ''
+        });
+
+        const options = {
+            headers: headerParams,
+            params: postParams
+        };
+        this.httpClient.put(this.baseUrl + 'file', postParams, options).subscribe(data => {
+        });
     }
 
     makeRequest(url: string, method: string, postParams, callback) {
