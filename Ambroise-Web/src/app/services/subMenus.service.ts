@@ -14,7 +14,7 @@ export class SubMenusService {
 
     createMenu(labelSubMenu: string, labelSubSubMenu: string[], icon: string, action: string,):SubMenu{
         let subMenu = new SubMenu() ; 
-        if(labelSubSubMenu == []){
+        if(labelSubSubMenu.length == 0){
             subMenu.label = labelSubMenu ; 
             if(action != null)
                 subMenu.action = action ;
@@ -23,7 +23,7 @@ export class SubMenusService {
             
         } else {
             subMenu.label = labelSubMenu ; 
-            let subSubMenu: SubSubMenu[] ;
+            let subSubMenu: SubSubMenu[] = [];
             labelSubSubMenu.forEach(label => {
                 let tmpSubSubMenu = new SubSubMenu() ; 
                 tmpSubSubMenu.label = label ; 

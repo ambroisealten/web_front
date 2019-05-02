@@ -8,7 +8,7 @@ const compRoutes: Routes = [
   { path: '', redirectTo:'skills', pathMatch:'full' },
   { path:'skills', children: [
     { path: '',  component: PageSkillsHomeComponent },
-    { path:'skillsheet/:name/:id', component: SkillsFormComponent }
+    { path:'skillsheet/:name/:version', component: SkillsFormComponent }
   ]}
 ];
 

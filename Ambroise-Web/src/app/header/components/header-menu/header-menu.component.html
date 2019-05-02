@@ -6,7 +6,7 @@
           <ng-container *ngFor="let module of modules">
             <ng-container *ngIf="module.label === getCurrentModule()">
               <ng-container *ngFor="let menu of module.menus">
-                <ng-container *ngIf="menu.hasOwnProperty('subSubMenus'); else elseBlock">
+                <ng-container *ngIf="menu.hasOwnProperty('subSubMenus') ; else elseBlock">
                   <li class="nav-item dropdown headMenu">
                     <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown"
                       aria-haspopup="true" aria-expanded="false">{{menu.label}}</a>
@@ -17,7 +17,7 @@
                   </li>
                 </ng-container>
                 <ng-template #elseBlock>
-
+                  
                 </ng-template>
               </ng-container>
             </ng-container>

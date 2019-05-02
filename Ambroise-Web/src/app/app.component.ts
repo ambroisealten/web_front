@@ -36,7 +36,7 @@ export class AppComponent {
   }
 
   clearSkillsSheetStorage(urlAfterRedirects: string){
-    if(this.previousRoute.includes("skills/skillsSheet") && !urlAfterRedirects.includes("skills/skillsSheet")){
+    if(this.previousRoute.includes("skills/skillsheet") && !urlAfterRedirects.includes("skills/skillsheet")){
       window.sessionStorage.removeItem('skills') ;
       window.sessionStorage.removeItem('person') 
     }
