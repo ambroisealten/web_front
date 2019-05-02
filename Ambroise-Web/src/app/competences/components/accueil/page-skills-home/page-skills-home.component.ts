@@ -31,12 +31,11 @@ export class PageSkillsHomeComponent implements OnInit {
   //Tableau contenant les autres filtres
   filter: string[] = [] ; 
 
-  // pop menu when a value is enter
-  public popMenu: String = "false";
-
-
   rechercheInput: string;
   rechercheInputCpt: string;
+
+  //current skills[]
+  currentSkills: Skills[] ; 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -58,9 +57,11 @@ export class PageSkillsHomeComponent implements OnInit {
   createDataSource(skillsList: Skills[]){
     let skillSheet: any[] = [];
     if(skillsList != []){
+      this.currentSkills = skillsList ;
       skillsList.forEach(skills => {
         let tmpSkillSheet: any = {};
         if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
+          tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'] ; 
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
           tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ; 
           tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ; 
@@ -82,6 +83,11 @@ export class PageSkillsHomeComponent implements OnInit {
     }
   }
 
+  /**
+   * Calcul de la moyenne des soft skills
+   * @param skillsList 
+   * @author Quentin Della-Pasqua, Camille Schnell
+   */
   getAverageSoftSkillGrade(skillsList: Skill[]):number {
     let sumGrades = 0;
     let countSoft = 0; 
@@ -113,10 +119,9 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    this.personSkillsService.getPersonByMail(skillsSheetData.mailPersonAttachedTo).subscribe(person => {
-      this.skillsService.notifySkills(new Skills(person as Person, skillsSheetData))
-      this.redirectToSkillsSheet(skillsSheetData.name, skillsSheetData.version);
-    });
+    let skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] == skillsSheetData['nameSkillsSheet'] )
+    this.skillsService.notifySkills(skills)
+    this.redirectToSkillsSheet(skills['skillsSheet']['name'],skills['skillsSheet']['versionNumber']);
   }
 
   /**
@@ -149,7 +154,7 @@ export class PageSkillsHomeComponent implements OnInit {
     this.skillsSheetService.createNewSkillsSheet(skillsSheet).subscribe(httpResponse => {
       if (httpResponse != undefined) {
         this.skillsService.notifySkills(new Skills(person, skillsSheet));
-        this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.version);
+        this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.versionNumber);
       }
     })
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogActions } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { ConfirmationDialogComponent } from 'src/app/utils/confirmation-dialog/confirmation-dialog.component';
 import { Person, PersonRole } from 'src/app/competences/models/person';
@@ -101,6 +101,7 @@ export class SkillsFormComponent implements OnInit {
     //Update chart 
     this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
     this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ; 
+    this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action)); 
   }
 
   /**
@@ -108,10 +109,33 @@ export class SkillsFormComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   createMenu(){
-    let skillsSheet = JSON.parse(window.sessionStorage.getItem('skills'))
-    let subMenu: SubMenu[] ; 
+    let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'))
+    let subMenu: SubMenu[] = []; 
     subMenu.push(this.subMenusService.createMenu('Accueil',[],'home','redirect/skills'))
+    subMenu.push(this.subMenusService.createMenu('Nouvelle',[],'plus','create'))
+    skillsSheets.forEach(skillsSheet => {
+      subMenu.push(this.subMenusService.createMenu(skillsSheet.name,[],null,'redirect/skills/skillsSheet'+skillsSheet.name+'/'+skillsSheet.versionNumber))
+    })
     this.subMenusService.notifySubMenu(new Menu("Compétences",subMenu))
+  }
+
+  /**
+   * Check s'il doit faire l'action, si oui, la réalise
+   * @param action 
+   * @author Quentin Della-Pasqua
+   */
+  doAction(action: string){
+    if(action != ""){
+      let actionSplit = action.split('//') ; 
+    if (actionSplit[0] == this.router.url){
+      if(actionSplit[1] === 'create'){
+        //TODO
+      } else if(actionSplit[1].match("^redirect/.*")){
+        let redirect = actionSplit[1].substring(9); 
+        this.router.navigate([redirect])
+      }
+    }
+    }
   }
 
   /**
@@ -143,7 +167,7 @@ export class SkillsFormComponent implements OnInit {
       this.currentSkillsSheet = skills.skillsSheet ; 
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
       skills.skillsSheet.skillsList.forEach(skill => {
-        if(skill.hasOwnProperty('isSoft')){
+        if(skill['skill'].hasOwnProperty('isSoft')){
           this.softSkillsArray.push(skill); 
         } else {
           this.skillsArray.push(skill)
@@ -175,14 +199,13 @@ export class SkillsFormComponent implements OnInit {
   }
 
   updateChartSkills(arraySkills: Skill[]){
-    console.log(typeof this.skillsChart)
     if (typeof this.skillsChart != "function"){
       this.skillsChart.destroy() ; 
     }
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
     arraySkills.forEach(function(skill) {
-      skillsLabels.push(skill.name);
+      skillsLabels.push(skill['skill'].name);
       skillsData.push(skill.grade);
     });
     this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSkills');
@@ -197,7 +220,7 @@ export class SkillsFormComponent implements OnInit {
     let skillsLabels: string[] = [];
     let skillsData: number[] = [];
     arraySoftSkills.forEach(function(skill) {
-      skillsLabels.push(skill.name);
+      skillsLabels.push(skill['skill'].name);
       skillsData.push(skill.grade);
     });
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');

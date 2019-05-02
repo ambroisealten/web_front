@@ -24,9 +24,21 @@ export class HeaderMenuComponent implements OnInit {
         private subMenusService: SubMenusService) { }
 
     ngOnInit() {
+        this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
         this.headerService.menuReceptionObservable.subscribe(menusReceived => this.setModule(menusReceived)) ; 
         this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
     }
+
+    
+  setSubMenus(subMenus: Menu){
+    if(subMenus != null){
+      this.modules.forEach(menu => {
+        if(menu.label === subMenus.label){
+          menu.menus = subMenus.menus ; 
+        }
+      })
+    }
+  }
 
     sendAction(action: string){
         this.subMenusService.notifyMenuAction(this.router.url+"//"+action) ; 
