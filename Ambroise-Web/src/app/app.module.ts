@@ -29,6 +29,7 @@ import { IsNotLoginService } from './services/isNotLogin.service' ;
 import { SkillsSheetService } from './competences/services/skillsSheet.service';
 import { PersonSkillsService } from './competences/services/personSkills.service';
 import { SubMenusService } from './services/subMenus.service';
+import { ArrayObsService } from './competences/services/arrayObs.service';
 
 @NgModule({
   declarations: [

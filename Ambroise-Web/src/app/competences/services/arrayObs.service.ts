@@ -7,6 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 */
 export class ArrayObsService {
 
+    EMPTY = [] ; 
+
     private arraySkillsInformation = new BehaviorSubject([]);
     arraySkillsObservable = this.arraySkillsInformation.asObservable();
 
@@ -21,7 +23,7 @@ export class ArrayObsService {
     }
 
     resetSkills(){
-        this.arraySkillsInformation.next([]);
+        this.arraySkillsInformation.next(this.EMPTY);
     }
 
     notifySoftSkills(arraySoftSkills: any[]){
@@ -29,7 +31,7 @@ export class ArrayObsService {
     }
 
     resetSoftSkills(){
-        this.arraySoftSkillsInformation.next([]);
+        this.arraySoftSkillsInformation.next(this.EMPTY);
     }
 
     notifySkillsVersions(arraySkillsVersions: any[]) {
@@ -37,7 +39,7 @@ export class ArrayObsService {
     }
 
     resetSkillsVersions() {
-      this.arraySkillsVersionsInformation.next([]);
+      this.arraySkillsVersionsInformation.next(this.EMPTY);
     }
 
 }

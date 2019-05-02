@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
-import { MatDialog, MatDialogActions } from '@angular/material';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
-import { SkillsSheet, Skill, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheet, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatTabLinkBase } from '@angular/material/tabs/typings/tab-nav-bar';
 import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { Menu, SubMenu } from 'src/app/header/models/menu';
@@ -17,7 +15,8 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 @Component({
   selector: 'app-skills-form',
   templateUrl: './skills-form.component.html',
-  styleUrls: ['./skills-form.component.scss']
+  styleUrls: ['./skills-form.component.scss'],
+  providers: [ ArrayObsService ]
 })
 /**
 * Component containing the skillsSheet creation form.
@@ -60,9 +59,13 @@ export class SkillsFormComponent implements OnInit {
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
 
+  //subscription
+  skillsSubscription;
+  softSkillsSubscription;
+  skillsVersionSubscription;
+
   constructor(private skillsService: SkillsService,
               private skillsSheetService: SkillsSheetService,
-              private personSkillsService: PersonSkillsService,
               private arrayObsService: ArrayObsService,
               private router: Router,
               private route: ActivatedRoute,
@@ -106,12 +109,11 @@ export class SkillsFormComponent implements OnInit {
     } else {
       this.formItems = null ;
     }
-
     //Update chart
-    this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
-    this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ;
+    this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
+    this.softSkillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills)) ;
     this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
-    this.arrayObsService.arraySkillsVersionsObservable.subscribe(arraySkillsVersions => this.lastModificationsArray = arraySkillsVersions);
+    this.skillsVersionSubscription = this.arrayObsService.arraySkillsVersionsObservable.subscribe(arraySkillsVersions => this.lastModificationsArray = arraySkillsVersions);
   }
 
   /**
@@ -130,6 +132,9 @@ export class SkillsFormComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.skillsVersionSubscription.unsubscribe() ;
+    this.skillsSubscription.unsubscribe() ;
+    this.softSkillsSubscription.unsubscribe() ;
     this.arrayObsService.resetSkills();
     this.arrayObsService.resetSoftSkills();
     this.arrayObsService.resetSkillsVersions();
@@ -195,13 +200,13 @@ export class SkillsFormComponent implements OnInit {
       });
     this.arrayObsService.notifySkills(this.skillsArray) ;
     this.arrayObsService.notifySoftSkills(this.softSkillsArray);
+    }
     if(!personStored){
       window.sessionStorage.setItem('person',JSON.stringify(this.currentPerson));
       this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets  =>  {
         window.sessionStorage.setItem('skills',JSON.stringify(skillsSheets))
         this.createMenu();
       });
-    }
     }
   }
 
@@ -354,6 +359,7 @@ export class SkillsFormComponent implements OnInit {
    * @param  arraySkills Array containing updated skills
    */
   updateChartSkills(arraySkills: SkillGraduated[]){
+    if(arraySkills.length != 0){
     if (typeof this.skillsChart != "function"){
       this.skillsChart.destroy() ;
     }
@@ -367,12 +373,14 @@ export class SkillsFormComponent implements OnInit {
     this.skillsArray = arraySkills ;
     this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
   }
+  }
 
   /**
    * Updates the radar chart for soft skills
    * @param  arraySkills Array containing updated soft skills
    */
   updateChartSoftSkills(arraySoftSkills: SkillGraduated[]){
+    if(arraySoftSkills.length != 0){
     if(typeof this.softSkillsChart != "function"){
       this.softSkillsChart.destroy() ;
     }
@@ -385,6 +393,7 @@ export class SkillsFormComponent implements OnInit {
     this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels,8), skillsData, 'canvasSoftSkills');
     this.softSkillsArray = arraySoftSkills ;
     this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray) ;
+  }
   }
 
   /**
