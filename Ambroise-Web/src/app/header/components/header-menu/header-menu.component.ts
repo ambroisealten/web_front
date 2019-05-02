@@ -41,6 +41,7 @@ export class HeaderMenuComponent implements OnInit {
   }
 
     sendAction(action: string){
+        console.log("MDR)" + action);
         this.subMenusService.notifyMenuAction(this.router.url+"//"+action) ; 
     }
 

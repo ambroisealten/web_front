@@ -17,7 +17,12 @@
                   </li>
                 </ng-container>
                 <ng-template #elseBlock>
-                  
+                  <div class=" nav-item submenu" (click)="sendAction(menu.action)">
+                    <ng-container *ngIf="menu.hasOwnProperty('icon')" >
+                      <mat-icon class="submenuicon">{{ menu.icon }}</mat-icon>
+                    </ng-container>
+                    <p class="submenu"> {{ menu.label }}</p>
+                    </div>
                 </ng-template>
               </ng-container>
             </ng-container>
