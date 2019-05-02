@@ -12,7 +12,7 @@ export class SubMenusService {
     private subMenuState = new BehaviorSubject(null);
     subMenuObservable = this.subMenuState.asObservable();
 
-    createMenu(labelSubMenu: string, labelSubSubMenu: string[], icon: string, action: string,):SubMenu{
+    createMenu(labelSubMenu: string, labelSubSubMenu: any[], icon: string, action: string,subAction: string[]):SubMenu{
         let subMenu = new SubMenu() ; 
         if(labelSubSubMenu.length == 0){
             subMenu.label = labelSubMenu ; 
@@ -26,9 +26,19 @@ export class SubMenusService {
             let subSubMenu: SubSubMenu[] = [];
             labelSubSubMenu.forEach(label => {
                 let tmpSubSubMenu = new SubSubMenu() ; 
-                tmpSubSubMenu.label = label ; 
+                tmpSubSubMenu.label = label['name'] ; 
+                if(icon != null )
                 tmpSubSubMenu.icon = icon ; 
-                tmpSubSubMenu.action = action ; 
+                let finalAction: string = "" ;
+                if(action != null){
+                    finalAction += action ; 
+                }
+                if(subAction != null && subAction.length > 0){
+                    subAction.forEach(subAction => {
+                        finalAction += label[subAction] + '/'
+                    })
+                }
+                tmpSubSubMenu.action = finalAction ; 
                 subSubMenu.push(tmpSubSubMenu) ; 
             })
             subMenu.subSubMenus = subSubMenu ; 
@@ -44,8 +54,8 @@ export class SubMenusService {
         this.menuActionState.next("")
     }
 
-    notifySubMenu(menu: Menu){
-        this.subMenuState.next(menu);
+    notifySubMenu(subMenu: SubMenu[]){
+        this.subMenuState.next(subMenu);
     }
 
     resetSubMenu(){
