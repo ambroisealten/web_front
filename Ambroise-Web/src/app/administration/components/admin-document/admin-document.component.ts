@@ -17,7 +17,7 @@ export class AdminDocumentComponent implements OnInit {
   filesForForum = [];
   filesForum = [new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
   allFilesIdForum = ['id4d4hf754874', 'id5468546gfh4dh'];
-  currentSet = 'forum';
+  currentSet = 'Forum';
 
   constructor(private adminService: AdminService, private dialog: MatDialog) {
     const currentYear = new Date().getFullYear().toString();
@@ -119,8 +119,8 @@ export class AdminDocumentComponent implements OnInit {
       }
     }
     if (finalList.length === 0) {
-      const test = confirm('Êtes-vous sûr de ne mettre aucun documents ?');
-      if (!test) {
+      const ok = confirm('Êtes-vous sûr de ne vouloir mettre aucun documents dans l\'ensemble ' + this.currentSet + '?');
+      if (!ok) {
         return;
       }
     }
@@ -133,7 +133,6 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   setSelected(event) {
-    let target = event.source.selected._element.nativeElement;
     this.currentSet = event.value;
   }
 }
