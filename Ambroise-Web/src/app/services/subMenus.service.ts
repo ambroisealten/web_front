@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SubMenu, SubSubMenu, Menu } from '../header/models/menu' ;
+import { SubMenu, SubSubMenu } from '../header/models/menu' ;
 
 @Injectable()
 export class SubMenusService {
@@ -11,6 +11,10 @@ export class SubMenusService {
     
     private subMenuState = new BehaviorSubject(null);
     subMenuObservable = this.subMenuState.asObservable();
+
+    constructor(){
+        console.log("Création");
+    }
 
     createMenu(labelSubMenu: string, labelSubSubMenu: any[], icon: string, action: string,subAction: string[]):SubMenu{
         let subMenu = new SubMenu() ; 

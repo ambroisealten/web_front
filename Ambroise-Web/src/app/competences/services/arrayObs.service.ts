@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { SkillGraduated } from '../models/skillsSheet';
 
 @Injectable()
 /**
@@ -18,7 +19,11 @@ export class ArrayObsService {
     private arraySkillsVersionsInformation = new BehaviorSubject([]);
     arraySkillsVersionsObservable = this.arraySkillsVersionsInformation.asObservable();
 
-    notifySkills(arraySkills: any[]){
+    constructor(){
+
+    }
+
+    notifySkills(arraySkills: SkillGraduated[]){
         this.arraySkillsInformation.next(arraySkills);
     }
 

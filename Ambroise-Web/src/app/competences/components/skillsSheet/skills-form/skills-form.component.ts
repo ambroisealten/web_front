@@ -11,6 +11,7 @@ import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { Menu, SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-skills-form',
@@ -63,6 +64,10 @@ export class SkillsFormComponent implements OnInit {
   skillsSubscription;
   softSkillsSubscription;
   skillsVersionSubscription;
+  submenusSubscription;
+
+  //Name of the skillsSheet
+  nameSkillsSheet: string; 
 
   constructor(private skillsService: SkillsService,
     private skillsSheetService: SkillsSheetService,
@@ -70,7 +75,9 @@ export class SkillsFormComponent implements OnInit {
     private arrayObsService: ArrayObsService,
     private router: Router,
     private route: ActivatedRoute,
-    private subMenusService: SubMenusService) { }
+    private subMenusService: SubMenusService) { 
+      console.log("Création"); 
+    }
 
   /**
    * Init : - check if a skillsObservable is present then inits current data (Person and Skills) else redirects to skills home
@@ -113,9 +120,9 @@ export class SkillsFormComponent implements OnInit {
       //Update chart
       this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => this.updateChartSkills(arraySkills));
       this.softSkillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills => this.updateChartSoftSkills(arraySoftSkills));
-      this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
+      this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
       this.skillsVersionSubscription = this.arrayObsService.arraySkillsVersionsObservable.subscribe(arraySkillsVersions => this.lastModificationsArray = arraySkillsVersions);
-    })
+    }) 
     //Get param in the url
     // this.name = this.route.snapshot.paramMap.get("name") ;
     // this.version = +this.route.snapshot.paramMap.get("version") ;
@@ -151,9 +158,7 @@ export class SkillsFormComponent implements OnInit {
     this.skillsVersionSubscription.unsubscribe();
     this.skillsSubscription.unsubscribe();
     this.softSkillsSubscription.unsubscribe();
-    this.arrayObsService.resetSkills();
-    this.arrayObsService.resetSoftSkills();
-    this.arrayObsService.resetSkillsVersions();
+    this.submenusSubscription.unsubscribe() ;
   }
 
   /**
@@ -173,16 +178,19 @@ export class SkillsFormComponent implements OnInit {
         if (actionSplit[1] === 'create') {
           //TODO
         } else if (actionSplit[1].match("^redirect/.*")) {
-          let redirect = actionSplit[1].substring(9);
-          this.subMenusService.resetMenuAction();
-          this.subMenusService.resetSubMenu();
-          this.skillsVersionSubscription.unsubscribe();
-          this.skillsSubscription.unsubscribe();
-          this.softSkillsSubscription.unsubscribe();
-          this.arrayObsService.resetSkills();
-          this.arrayObsService.resetSoftSkills();
-          this.arrayObsService.resetSkillsVersions();
-          this.router.navigate([redirect])
+          let redirect = actionSplit[1].substring(9); 
+          if(('/' + redirect) != this.router.url){
+            this.subMenusService.resetMenuAction();
+            this.subMenusService.resetSubMenu();
+            this.submenusSubscription.unsubscribe() ;
+            this.skillsVersionSubscription.unsubscribe();
+            this.skillsSubscription.unsubscribe();
+            this.softSkillsSubscription.unsubscribe();
+            this.arrayObsService.resetSkills();
+            this.arrayObsService.resetSoftSkills();
+            this.arrayObsService.resetSkillsVersions();
+            this.router.navigate([redirect])
+          }
         }
       }
     }
@@ -215,7 +223,10 @@ export class SkillsFormComponent implements OnInit {
     } else {
       this.currentPerson = skills.person;
       this.currentSkillsSheet = skills.skillsSheet;
+      this.nameSkillsSheet =  skills.skillsSheet.name ; 
       this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
+      this.softSkillsArray = [] ; 
+      this.skillsArray = [] ; 
       skills.skillsSheet.skillsList.forEach(skill => {
         if (skill['skill'].hasOwnProperty('isSoft')) {
           this.softSkillsArray.push(skill);
@@ -376,7 +387,29 @@ export class SkillsFormComponent implements OnInit {
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
-    this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => this.currentSkillsSheet.versionNumber += 1);
+    let tmpExisting; 
+    if((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined){
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+      this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if(httpResponse['stackTrace'][0]['lineNumber'] == 201){
+          this.currentSkillsSheet.versionNumber += 1
+          let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[] ; 
+          let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
+          window.sessionStorage.setItem('skills',JSON.stringify(tmpModifiedSkillsSheets)) ;
+          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+        }
+      });
+    } else {
+      this.currentSkillsSheet.versionNumber = 1 ; 
+      this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if(httpResponse['stackTrace'][0]['lineNumber'] == 201){
+          let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[] ; 
+          tmpSkillsSheets.push(this.currentSkillsSheet) ; 
+          window.sessionStorage.setItem('skills',JSON.stringify(tmpSkillsSheets)) ;
+          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+        }
+      })
+    }
   }
 
   /**
