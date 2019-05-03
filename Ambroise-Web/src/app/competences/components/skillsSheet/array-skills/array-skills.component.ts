@@ -19,12 +19,13 @@ export class ArraySkillsComponent implements OnInit {
   @Input() headerRowHidden: boolean; // is header row (columns title) hidden
   @Input() datatype: string; // 'skills' or 'softSkills'
 
-  dataSource: MatTableDataSource<Skill[]>; // data as MatTableDataSource
+  dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
   //Subscription ; 
   skillsSubscription ; 
 
-  constructor(private arrayObsService: ArrayObsService) { }
+  constructor(private arrayObsService: ArrayObsService) { 
+  }
 
   /**
    * Inits dataSource of array : skills or soft skills
@@ -32,11 +33,11 @@ export class ArraySkillsComponent implements OnInit {
   ngOnInit() {
     if(this.datatype == "skills"){
       this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
-        this.dataSource = new MatTableDataSource(arraySkills) ;
+        this.dataSource = new MatTableDataSource(arraySkills as any[]) ;
       });
     } else {
       this.skillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
-        this.dataSource = new MatTableDataSource(arraySoftSkills) ;
+        this.dataSource = new MatTableDataSource(arraySoftSkills as any[]) ;
       });
     }
   }

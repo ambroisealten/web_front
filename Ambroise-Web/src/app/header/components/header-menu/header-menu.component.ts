@@ -29,8 +29,12 @@ export class HeaderMenuComponent implements OnInit {
         this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
     }
 
+    ngOnDestroy(){
+        console.log("la")
+    }
     
   setSubMenus(subMenus: SubMenu[]){
+    console.log(subMenus)
     if(subMenus != null && subMenus.length > 0){
         this.subMenus = subMenus
     } else {
