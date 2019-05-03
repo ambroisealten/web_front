@@ -30,9 +30,9 @@
     <h2>Documents affichés dans le menu Forum</h2>
     <mat-form-field>
       <mat-label>Set de document</mat-label>
-      <mat-select [(value)]="currentSet">
+      <mat-select (change)="setSelected($event)" id="currentSetName" [(value)]="currentSet">
         <mat-option value="{{currentSet}}" selected>
-          2019 - Global
+          Forum
         </mat-option>
       </mat-select>
     </mat-form-field>

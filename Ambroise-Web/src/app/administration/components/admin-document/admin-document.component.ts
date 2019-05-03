@@ -17,12 +17,10 @@ export class AdminDocumentComponent implements OnInit {
   filesForForum = [];
   filesForum = [new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
   allFilesIdForum = ['id4d4hf754874', 'id5468546gfh4dh'];
-  allSets = { '/2019/global/': this.filesForum };
-  currentSet = '';
+  currentSet = 'forum';
 
   constructor(private adminService: AdminService, private dialog: MatDialog) {
     const currentYear = new Date().getFullYear().toString();
-    this.currentSet = '/' + currentYear + '/global/';
     for (const file of this.files) {
       const filePath = file.getPath();
       if (filePath.startsWith('/forum/') && !this.allFilesIdForum.includes(file.get_id())) {
@@ -122,12 +120,20 @@ export class AdminDocumentComponent implements OnInit {
     }
     if (finalList.length === 0) {
       const test = confirm('Êtes-vous sûr de ne mettre aucun documents ?');
-      if (test) {
-        // Update request
-      } else {
-        // Nothing (?)
+      if (!test) {
+        return;
       }
     }
-    LoggerService.log(finalList, LogLevel.DEBUG);
+    const postParams = {
+      oldName : this.currentSet,
+      name: this.currentSet,
+      files : finalList,
+    };
+    this.adminService.makeRequest('admin/documentset', 'put', postParams, '');
+  }
+
+  setSelected(event) {
+    let target = event.source.selected._element.nativeElement;
+    this.currentSet = event.value;
   }
 }
