@@ -14,10 +14,10 @@
     </thead>
     <tbody>
       <ng-container *ngFor="let document of getDocuments() ">
-        <tr id="{{document.get_id()}}">
-          <td>{{document.getDisplayName()}}</td>
-          <td>{{document.getDateOfCreation() | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
-          <td>{{document.getPath()}}</td>
+        <tr id="{{document._id}}">
+          <td>{{document.displayName}}</td>
+          <td>{{document.dateOfCreation | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
+          <td>{{document.path}}</td>
           <td><button class="removeButton btn" mat-icon-button (click)="removeDocument(document)">x</button><button (click)="editDocument(document)" class="btn" mat-icon-button><i class="material-icons">edit</i></button></td>
         </tr>
       </ng-container>
@@ -48,11 +48,11 @@
       class="example-list"
       (cdkDropListDropped)="drop($event)">
         <div class="example-box" *ngFor="let file of filesForForum" cdkDrag>
-          Titre : {{ file.getDisplayName() }}<span class="document-id"> {{ file.get_id() }}</span>
-          <ng-container *ngIf="file.getExtension() == 'png'; then iconImage else elseIcon">
+          Titre : {{ file.displayName }}<span class="document-id"> {{ file._id }}</span>
+          <ng-container *ngIf="file.extension == 'png'; then iconImage else elseIcon">
           </ng-container>
           <ng-template #elseIcon>
-              <ng-container *ngIf="file.getExtension() == 'pdf'; else iconDoc">
+              <ng-container *ngIf="file.extension == 'pdf'; else iconDoc">
                   <mat-icon>picture_as_pdf</mat-icon>
               </ng-container>
           </ng-template>
@@ -73,17 +73,17 @@
       <div
         cdkDropList
         #docsForumList="cdkDropList"
-        [cdkDropListData]="filesForum"
+        [cdkDropListData]="filesSet"
         [cdkDropListConnectedTo]="[docsList]"
         class="example-list"
         (cdkDropListDropped)="drop($event)">
-          <div class="example-box" *ngFor="let file of filesForum" cdkDrag>
-            Titre : {{ file.getDisplayName() }}<span class="document-id"> {{ file.get_id() }}</span>
-            <ng-container *ngIf="file.getExtension() == 'png'; then iconImage else elseIcon">
+          <div class="example-box" *ngFor="let file of filesSet" cdkDrag>
+            Titre : {{ file.displayName }}<span class="document-id"> {{ file._id }}</span>
+            <ng-container *ngIf="file.extension == 'png'; then iconImage else elseIcon">
                 <mat-icon>image</mat-icon>
             </ng-container>
             <ng-template #elseIcon>
-                <ng-container *ngIf="file.getExtension() == 'pdf'; else iconDoc">
+                <ng-container *ngIf="file.extension == 'pdf'; else iconDoc">
                     <mat-icon>picture_as_pdf</mat-icon>
                 </ng-container>
             </ng-template>

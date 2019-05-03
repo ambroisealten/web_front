@@ -13,25 +13,26 @@ import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.co
 })
 export class AdminDocumentComponent implements OnInit {
 
-  files = [new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830668', 'Logo ALTEN'), new File('5ccb112c88af202e58811dff', '/global/2019/', 'pdf', '1555511830716', 'Cahier de test'), new File('5ccb112c88af202e58811dff', '/forum/2015/global/', 'docx', '1555511874438', 'Login Documentation'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
-  filesForForum = [];
-  filesForum = [new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'pdf', '1555511830668', 'Presentation ALTEN'), new File('5ccb112c88af202e58811dff', '/forum/2019/global/', 'png', '1555511830667', 'Bienvenue à ALTEN')];
+  files: File[] = [];
+  filesForForum: File[] = [];
+  filesSet: File[] = [];
   allFilesIdForum = ['id4d4hf754874', 'id5468546gfh4dh'];
   currentSet = 'Forum';
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) {
-    const currentYear = new Date().getFullYear().toString();
+
+  constructor(private adminService: AdminService, private dialog: MatDialog) { }
+
+  ngOnInit() {
+    this.searchFiles();
+  }
+
+  onFilesChange() {
     for (const file of this.files) {
-      const filePath = file.getPath();
-      if (filePath.startsWith('/forum/') && !this.allFilesIdForum.includes(file.get_id())) {
+      const filePath = file.path;
+      if (filePath.startsWith('/forum/') && !this.allFilesIdForum.includes(file._id)) {
         this.filesForForum.push(file);
       }
     }
-    LoggerService.log(this.filesForForum, LogLevel.DEBUG);
-  }
-
-  ngOnInit() {
-
   }
 
   getDocuments() {
@@ -40,9 +41,9 @@ export class AdminDocumentComponent implements OnInit {
 
   removeDocument(document: File) {
     const params = {
-      _id: document.get_id(),
-      extension: document.getExtension(),
-      path: document.getPath(),
+      _id: document._id,
+      extension: document.extension,
+      path: document.path,
     };
     this.adminService.deleteFile(params, null);
   }
@@ -54,15 +55,15 @@ export class AdminDocumentComponent implements OnInit {
     dialogDocument.afterClosed().subscribe(
       (data: any) => {
         if (data) {
-          const oldPath = document.getPath();
-          document.setPath(data.path);
-          document.setDisplayName(data.displayName);
+          const oldPath = document.path;
+          document.path = data.path;
+          document.displayName = data.displayName;
           const postParams = {
             oldPath,
-            newPath: document.getPath(),
-            displayName: document.getDisplayName(),
-            _id: document.get_id(),
-            extension: document.getExtension()
+            newPath: document.path,
+            displayName: document.displayName,
+            _id: document._id,
+            extension: document.extension
           };
           this.adminService.updateFile(postParams, '');
         }
@@ -82,8 +83,8 @@ export class AdminDocumentComponent implements OnInit {
       id: 1,
       title: 'Document edition',
       description: 'Document edition',
-      path: document.getPath(),
-      displayName: document.getDisplayName()
+      path: document.path,
+      displayName: document.displayName
     };
 
     return this.dialog.open(DataFileDialogComponent, dialogConfig);
@@ -125,9 +126,9 @@ export class AdminDocumentComponent implements OnInit {
       }
     }
     const postParams = {
-      oldName : this.currentSet,
+      oldName: this.currentSet,
       name: this.currentSet,
-      files : finalList,
+      files: finalList,
     };
     this.adminService.makeRequest('admin/documentset', 'put', postParams, '');
   }
@@ -135,4 +136,16 @@ export class AdminDocumentComponent implements OnInit {
   setSelected(event) {
     this.currentSet = event.value;
   }
+
+  searchFiles() {
+    this.adminService.getFiles().subscribe((filesList: File[]) => {
+      LoggerService.log(filesList, LogLevel.DEBUG);
+      if (filesList !== undefined) {
+        this.files = filesList;
+      }
+      // notify that file list is changed
+      this.onFilesChange();
+    });
+  }
+
 }

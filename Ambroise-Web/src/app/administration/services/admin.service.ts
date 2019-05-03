@@ -1,9 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { timeout } from 'rxjs/internal/operators/timeout';
+import { catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Injectable()
 export class AdminService {
+
 
     constructor(private httpClient: HttpClient) { }
 
@@ -39,6 +43,22 @@ export class AdminService {
         };
         this.httpClient.put(this.baseUrl + 'file', postParams, options).subscribe(data => {
         });
+    }
+
+    getFiles(): Observable<{} | File[]> {
+        const token = window.sessionStorage.getItem('bearerToken');
+
+        const headerParams = new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: token !== '' ? token : ''
+        });
+
+        const options = {
+            headers: headerParams,
+        };
+        return this.httpClient
+            .get<{} | File[]>(this.baseUrl + 'files', options)
+            .pipe(timeout(5000), catchError(error => this.handleError(error)));
     }
 
     makeRequest(url: string, method: string, postParams, callback) {
@@ -77,5 +97,10 @@ export class AdminService {
                 break;
             default:
         }
+    }
+
+    handleError(error) {
+        LoggerService.log(error, LogLevel.DEBUG);
+        return undefined;
     }
 }
