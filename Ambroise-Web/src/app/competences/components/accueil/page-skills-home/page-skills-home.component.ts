@@ -8,8 +8,9 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Person } from 'src/app/competences/models/person';
+import { SubMenu } from 'src/app/header/models/menu';
+import { SubMenusService } from 'src/app/services/subMenus.service';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -38,17 +39,73 @@ export class PageSkillsHomeComponent implements OnInit {
   //current skills[]
   currentSkills: Skills[] ;
 
+  //Subscription
+  subMenusSubscription ;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private dialog: MatDialog,
     private router: Router,
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
-    private skillsService: SkillsService) { }
+    private skillsService: SkillsService,
+    private subMenusService: SubMenusService) { }
 
   ngOnInit() {
     this.searchSkillSheets();
+    this.createMenu(); 
+    this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action)) ;
   }
+
+  ngOnDestroy(){
+    this.subMenusSubscription.unsubscribe() ; 
+  }
+  /**
+   * Cherche toutes les skillSheets
+   * @author Quentin Della-pasqua
+   */
+  searchSkillSheets() {
+    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
+      if (skillsList != undefined){
+        this.createDataSource(skillsList['results'] as Skills[])
+        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+      }
+    })
+  }
+
+  /**
+   * Crée les menus associé à la vue
+   * @author Quentin Della-Pasqua
+   */
+  createMenu(){
+    let subMenu: SubMenu[] = [] ; 
+    subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'add_circle', 'create', []))
+    this.subMenusService.notifySubMenu(subMenu);
+  }
+
+  /**
+   * Regarde quel action est envoyer par le header, la vérifie et la traite si c'est pour lui
+   * @param action 
+   * @author Quentin Della-Pasqua
+   */
+  doAction(action: string) {
+    if (action != "") {
+      let actionSplit = action.split('//');
+      this.subMenusService.notifyMenuAction("");
+      if (actionSplit[0] == this.router.url) {
+        if (actionSplit[1] === 'create') {
+          this.createSkillsSheetModal() ;
+        } 
+      }
+    }
+  }
+
+  /***********************************************************************\
+   *        
+   *                          SOUS-FONCTIONS          
+   *                                                                      
+  \***********************************************************************/
+
 
   /**
    * Modeler les données reçu du serveur pour les faire correspondre au Mat Table
@@ -85,6 +142,19 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
+   * Factorise les conditions if 
+   * @param property 
+   * @param testedProperty 
+   * @author Quentin Della-Pasqua
+   */
+  instantiateProperty(property,testedProperty:string):any{
+    if(property.hasOwnProperty(testedProperty)){
+      return property[testedProperty] ;
+    }
+    return "";
+  }
+
+  /**
    * Calcul de la moyenne des soft skills
    * @param skillsList
    * @author Quentin Della-Pasqua, Camille Schnell
@@ -102,13 +172,6 @@ export class PageSkillsHomeComponent implements OnInit {
       return +(sumGrades / countSoft).toFixed(2);
     }
     return 0 ;
-  }
-
-  instantiateProperty(property,testedProperty:string):any{
-    if(property.hasOwnProperty(testedProperty)){
-      return property[testedProperty] ;
-    }
-    return "";
   }
 
   /**
@@ -252,12 +315,4 @@ export class PageSkillsHomeComponent implements OnInit {
     LoggerService.log(event.srcElement.value, LogLevel.DEVDEBUG)
   }
 
-  searchSkillSheets() {
-    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
-      if (skillsList != undefined){
-        this.createDataSource(skillsList['results'] as Skills[])
-        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
-      }
-    })
-  }
 }
