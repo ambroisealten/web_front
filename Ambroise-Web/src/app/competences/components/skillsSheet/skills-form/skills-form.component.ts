@@ -142,7 +142,7 @@ export class SkillsFormComponent implements OnInit {
     let tmpSkillsSheet: SkillsSheet[] = [];
     skillsSheets.forEach(skillsSheet => {
       if (count < 3) {
-        subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber, []))
+        subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber + '/', []))
       } else {
         tmpSkillsSheet.push(skillsSheet)
       }
@@ -178,8 +178,8 @@ export class SkillsFormComponent implements OnInit {
         if (actionSplit[1] === 'create') {
           //TODO
         } else if (actionSplit[1].match("^redirect/.*")) {
-          let redirect = actionSplit[1].substring(9); 
-          if(('/' + redirect) != this.router.url){
+          let redirect = actionSplit[1].substring(9);
+          if(('/' + redirect) != this.router.url + '/'){
             this.subMenusService.resetMenuAction();
             this.subMenusService.resetSubMenu();
             this.submenusSubscription.unsubscribe() ;
