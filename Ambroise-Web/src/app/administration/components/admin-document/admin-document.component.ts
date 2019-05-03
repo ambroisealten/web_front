@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { File } from '../../models/File';
 import { AdminService } from '../../services/admin.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { LoggerService, LogLevel } from '../../../services/logger.service';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.component';
+import { DocumentSet } from '../../models/DocumentSet';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-admin-document',
@@ -16,23 +17,28 @@ export class AdminDocumentComponent implements OnInit {
   files: File[] = [];
   filesForForum: File[] = [];
   filesSet: File[] = [];
-  allFilesIdForum = ['id4d4hf754874', 'id5468546gfh4dh'];
-  currentSet = 'Forum';
+  allSet: DocumentSet[] = [];
+  currentSet: DocumentSet;
 
 
   constructor(private adminService: AdminService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.searchFiles();
+    this.fetchAllSet();
   }
 
   onFilesChange() {
     for (const file of this.files) {
       const filePath = file.path;
-      if (filePath.startsWith('/forum/') && !this.allFilesIdForum.includes(file._id)) {
+      if (filePath.startsWith('/Forum/') && !this.filesSet.includes(file)) {
         this.filesForForum.push(file);
       }
     }
+  }
+
+  getAllSets() {
+    return this.allSet;
   }
 
   getDocuments() {
@@ -106,6 +112,7 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   submitListForum() {
+    debugger;
     const finalList = [];
     const dropList = document.getElementsByClassName('cdk-drop-list')[1];
     let order = 0;
@@ -120,26 +127,32 @@ export class AdminDocumentComponent implements OnInit {
       }
     }
     if (finalList.length === 0) {
-      const ok = confirm('Êtes-vous sûr de ne vouloir mettre aucun documents dans l\'ensemble ' + this.currentSet + '?');
+      const ok = confirm('Êtes-vous sûr de ne vouloir mettre aucun documents dans l\'ensemble ' + this.currentSet.name + '?');
       if (!ok) {
         return;
       }
     }
     const postParams = {
-      oldName: this.currentSet,
-      name: this.currentSet,
+      oldName: this.currentSet.name,
+      name: this.currentSet.name,
       files: finalList,
     };
-    this.adminService.makeRequest('admin/documentset', 'put', postParams, '');
+    this.adminService.saveSet(postParams);
   }
 
   setSelected(event) {
+    LoggerService.log(this.currentSet, LogLevel.DEBUG);
+    this.allSet.forEach(set => {
+      if (set.name === event.value) {
+        this.currentSet = set;
+      }
+    });
     this.currentSet = event.value;
+    LoggerService.log(this.currentSet, LogLevel.DEBUG);
   }
 
   searchFiles() {
     this.adminService.getFiles().subscribe((filesList: File[]) => {
-      LoggerService.log(filesList, LogLevel.DEBUG);
       if (filesList !== undefined) {
         this.files = filesList;
       }
@@ -148,4 +161,34 @@ export class AdminDocumentComponent implements OnInit {
     });
   }
 
+  fetchCurrentSet() {
+    this.adminService.getSetFiles(this.currentSet.name).subscribe((set: DocumentSet) => {
+      if (set !== undefined) {
+        this.currentSet = set;
+        this.filesSet = [];
+        set.mobileDocs.forEach(mobileDoc => {
+          this.fetchFile(mobileDoc.name);
+        });
+      }
+    });
+  }
+
+  fetchFile(fileName: string) {
+    console.log(fileName);
+    this.adminService.getFile(fileName).subscribe((file: File) => {
+      if (file !== undefined) {
+        this.filesSet.push(file);
+      }
+    });
+  }
+
+  fetchAllSet() {
+    this.adminService.getAllSet().subscribe((setList: DocumentSet[]) => {
+      if (setList !== undefined) {
+        this.allSet = setList;
+      }
+      this.currentSet = this.allSet[0];
+      this.fetchCurrentSet();
+    });
+  }
 }
