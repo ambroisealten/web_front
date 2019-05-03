@@ -50,6 +50,11 @@ export class SkillsFormComponent implements OnInit {
   tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
 
+  //MODIF DETECTION
+  countSkillsUpdate = 0  ;
+  countSoftSkillsUpdate = 0 ; 
+  modifDetection: boolean = false ; 
+
   //information contains in the path
   name: string;
   version: number;
@@ -75,8 +80,7 @@ export class SkillsFormComponent implements OnInit {
     private arrayObsService: ArrayObsService,
     private router: Router,
     private route: ActivatedRoute,
-    private subMenusService: SubMenusService) { 
-      console.log("Création"); 
+    private subMenusService: SubMenusService) {
     }
 
   /**
@@ -180,20 +184,60 @@ export class SkillsFormComponent implements OnInit {
         } else if (actionSplit[1].match("^redirect/.*")) {
           let redirect = actionSplit[1].substring(9);
           if(('/' + redirect) != this.router.url + '/'){
-            this.subMenusService.resetMenuAction();
-            this.subMenusService.resetSubMenu();
-            this.submenusSubscription.unsubscribe() ;
-            this.skillsVersionSubscription.unsubscribe();
-            this.skillsSubscription.unsubscribe();
-            this.softSkillsSubscription.unsubscribe();
-            this.arrayObsService.resetSkills();
-            this.arrayObsService.resetSoftSkills();
-            this.arrayObsService.resetSkillsVersions();
-            this.router.navigate([redirect])
+            if(!this.modifDetection){
+              this.redirectAfterAction(redirect) ;
+            } else {
+              console.log("Change detected")
+              this.onSubmitRedirect(redirect); 
+            }
+            
           }
         }
       }
     }
+  }
+
+  onSubmitRedirect(redirect: string){
+    LoggerService.log("submitRedirect", LogLevel.DEBUG);
+    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    let tmpExisting; 
+    if((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined){
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+      this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if(httpResponse['stackTrace'][0]['lineNumber'] == 201){
+          this.currentSkillsSheet.versionNumber += 1
+          let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[] ; 
+          let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
+          window.sessionStorage.setItem('skills',JSON.stringify(tmpModifiedSkillsSheets)) ;
+          this.redirectAfterAction(redirect)
+        }
+      });
+    } else {
+      this.currentSkillsSheet.versionNumber = 1 ; 
+      this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if(httpResponse['stackTrace'][0]['lineNumber'] == 201){
+          let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[] ; 
+          tmpSkillsSheets.push(this.currentSkillsSheet) ; 
+          window.sessionStorage.setItem('skills',JSON.stringify(tmpSkillsSheets)) ;
+          this.redirectAfterAction(redirect)
+        }
+      })
+    }
+  }
+
+  redirectAfterAction(redirect:string){
+    console.log("Do Redirect")
+    this.subMenusService.resetMenuAction();
+    this.subMenusService.resetSubMenu();
+    this.submenusSubscription.unsubscribe() ;
+    this.skillsVersionSubscription.unsubscribe();
+    this.skillsSubscription.unsubscribe();
+    this.softSkillsSubscription.unsubscribe();
+    this.arrayObsService.resetSkills();
+    this.arrayObsService.resetSoftSkills();
+    this.arrayObsService.resetSkillsVersions();
+    this.subMenusService.resetMenuAction() ; 
+    this.router.navigate([redirect])
   }
 
   /**
@@ -234,6 +278,9 @@ export class SkillsFormComponent implements OnInit {
           this.skillsArray.push(skill)
         }
       });
+      this.countSkillsUpdate = 0 ;
+      this.countSoftSkillsUpdate = 0 ;
+      this.modifDetection = false ; 
       this.arrayObsService.notifySkills(this.skillsArray);
       this.arrayObsService.notifySoftSkills(this.softSkillsArray)
     }
@@ -265,6 +312,7 @@ export class SkillsFormComponent implements OnInit {
     }
     else {
       this.currentSkillsSheet.name = newSkillsSheetName;
+      this.modifDetection = true ; 
     }
   }
 
@@ -417,6 +465,10 @@ export class SkillsFormComponent implements OnInit {
    * @param  arraySkills Array containing updated skills
    */
   updateChartSkills(arraySkills: SkillGraduated[]) {
+    if(this.countSkillsUpdate > 1 ){
+      this.modifDetection = true; 
+    }
+    this.countSkillsUpdate++ ; 
     if (arraySkills.length != 0) {
       if (typeof this.skillsChart != "function") {
         this.skillsChart.destroy();
@@ -438,6 +490,10 @@ export class SkillsFormComponent implements OnInit {
    * @param  arraySkills Array containing updated soft skills
    */
   updateChartSoftSkills(arraySoftSkills: SkillGraduated[]) {
+    if(this.countSoftSkillsUpdate > 1 ){
+      this.modifDetection = true ; 
+    }
+    this.countSoftSkillsUpdate++ ; 
     if (arraySoftSkills.length != 0) {
       if (typeof this.softSkillsChart != "function") {
         this.softSkillsChart.destroy();
@@ -483,7 +539,7 @@ export class SkillsFormComponent implements OnInit {
       options: {
         scale: {
           ticks: {
-            min: 1,
+            min: 0,
             max: 4,
             step: 0.5
           }
