@@ -1,0 +1,121 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+/* Styling h1 and links
+––––––––––––––––––––––––––––––––– */
+h1[alt="Simple"] {
+  color: white;
+}
+a[href],
+a[href]:hover {
+  color: grey;
+  font-size: 0.5em;
+  text-decoration: none;
+}
+
+body {
+  background: #4a4a4c !important;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.starrating > input {
+  display: none;
+} /* Remove radio buttons */
+
+.starrating > label:before {
+  content: "\f005"; /* Star */
+  margin: 2px;
+  font-size: 1em;
+  font-family: FontAwesome;
+}
+
+.starrating > label {
+  color: #222222; /* Start color when not clicked */
+}
+
+.starrating > input:checked ~ label {
+  color: #ffca08;
+} /* Set yellow color when star checked */
+
+.starrating > input:hover ~ label {
+  color: #ffca08;
+} /* Set yellow color when star hover */
+
+.skillSheetInformation {
+  margin-left: 2vw;
+  height: fit-content;
+  width: 75vw;
+  overflow: auto;
+}
+
+.searchBar {
+  width: 100%;
+  margin-left: 2%;
+}
+
+.container {
+  margin: 0%;
+  max-width: 75vw;
+}
+
+.searchBarCpt {
+  width: 40vw;
+  margin-left: 10%;
+}
+
+.motCles {
+  border-right: 1px solid var(--ALTENBlue);
+  width: 20vw;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+}
+
+.tableRow {
+  cursor: pointer;
+}
+
+.tableRow :hover {
+  background: #f5f5f5;
+}
+
+mat-cell {
+  font-size: 12px;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.titreCpt {
+  margin-top: 2%;
+  color: var(--ALTENDarkBlue);
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-header-cell {
+  font-weight: bold;
+  color: var(--ALTENLightGray);
+  font-size: 12px;
+  background: var(--ALTENBlue);
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+.mat-row:nth-child(even) {
+  background-color: var(--ALTENLightGray);
+}

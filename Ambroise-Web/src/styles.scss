@@ -16,6 +16,7 @@ body{
     --ALTENMarinBlue : #2F80F3;
     --ALTENLightBlue : #7ECBEE;
     --ALTENOrange : #FFBA00;
+    --ALTENBlack : #000000;
     color : var(--ALTENDarkGray);
 }
 
@@ -201,4 +202,67 @@ a{
     h1{
         font-size: 1.6vw;
     }
+}
+
+.allTagWords{
+    display: inline-block;
+    max-height: 20vh;
+    overflow: auto;
+}
+
+.tagWord{
+    color :#043962;
+    text-align: center;
+    background-color: var(--ALTENGray);
+    border-radius: 10px;
+    transition: linear .2s;
+    width: fit-content !important;
+    margin-bottom: 3%;
+    max-width: 17vw;
+    margin-left: 7%;
+    margin-bottom: 2%;
+}
+
+.allTagWordsCpt {
+    display: inline-block;
+    max-height: 20vh;
+    overflow: auto;
+}
+
+.tagWordCpt {
+    color :#043962;
+    text-align: left;
+    background-color: var(--ALTENGray);
+    border-radius: 10px;
+    transition: linear .2s;
+    width: fit-content !important;
+    margin-bottom: 3%;
+    max-width: 17vw;
+    margin-left: 7%;
+    margin-bottom: 2%;
+}
+
+th {
+    text-align: center !important;
+}
+
+div .mat-expansion-panel-body  {
+    padding-left: 2% !important;
+    padding-bottom: 5% !important;
+  }
+
+div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
+    padding-left: 0% !important;
+}
+
+.closeTag{
+    filter : brightness(55%);
+    width: 7%;
+    min-width: 20px;
+    transition : linear .2s;
+    float: left;
+}
+
+.closeTag:hover{
+    filter : brightness(0) invert(1);
 }

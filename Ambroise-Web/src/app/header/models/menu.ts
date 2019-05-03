@@ -1,29 +1,28 @@
 export class Menu {
     label: string ;
-    routerLink: string ; 
-    menus: Submenu[] ; 
+    menus: SubMenu[] ; 
 
-    constructor(label:string, routerlink:string, menus: Submenu[]){
+    constructor(label:string, menus: SubMenu[]){
         this.label=label ; 
-        this.routerLink = routerlink ; 
         this.menus = menus ; 
     }
 }
 
-export class Submenu{
+export class SubMenu{
     label: string ; 
-    submenus: labelSubmenu[] ; 
+    subSubMenus: SubSubMenu[] ; 
+    icon: string ;
+    action: string; 
 
-    constructor(label: string, submenus: labelSubmenu[]){
-        this.label = label ; 
-        this.submenus = submenus ; 
+    constructor(){
     }
 }
 
-export class labelSubmenu{
+export class SubSubMenu{
     label:string ; 
+    action: string; 
+    icon:string;
 
-    constructor(label: string){
-        this.label = label ; 
+    constructor(){
     }
 }

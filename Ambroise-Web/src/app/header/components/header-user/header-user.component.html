@@ -5,14 +5,12 @@
             <div class="collapse navbar-collapse" class="headNavbar">
                 <div id="modules">
                     <p></p>
-                    <ng-container *ngIf="isDone()">
-                            <ng-container *ngFor="let module of modules">
-                            <a class="nav-link text-light" *ngIf="module.label === getCurrentModule()" id="moduleHome"
-                                (click)="setCurrentModule($event.target.innerText)">{{ module.label }}</a>
-                            <ng-container #elseBlock>
-                                <a class="nav-link text-light otherModules" *ngIf="module.label!= getCurrentModule()"
-                                (click)="setCurrentModule($event.target.innerText)">{{ module.label}}</a>
-                            </ng-container>
+                        <ng-container *ngFor="let module of modules">
+                        <a class="nav-link text-light" *ngIf="module.label === getCurrentModule()" id="moduleHome"
+                            (click)="setCurrentModule($event.target.innerText)">{{ module.label }}</a>
+                        <ng-container #elseBlock>
+                            <a class="nav-link text-light otherModules" *ngIf="module.label!= getCurrentModule()"
+                            (click)="setCurrentModule($event.target.innerText)">{{ module.label}}</a>
                         </ng-container>
                     </ng-container>
                     <p></p>

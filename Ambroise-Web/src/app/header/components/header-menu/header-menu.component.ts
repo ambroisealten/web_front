@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HeaderService } from '../../services/header.services' ; 
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-import { Menu } from '../../models/menu';
+import { Menu, SubMenu } from '../../models/menu';
 import { CurrentModuleService } from '../../services/currentModule.services';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { SubMenusService } from 'src/app/services/subMenus.service';
 
 @Component({
     selector: 'app-header-menu',
@@ -12,36 +14,36 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderMenuComponent implements OnInit {
 
-    modules: Menu[] ;
-    currentModule: string = 'Missions'; 
-    done: boolean ;
+    subMenus: SubMenu[] = [] ; 
+    done: boolean = false  ;
 
-    constructor(private headerService: HeaderService,
-        private currentModuleService: CurrentModuleService) { }
+    constructor(
+        private router: Router,
+        private subMenusService: SubMenusService) { }
 
     ngOnInit() {
-        this.headerService.menuReceptionObservable.subscribe(menusReceived => this.setModule(menusReceived)) ; 
-        this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
+        //this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
     }
 
-    setModule(menu: Menu[]){
-        if(menu != undefined){
-            this.done = true ; 
-            this.modules = menu['modules'] ; 
-        }
+    ngAfterViewInit(){
+        this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
     }
 
-    setCurrentModule(currentModule: string){
-        this.currentModule = currentModule ; 
+    ngOnDestroy(){
+        console.log("la")
     }
-
-    getCurrentModule():string{
-        return this.currentModule ; 
+    
+  setSubMenus(subMenus: SubMenu[]){
+    console.log(subMenus)
+    if(subMenus != null && subMenus.length > 0){
+        this.subMenus = subMenus
+    } else {
+        this.subMenus = [] ; 
     }
+  }
 
-    isDone():boolean{
-        return this.done ;
+    sendAction(action: string){
+        this.subMenusService.notifyMenuAction(this.router.url+"//"+action) ; 
     }
-
 
 }

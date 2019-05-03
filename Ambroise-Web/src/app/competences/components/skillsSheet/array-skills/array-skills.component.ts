@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SkillsSheetService } from '../../../services/skillsSheet.service';
+import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
+import { Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 
 @Component({
   selector: 'app-array-skills',
@@ -17,21 +19,45 @@ export class ArraySkillsComponent implements OnInit {
   @Input() headerRowHidden: boolean; // is header row (columns title) hidden
   @Input() datatype: string; // 'skills' or 'softSkills'
 
-  @Output() messageEvent = new EventEmitter<string>(); // event when array is updated
+  dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
-  dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
+  //Subscription ;
+  skillsSubscription ;
 
-  constructor(private skillsSheetService: SkillsSheetService) { }
-
-  ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.dataSourceArray);
+  constructor(private arrayObsService: ArrayObsService) { 
   }
 
-  setToZeroIfEmptyOrInvalid($event) {
+  /**
+   * Inits dataSource of array : skills or soft skills
+   */
+  ngOnInit() {
+    if(this.datatype == "skills"){
+      this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
+        this.dataSource = new MatTableDataSource(arraySkills as any[]) ;
+      });
+    } else {
+      this.skillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
+        this.dataSource = new MatTableDataSource(arraySoftSkills as any[]) ;
+      });
+    }
+  }
+
+  ngOnDestroy(){
+    this.skillsSubscription.unsubscribe() ;
+    this.arrayObsService.resetSkills() ;
+    this.arrayObsService.resetSoftSkills() ;
+  }
+
+  /**
+   * Checks input of grade and sets to 1 if empty or invalid
+   * @param  $event input grade
+   */
+  setToOneIfEmptyOrInvalid($event) {
     let grade: string = $event.target.value;
-    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$|^0$"; // number between 1 and 4 (step 0,5) or 0
-    if(!grade.match(pattern) || $event.target.value == '')
-    $event.target.value = 0;
+    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$"; // number between 1 and 4 (step 0,5) or 0
+    if(!grade.match(pattern) || $event.target.value == '') {
+      $event.target.value = 1;
+    }
   }
 
   /**
@@ -51,15 +77,13 @@ export class ArraySkillsComponent implements OnInit {
       let skillName = event.target.value;
 
       // if skillname not already in array : add it
-      if(this.dataSourceArray.findIndex(skill => skill.skillName.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
-        this.dataSourceArray.push({skillName: skillName, grade: '0'});
+      if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
+        this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
         this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
         this.updateDataSourceInService();
-
-        // send message event to parent to update matrixes
-        this.messageEvent.emit(this.datatype);
       }
+      event.target.value = '';
     }
   }
 
@@ -69,15 +93,13 @@ export class ArraySkillsComponent implements OnInit {
   */
   removeSkill(event) {
     let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from row
-    let skillIndex = this.dataSourceArray.findIndex(skill => skill.skillName === skillName);
+    let skillIndex = this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name === skillName);
 
     this.dataSourceArray.splice(skillIndex, 1);
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
     this.updateDataSourceInService();
 
-    // send message event to parent to update matrixes
-    this.messageEvent.emit(this.datatype);
   }
 
   /**
@@ -88,24 +110,45 @@ export class ArraySkillsComponent implements OnInit {
     let skillName = event.target.closest('tr').childNodes[1].innerText; // get skillName from same row as modified grade
     let grade = event.target.parentElement.childNodes[1].value;
 
-    this.dataSourceArray.forEach(function(skill) {
-      if(skill.skillName == skillName)
-      skill.grade = grade;
+    this.dataSourceArray.forEach(function(skillGraduated) {
+      if(skillGraduated.skill.name == skillName){
+        if(grade == 1.5 && event.target.className == "incrementButton" ){
+          skillGraduated.grade = 2
+        } else if (grade == 1.5 && event.target.className == "decrementButton") {
+          skillGraduated.grade = 1
+        } else {
+          skillGraduated.grade = +grade;
+        }
+      }
     });
 
     this.updateDataSourceInService();
 
-    // send message event to parent to update matrixes
-    this.messageEvent.emit(this.datatype);
   }
 
   /**
   * Updates skills or softSkills array in skills service
   */
   updateDataSourceInService() {
-    if(this.datatype == "skills")
-    this.skillsSheetService.updateSkills(this.dataSourceArray);
-    else
-    this.skillsSheetService.updateSoftSkills(this.dataSourceArray);
+    this.checkGradeValues();
+    if(this.datatype == "skills"){
+      this.arrayObsService.notifySkills(this.dataSourceArray);
+    } else {
+      this.arrayObsService.notifySoftSkills(this.dataSourceArray);
+    }
+  }
+
+  /**
+   * Check if every grade is valid before sending to service
+   * If grade invalid, set to 1
+   */
+  checkGradeValues() {
+    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$"; // number between 1 and 4 (step 0,5) or 0
+
+    this.dataSourceArray.forEach(function(skillGraduated) {
+      if(!skillGraduated.grade.toString().match(pattern)) {
+        skillGraduated.grade = 1;
+      }
+    });
   }
 }

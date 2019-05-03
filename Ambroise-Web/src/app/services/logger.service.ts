@@ -14,7 +14,7 @@ export class LoggerService {
 
     }
 
-    public static parseLogType(logLevelString: String){
+    public static parseLogType(logLevelString: string){
 
         const type = LogLevel[logLevelString.toString()];
         if (type === undefined) {

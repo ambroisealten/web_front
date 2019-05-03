@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, Navigation } from '@angular/router';
 import { HeaderService } from '../../services/header.services' ; 
@@ -6,6 +6,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Menu } from '../../models/menu' ; 
 import { CurrentModuleService } from '../../services/currentModule.services';
 import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
+import { SubMenusService } from 'src/app/services/subMenus.service';
 
 @Component({
   selector: 'app-header-user',
@@ -14,16 +15,22 @@ import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
 })
 export class HeaderUserComponent implements OnInit {
 
-  private modules: Menu[] = [];
-  currentModule: string = 'Missions'; 
+  modules: Menu[] = [
+    {label: 'Missions', menus: []},
+    {label: 'Compétences', menus: []},
+    {label: 'Forum', menus: []}
+  ];
+  currentModule: string = 'Compétences'; 
   done = false;
 
   constructor(private titleService: Title, private router: Router,
     private headerService: HeaderService, private currentModuleService: CurrentModuleService,
-    private isNotLoginService: IsNotLoginService) { }
+    private isNotLoginService: IsNotLoginService,
+    private subMenusService: SubMenusService) { }
 
   ngOnInit() {
-    this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
+    //this.headerService.notifyMenusReceived(this.modules) ;
+    //this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
     //this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
   }
 
@@ -38,6 +45,7 @@ export class HeaderUserComponent implements OnInit {
 
   setCurrentModule(currentModule) {
     this.currentModule = currentModule ;
+    this.currentModuleService.notifyCurrentModule(currentModule);
     switch(currentModule){
       case("Missions"):
         this.titleService.setTitle("Ambroise - Missions"); 

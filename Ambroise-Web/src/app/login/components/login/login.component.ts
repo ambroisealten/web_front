@@ -21,10 +21,10 @@ export class LoginComponent implements OnInit {
   userPswd: string;
 
   constructor(private formBuilder: FormBuilder,
-    private tokenService: TokenService, 
+    private tokenService: TokenService,
     private routingService: RoutingService,
     private router: Router,
-    private isNotLoginService: IsNotLoginService) { 
+    private isNotLoginService: IsNotLoginService) {
       this.isNotLoginService.notifyLoginOut(false);
     }
 
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
       password: ['', [Validators.required]]
     });
-    
+
     this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
   }
 
@@ -57,14 +57,14 @@ export class LoginComponent implements OnInit {
   isRedirect(tokenReceived: boolean){
     LoggerService.log("token received : " + tokenReceived, LogLevel.DEBUG);
     if (tokenReceived) {
-        //this.routingService.getRoute().subscribe(routes => this.setRoutes(routes)) ; 
+        //this.routingService.getRoute().subscribe(routes => this.setRoutes(routes)) ;
         this.redirectToHomePage() ;
     }
   }
 
   setRoutes(routes: Route[]){
     LoggerService.log("Routes received: " + routes, LogLevel.DEBUG);
-    this.router.resetConfig(routes) ; 
+    this.router.resetConfig(routes) ;
     this.redirectToHomePage() ;
   }
 
@@ -72,8 +72,8 @@ export class LoginComponent implements OnInit {
     //  TO-DO : Creer un service de redirection
     //  changer la redirection après connection en fonction du module de préférence
     //  de l'utilisateur (Mission par défaut)
-    this.isNotLoginService.notifyLoginOut(true) ; 
-    this.tokenService.notifyTokenReception(false) ; 
-    this.router.navigate(['skills/skillsheet']);
+    this.isNotLoginService.notifyLoginOut(true) ;
+    this.tokenService.notifyTokenReception(false) ;
+    this.router.navigate(['skills']);
   }
 }
