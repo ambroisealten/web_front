@@ -2,28 +2,32 @@
   <nav class="navbar mb-2 pr-5 navbar-light rounded-0">
     <div class="collapse navbar-collapse" class="headNavbar">
       <ul class="navbarContent">
-            <ng-container *ngIf="subMenus.length > 0">
-              <ng-container *ngFor="let menu of subMenus">
-                <ng-container *ngIf="menu.hasOwnProperty('subSubMenus') ; else elseBlock">
-                  <li class="nav-item dropdown headMenu">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">{{menu.label}}</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown02">
-                      <a class="dropdown-item" *ngFor="let submenu of menu.subSubMenus"
-                        (click)="sendAction(submenu.action)">{{submenu.label}}</a>
+        <ng-container *ngIf="subMenus.length > 0">
+          <ng-container *ngFor="let menu of subMenus">
+            <ng-container *ngIf="menu.hasOwnProperty('subSubMenus') ; else elseBlock">
+              <li class="nav-item dropdown headMenu">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">{{menu.label}}</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown02">
+                  <ng-container *ngFor="let submenu of menu.subSubMenus">
+                    <div class="submenu" (click)="sendAction(submenu.action)">
+                      <mat-icon class="submenuicon">{{ submenu.icon }}</mat-icon>
+                      <p class="dropdown-item">{{submenu.label}}</p>
                     </div>
-                  </li>
-                </ng-container>
-                <ng-template #elseBlock>
-                  <div class="submenu" (click)="sendAction(menu.action)">
-                    <ng-container *ngIf="menu.hasOwnProperty('icon')" >
-                      <mat-icon class="submenuicon">{{ menu.icon }}</mat-icon>
-                    </ng-container>
-                    <p class="submenu"> {{ menu.label }}</p>
-                  </div>
-                </ng-template>
+                  </ng-container>
+                </div>
+              </li>
             </ng-container>
+            <ng-template #elseBlock>
+              <div class="submenu" (click)="sendAction(menu.action)">
+                <ng-container *ngIf="menu.hasOwnProperty('icon')">
+                  <mat-icon class="submenuicon">{{ menu.icon }}</mat-icon>
+                </ng-container>
+                <p class="submenu"> {{ menu.label }}</p>
+              </div>
+            </ng-template>
           </ng-container>
+        </ng-container>
       </ul>
     </div>
 

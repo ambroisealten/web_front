@@ -20,7 +20,7 @@ export class HeaderUserComponent implements OnInit {
     {label: 'Compétences', menus: []},
     {label: 'Forum', menus: []}
   ];
-  currentModule: string = 'Missions'; 
+  currentModule: string = 'Compétences'; 
   done = false;
 
   constructor(private titleService: Title, private router: Router,

@@ -50,32 +50,32 @@ li {
     margin-left: 30%; 
     width: 50%;
     min-width: 80px;
+    color: var(--ALTENDarkBlue);
 }
 
 .dropdown-item:hover{
-    background-color: var(--ALTENDarkBlue);
-    color : var(--ALTENLightGray);
     transition : linear .1s;
+
 }
 
 .dropdown-item {
     display: block;
     width: 100%;
-    padding: 2.5% 10%;
-    text-align: inherit;
-    white-space: nowrap;
+    margin: 1% !important;
+    padding: 0 !important;
+    white-space: pre-line;
+    overflow: hidden;
+    text-overflow: ellipsis;
     background-color: transparent;
-    border: 0;
 }
 
 .submenuicon {
     margin-right: 5%;
-    //width: 50%;
     height: 50%;
 }
 
 .submenu:hover .submenuicon, .submenu:hover p {
-    color: var(--ALTENDarkBlue);
+    color: var(--ALTENBlue);
 }
 
 .submenu{
@@ -83,10 +83,10 @@ li {
     align-items: center;
     margin: auto;
     text-align: center;
-}
-
-
-
-.nav-item .submenu:hover {
     color: var(--ALTENDarkBlue);
 }
+
+.nav-item .submenu:hover {
+    color: var(--ALTENBlue);
+}
+
