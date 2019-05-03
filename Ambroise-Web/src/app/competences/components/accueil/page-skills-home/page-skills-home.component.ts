@@ -216,7 +216,7 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Maxime Maquinghen
    */
   doAddFilter() {
-    if (this.filter.findIndex(filterTag => filterTag === this.rechercheInput) == -1 &&  this.rechercheInput != null && !this.rechercheInput.match("^\ +")  && this.rechercheInput != "") {
+    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) == -1 &&  this.rechercheInput != null && !this.rechercheInput.match("^\ +")  && this.rechercheInput != "") {
       this.filter.push(this.rechercheInput);
       this.searchSkillSheets();
     }
