@@ -21,8 +21,8 @@ export class ArraySkillsComponent implements OnInit {
 
   dataSource: MatTableDataSource<Skill[]>; // data as MatTableDataSource
 
-  //Subscription ; 
-  skillsSubscription ; 
+  //Subscription ;
+  skillsSubscription ;
 
   constructor(private arrayObsService: ArrayObsService) { }
 
@@ -42,8 +42,8 @@ export class ArraySkillsComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.skillsSubscription.unsubscribe() ; 
-    this.arrayObsService.resetSkills() ; 
+    this.skillsSubscription.unsubscribe() ;
+    this.arrayObsService.resetSkills() ;
     this.arrayObsService.resetSoftSkills() ;
   }
 
@@ -82,6 +82,7 @@ export class ArraySkillsComponent implements OnInit {
 
         this.updateDataSourceInService();
       }
+      event.target.value = '';
     }
   }
 
@@ -128,10 +129,25 @@ export class ArraySkillsComponent implements OnInit {
   * Updates skills or softSkills array in skills service
   */
   updateDataSourceInService() {
+    this.checkGradeValues();
     if(this.datatype == "skills"){
       this.arrayObsService.notifySkills(this.dataSourceArray);
     } else {
       this.arrayObsService.notifySoftSkills(this.dataSourceArray);
     }
+  }
+
+  /**
+   * Check if every grade is valid before sending to service
+   * If grade invalid, set to 1
+   */
+  checkGradeValues() {
+    let pattern: string = "^([1-3]([\\.|,]5)?)$|^4$"; // number between 1 and 4 (step 0,5) or 0
+
+    this.dataSourceArray.forEach(function(skillGraduated) {
+      if(!skillGraduated.grade.toString().match(pattern)) {
+        skillGraduated.grade = 1;
+      }
+    });
   }
 }

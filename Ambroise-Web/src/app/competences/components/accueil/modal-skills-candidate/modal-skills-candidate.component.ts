@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { SkillsSheet } from '../../../models/skillsSheet';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Validators, FormControl } from '@angular/forms';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { Skills } from 'src/app/competences/models/skills';
@@ -14,16 +13,18 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class ModalSkillsCandidateComponent implements OnInit {
 
-  firstname: string;
-  lastname: string;
+  firstname: string = '';
+  lastname: string = '';
   skillsSheetName: string = '';
-  emailInput: string;
+  emailInput: string = '';
   skillsSheetExists: boolean = false;
   skillsSheetPerson: Person;
   role: boolean = false;
 
   firstnameFirstletter: string = '';
   lastnameFirstLetters: string = '';
+
+  isCreateButtonDisabled: boolean = true;
 
   constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>,
     private skillsSheetService: SkillsSheetService,
@@ -85,6 +86,14 @@ export class ModalSkillsCandidateComponent implements OnInit {
           }
         }
       });
+    }
+  }
+
+  checkEnableCreateButton() {
+    let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
+
+    if(this.firstname != '' && this.lastname != '' && this.emailInput != '' && this.emailInput.match(emailPattern)) {
+      this.isCreateButtonDisabled = false;
     }
   }
 
