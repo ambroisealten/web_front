@@ -50,6 +50,8 @@ li {
     width: 100%;
     min-width: 80px;
     color: var(--ALTENDarkBlue);
+    overflow-y: scroll;
+    max-height: 1000%;
 }
 
 .dropdown-item:hover{
