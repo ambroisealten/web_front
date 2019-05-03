@@ -69,7 +69,7 @@ export class PageSkillsHomeComponent implements OnInit {
           tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
           tmpSkillSheet['Moyenne Soft Skills'] = this.getAverageSoftSkillGrade(skills['skillsSheet']['skillsList']);
           this.compColumns.forEach(comp => {
-            let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'] == comp)
+            let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase())
             if (tmpCompResult != undefined){
               tmpSkillSheet[comp] = tmpCompResult.grade;
             } else {
@@ -201,7 +201,7 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   doAddSkill() {
-    if (this.compFilter.findIndex(filterTag => filterTag === this.rechercheInputCpt) == -1 &&  this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
+    if (this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 &&  this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);

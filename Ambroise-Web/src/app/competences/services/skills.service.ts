@@ -40,7 +40,7 @@ export class SkillsService {
             noComp += filter+","
         })
         if(noComp == ""){
-            noComp = " "
+            noComp = ","
         }
 
         let comp: string = "";
@@ -48,7 +48,7 @@ export class SkillsService {
             comp += filter+','
         })
         if(comp== ""){
-            comp = " "
+            comp = ","
         }
 
         return this.httpClient
