@@ -23,10 +23,10 @@ export class PageSkillsHomeComponent implements OnInit {
 
   skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
-  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills', 'JEE', 'C++', '.NET', 'PHP', 'SQL'];
+  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills'];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
   //Tableau contenant les compétences
-  compColumns: string[] = ['JEE', 'C++', '.NET', 'PHP', 'SQL'];
+  compColumns: string[] = [];
 
   //Tableau contenant les compétences recherchées
   compFilter: string[] = [];
@@ -240,7 +240,7 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   doAddSkill() {
-    if (this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 && this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
+    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 && this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);

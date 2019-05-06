@@ -98,10 +98,11 @@ export class SkillsFormComponent implements OnInit {
    *        - init both charts of skills and soft skills
    */
   ngOnInit() {
+    
     this.route.params.subscribe(param => {
       //Get param in the url
-      this.name = this.route.snapshot.paramMap.get("name");
-      this.version = +this.route.snapshot.paramMap.get("version");
+      this.name = param['name']
+      this.version = + param['version']
       //Check if data already exists, person is more important than skillsSheet
       if (window.sessionStorage.getItem('person') != null) {
         this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
@@ -139,8 +140,8 @@ export class SkillsFormComponent implements OnInit {
         this.formItems = null;
       }
       //Update chart
-      this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
     })
+    this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
 
   ngOnDestroy() {
@@ -328,7 +329,6 @@ export class SkillsFormComponent implements OnInit {
             if (!this.modifDetection) {
               this.redirectAfterAction(redirect);
             } else {
-              console.log("Change detected")
               this.onSubmitRedirect(redirect);
             }
 
@@ -421,7 +421,6 @@ export class SkillsFormComponent implements OnInit {
   redirectAfterAction(redirect: string) {
     this.subMenusService.resetMenuAction();
     this.subMenusService.resetSubMenu();
-    this.submenusSubscription.unsubscribe();
     //this.arrayObsService.resetSkillsVersions();
     this.subMenusService.resetMenuAction();
     this.router.navigate([redirect]);
