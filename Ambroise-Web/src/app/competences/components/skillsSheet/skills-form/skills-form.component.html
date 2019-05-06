@@ -40,7 +40,7 @@
         </button>
       </div>
 
-      <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray"
+      <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="lastModificationsArray"
         [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>
 
       <mat-form-field style="margin-top: 2%;">
@@ -62,11 +62,20 @@
     </div>
 
     <div class="skillsArrays">
-      <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray"
-        [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
-      <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns"
-        [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills">
-      </app-array-skills>
+      <app-array-skills class="skillsArray" 
+        [displayedColumns]="skillsDisplayedColumns" 
+        [dataSourceArray]="skillsArray"
+        [headerRowHidden]="headerRowHiddenSkills" 
+        datatype="skills" 
+        [dataSource]="skillsArrayDataSource" 
+        (skillsEvent)="updateChartSkills($event)"></app-array-skills>
+      <app-array-skills class="softSkillsArray" 
+        [displayedColumns]="softSkillsDisplayedColumns" 
+        [dataSourceArray]="softSkillsArray" 
+        [headerRowHidden]="headerRowHiddenSkills" 
+        datatype="softSkills" 
+        [dataSource]="softSkillsArrayDataSource" 
+        (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
     </div>
 
 
