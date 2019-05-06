@@ -1,5 +1,15 @@
-<div class="bodySkills">
-  <div class="currentSheetInfo">
+<div class="currentSheetInfo">
+  <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})</p>
+  <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv" maxlength="30" [ngModel]="currentSkillsSheet.name">
+</div>
+
+<div class="grid-container">
+  <div class="infoForm">
+    <mat-form-field *ngFor="let item of formItems; let index = index;">
+      <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" [disabled]="isPersonDataDisabled" >
+    </mat-form-field>
+
+    <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden"><mat-icon class="editIcon">edit</mat-icon></button>
     <div>
     <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }}
       ({{ translate(currentPerson.role) }})</p>
@@ -9,7 +19,7 @@
     </div>
       <button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
 
-  </div>
+    <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
 
   <div class="grid-container">
     <div class="infoForm">

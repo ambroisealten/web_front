@@ -24,7 +24,7 @@ export class ArraySkillsComponent implements OnInit {
   //Subscription ;
   skillsSubscription ;
 
-  constructor(private arrayObsService: ArrayObsService) { 
+  constructor(private arrayObsService: ArrayObsService) {
   }
 
   /**
@@ -37,7 +37,7 @@ export class ArraySkillsComponent implements OnInit {
       });
     } else {
       this.skillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
-        this.dataSource = new MatTableDataSource(arraySoftSkills as any[]) ;
+          this.dataSource = new MatTableDataSource(arraySoftSkills);
       });
     }
   }
@@ -78,7 +78,14 @@ export class ArraySkillsComponent implements OnInit {
 
       // if skillname not already in array : add it
       if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
-        this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
+        if(this.datatype == "softSkills") { // add isSoft field if soft skill
+          let softSkill = new Skill(skillName);
+          softSkill.isSoft = "";
+          this.dataSourceArray.push(new SkillGraduated(softSkill, 1));
+        }
+        else {
+          this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
+        }
         this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
         this.updateDataSourceInService();

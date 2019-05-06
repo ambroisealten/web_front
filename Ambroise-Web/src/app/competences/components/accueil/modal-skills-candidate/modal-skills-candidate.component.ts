@@ -121,7 +121,10 @@ export class ModalSkillsCandidateComponent implements OnInit {
 
         let skillsSheet : SkillsSheet;
         if(isNewSkillsSheet) { // create skillsSheet
-          this.dialogRef.close(new Skills(newPerson, new SkillsSheet(this.skillsSheetName, newPerson)))
+          let newSkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
+          let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
+          newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+          this.dialogRef.close(new Skills(newPerson, newSkillsSheet));
         }
         else { // skillsSheet exists
           this.closeWithExistantSkillsSheet(newPerson);

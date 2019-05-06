@@ -63,6 +63,7 @@ export class SkillGraduated {
 
 export class Skill {
   name: string;
+  isSoft?: string;
 
   constructor(name: string) {
     this.name = name;

@@ -12,15 +12,16 @@ import { MatTableDataSource } from '@angular/material';
 export class ArraySkillsUpdatesComponent implements OnInit {
 
   @Input() displayedColumns: string[]; // names of columns to display
-  @Input() dataSourceArray: any[]; // data array
+  @Input() dataSource: MatTableDataSource<any[]>; // data array
   @Input() headerRowHidden: boolean; // is header row (columns title) hidden
 
-  dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
+  //dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
 
   constructor() { }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.dataSourceArray);
+    //console.log(this.dataSourceArray);
+    //this.dataSource = new MatTableDataSource(this.dataSourceArray);
   }
 
 }

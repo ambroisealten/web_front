@@ -1,0 +1,29 @@
+{
+  "softSkillsList" :
+  [
+    {
+      "skill":
+      {
+        "name" : "Cycle en V",
+        "isSoft" : ""
+      },
+      "grade" : 1
+    },
+    {
+      "skill":
+      {
+        "name" : "Communication",
+        "isSoft" : ""
+      },
+      "grade" : 1
+    },
+    {
+      "skill":
+      {
+        "name" : "Gestion de projet",
+        "isSoft" : ""
+      },
+      "grade" : 1
+    }
+  ]
+}

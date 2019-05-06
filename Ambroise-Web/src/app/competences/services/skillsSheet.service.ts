@@ -16,20 +16,6 @@ export class SkillsSheetService {
   /**
   * Temporary hardcoded json for data
   */
-
-  lastModificationsArray = [
-    {
-      manager: 'Joyce',
-      date: '01/03/19',
-      action: 'Création'
-    },
-    {
-      manager: 'Joyce',
-      date: '15/03/19',
-      action: 'Mise à jour'
-    }
-  ];
-
   constructor(private httpClient: HttpClient) { }
 
   token = window.sessionStorage.getItem("bearerToken");

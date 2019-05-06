@@ -8,16 +8,13 @@ import { SkillGraduated } from '../models/skillsSheet';
 */
 export class ArrayObsService {
 
-    EMPTY = [] ; 
+    EMPTY = [] ;
 
     private arraySkillsInformation = new BehaviorSubject([]);
     arraySkillsObservable = this.arraySkillsInformation.asObservable();
 
     private arraySoftSkillsInformation = new BehaviorSubject([]);
     arraySoftSkillsObservable = this.arraySoftSkillsInformation.asObservable();
-
-    private arraySkillsVersionsInformation = new BehaviorSubject([]);
-    arraySkillsVersionsObservable = this.arraySkillsVersionsInformation.asObservable();
 
     constructor(){
 
@@ -37,14 +34,6 @@ export class ArrayObsService {
 
     resetSoftSkills(){
         this.arraySoftSkillsInformation.next(this.EMPTY);
-    }
-
-    notifySkillsVersions(arraySkillsVersions: any[]) {
-      this.arraySkillsVersionsInformation.next(arraySkillsVersions);
-    }
-
-    resetSkillsVersions() {
-      this.arraySkillsVersionsInformation.next(this.EMPTY);
     }
 
 }
