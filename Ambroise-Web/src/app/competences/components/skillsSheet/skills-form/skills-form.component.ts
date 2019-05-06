@@ -245,7 +245,6 @@ export class SkillsFormComponent implements OnInit {
     this.subMenusService.resetMenuAction();
     this.subMenusService.resetSubMenu();
     this.submenusSubscription.unsubscribe();
-    this.skillsVersionSubscription.unsubscribe();
     this.skillsSubscription.unsubscribe();
     this.softSkillsSubscription.unsubscribe();
     this.arrayObsService.resetSkills();
