@@ -4,43 +4,43 @@
           "label" : "Diplôme",
           "type": "text",
           "id": "highestDiploma",
-          "model": "" 
+          "model": ""
         },
         {
           "label": "Année de diplôme",
           "type": "text",
           "id": "highestDiplomaYear",
-          "model": "" 
+          "model": ""
         },
         {
           "label": "Employeur",
           "type": "text",
           "id": "employer",
-          "model": "" 
+          "model": ""
         },
         {
           "label": "Métier",
           "type": "text",
           "id": "job",
-          "model": "" 
+          "model": ""
         },
         {
           "label": "Disponibilité",
           "type": "date",
           "id": "disponibility",
-          "model": "" 
+          "model": ""
         },
         {
           "label": "Années d'expérience",
           "type": "number",
           "id": "experienceYears",
-          "model": "" 
+          "model": ""
         },
         {
           "label": "Prétention salariale",
           "type": "number",
           "id": "monthlyWage",
-          "model": "" 
+          "model": ""
         }
       ],
 
@@ -71,4 +71,3 @@
         }
       ]
 }
-    

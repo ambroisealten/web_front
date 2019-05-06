@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { SkillGraduated } from '../models/skillsSheet';
 
 @Injectable()
 /**
@@ -7,18 +8,24 @@ import { BehaviorSubject } from 'rxjs';
 */
 export class ArrayObsService {
 
+    EMPTY = [] ;
+
     private arraySkillsInformation = new BehaviorSubject([]);
     arraySkillsObservable = this.arraySkillsInformation.asObservable();
 
     private arraySoftSkillsInformation = new BehaviorSubject([]);
     arraySoftSkillsObservable = this.arraySoftSkillsInformation.asObservable();
-  
-    notifySkills(arraySkills: any[]){
+
+    constructor(){
+
+    }
+
+    notifySkills(arraySkills: SkillGraduated[]){
         this.arraySkillsInformation.next(arraySkills);
     }
 
     resetSkills(){
-        this.arraySkillsInformation.next([]); 
+        this.arraySkillsInformation.next(this.EMPTY);
     }
 
     notifySoftSkills(arraySoftSkills: any[]){
@@ -26,7 +33,7 @@ export class ArrayObsService {
     }
 
     resetSoftSkills(){
-        this.arraySoftSkillsInformation.next([]);
+        this.arraySoftSkillsInformation.next(this.EMPTY);
     }
 
 }

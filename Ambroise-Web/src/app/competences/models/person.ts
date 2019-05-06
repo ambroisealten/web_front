@@ -1,3 +1,6 @@
+/**
+ * Class containing a Person's data
+ */
 export class Person {
   id: string;
   mail: string;
@@ -11,6 +14,7 @@ export class Person {
   urlDocs: string[];
   highestDiploma: string;
   highestDiplomaYear: string ;
+  opinion: string;
 
   constructor(surname:string, name:string, mail:string, role:PersonRole) {
     this.surname = surname;
@@ -20,10 +24,11 @@ export class Person {
     this.job = "" ;
     this.employer = "" ;
     this.monthlyWage = "0" ;
-    this.personInChargeMail = "" ;
+    this.personInChargeMail = "tempUserAdminManager@mail.com" ;
     this.urlDocs = [] ;
     this.highestDiploma = "" ;
     this.highestDiplomaYear = "" ;
+    this.opinion = "";
   }
 }
 

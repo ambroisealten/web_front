@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, Navigation } from '@angular/router';
 import { HeaderService } from '../../services/header.services' ; 
@@ -15,12 +15,12 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 })
 export class HeaderUserComponent implements OnInit {
 
-  private modules: Menu[] = [
+  modules: Menu[] = [
     {label: 'Missions', menus: []},
     {label: 'Compétences', menus: []},
     {label: 'Forum', menus: []}
   ];
-  currentModule: string = 'Missions'; 
+  currentModule: string = 'Compétences'; 
   done = false;
 
   constructor(private titleService: Title, private router: Router,
@@ -29,7 +29,7 @@ export class HeaderUserComponent implements OnInit {
     private subMenusService: SubMenusService) { }
 
   ngOnInit() {
-    this.headerService.notifyMenusReceived(this.modules) ;
+    //this.headerService.notifyMenusReceived(this.modules) ;
     //this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
     //this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
   }

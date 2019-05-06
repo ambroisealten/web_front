@@ -14,6 +14,16 @@ mat-dialog-content {
   margin-left: 5%;
 }
 
+button {
+  outline: none;
+  margin: auto;
+}
+
+.alert-warning, .alert {
+  margin: auto;
+  padding: 1%;
+}
+
 /*.ng-valid {
   border: 5px solid #42A948;
 }*/

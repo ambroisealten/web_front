@@ -2,11 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { SkillsSheet } from '../../../models/skillsSheet';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Router } from '@angular/router';
-import { Validators, FormControl } from '@angular/forms';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Skills } from 'src/app/competences/models/skills';
 
 @Component({
@@ -16,11 +13,10 @@ import { Skills } from 'src/app/competences/models/skills';
 })
 export class ModalSkillsCandidateComponent implements OnInit {
 
-  firstname: string;
-  lastname: string;
+  firstname: string = '';
+  lastname: string = '';
   skillsSheetName: string = '';
-  email: string;
-  emailValidator =  new FormControl('', [Validators.required, Validators.email]);
+  emailInput: string = '';
   skillsSheetExists: boolean = false;
   skillsSheetPerson: Person;
   role: boolean = false;
@@ -28,8 +24,9 @@ export class ModalSkillsCandidateComponent implements OnInit {
   firstnameFirstletter: string = '';
   lastnameFirstLetters: string = '';
 
+  isCreateButtonDisabled: boolean = true;
+
   constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>,
-    private router: Router,
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService
   ) { }
@@ -38,12 +35,19 @@ export class ModalSkillsCandidateComponent implements OnInit {
     this.updateSkillsSheetName();
   }
 
+  /**
+   * Updates skillsSheetName when input changed to set default name
+   */
   updateSkillsSheetName() {
     let month = String("0" + (new Date().getMonth()+1)).slice(-2);
     let year = new Date().getFullYear();
     this.skillsSheetName =  month + year + '-' + this.firstnameFirstletter + this.lastnameFirstLetters;
   }
 
+  /**
+   * Updates data when input changed to set default skillsSheetName
+   * @param  $event firstname input
+   */
   firstnameChanged($event) {
     this.firstnameFirstletter = $event[0].toUpperCase();
     this.firstname = $event; // update firstname value with input
@@ -51,6 +55,10 @@ export class ModalSkillsCandidateComponent implements OnInit {
     this.updateSkillsSheetName();
   }
 
+  /**
+   * Updates data when input changed to set default skillsSheetName
+   * @param  $event lastname input
+   */
   lastnameChanged($event) {
     if($event.length >= 2) {
       this.lastnameFirstLetters = $event[0].toUpperCase() + $event[1].toUpperCase();
@@ -60,52 +68,77 @@ export class ModalSkillsCandidateComponent implements OnInit {
     }
   }
 
-  emailChanged($event, emailForm) {
+  /**
+   * Checks if email exists and already has a skillsSheet
+   * @param  $event email input
+   */
+  emailChanged($event) {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
     if($event.match(emailPattern)) {
-      this.skillsSheetService.checkSkillsSheetExistenceByMail($event).subscribe(skillsSheetExists => {
-        if(skillsSheetExists) {
-          this.skillsSheetExists = true;
-        //  this.emailValidator.setErrors({'exists' : true});
-        }
-        else {
-          this.skillsSheetExists = false;
-          //this.emailValidator.setErrors({'exists' : false});
+      this.skillsSheetService.getSkillsSheetsByMail($event).subscribe(skillsSheetList => {
+        if(skillsSheetList != undefined) {
+          let list = skillsSheetList as SkillsSheet[];
+          if( list.length != 0) {
+            this.skillsSheetExists = true;
+          }
+          else {
+            this.skillsSheetExists = false;
+          }
         }
       });
     }
   }
 
-  getErrorMessage() {
-    //console.log(this.emailValidator.invalid);
-    return 'oui';/*this.emailValidator.hasError('required') ? 'Email obligatoire' :
-           this.emailValidator.hasError('email') ? 'Email invalide' :
-            '';*/
+  checkEnableCreateButton() {
+    let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
+
+    if(this.firstname != '' && this.lastname != '' && this.emailInput != '' && this.emailInput.match(emailPattern)) {
+      this.isCreateButtonDisabled = false;
+    }
   }
 
+  /**
+   * On click on cancel button : close dialog with value 'canceled'
+   */
   cancel() {
     this.dialogRef.close('canceled');
   }
 
-  save() {
+  /**
+   * On click on create button : close dialog with object Skills containing the created Person and an empty skillSheet
+   */
+  save(isNewSkillsSheet) {
     let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
-    if(this.skillsSheetExists) {
-      return;
-    }
-    else {
-      this.personSkillsService.getPersonByMail(this.email).subscribe(person => {
-        if(person != undefined) {
-          if(person.hasOwnProperty('mail')) { // person exists
-            //ERROR
-          }
-          else { // create person
-            let person = new Person(this.firstname, this.lastname, this.email, personRole);
-            let skills = new Skills(person, new SkillsSheet(this.skillsSheetName, person));
-            this.dialogRef.close(skills);
-          }
+    this.personSkillsService.getPersonByMail(this.emailInput).subscribe(person => {
+      if(person != undefined) {
+        let newPerson : Person;
+        if(person.hasOwnProperty('mail')) { // person exists
+          newPerson = person as Person;
         }
-      });
-    }
+        else { // create person
+          newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole);
+        }
+
+        let skillsSheet : SkillsSheet;
+        if(isNewSkillsSheet) { // create skillsSheet
+          let newSkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
+          let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
+          newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+          this.dialogRef.close(new Skills(newPerson, newSkillsSheet));
+        }
+        else { // skillsSheet exists
+          this.closeWithExistantSkillsSheet(newPerson);
+        }
+      }
+    });
+  }
+
+  closeWithExistantSkillsSheet(person: Person) {
+    this.skillsSheetService.getSkillsSheetsByMail(this.emailInput).subscribe(skillsSheetsList => {
+      if(skillsSheetsList != undefined) {
+        this.dialogRef.close(new Skills(person, skillsSheetsList[0] as SkillsSheet));
+      }
+    })
   }
 
 }

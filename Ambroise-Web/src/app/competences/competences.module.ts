@@ -54,7 +54,6 @@ import { ArrayObsService } from './services/arrayObs.service';
     SkillsSheetService,
     SkillsService,
     PersonSkillsService,
-    ArrayObsService
   ]
 })
 export class CompetencesModule { 

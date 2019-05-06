@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { timeout, catchError } from 'rxjs/operators';
@@ -16,76 +16,62 @@ export class SkillsSheetService {
   /**
   * Temporary hardcoded json for data
   */
-
-  lastModificationsArray = [
-    {
-      manager: 'Joyce',
-      date: '01/03/19',
-      action: 'Création'
-    },
-    {
-      manager: 'Joyce',
-      date: '15/03/19',
-      action: 'Mise à jour'
-    }
-  ];
-
   constructor(private httpClient: HttpClient) { }
 
+  token = window.sessionStorage.getItem("bearerToken");
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': this.token != "" ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+  });
+  options = { headers: this.headers };
+
+  /**
+   * HTTP Post request to create a new skillsSheet in db
+   * @param  skillsSheet skillsSheet to create
+   */
   createNewSkillsSheet(skillsSheet: SkillsSheet) {
-    let token = window.sessionStorage.getItem("bearerToken");
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : ''
-    });
-    let options = { headers: headers };
-
     return this.httpClient
-        .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, options)
-        .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
+      .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, this.options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
-  updateSkillsSheet(skillsSheet: SkillsSheet){
-    let token = window.sessionStorage.getItem("bearerToken");
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : ''
-    });
-    let options = { headers: headers };
-
+  /**
+   * HTTP Put request to update a new skillsSheet in db
+   * @param  skillsSheet skillsSheet to update
+   */
+  updateSkillsSheet(skillsSheet: SkillsSheet) {
     return this.httpClient
-        .put<SkillsSheet>(environment.serverAddress + '/skillsheet' , skillsSheet, options)
-        .pipe(timeout(5000), catchError(error => this.handleSkillsSheetError(error)));
+      .put<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, this.options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
-  
-  handleSkillsSheetError(error){
+
+  handleSkillsSheetError(error) {
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
   }
-  
-  getAllSkillSheets(mail: string):Observable<{} | SkillsSheet[]>{
-    let token = window.sessionStorage.getItem("bearerToken");
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-    });
-    let options = { headers: headers };
 
+  /**
+   * HTTP Get request to retrieve all existant skillsSheets in db
+   */
+  getAllSkillSheets(mail: string): Observable<{} | SkillsSheet[]> {
     return this.httpClient
-        .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheetMail/'+mail, options)
-        .pipe(timeout(5000), catchError(error => this.handleError(error)));
+      .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheetMail/' + mail, this.options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
-  checkSkillsSheetExistenceByMail(mail: string) {
-    let token = window.sessionStorage.getItem("bearerToken");
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-    });
-    let options = { headers: headers };
-
+  /**
+   * HTTP Get request to get skillsSheets given a mail
+   * @param  mail skillsSheets's associated mail
+   */
+  getSkillsSheetsByMail(mail: string) {
     return this.httpClient
-      .get<Person>(environment.serverAddress + "/skillsheetMail/" + mail, options)
+      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetMail/" + mail, this.options)
+      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+  }
+
+  getAllSkillsSheetVersions(skillsSheetName: String, mailPersonAttachedTo: String) {
+    return this.httpClient
+      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetVersion/" + skillsSheetName + "/" + mailPersonAttachedTo, this.options)
       .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
