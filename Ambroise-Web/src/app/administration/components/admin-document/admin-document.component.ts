@@ -27,11 +27,12 @@ export class AdminDocumentComponent implements OnInit {
   ];
 
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) { }
-
-  ngOnInit() {
+  constructor(private adminService: AdminService, private dialog: MatDialog) { 
     this.fetchAllSet();
     this.searchFiles();
+  }
+
+  ngOnInit() {
   }
 
   onFilesChange() {
