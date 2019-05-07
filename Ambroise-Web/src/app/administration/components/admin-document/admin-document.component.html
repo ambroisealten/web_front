@@ -54,7 +54,7 @@
       <div cdkDropList #docsList="cdkDropList" [cdkDropListData]="filesForForum"
         [cdkDropListConnectedTo]="[docsForumList]" class="example-list" (cdkDropListDropped)="drop($event)">
         <div class="example-box" *ngFor="let file of filesForForum" cdkDrag>
-          Titre : {{ file.displayName }}<span class="document-id"> {{ file._id }}</span>
+          Titre : {{ file.displayName }} <span class="document-id">{{ file._id }}</span>
           <ng-container *ngIf="file.extension == 'png'; then iconImage else elseIcon">
           </ng-container>
           <ng-template #elseIcon>
@@ -79,7 +79,7 @@
       <div cdkDropList #docsForumList="cdkDropList" [cdkDropListData]="filesSet" [cdkDropListConnectedTo]="[docsList]"
         class="example-list" (cdkDropListDropped)="drop($event)">
         <div class="example-box" *ngFor="let file of filesSet" cdkDrag>
-          Titre : {{ file.displayName }}<span class="document-id"> {{ file._id }}</span>
+          Titre : {{ file.displayName }} <span class="document-id">{{ file._id}}</span>
           <ng-container *ngIf="file.extension == 'png'; then iconImage else elseIcon">
             <mat-icon>image</mat-icon>
           </ng-container>

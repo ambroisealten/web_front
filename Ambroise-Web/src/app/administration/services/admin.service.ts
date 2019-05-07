@@ -123,7 +123,8 @@ export class AdminService {
         const options = {
             headers: headerParams,
         };
-        this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options);
+        this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options).subscribe(data => {
+        });
     }
 
     makeRequest(url: string, method: string, postParams, callback) {

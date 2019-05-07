@@ -5,7 +5,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.component';
 import { DocumentSet } from '../../models/DocumentSet';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+
 
 @Component({
   selector: 'app-admin-document',
@@ -19,6 +19,11 @@ export class AdminDocumentComponent implements OnInit {
   filesSet: File[] = [];
   allSet: DocumentSet[] = [];
   currentSet: DocumentSet;
+
+  HEX_CHARS = [
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+  ];
 
 
   constructor(private adminService: AdminService, private dialog: MatDialog) { }
@@ -97,7 +102,7 @@ export class AdminDocumentComponent implements OnInit {
   }
 
 
-  visualize(uri: string) {
+  visualize() {
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -112,7 +117,6 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   submitListForum() {
-    debugger;
     const finalList = [];
     const dropList = document.getElementsByClassName('cdk-drop-list')[1];
     let order = 0;
@@ -141,19 +145,21 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   setSelected(event) {
-    LoggerService.log(this.currentSet, LogLevel.DEBUG);
     this.allSet.forEach(set => {
       if (set.name === event.value) {
         this.currentSet = set;
       }
     });
     this.currentSet = event.value;
-    LoggerService.log(this.currentSet, LogLevel.DEBUG);
   }
 
   searchFiles() {
     this.adminService.getFiles().subscribe((filesList: File[]) => {
       if (filesList !== undefined) {
+        filesList.forEach(file => {
+          file._id = this.toHexString(file);
+          console.log(file._id.valueOf());
+        });
         this.files = filesList;
       }
       // notify that file list is changed
@@ -174,9 +180,9 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   fetchFile(fileName: string) {
-    console.log(fileName);
     this.adminService.getFile(fileName).subscribe((file: File) => {
       if (file !== undefined) {
+        // file._id = fileName;
         this.filesSet.push(file);
       }
     });
@@ -190,5 +196,55 @@ export class AdminDocumentComponent implements OnInit {
       this.currentSet = this.allSet[0];
       this.fetchCurrentSet();
     });
+  }
+
+  toHexString(file: File) {
+    const char: string[] = []
+    for (const b of this.toByteArray(file._id.timestamp, file._id.machineIdentifier, file._id.processIdentifier, file._id.counter)) {
+      char.push(this.HEX_CHARS[b >> 4 & 0xF]);
+      char.push(this.HEX_CHARS[b & 0xF]);
+    }
+    return char.join('');
+  }
+
+  toByteArray(timestamp: number, machineIdentifier: number, processIdentifier: number, counter: number) {
+    const buffer: number[] = [];
+    buffer.push(this.int3(timestamp));
+    buffer.push(this.int2(timestamp));
+    buffer.push(this.int1(timestamp));
+    buffer.push(this.int0(timestamp));
+    buffer.push(this.int2(machineIdentifier));
+    buffer.push(this.int1(machineIdentifier));
+    buffer.push(this.int0(machineIdentifier));
+    buffer.push(this.short1(processIdentifier));
+    buffer.push(this.short0(processIdentifier));
+    buffer.push(this.int2(counter));
+    buffer.push(this.int1(counter));
+    buffer.push(this.int0(counter));
+    return buffer;
+  }
+
+  int3(x: number) {
+    return x >> 24;
+  }
+
+  int2(x: number) {
+    return x >> 16;
+  }
+
+  int1(x: number) {
+    return x >> 8;
+  }
+
+  int0(x: number) {
+    return x;
+  }
+
+  short1(x: number) {
+    return x >> 8;
+  }
+
+  short0(x: number) {
+    return x;
   }
 }
