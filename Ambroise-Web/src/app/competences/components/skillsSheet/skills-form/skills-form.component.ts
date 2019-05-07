@@ -9,10 +9,10 @@ import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
-import { Menu, SubMenu } from 'src/app/header/models/menu';
+import { SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { HttpResponse } from '@angular/common/http';
-import { MatTableDataSource, MatTab } from '@angular/material';
+import { MatTableDataSource } from '@angular/material';
+import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -52,6 +52,7 @@ export class SkillsFormComponent implements OnInit {
   currentPerson: Person;
   tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
+  newSkillsSheet: PageSkillsHomeComponent;
 
   //MODIF DETECTION
   countSkillsUpdate = 0;
@@ -95,10 +96,11 @@ export class SkillsFormComponent implements OnInit {
    *        - init both charts of skills and soft skills
    */
   ngOnInit() {
+
     this.route.params.subscribe(param => {
       //Get param in the url
-      this.name = this.route.snapshot.paramMap.get("name");
-      this.version = +this.route.snapshot.paramMap.get("version");
+      this.name = param['name']
+      this.version = + param['version']
       //Check if data already exists, person is more important than skillsSheet
       if (window.sessionStorage.getItem('person') != null){
         this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person  ;
@@ -136,8 +138,8 @@ export class SkillsFormComponent implements OnInit {
         this.formItems = null;
       }
       //Update chart
-      this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
     })
+    this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
 
   ngOnDestroy() {
@@ -220,10 +222,10 @@ export class SkillsFormComponent implements OnInit {
     }
   }
 
-   /**
-   * Create the menu corresponding to the view
-   * @author Quentin Della-Pasqua
-   */
+  /**
+  * Create the menu corresponding to the view
+  * @author Quentin Della-Pasqua
+  */
   createMenu() {
     let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'))
     let subMenu: SubMenu[] = [];
@@ -269,10 +271,10 @@ export class SkillsFormComponent implements OnInit {
     }
   }
 
-   /**
-   * Updates form data of a skillSheet given a Person
-   * @param  person Person containing data to display
-   */
+  /**
+  * Updates form data of a skillSheet given a Person
+  * @param  person Person containing data to display
+  */
   updateFormItemsFromPerson(person: Person) {
     if (person.role == PersonRole.APPLICANT) {
       this.formItems.forEach(item => {
@@ -336,14 +338,13 @@ export class SkillsFormComponent implements OnInit {
       this.subMenusService.notifyMenuAction("");
       if (actionSplit[0] == this.router.url) {
         if (actionSplit[1] === 'create') {
-          //TODO
+          this.createSkillsSheet();
         } else if (actionSplit[1].match("^redirect/.*")) {
           let redirect = actionSplit[1].substring(9);
           if (('/' + redirect) != this.router.url + '/') {
             if (!this.modifDetection) {
               this.redirectAfterAction(redirect);
             } else {
-              console.log("Change detected")
               this.onSubmitRedirect(redirect);
             }
 
@@ -383,7 +384,7 @@ export class SkillsFormComponent implements OnInit {
       }
     });
   }
-}
+ }
 
   onSubmitRedirect(redirect: string) {
     LoggerService.log("submitRedirect", LogLevel.DEBUG);
@@ -415,10 +416,28 @@ export class SkillsFormComponent implements OnInit {
     }
   }
 
+  createSkillsSheet() {
+    let newSkillsSheet = new SkillsSheet("NEW-" + this.makeName(), this.currentPerson)
+    let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
+    newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name == newSkillsSheet.name) != undefined) {
+      newSkillsSheet.name = "NEW-" + this.makeName();
+    }
+    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+        let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.push(newSkillsSheet);
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
+        this.subMenusService.notifyMenuAction("");
+      }
+    })
+  }
+
   redirectAfterAction(redirect: string) {
     this.subMenusService.resetMenuAction();
     this.subMenusService.resetSubMenu();
-    this.submenusSubscription.unsubscribe();
     //this.arrayObsService.resetSkillsVersions();
     this.subMenusService.resetMenuAction();
     this.router.navigate([redirect]);
@@ -439,7 +458,7 @@ export class SkillsFormComponent implements OnInit {
   checkIfNameEmpty(event) {
     let newSkillsSheetName = event.target.value;
     if (newSkillsSheetName.trim() == "") {
-       event.target.value = this.currentSkillsSheet.name;
+      event.target.value = this.currentSkillsSheet.name;
     }
     else {
       this.currentSkillsSheet.name = newSkillsSheetName;
@@ -464,7 +483,8 @@ export class SkillsFormComponent implements OnInit {
     this.isPersonDataDisabled = true;
     this.currentPerson = this.updatePersonFromFormItems();
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
-      if (httpResponse != undefined) {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
       }
     });
@@ -508,6 +528,16 @@ export class SkillsFormComponent implements OnInit {
       }
     });
     return personToUpdate;
+  }
+
+  makeName() {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 
   /***********************************************************************\
