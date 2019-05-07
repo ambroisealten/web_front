@@ -30,11 +30,9 @@ export class HeaderMenuComponent implements OnInit {
     }
 
     ngOnDestroy(){
-        console.log("la")
     }
     
   setSubMenus(subMenus: SubMenu[]){
-    console.log(subMenus)
     if(subMenus != null && subMenus.length > 0){
         this.subMenus = subMenus
     } else {

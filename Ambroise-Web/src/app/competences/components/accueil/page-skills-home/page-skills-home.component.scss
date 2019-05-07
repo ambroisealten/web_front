@@ -45,8 +45,8 @@ body {
 
 .skillSheetInformation {
   margin-left: 2vw;
-  height: fit-content;
   width: 75vw;
+  max-height : 70vh;
   overflow: auto;
 }
 
@@ -114,6 +114,7 @@ mat-cell {
   background: var(--ALTENBlue);
   padding-left: 10px !important;
   padding-right: 10px !important;
+  min-width: 100px;
 }
 
 .mat-row:nth-child(even) {

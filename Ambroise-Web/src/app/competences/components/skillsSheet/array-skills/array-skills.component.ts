@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { SkillsSheetService } from '../../../services/skillsSheet.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
@@ -18,34 +18,23 @@ export class ArraySkillsComponent implements OnInit {
   @Input() dataSourceArray: any[]; // data array
   @Input() headerRowHidden: boolean; // is header row (columns title) hidden
   @Input() datatype: string; // 'skills' or 'softSkills'
+  @Input() dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
-  dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
+  @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ; 
 
   //Subscription ;
   skillsSubscription ;
 
-  constructor(private arrayObsService: ArrayObsService) { 
+  constructor(private arrayObsService: ArrayObsService) {
   }
 
   /**
    * Inits dataSource of array : skills or soft skills
    */
   ngOnInit() {
-    if(this.datatype == "skills"){
-      this.skillsSubscription = this.arrayObsService.arraySkillsObservable.subscribe(arraySkills => {
-        this.dataSource = new MatTableDataSource(arraySkills as any[]) ;
-      });
-    } else {
-      this.skillsSubscription = this.arrayObsService.arraySoftSkillsObservable.subscribe(arraySoftSkills =>  {
-        this.dataSource = new MatTableDataSource(arraySoftSkills as any[]) ;
-      });
-    }
   }
 
   ngOnDestroy(){
-    this.skillsSubscription.unsubscribe() ;
-    this.arrayObsService.resetSkills() ;
-    this.arrayObsService.resetSoftSkills() ;
   }
 
   /**
@@ -78,7 +67,14 @@ export class ArraySkillsComponent implements OnInit {
 
       // if skillname not already in array : add it
       if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
-        this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
+        if(this.datatype == "softSkills") { // add isSoft field if soft skill
+          let softSkill = new Skill(skillName);
+          softSkill.isSoft = "";
+          this.dataSourceArray.push(new SkillGraduated(softSkill, 1));
+        }
+        else {
+          this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
+        }
         this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
         this.updateDataSourceInService();
@@ -131,11 +127,7 @@ export class ArraySkillsComponent implements OnInit {
   */
   updateDataSourceInService() {
     this.checkGradeValues();
-    if(this.datatype == "skills"){
-      this.arrayObsService.notifySkills(this.dataSourceArray);
-    } else {
-      this.arrayObsService.notifySoftSkills(this.dataSourceArray);
-    }
+    this.skillsEvent.emit(this.dataSourceArray) ; 
   }
 
   /**

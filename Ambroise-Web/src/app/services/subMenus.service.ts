@@ -13,7 +13,6 @@ export class SubMenusService {
     subMenuObservable = this.subMenuState.asObservable();
 
     constructor(){
-        console.log("Création");
     }
 
     createMenu(labelSubMenu: string, labelSubSubMenu: any[], icon: string, action: string,subAction: string[]):SubMenu{

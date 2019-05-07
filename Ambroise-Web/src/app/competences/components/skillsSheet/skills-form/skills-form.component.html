@@ -1,54 +1,78 @@
 <div class="currentSheetInfo">
   <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})</p>
-  <div [contentEditable]="isSkillsSheetNameEditable" (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" (dblclick)="editSkillsSheetName()" class="skillsSheetNameDiv" maxlength="30"> {{ currentSkillsSheet.name }} </div>
+  <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
+    maxlength="30" [ngModel]="currentSkillsSheet.name">
 </div>
 
-<div class="grid-container">
-  <div class="infoForm">
-    <mat-form-field *ngFor="let item of formItems; let index = index;">
-      <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" [disabled]="isPersonDataDisabled" >
-    </mat-form-field>
+<div>
+  <button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+  <div class="grid-container">
+    <div class="infoForm">
+      <mat-form-field *ngFor="let item of formItems; let index = index;">
+        <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
+          [disabled]="isPersonDataDisabled">
+      </mat-form-field>
 
-    <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden"><mat-icon class="editIcon">edit</mat-icon></button>
-    <div>
-      <button mat-icon-button class="savePersonButton" (click)="savePerson()" [hidden]="!isEditButtonHidden"><mat-icon class="savePersonIcon">check</mat-icon></button>
-      <button mat-icon-button class="cancelButton" (click)="cancelEditPerson()" [hidden]="!isEditButtonHidden"><mat-icon class="cancelIcon">close</mat-icon></button>
+      <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
+        <mat-icon class="editIcon">edit</mat-icon>
+      </button>
+      <div>
+        <button mat-icon-button class="savePersonButton" (click)="savePerson()" [hidden]="!isEditButtonHidden">
+          <mat-icon class="savePersonIcon">check</mat-icon>
+        </button>
+        <button mat-icon-button class="cancelButton" (click)="cancelEditPerson()" [hidden]="!isEditButtonHidden">
+          <mat-icon class="cancelIcon">close</mat-icon>
+        </button>
+      </div>
+
+      <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
+        [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>
+
+      <mat-form-field style="margin-top: 2%;">
+        <mat-label>Avis</mat-label>
+        <mat-select [(ngModel)]="avis">
+          <mat-option value="+++">+++</mat-option>
+          <mat-option value="++">++</mat-option>
+          <mat-option value="+">+</mat-option>
+          <mat-option value="-">-</mat-option>
+          <mat-option value="--">--</mat-option>
+          <mat-option value="---">---</mat-option>
+          <mat-option value="NOK">NOK</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea matInput placeholder="Commentaire" maxlength="110"></textarea>
+      </mat-form-field>
     </div>
 
-    <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSourceArray]="lastModificationsArray" [headerRowHidden]="headerRowHiddenModif" ></app-array-skillsUpdates>
-
-    <mat-form-field style="margin-top: 2%;">
-      <mat-label>Avis</mat-label>
-      <mat-select [(ngModel)]="avis">
-        <mat-option value="+++">+++</mat-option>
-        <mat-option value="++">++</mat-option>
-        <mat-option value="+">+</mat-option>
-        <mat-option value="-">-</mat-option>
-        <mat-option value="--">--</mat-option>
-        <mat-option value="---">---</mat-option>
-        <mat-option value="NOK">NOK</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-      <textarea matInput placeholder="Commentaire" maxlength="110"></textarea>
-    </mat-form-field>
-  </div>
-
-  <div class="skillsArrays">
-    <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="skills"></app-array-skills>
-    <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns" [dataSourceArray]="softSkillsArray" [headerRowHidden]="headerRowHiddenSkills" datatype="softSkills" ></app-array-skills>
-  </div>
-
-
-  <div class="matrix">
-    <div class="chart-container">
-      <canvas id="canvasSkills"></canvas>
+    <div class="skillsArrays">
+      <app-array-skills class="skillsArray" 
+        [displayedColumns]="skillsDisplayedColumns" 
+        [dataSourceArray]="skillsArray"
+        [headerRowHidden]="headerRowHiddenSkills" 
+        datatype="skills" 
+        [dataSource]="skillsArrayDataSource" 
+        (skillsEvent)="updateChartSkills($event)"></app-array-skills>
+      <app-array-skills class="softSkillsArray" 
+        [displayedColumns]="softSkillsDisplayedColumns" 
+        [dataSourceArray]="softSkillsArray" 
+        [headerRowHidden]="headerRowHiddenSkills" 
+        datatype="softSkills" 
+        [dataSource]="softSkillsArrayDataSource" 
+        (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
     </div>
-    <div class="chart-container">
-      <canvas id="canvasSoftSkills"></canvas>
+
+
+    <div class="matrix">
+      <div class="chart-container">
+        <canvas id="canvasSkills"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="canvasSoftSkills"></canvas>
+      </div>
     </div>
+
+
   </div>
 </div>
-
-<button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>

@@ -47,10 +47,11 @@ li {
 }
 
 .dropdown-menu{ 
-    margin-left: 30%; 
-    width: 50%;
+    width: 100%;
     min-width: 80px;
     color: var(--ALTENDarkBlue);
+    overflow-y: scroll;
+    max-height: 1000%;
 }
 
 .dropdown-item:hover{
@@ -76,6 +77,7 @@ li {
 
 .submenu:hover .submenuicon, .submenu:hover p {
     color: var(--ALTENBlue);
+    cursor: pointer;
 }
 
 .submenu{
@@ -88,5 +90,6 @@ li {
 
 .nav-item .submenu:hover {
     color: var(--ALTENBlue);
+    cursor: pointer;
 }
 

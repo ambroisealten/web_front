@@ -42,6 +42,7 @@ export class AppComponent {
     if(this.previousRoute.includes("skills/skillsheet") && !urlAfterRedirects.includes("skills/skillsheet")){
       window.sessionStorage.removeItem('skills') ;
       window.sessionStorage.removeItem('person') ;
+      window.sessionStorage.removeItem('skillsSheetVersions') ;
       this.subMenusService.notifySubMenu([]);
     }
     this.previousRoute = urlAfterRedirects ;

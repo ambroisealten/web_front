@@ -2,6 +2,7 @@
   <input matInput (keyup)="applyFilterSkills($event.target.value)" placeholder="Recherche" (keyup.enter)="addSkill($event)">
 </mat-form-field>
 
+<div class="tab-div">
 <table mat-table [dataSource]="dataSource">
 
   <ng-container [matColumnDef]="displayedColumns[0]" class="firstColumn">
@@ -24,3 +25,4 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns" [hidden]="headerRowHidden"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+</div>
