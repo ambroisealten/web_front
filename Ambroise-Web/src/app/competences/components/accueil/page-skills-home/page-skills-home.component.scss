@@ -120,3 +120,12 @@ mat-cell {
 .mat-row:nth-child(even) {
   background-color: var(--ALTENLightGray);
 }
+
+.mat-row:hover {
+  cursor: pointer;
+  background-color: var(--ALTENMarinBlue) !important;
+}
+
+.mat-row:hover td {
+  color: white;
+}
