@@ -253,7 +253,8 @@ export class SkillsFormComponent implements OnInit {
         // init skillsSheet versions array
         (skillsSheetVersions as SkillsSheet[]).forEach(version => {
           versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
-          versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate, version.name, version.versionNumber));
+          let managerName = version.mailVersionAuthor.split('.')[0] + ' ' + version.mailVersionAuthor.split('.')[1];
+          versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
         });
         this.versionsArray = new MatTableDataSource(versions);
         window.sessionStorage.setItem("skillsSheetVersions",JSON.stringify(skillsSheetVersions));
@@ -261,7 +262,8 @@ export class SkillsFormComponent implements OnInit {
     } else {
       JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')).forEach(version => {
         versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
-        versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate, version.name, version.versionNumber));
+        let managerName = version.mailVersionAuthor.split('.')[0] + version.mailVersionAuthor.split('.')[1];
+        versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
       });
       this.versionsArray = new MatTableDataSource(versions);
     }
@@ -366,6 +368,7 @@ export class SkillsFormComponent implements OnInit {
         let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
         window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+        this.initVersionArray(false);
         this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
       }
     });

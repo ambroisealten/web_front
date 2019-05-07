@@ -16,13 +16,9 @@ export class ArraySkillsUpdatesComponent implements OnInit {
   @Input() dataSource: MatTableDataSource<any[]>; // data array
   @Input() headerRowHidden: boolean; // is header row (columns title) hidden
 
-  //dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
-
   constructor(private router: Router) { }
 
   ngOnInit() {
-    //console.log(this.dataSourceArray);
-    //this.dataSource = new MatTableDataSource(this.dataSourceArray);
   }
 
   navigateToSkillsSheetVersion(rowData) {
