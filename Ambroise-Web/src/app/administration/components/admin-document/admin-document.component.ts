@@ -29,14 +29,15 @@ export class AdminDocumentComponent implements OnInit {
   constructor(private adminService: AdminService, private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.searchFiles();
     this.fetchAllSet();
+    this.searchFiles();
   }
 
   onFilesChange() {
+    this.filesForForum = [];
     for (const file of this.files) {
       const filePath = file.path;
-      if (filePath.startsWith('/Forum/') && !this.filesSet.includes(file)) {
+      if (filePath.startsWith('/Forum/') && !File.equals(this.filesSet, file)) {
         this.filesForForum.push(file);
       }
     }
@@ -158,7 +159,6 @@ export class AdminDocumentComponent implements OnInit {
       if (filesList !== undefined) {
         filesList.forEach(file => {
           file._id = this.toHexString(file);
-          console.log(file._id.valueOf());
         });
         this.files = filesList;
       }
@@ -171,7 +171,6 @@ export class AdminDocumentComponent implements OnInit {
     this.adminService.getSetFiles(this.currentSet.name).subscribe((set: DocumentSet) => {
       if (set !== undefined) {
         this.currentSet = set;
-        this.filesSet = [];
         set.mobileDocs.forEach(mobileDoc => {
           this.fetchFile(mobileDoc.name);
         });
@@ -182,8 +181,9 @@ export class AdminDocumentComponent implements OnInit {
   fetchFile(fileName: string) {
     this.adminService.getFile(fileName).subscribe((file: File) => {
       if (file !== undefined) {
-        // file._id = fileName;
+        file._id = this.toHexString(file);
         this.filesSet.push(file);
+        this.onFilesChange();
       }
     });
   }

@@ -10,6 +10,8 @@ import { DemoMaterialModule } from '../utils/material-modules';
 import { AdminService } from './services/admin.service';
 import { AdminDocumentMenuForumComponent } from './components/admin-document-menu-forum/admin-document-menu-forum.component';
 import { DataFileDialogComponent } from './components/data-file-dialog/data-file-dialog.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderInterceptorService } from '../utils/progress-spinner/progress-spiner-service/loader-interceptor-service';
 
 
 @NgModule({
@@ -33,7 +35,12 @@ import { DataFileDialogComponent } from './components/data-file-dialog/data-file
     FormsModule
   ],
   providers: [
-    AdminService
+    AdminService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptorService,
+      multi: true
+    }
   ]
 })
 export class AdministrationModule { }
