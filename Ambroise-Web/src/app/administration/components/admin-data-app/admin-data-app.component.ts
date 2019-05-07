@@ -1,23 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataAgencyDialogComponent } from 'src/app/administration/components/data-agency-dialog/data-agency-dialog.component';
 import { AdminService } from 'src/app/administration/services/admin.service';
 import { Agency } from '../../models/Agency';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
+import { SubMenusService } from 'src/app/services/subMenus.service';
+import { Router } from '@angular/router';
+import { SubMenu } from 'src/app/header/models/menu';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-admin-data-app',
   templateUrl: './admin-data-app.component.html',
   styleUrls: ['./admin-data-app.component.scss']
 })
-export class AdminDataAppComponent implements OnInit {
+export class AdminDataAppComponent implements OnInit, OnDestroy {
   agencies: Agency[];
+  submenusSubscription;
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) {
+  constructor(
+    private adminService: AdminService,
+    private dialog: MatDialog,
+    private subMenusService: SubMenusService,
+    private router: Router) {
   }
 
   ngOnInit() {
+    this.createMenu();
+    this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
     this.fetchAgencies();
+  }
+
+  ngOnDestroy() {
+    if (this.submenusSubscription !== undefined) {
+      this.submenusSubscription.unsubscribe();
+    } else {
+      LoggerService.log('ERROR : SubMenusSubscription (Admin Data App) should have been set', LogLevel.DEV);
+    }
   }
 
   getAgencies() {
@@ -123,5 +142,31 @@ export class AdminDataAppComponent implements OnInit {
     };
 
     return this.dialog.open(DataAgencyDialogComponent, dialogConfig);
+  }
+
+  doAction(action: string) {
+    if (action !== '') {
+      const actionSplit = action.split('//');
+      this.subMenusService.notifyMenuAction('');
+      if (actionSplit[0] === this.router.url) {
+        if (actionSplit[1].match('^redirect/.*')) {
+          const redirect = actionSplit[1].substring(9);
+          if (('/' + redirect) !== this.router.url + '/') {
+            this.redirectAfterAction(redirect);
+          }
+        }
+      }
+    }
+  }
+
+  redirectAfterAction(redirect: string) {
+    this.router.navigate([redirect]);
+  }
+
+  createMenu() {
+    const subMenu: SubMenu[] = [];
+    subMenu.push(this.subMenusService.createMenu('Documents', [], 'storage', 'redirect/admin/document', []));
+    subMenu.push(this.subMenusService.createMenu('Données Applicatives', [], 'dashboard', 'redirect/admin/dataApp', []));
+    this.subMenusService.notifySubMenu(subMenu);
   }
 }

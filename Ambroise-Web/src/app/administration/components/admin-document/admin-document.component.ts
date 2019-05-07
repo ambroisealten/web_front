@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { File } from '../../models/File';
 import { AdminService } from '../../services/admin.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -6,6 +6,10 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.component';
 import { DocumentSet } from '../../models/DocumentSet';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
+import { SubMenusService } from 'src/app/services/subMenus.service';
+import { Router } from '@angular/router';
+import { SubMenu } from 'src/app/header/models/menu';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 
 
 @Component({
@@ -13,7 +17,7 @@ import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progres
   templateUrl: './admin-document.component.html',
   styleUrls: ['./admin-document.component.scss']
 })
-export class AdminDocumentComponent implements OnInit {
+export class AdminDocumentComponent implements OnInit, OnDestroy {
 
   files: File[] = [];
   filesForForum: File[] = [];
@@ -21,18 +25,34 @@ export class AdminDocumentComponent implements OnInit {
   allSet: DocumentSet[] = [];
   currentSet: DocumentSet;
 
+  submenusSubscription;
+
   HEX_CHARS = [
     '0', '1', '2', '3', '4', '5', '6', '7',
     '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
   ];
 
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) { 
+  constructor(
+    private adminService: AdminService,
+    private dialog: MatDialog,
+    private subMenusService: SubMenusService,
+    private router: Router) {
     this.fetchAllSet();
     this.searchFiles();
   }
 
   ngOnInit() {
+    this.createMenu();
+    this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
+  }
+
+  ngOnDestroy() {
+    if (this.submenusSubscription !== undefined) {
+      this.submenusSubscription.unsubscribe();
+    } else {
+      LoggerService.log('ERROR : SubMenusSubscription (Admin Data App) should have been set', LogLevel.DEV);
+    }
   }
 
   onFilesChange() {
@@ -257,5 +277,32 @@ export class AdminDocumentComponent implements OnInit {
 
   short0(x: number) {
     return x;
+  }
+
+
+  doAction(action: string) {
+    if (action !== '') {
+      const actionSplit = action.split('//');
+      this.subMenusService.notifyMenuAction('');
+      if (actionSplit[0] === this.router.url) {
+        if (actionSplit[1].match('^redirect/.*')) {
+          const redirect = actionSplit[1].substring(9);
+          if (('/' + redirect) !== this.router.url + '/') {
+            this.redirectAfterAction(redirect);
+          }
+        }
+      }
+    }
+  }
+
+  redirectAfterAction(redirect: string) {
+    this.router.navigate([redirect]);
+  }
+
+  createMenu() {
+    const subMenu: SubMenu[] = [];
+    subMenu.push(this.subMenusService.createMenu('Documents', [], 'storage', 'redirect/admin/document', []));
+    subMenu.push(this.subMenusService.createMenu('Données Applicatives', [], 'dashboard', 'redirect/admin/dataApp', []));
+    this.subMenusService.notifySubMenu(subMenu);
   }
 }
