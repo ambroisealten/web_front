@@ -30,6 +30,7 @@ import { SkillsSheetService } from './competences/services/skillsSheet.service';
 import { PersonSkillsService } from './competences/services/personSkills.service';
 import { SubMenusService } from './services/subMenus.service';
 import { ArrayObsService } from './competences/services/arrayObs.service';
+import { ErrorService } from './services/error.service';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { ArrayObsService } from './competences/services/arrayObs.service';
     IsNotLoginService,
     SkillsSheetService,
     PersonSkillsService,
-    SubMenusService
+    SubMenusService,
+    ErrorService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

@@ -20,7 +20,6 @@ export class ArraySkillsUpdatesComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    //console.log(this.dataSourceArray);
     //this.dataSource = new MatTableDataSource(this.dataSourceArray);
   }
 

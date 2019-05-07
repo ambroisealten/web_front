@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit() {
+    window.sessionStorage.clear() ; 
     // init validators
     this.validationForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],

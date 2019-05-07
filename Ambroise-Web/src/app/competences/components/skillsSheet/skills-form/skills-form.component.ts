@@ -98,8 +98,8 @@ export class SkillsFormComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(param => {
       //Get param in the url
-      this.name = this.route.snapshot.paramMap.get("name");
-      this.version = +this.route.snapshot.paramMap.get("version");
+      this.name = param['name'] ; 
+      this.version = +param['version']
       //Check if data already exists, person is more important than skillsSheet
       if (window.sessionStorage.getItem('person') != null){
         this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person  ;
@@ -112,14 +112,14 @@ export class SkillsFormComponent implements OnInit {
           if(window.sessionStorage.getItem('skillsSheetVersions') != null) {
             this.setupVersionsArray(JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')) as SkillsSheetVersions[], true);
           } else {
-            this.initVersioNArray() ;
+            this.initVersionArray() ;
           }
         } else {
           this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
             this.setupSkillsSheet(skillsSheets as SkillsSheet[], false);
             this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
             this.createMenu();
-            this.initVersioNArray() ;
+            this.initVersionArray() ;
           })
         }
       } else {
@@ -142,7 +142,8 @@ export class SkillsFormComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.submenusSubscription.unsubscribe();
+    if(this.submenusSubscription != undefined)
+      this.submenusSubscription.unsubscribe();
   }
 
   /***********************************************************************\
@@ -201,7 +202,7 @@ export class SkillsFormComponent implements OnInit {
         this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
           window.sessionStorage.setItem('skills', JSON.stringify(skillsSheets));
           this.createMenu();
-          this.initVersioNArray() ;
+          this.initVersionArray() ;
         });
       }
     }
@@ -232,7 +233,7 @@ export class SkillsFormComponent implements OnInit {
     this.subMenusService.notifySubMenu(subMenu)
   }
   
-  initVersioNArray(){
+  initVersionArray(){
     this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
       // init skillsSheet versions array
       let versions = [];
@@ -326,7 +327,6 @@ export class SkillsFormComponent implements OnInit {
             if (!this.modifDetection) {
               this.redirectAfterAction(redirect);
             } else {
-              console.log("Change detected")
               this.onSubmitRedirect(redirect);
             }
 
@@ -398,11 +398,13 @@ export class SkillsFormComponent implements OnInit {
   }
 
   redirectAfterAction(redirect: string) {
+    if(this.submenusSubscription != undefined){
+      this.submenusSubscription.unsubscribe();
+    } else {
+      LoggerService.log("Subscription : submenusSubscription, should have been set !",LogLevel.DEVDEBUG) ; 
+    }
     this.subMenusService.resetMenuAction();
     this.subMenusService.resetSubMenu();
-    this.submenusSubscription.unsubscribe();
-    //this.arrayObsService.resetSkillsVersions();
-    this.subMenusService.resetMenuAction();
     this.router.navigate([redirect]);
   }
 

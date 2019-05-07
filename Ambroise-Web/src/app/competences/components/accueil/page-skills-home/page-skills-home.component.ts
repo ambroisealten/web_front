@@ -58,7 +58,11 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.subMenusSubscription.unsubscribe() ; 
+    if(this.subMenusSubscription != undefined){
+      this.subMenusSubscription.unsubscribe() ; 
+    } else {
+      LoggerService.log("ERROR SUBSCRIPTION : subMenusSubscription (page-skills-home Component), should have been set up",LogLevel.DEV)
+    }
   }
   /**
    * Cherche toutes les skillSheets
