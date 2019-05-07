@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { LoaderService } from './progress-spiner-service/LoaderService';
-import { LoaderState } from './progress-spiner-service/Loader';
+import { MatDialogConfig, MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-progress-spinner',
@@ -9,19 +7,27 @@ import { LoaderState } from './progress-spiner-service/Loader';
   styleUrls: ['./progress-spinner.component.scss']
 })
 export class ProgressSpinnerComponent implements OnInit {
-  show = false;
-  private subscription: Subscription;
 
-  constructor(private loaderService: LoaderService) { }
 
-  ngOnInit() {
-    this.subscription = this.loaderService.loaderState
-      .subscribe((state: LoaderState) => {
-        this.show = state.show;
-      });
+  constructor() {}
+
+  static openDialogProgress(dialog) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.direction = 'ltr';
+    dialogConfig.closeOnNavigation = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'Please wait',
+      description: 'Please wait',
+    };
+
+    return dialog.open(ProgressSpinnerComponent, dialogConfig);
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  ngOnInit() { }
 }

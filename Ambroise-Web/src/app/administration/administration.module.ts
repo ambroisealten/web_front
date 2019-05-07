@@ -10,8 +10,7 @@ import { DemoMaterialModule } from '../utils/material-modules';
 import { AdminService } from './services/admin.service';
 import { AdminDocumentMenuForumComponent } from './components/admin-document-menu-forum/admin-document-menu-forum.component';
 import { DataFileDialogComponent } from './components/data-file-dialog/data-file-dialog.component';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LoaderInterceptorService } from '../utils/progress-spinner/progress-spiner-service/loader-interceptor-service';
+import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spinner.component';
 
 
 @NgModule({
@@ -20,11 +19,13 @@ import { LoaderInterceptorService } from '../utils/progress-spinner/progress-spi
     AdminDataAppComponent,
     DataAgencyDialogComponent,
     AdminDocumentMenuForumComponent,
-    DataFileDialogComponent
+    DataFileDialogComponent,
+    ProgressSpinnerComponent
   ],
   entryComponents: [
     DataFileDialogComponent,
-    DataAgencyDialogComponent
+    DataAgencyDialogComponent,
+    ProgressSpinnerComponent
   ],
   imports: [
     CommonModule,
@@ -35,12 +36,7 @@ import { LoaderInterceptorService } from '../utils/progress-spinner/progress-spi
     FormsModule
   ],
   providers: [
-    AdminService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: LoaderInterceptorService,
-      multi: true
-    }
+    AdminService
   ]
 })
 export class AdministrationModule { }

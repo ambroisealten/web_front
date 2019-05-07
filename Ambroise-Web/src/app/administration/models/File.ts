@@ -4,10 +4,9 @@ export class File {
     static equals(files: File[], fileToCompare: File): boolean {
         let result = false;
         files.forEach(file => {
-            console.log(fileToCompare._id === file._id);
             if (fileToCompare._id === file._id) {
                 result = true;
-                return; 
+                return;
             }
         });
         return result;

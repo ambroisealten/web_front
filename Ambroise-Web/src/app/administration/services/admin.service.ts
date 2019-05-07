@@ -26,8 +26,7 @@ export class AdminService {
             headers: headerParams,
             params: postParams
         };
-        this.httpClient.delete(this.baseUrl + 'file', options).subscribe(data => {
-        });
+        return this.httpClient.delete(this.baseUrl + 'file', options);
     }
 
     updateFile(postParams, callback) {
@@ -42,8 +41,7 @@ export class AdminService {
             headers: headerParams,
             params: postParams
         };
-        this.httpClient.put(this.baseUrl + 'file', postParams, options).subscribe(data => {
-        });
+        return this.httpClient.put(this.baseUrl + 'file', postParams, options);
     }
 
     getFile(fileName: string): Observable<{} | File> {
@@ -123,7 +121,7 @@ export class AdminService {
         const options = {
             headers: headerParams,
         };
-        return this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options).subscribe();
+        return this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options);
     }
 
     makeRequest(url: string, method: string, postParams, callback) {
@@ -141,25 +139,13 @@ export class AdminService {
 
         switch (method) {
             case 'get':
-                this.httpClient.get(this.baseUrl + url, options).subscribe(data => {
-                    callback(JSON.stringify(data));
-                });
-                break;
+                return this.httpClient.get(this.baseUrl + url, options);
             case 'post':
-                this.httpClient.post(this.baseUrl + url, postParams, options).subscribe(data => {
-                    callback(JSON.stringify(data));
-                });
-                break;
+                return this.httpClient.post(this.baseUrl + url, postParams, options);
             case 'put':
-                this.httpClient.put(this.baseUrl + url, postParams, options).subscribe(data => {
-                    callback(JSON.stringify(data));
-                });
-                break;
+                return this.httpClient.put(this.baseUrl + url, postParams, options);
             case 'delete':
-                this.httpClient.delete(this.baseUrl + url, options).subscribe(data => {
-                    callback(JSON.stringify(data));
-                });
-                break;
+                return this.httpClient.delete(this.baseUrl + url, options);
             default:
         }
     }

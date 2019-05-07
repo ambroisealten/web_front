@@ -5,6 +5,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.component';
 import { DocumentSet } from '../../models/DocumentSet';
+import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
 
 
 @Component({
@@ -52,12 +53,15 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   removeDocument(document: File) {
+    const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
     const params = {
       _id: document._id,
       extension: document.extension,
       path: document.path,
     };
-    this.adminService.deleteFile(params, null);
+    this.adminService.deleteFile(params, null).subscribe(() => {
+      dialogProgress.close();
+    });
   }
 
   editDocument(document: File) {
@@ -67,6 +71,7 @@ export class AdminDocumentComponent implements OnInit {
     dialogDocument.afterClosed().subscribe(
       (data: any) => {
         if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
           const oldPath = document.path;
           document.path = data.path;
           document.displayName = data.displayName;
@@ -77,7 +82,9 @@ export class AdminDocumentComponent implements OnInit {
             _id: document._id,
             extension: document.extension
           };
-          this.adminService.updateFile(postParams, '');
+          this.adminService.updateFile(postParams, '').subscribe(() => {
+            dialogProgress.close();
+          });
         }
       });
   }
@@ -118,6 +125,7 @@ export class AdminDocumentComponent implements OnInit {
   }
 
   submitListForum() {
+    const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
     const finalList = [];
     const dropList = document.getElementsByClassName('cdk-drop-list')[1];
     let order = 0;
@@ -142,7 +150,9 @@ export class AdminDocumentComponent implements OnInit {
       name: this.currentSet.name,
       files: finalList,
     };
-    this.adminService.saveSet(postParams);
+    this.adminService.saveSet(postParams).subscribe(() => {
+      dialogProgress.close();
+    });
   }
 
   setSelected(event) {
