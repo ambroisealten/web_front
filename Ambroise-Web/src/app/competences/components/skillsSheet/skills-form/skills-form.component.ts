@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
@@ -24,7 +24,7 @@ import { MatTableDataSource, MatTab } from '@angular/material';
 * Component containing the skillsSheet creation form.
 * @param skillsSheetService service handling back-end communication and data
 */
-export class SkillsFormComponent implements OnInit {
+export class SkillsFormComponent implements OnInit, OnDestroy {
 
   versionsArray = new MatTableDataSource();
   lastModifDisplayedColumns: string[] = ['manager', 'date'];
@@ -70,6 +70,7 @@ export class SkillsFormComponent implements OnInit {
 
   //subscription
   submenusSubscription;
+  skillsSubscription;
 
   //Name of the skillsSheet
   nameSkillsSheet: string;
@@ -115,7 +116,7 @@ export class SkillsFormComponent implements OnInit {
             this.initVersionArray() ;
           }
         } else {
-          this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
+          this.skillsSheetService.getSkillsSheetsByMail(this.currentPerson.mail).subscribe(skillsSheets => {
             this.setupSkillsSheet(skillsSheets as SkillsSheet[], false);
             this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
             this.createMenu();
@@ -123,7 +124,7 @@ export class SkillsFormComponent implements OnInit {
           })
         }
       } else {
-        this.skillsService.skillsObservable.subscribe(skills => this.initializeView(skills, false));
+        this.skillsSubscription = this.skillsService.skillsObservable.subscribe(skills => this.initializeView(skills, false));
       }
       //if we are consultant or applicant we don't have the same information so we load the form that match with the role
       let formItemsJSON = require('../../../resources/formItems.json');
@@ -144,6 +145,9 @@ export class SkillsFormComponent implements OnInit {
   ngOnDestroy() {
     if(this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
+    if( this.skillsSubscription != undefined){
+      this.skillsSubscription.unsubscribe() ; 
+    }
   }
 
   /***********************************************************************\
@@ -199,7 +203,7 @@ export class SkillsFormComponent implements OnInit {
       this.updateChartSoftSkills(this.softSkillsArray) ; 
       if (!personStored) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
-        this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
+        this.skillsSheetService.getSkillsSheetsByMail(this.currentPerson.mail).subscribe(skillsSheets => {
           window.sessionStorage.setItem('skills', JSON.stringify(skillsSheets));
           this.createMenu();
           this.initVersionArray() ;
@@ -402,6 +406,9 @@ export class SkillsFormComponent implements OnInit {
       this.submenusSubscription.unsubscribe();
     } else {
       LoggerService.log("Subscription : submenusSubscription, should have been set !",LogLevel.DEVDEBUG) ; 
+    }
+    if( this.skillsSubscription != undefined){
+      this.skillsSubscription.unsubscribe() ;
     }
     this.subMenusService.resetMenuAction();
     this.subMenusService.resetSubMenu();

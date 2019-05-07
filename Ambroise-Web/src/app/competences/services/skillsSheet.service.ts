@@ -52,17 +52,6 @@ export class SkillsSheetService {
   }
 
   /**
-   * HTTP Get request to retrieve all existant skillsSheets in db
-   */
-  getAllSkillSheets(mail: string): Observable<void | {} | SkillsSheet[]> {
-    return this.httpClient
-      .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheetMail/' + mail, this.options)
-      .pipe(
-        timeout(5000), 
-        catchError(error => this.errorService.handleError(error)));
-  }
-
-  /**
    * HTTP Get request to get skillsSheets given a mail
    * @param  mail skillsSheets's associated mail
    */

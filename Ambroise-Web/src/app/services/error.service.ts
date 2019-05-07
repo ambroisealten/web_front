@@ -13,7 +13,7 @@ export class ErrorService {
         let messageError = error['error']['message'] ; 
         switch(statusError){
             case(401): LoggerService.log(messageError,LogLevel.PROD)
-                this.router.navigate(['login']) ; 
+                //this.router.navigate(['login']) ; 
                 break ; 
                 
             default: LoggerService.log(messageError,LogLevel.PROD)
