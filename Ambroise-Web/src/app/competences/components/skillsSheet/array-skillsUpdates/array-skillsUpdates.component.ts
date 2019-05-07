@@ -22,7 +22,6 @@ export class ArraySkillsUpdatesComponent implements OnInit {
   }
 
   navigateToSkillsSheetVersion(rowData) {
-    console.log('oui');
     this.router.navigate(['skills/skillsheet/' + rowData['name'] + '/' + rowData['versionNumber']]);
   }
 

@@ -89,7 +89,6 @@ export class SkillsFormComponent implements OnInit {
    *
   \***********************************************************************/
 
-
   /**
    * Init : - check if a skillsObservable is present then inits current data (Person and Skills) else redirects to skills home
    *        - init form items of a Person (different inputs whether it's an applicant or a consultant)
@@ -115,7 +114,6 @@ export class SkillsFormComponent implements OnInit {
           }
           this.initializeView(new Skills(this.currentPerson,this.currentSkillsSheet),true) ;
           this.createMenu() ;
-
         } else {
           this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
             this.initVersionArray(false) ;
@@ -264,7 +262,7 @@ export class SkillsFormComponent implements OnInit {
     } else {
       JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')).forEach(version => {
         versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
-        let managerName = version.mailVersionAuthor.split('.')[0] + version.mailVersionAuthor.split('.')[1];
+        let managerName = version.mailVersionAuthor.split('.')[0] + ' ' + version.mailVersionAuthor.split('.')[1];
         versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
       });
       this.versionsArray = new MatTableDataSource(versions);
@@ -347,7 +345,6 @@ export class SkillsFormComponent implements OnInit {
             } else {
               this.onSubmitRedirect(redirect);
             }
-
           }
         }
       }
