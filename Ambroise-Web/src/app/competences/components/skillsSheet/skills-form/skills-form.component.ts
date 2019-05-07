@@ -29,15 +29,15 @@ export class SkillsFormComponent implements OnInit {
   versionsArray = new MatTableDataSource();
   lastModifDisplayedColumns: string[] = ['manager', 'date'];
 
-  //Information of tech skills 
+  //Information of tech skills
   skillsArray: any[] = [];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
-  skillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ; 
+  skillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ;
 
   //Information of soft skills
   softSkillsArray: any[] = [];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
-  softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ; 
+  softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ;
 
   headerRowHiddenModif = false;
   headerRowHiddenSkills = true;
@@ -77,16 +77,15 @@ export class SkillsFormComponent implements OnInit {
   constructor(private skillsService: SkillsService,
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
-    private arrayObsService: ArrayObsService,
     private router: Router,
     private route: ActivatedRoute,
     private subMenusService: SubMenusService) {
   }
 
   /***********************************************************************\
-   *        
-   *                              NG FUNCTIONS          
-   *                                                                      
+   *
+   *                              NG FUNCTIONS
+   *
   \***********************************************************************/
 
 
@@ -104,23 +103,23 @@ export class SkillsFormComponent implements OnInit {
       if (window.sessionStorage.getItem('person') != null){
         this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person  ;
         if(window.sessionStorage.getItem('skills') != null){
-          this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true)
+          if(window.sessionStorage.getItem('skillsSheetVersions') != null) {
+            // get all versions of the current skillsSheet to display in versions array
+            this.setupSkillsSheetFromVersions();
+            this.initVersionArray(true);
+          }
+          else {
+            this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true);
+          }
           this.initializeView(new Skills(this.currentPerson,this.currentSkillsSheet),true) ;
           this.createMenu() ;
 
-          // get all versions of the current skillsSheet to display in versions array
-          if(window.sessionStorage.getItem('skillsSheetVersions') != null) {
-            this.setupVersionsArray(JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')) as SkillsSheetVersions[], true);
-          } else {
-            this.initVersioNArray() ;
-          }
         } else {
           this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
-            this.setupSkillsSheet(skillsSheets as SkillsSheet[], false);
+            this.initVersionArray(false) ;
             this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
             this.createMenu();
-            this.initVersioNArray() ;
-          })
+          });
         }
       } else {
         this.skillsService.skillsObservable.subscribe(skills => this.initializeView(skills, false));
@@ -146,9 +145,9 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /***********************************************************************\
-   *        
-   *                          MAIN FUNCTIONS         
-   *                                                                      
+   *
+   *                          MAIN FUNCTIONS
+   *
   \***********************************************************************/
 
     /**
@@ -156,7 +155,7 @@ export class SkillsFormComponent implements OnInit {
    * @param skillsSheets
    * @author Quentin Della-Pasqua
    */
-  setupSkillsSheet(skillsSheets: SkillsSheet[], skillsSheetStored) {
+  setupSkillsSheet(skillsSheets: SkillsSheet[], skillsSheetStored: boolean) {
     skillsSheets.forEach(skillsSheet => {
       if (skillsSheet.versionNumber == this.version && skillsSheet.name == this.name) {
         this.currentSkillsSheet = skillsSheet;
@@ -165,6 +164,20 @@ export class SkillsFormComponent implements OnInit {
     if (!skillsSheetStored) {
       window.sessionStorage.setItem('skills', JSON.stringify(skillsSheets));
     }
+  }
+
+    /**
+   * Check among skillsSheet versions the one which corresponds to the url
+   * @param skillsSheets
+   * @author Camille Schnell
+   */
+  setupSkillsSheetFromVersions() {
+    let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
+    versions.forEach(skillsSheet => {
+      if(skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
+          this.currentSkillsSheet = skillsSheet as SkillsSheet;
+      }
+    });
   }
 
    /**
@@ -193,15 +206,15 @@ export class SkillsFormComponent implements OnInit {
       this.countSoftSkillsUpdate = 0;
       this.modifDetection = false;
       this.skillsArrayDataSource = new MatTableDataSource(this.skillsArray) ;
-      this.updateChartSkills(this.skillsArray) ; 
-      this.softSkillsArrayDataSource = new MatTableDataSource(this.softSkillsArray) ; 
-      this.updateChartSoftSkills(this.softSkillsArray) ; 
+      this.updateChartSkills(this.skillsArray) ;
+      this.softSkillsArrayDataSource = new MatTableDataSource(this.softSkillsArray) ;
+      this.updateChartSoftSkills(this.softSkillsArray) ;
       if (!personStored) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         this.skillsSheetService.getAllSkillSheets(this.currentPerson.mail).subscribe(skillsSheets => {
           window.sessionStorage.setItem('skills', JSON.stringify(skillsSheets));
           this.createMenu();
-          this.initVersioNArray() ;
+          this.initVersionArray(false) ;
         });
       }
     }
@@ -231,24 +244,26 @@ export class SkillsFormComponent implements OnInit {
     }
     this.subMenusService.notifySubMenu(subMenu)
   }
-  
-  initVersioNArray(){
-    this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
-      // init skillsSheet versions array
-      let versions = [];
-      let versionDate = "";
-      (skillsSheetVersions as SkillsSheet[]).forEach(version => {
-        versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
-        versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate));
-      });
-      this.setupVersionsArray(versions, false);
-    });
-  }
 
-  setupVersionsArray(skillsSheetVersions: SkillsSheetVersions[], skillsSheetVersionsStored) {
-    this.versionsArray = new MatTableDataSource(skillsSheetVersions);
-    if(!skillsSheetVersionsStored) {
-      window.sessionStorage.setItem("skillsSheetVersions",JSON.stringify(skillsSheetVersions));
+  initVersionArray(skillsVersionsStored: boolean){
+    let versions = [];
+    let versionDate = "";
+    if(!skillsVersionsStored) {
+      this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
+        // init skillsSheet versions array
+        (skillsSheetVersions as SkillsSheet[]).forEach(version => {
+          versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
+          versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate, version.name, version.versionNumber));
+        });
+        this.versionsArray = new MatTableDataSource(versions);
+        window.sessionStorage.setItem("skillsSheetVersions",JSON.stringify(skillsSheetVersions));
+      });
+    } else {
+      JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')).forEach(version => {
+        versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
+        versions.push(new SkillsSheetVersions(version.mailVersionAuthor.toString(), versionDate, version.name, version.versionNumber));
+      });
+      this.versionsArray = new MatTableDataSource(versions);
     }
   }
 
@@ -303,9 +318,9 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /***********************************************************************\
-   *        
-   *                          SOUS-FONCTIONS          
-   *                                                                      
+   *
+   *                          SOUS-FONCTIONS
+   *
   \***********************************************************************/
 
   /**
@@ -461,7 +476,7 @@ export class SkillsFormComponent implements OnInit {
     this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
   }
- 
+
   /**
    * Updates a Person with data retrieved from the "edit person form" of a skillsheet
    * @return Person updated
@@ -493,9 +508,9 @@ export class SkillsFormComponent implements OnInit {
   }
 
   /***********************************************************************\
-   *        
-   *                          CHART FUNCTIONS         
-   *                                                                      
+   *
+   *                          CHART FUNCTIONS
+   *
   \***********************************************************************/
 
   /**
@@ -507,10 +522,10 @@ export class SkillsFormComponent implements OnInit {
       this.modifDetection = true;
     }
     this.countSkillsUpdate++;
+    if (typeof this.skillsChart != "function") {
+      this.skillsChart.destroy();
+    }
     if (arraySkills.length != 0) {
-      if (typeof this.skillsChart != "function") {
-        this.skillsChart.destroy();
-      }
       let skillsLabels: string[] = [];
       let skillsData: number[] = [];
       arraySkills.forEach(function (skillGraduated) {
@@ -532,10 +547,10 @@ export class SkillsFormComponent implements OnInit {
       this.modifDetection = true;
     }
     this.countSoftSkillsUpdate++;
+    if (typeof this.softSkillsChart != "function") {
+      this.softSkillsChart.destroy();
+    }
     if (arraySoftSkills.length != 0) {
-      if (typeof this.softSkillsChart != "function") {
-        this.softSkillsChart.destroy();
-      }
       let skillsLabels: string[] = [];
       let skillsData: number[] = [];
       arraySoftSkills.forEach(function (skillGraduated) {

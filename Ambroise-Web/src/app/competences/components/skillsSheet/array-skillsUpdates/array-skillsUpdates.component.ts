@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-array-skillsUpdates',
@@ -17,11 +18,16 @@ export class ArraySkillsUpdatesComponent implements OnInit {
 
   //dataSource: MatTableDataSource<any[]>; // data as MatTableDataSource
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     //console.log(this.dataSourceArray);
     //this.dataSource = new MatTableDataSource(this.dataSourceArray);
+  }
+
+  navigateToSkillsSheetVersion(rowData) {
+    console.log('oui');
+    this.router.navigate(['skills/skillsheet/' + rowData['name'] + '/' + rowData['versionNumber']]);
   }
 
 }

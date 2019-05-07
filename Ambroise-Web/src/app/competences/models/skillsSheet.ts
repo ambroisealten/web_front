@@ -73,10 +73,14 @@ export class Skill {
 export class SkillsSheetVersions {
   manager: string;
   date: string;
+  name: string;
+  versionNumber: number;
 
-  constructor(manager: string, date: string) {
+  constructor(manager: string, date: string, name: string, versionNumber: number) {
     this.manager = manager;
     this.date = date;
+    this.name = name;
+    this.versionNumber = versionNumber;
   }
 }
 

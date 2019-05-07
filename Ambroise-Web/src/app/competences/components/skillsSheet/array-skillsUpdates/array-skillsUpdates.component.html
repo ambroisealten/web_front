@@ -11,5 +11,5 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns" [hidden]="headerRowHidden"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="navigateToSkillsSheetVersion(row)"></tr>
 </table>
