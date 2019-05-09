@@ -108,7 +108,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           if(window.sessionStorage.getItem('skillsSheetVersions') != null) {
             // get all versions of the current skillsSheet to display in versions array
             this.setupSkillsSheetFromVersions();
-            this.initVersionArray(true);
           }
           else {
             this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true);
@@ -178,11 +177,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   setupSkillsSheetFromVersions() {
     let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-    versions.forEach(skillsSheet => {
-      if(skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
-          this.currentSkillsSheet = skillsSheet as SkillsSheet;
-      }
-    });
+    if(versions[0].name != this.name){
+      this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true);
+      this.initVersionArray(false);
+    } else {
+      versions.forEach(skillsSheet => {
+        if(skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
+            this.currentSkillsSheet = skillsSheet as SkillsSheet;
+        }
+      });
+      this.initVersionArray(true);
+    }
   }
 
    /**
@@ -438,11 +443,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   redirectAfterAction(redirect: string) {
-    if(this.submenusSubscription != undefined){
-      this.submenusSubscription.unsubscribe();
-    } else {
-      LoggerService.log("Subscription : submenusSubscription, should have been set !",LogLevel.DEVDEBUG) ; 
-    }
     if( this.skillsSubscription != undefined){
       this.skillsSubscription.unsubscribe() ;
     }
