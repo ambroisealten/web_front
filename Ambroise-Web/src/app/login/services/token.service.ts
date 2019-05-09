@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as sha512 from 'js-sha512';
+import { Router } from '@angular/router';
 
 /**
  * Service pour le login
@@ -16,7 +17,8 @@ export class TokenService {
     private tokenReceptionState = new BehaviorSubject(false);
     tokenReceptionObservable = this.tokenReceptionState.asObservable();
 
-    constructor(private httpClient: HttpClient) { }
+    constructor(private httpClient: HttpClient,
+        private router: Router) { }
 
     /**
      * Permet de récupérer un token de session valide si l'utilisateur rentre le bon
@@ -77,6 +79,7 @@ export class TokenService {
     signOut() {
         //TO-DO : redirect login page
         window.sessionStorage.clear();
+        this.router.navigate(['login']) ; 
     }
 
     notifyTokenReception(received:boolean){
