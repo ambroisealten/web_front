@@ -62,7 +62,7 @@ export class ArraySkillsComponent implements OnInit {
   * @param  event skillName from input
   */
   addSkill(event) {
-    if(event.target.value != '') {
+    if(event.target.value.trim() != '') {
       let skillName = event.target.value;
 
       // if skillname not already in array : add it
