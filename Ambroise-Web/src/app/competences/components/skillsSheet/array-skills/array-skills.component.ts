@@ -53,9 +53,9 @@ export class ArraySkillsComponent implements OnInit {
   * Filters array on input
   * @param  filterValue input string
   */
-  applyFilterSkills(filterValue: string) {
+  /*applyFilterSkills(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  }*/
 
   /**
   * Adds a skill into the array
