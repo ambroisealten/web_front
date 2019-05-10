@@ -3,10 +3,11 @@
 
   <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
     maxlength="30" [ngModel]="currentSkillsSheet.name">
+    <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
 </div>
 
 <div>
-  <button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+  
   <div class="grid-container">
     <div class="infoForm">
       <mat-form-field *ngFor="let item of formItems; let index = index;">
