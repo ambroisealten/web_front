@@ -92,8 +92,11 @@ export class ModalSkillsCandidateComponent implements OnInit {
   checkEnableCreateButton() {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
 
-    if(this.firstname != '' && this.lastname != '' && this.emailInput != '' && this.emailInput.match(emailPattern)) {
+    if(this.firstname != '' && this.lastname != '' && this.emailInput != '' && this.emailInput.match(emailPattern) && this.skillsSheetName != '') {
       this.isCreateButtonDisabled = false;
+    }
+    else {
+      this.isCreateButtonDisabled = true;
     }
   }
 

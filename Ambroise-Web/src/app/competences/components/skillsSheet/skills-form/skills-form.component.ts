@@ -40,7 +40,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ;
 
   headerRowHiddenModif = false;
-  headerRowHiddenSkills = true;
 
   //Form displayed
   formItems: any[];
@@ -123,6 +122,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }
       } else {
         this.skillsSubscription = this.skillsService.skillsObservable.subscribe(skills => this.initializeView(skills, false));
+        // if first skillsSheet for a person (no info about person yet) : edit person form is enabled
+        this.isPersonDataDisabled = false;
+        this.isEditButtonHidden = true;
       }
       //if we are consultant or applicant we don't have the same information so we load the form that match with the role
       let formItemsJSON = require('../../../resources/formItems.json');
@@ -135,7 +137,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       } else {
         this.formItems = null;
       }
-      //Update chart
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
@@ -144,7 +145,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if(this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
     if( this.skillsSubscription != undefined){
-      this.skillsSubscription.unsubscribe() ; 
+      this.skillsSubscription.unsubscribe() ;
     }
   }
 

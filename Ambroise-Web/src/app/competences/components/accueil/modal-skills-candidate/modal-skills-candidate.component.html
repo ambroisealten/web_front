@@ -2,22 +2,22 @@
 
 <mat-dialog-content>
   <mat-form-field>
-    <input matInput placeholder="Nom" [ngModel]="lastname" (ngModelChange)="lastnameChanged($event)" (blur)="checkEnableCreateButton()">
+    <input matInput placeholder="Nom" [ngModel]="lastname" (ngModelChange)="lastnameChanged($event)" (keyup)="checkEnableCreateButton()">
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput placeholder="Prénom" [ngModel]="firstname" (ngModelChange)="firstnameChanged($event)" (blur)="checkEnableCreateButton()">
+    <input matInput placeholder="Prénom" [ngModel]="firstname" (ngModelChange)="firstnameChanged($event)" (keyup)="checkEnableCreateButton()">
   </mat-form-field>
 
   <mat-form-field>
     <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="emailInput" (ngModelChange)="emailChanged($event)" required
-     pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})" #test="ngModel" (blur)="checkEnableCreateButton()">
+     pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})" #test="ngModel" (keyup)="checkEnableCreateButton()">
     <mat-error *ngIf="test.invalid && test.errors.pattern">L'email doit être valide.</mat-error>
     <mat-error *ngIf="test.invalid && test.errors.required">L'email est obligatoire.</mat-error>
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput placeholder="Nom de la fiche" [(ngModel)]="skillsSheetName">
+    <input matInput placeholder="Nom de la fiche" [(ngModel)]="skillsSheetName" (keyup)="checkEnableCreateButton()">
   </mat-form-field>
 
   <div class="slider">
