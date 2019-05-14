@@ -59,7 +59,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   ngOnDestroy(){
     if(this.subMenusSubscription != undefined){
-      this.subMenusSubscription.unsubscribe() ; 
+      this.subMenusSubscription.unsubscribe() ;
     } else {
       LoggerService.log("ERROR SUBSCRIPTION : subMenusSubscription (page-skills-home Component), should have been set up",LogLevel.DEV)
     }
@@ -89,7 +89,7 @@ export class PageSkillsHomeComponent implements OnInit {
 
   /**
    * Regarde quel action est envoyer par le header, la vérifie et la traite si c'est pour lui
-   * @param action 
+   * @param action
    * @author Quentin Della-Pasqua
    */
   doAction(action: string) {
@@ -105,9 +105,9 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /***********************************************************************\
-   *        
-   *                          SOUS-FONCTIONS          
-   *                                                                      
+   *
+   *                          SOUS-FONCTIONS
+   *
   \***********************************************************************/
 
 
@@ -146,9 +146,9 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   /**
-   * Factorise les conditions if 
-   * @param property 
-   * @param testedProperty 
+   * Factorise les conditions if
+   * @param property
+   * @param testedProperty
    * @author Quentin Della-Pasqua
    */
   instantiateProperty(property, testedProperty: string): any {
@@ -287,12 +287,14 @@ export class PageSkillsHomeComponent implements OnInit {
     this.searchSkillSheets();
   }
 
+
   /**
    * Get the value of the rating
    * @param event catch the click event on star
    */
+  /*
   minRatingValue(event) {
     LoggerService.log(event.srcElement.value, LogLevel.DEVDEBUG)
-  }
+  }*/
 
 }
