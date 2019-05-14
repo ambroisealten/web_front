@@ -3,7 +3,7 @@ import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoMaterialModule } from '../utils/material-modules';
 
 //  ROUTING MODULE
@@ -23,6 +23,7 @@ import { IsNotLoginService } from '../services/isNotLogin.service';
 import { SkillsService } from './services/skills.service';
 import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
+import { SkillsListService } from './services/skillsList.service';
 
 
 @NgModule({
@@ -40,7 +41,7 @@ import { ArrayObsService } from './services/arrayObs.service';
     CommonModule,
     HttpClientModule,
     FormsModule,
-    //ReactiveFormsModule,
+    ReactiveFormsModule,
     //BrowserModule,
     DemoMaterialModule,
     //BrowserAnimationsModule,
@@ -54,6 +55,7 @@ import { ArrayObsService } from './services/arrayObs.service';
     SkillsSheetService,
     SkillsService,
     PersonSkillsService,
+    SkillsListService
   ]
 })
 export class CompetencesModule { 

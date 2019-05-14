@@ -9,7 +9,7 @@
         </mat-expansion-panel-header>
 
         <mat-form-field class="searchBar">
-          <input matInput placeholder="ville, métier, disponibilité ..." (keyup.enter)="doAddFilter()"
+          <input matInput placeholder="Identité, métier, diplome ..." (keyup.enter)="doAddFilter()" aria-label="Number"
             [(ngModel)]="rechercheInput">
         </mat-form-field>
         <div class="allTagWords">
@@ -64,7 +64,12 @@
     <div>
     <mat-form-field class="searchBarCpt">
         <input matInput placeholder="Compétence et Soft Skill " (keyup.enter)="doAddSkill()"
-          [(ngModel)]="rechercheInputCpt">
+          [formControl]="myControl" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
 
     <div class="skillSheetInformation mat-elevation-z8">

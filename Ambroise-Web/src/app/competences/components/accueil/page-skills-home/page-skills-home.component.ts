@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
-import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpansionPanel } from '@angular/material';
+import {MatAutocompleteModule, MatInputModule, MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpansionPanel } from '@angular/material';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
@@ -11,6 +11,12 @@ import { Skills } from 'src/app/competences/models/skills';
 import { Person } from 'src/app/competences/models/person';
 import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+import { ConsoleReporter } from 'jasmine';
+import { Skills } from '../../../models/skills';
+import { SkillsListService } from '../../../services/skillsList.service';
 
 @Component({
   selector: 'app-page-skills-home',
@@ -33,6 +39,11 @@ export class PageSkillsHomeComponent implements OnInit {
   //Tableau contenant les autres filtres
   filter: string[] = [];
 
+  //Tableau contenant toutes les options (compétences)
+  options : string[];
+  filteredOptions : Observable<string[]>;
+  myControl = new FormControl();
+
   rechercheInput: string;
   rechercheInputCpt: string;
 
@@ -49,9 +60,13 @@ export class PageSkillsHomeComponent implements OnInit {
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
     private skillsService: SkillsService,
-    private subMenusService: SubMenusService) { }
+    private subMenusService: SubMenusService, private skillsListService : SkillsListService) { }
 
   ngOnInit() {
+    this.getSkillsList();
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      map(value => this._filter(value))
+    );
     this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -64,6 +79,17 @@ export class PageSkillsHomeComponent implements OnInit {
       LoggerService.log("ERROR SUBSCRIPTION : subMenusSubscription (page-skills-home Component), should have been set up",LogLevel.DEV)
     }
   }
+
+  /**
+   * Cherche toutes les compétences en base
+   * @author Lucas Royackkers
+   */
+  getSkillsList(){
+    this.skillsListService.getAllSkills().subscribe(skillsList=> {
+      this.options = (skillsList as Skills[]).map(skill => skill.name);
+    });
+  }
+
   /**
    * Cherche toutes les skillSheets
    * @author Quentin Della-pasqua
@@ -75,6 +101,23 @@ export class PageSkillsHomeComponent implements OnInit {
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
     })
+  }
+
+  /**
+   * Filtre toutes les options qui correspondent à l'input user
+   * 
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Lucas Royackkers
+   */
+  private _filter(value: string): string[] {
+    if(value.length != 0){
+      const filterValue = value.toLowerCase();
+      this.rechercheInputCpt = value;
+      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+    else{
+      return [];
+    }
   }
 
   /**
@@ -242,21 +285,23 @@ export class PageSkillsHomeComponent implements OnInit {
 
   /**
    * Ajoute une colonne au tableau + appel au WS pour trier
-   * @author Quentin Della-Pasqua
+   * @author Quentin Della-Pasqua, Lucas Royackkers
    */
   doAddSkill() {
-    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 && this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
+    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 && this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "" && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) != undefined) {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
-    else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != ""){
+    else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "" && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) != undefined){
       this.compFilter.push(this.rechercheInputCpt);
       this.searchSkillSheets();
+      this.expansionCPT.expanded = true;
     }
     this.rechercheInputCpt = "";
+    this.myControl.setValue("");
   }
 
   /**
