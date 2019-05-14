@@ -49,10 +49,11 @@ export class ModalSkillsCandidateComponent implements OnInit {
    * @param  $event firstname input
    */
   firstnameChanged($event) {
-    this.firstnameFirstletter = $event[0].toUpperCase();
+    if($event != '') {
+      this.firstnameFirstletter = $event[0].toUpperCase();
+      this.updateSkillsSheetName();
+    }
     this.firstname = $event; // update firstname value with input
-
-    this.updateSkillsSheetName();
   }
 
   /**
@@ -62,10 +63,9 @@ export class ModalSkillsCandidateComponent implements OnInit {
   lastnameChanged($event) {
     if($event.length >= 2) {
       this.lastnameFirstLetters = $event[0].toUpperCase() + $event[1].toUpperCase();
-      this.lastname = $event; // update lastname value with input
-
       this.updateSkillsSheetName();
     }
+    this.lastname = $event; // update lastname value with input
   }
 
   /**
@@ -92,7 +92,8 @@ export class ModalSkillsCandidateComponent implements OnInit {
   checkEnableCreateButton() {
     let emailPattern = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
 
-    if(this.firstname != '' && this.lastname != '' && this.emailInput != '' && this.emailInput.match(emailPattern) && this.skillsSheetName != '') {
+    if(this.firstname.trim() != '' && this.lastname.trim() != '' && this.emailInput.trim() != ''
+     && this.emailInput.match(emailPattern) && this.skillsSheetName.trim() != '') {
       this.isCreateButtonDisabled = false;
     }
     else {
