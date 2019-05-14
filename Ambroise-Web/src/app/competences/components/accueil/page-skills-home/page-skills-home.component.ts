@@ -277,9 +277,20 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Maxime Maquinghen
    */
   deleteSkillWord(event) {
-    this.compFilter = this.compFilter.filter(el => el !== event.srcElement.alt);
-    this.displayedColumns = this.displayedColumns.filter(el => el !== event.srcElement.alt);
+    let skillWordToDelete = event.srcElement.alt;
+    this.compFilter = this.compFilter.filter(el => el !== skillWordToDelete);
+    if(!this.isSkillWordInBasics(skillWordToDelete)) this.displayedColumns = this.displayedColumns.filter(el => el !== skillWordToDelete);
     this.searchSkillSheets();
+  }
+
+  /**
+   * Checks if the skill Word is in our 'basics' skills
+   * 
+   * @param skillWord the skill Word that we might delete
+   * @author Lucas Royackkers
+   */
+  isSkillWordInBasics(skillWord){
+    return skillWord.toLowerCase() == "c++" || skillWord.toLowerCase() == "php" || skillWord.toLowerCase() == "sql" || skillWord.toLowerCase() == ".net" || skillWord.toLowerCase() == "java";
   }
 
   /**
