@@ -205,8 +205,8 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
     dialogConfig.data = {
       id: 1,
-      title: 'Agency edition',
-      description: 'Agency edition',
+      title: 'Agency',
+      description: 'Agence',
       name: agency.getName(),
       place: agency.getPlace()
     };
@@ -225,8 +225,8 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
     dialogConfig.data = {
       id: 1,
-      title: 'Soft Skill edition',
-      description: 'Soft Skill edition',
+      title: 'Soft Skill',
+      description: 'Soft Skill',
       name: softSkill.getName(),
     };
 
