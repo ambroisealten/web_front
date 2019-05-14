@@ -122,9 +122,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }
       } else {
         this.skillsSubscription = this.skillsService.skillsObservable.subscribe(skills => this.initializeView(skills, false));
-        // if first skillsSheet for a person (no info about person yet) : edit person form is enabled
-        this.isPersonDataDisabled = false;
-        this.isEditButtonHidden = true;
       }
       //if we are consultant or applicant we don't have the same information so we load the form that match with the role
       let formItemsJSON = require('../../../resources/formItems.json');
@@ -139,6 +136,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
+    this.enableEditIfFormFieldsEmpty();
   }
 
   ngOnDestroy() {
@@ -277,56 +275,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
       });
       this.versionsArray = new MatTableDataSource(versions);
-    }
-  }
-
-  /**
-  * Updates form data of a skillSheet given a Person
-  * @param  person Person containing data to display
-  */
-  updateFormItemsFromPerson(person: Person) {
-    if (person.role == PersonRole.APPLICANT) {
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            item.model = person.highestDiploma;
-            break;
-          case 'highestDiplomaYear':
-            item.model = person.highestDiplomaYear;
-            break;
-          case 'employer':
-            item.model = person.employer;
-            break;
-          case 'job':
-            item.model = person.job;
-            break;
-          case 'monthlyWage':
-            item.model = person.monthlyWage;
-            break;
-          default:
-            break;
-        }
-      });
-    }
-    else if (person.role == PersonRole.CONSULTANT) {
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            item.model = person.highestDiploma;
-            break;
-          case 'highestDiplomaYear':
-            item.model = person.highestDiplomaYear;
-            break;
-          case 'job':
-            item.model = person.job;
-            break;
-          case 'monthlyWage':
-            item.model = person.monthlyWage;
-            break;
-          default:
-            break;
-        }
-      });
     }
   }
 
@@ -510,6 +458,22 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * if no info about person yet : edit person form is enabled
+   */
+  enableEditIfFormFieldsEmpty() {
+    let allEmpty = true;
+    this.formItems.forEach(item => {
+      if(item.model != '' && item.model != '0') {
+        allEmpty = false;
+      }
+    });
+    if(allEmpty) {
+      this.isPersonDataDisabled = false;
+      this.isEditButtonHidden = true;
+    }
+  }
+
+  /**
    * Updates a Person with data retrieved from the "edit person form" of a skillsheet
    * @return Person updated
    */
@@ -537,6 +501,56 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     });
     return personToUpdate;
+  }
+
+  /**
+  * Updates form data of a skillSheet given a Person
+  * @param  person Person containing data to display
+  */
+  updateFormItemsFromPerson(person: Person) {
+    if (person.role == PersonRole.APPLICANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'employer':
+            item.model = person.employer;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+    else if (person.role == PersonRole.CONSULTANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
   }
 
   makeName() {
