@@ -59,7 +59,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.filesForForum = [];
     for (const file of this.files) {
       const filePath = file.path;
-      if (filePath.startsWith('/Forum/') && !File.equals(this.filesSet, file)) {
+      if (filePath.startsWith('/forum/') && !File.equals(this.filesSet, file)) {
         this.filesForForum.push(file);
       }
     }
@@ -128,10 +128,6 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     };
 
     return this.dialog.open(DataFileDialogComponent, dialogConfig);
-  }
-
-
-  visualize() {
   }
 
   drop(event: CdkDragDrop<string[]>) {
