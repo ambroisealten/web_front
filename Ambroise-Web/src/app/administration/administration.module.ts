@@ -11,6 +11,7 @@ import { AdminService } from './services/admin.service';
 import { AdminDocumentMenuForumComponent } from './components/admin-document-menu-forum/admin-document-menu-forum.component';
 import { DataFileDialogComponent } from './components/data-file-dialog/data-file-dialog.component';
 import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spinner.component';
+import { DataSoftSkillDialogComponent } from './components/data-soft-skill-dialog/data-soft-skill-dialog.component';
 
 
 @NgModule({
@@ -20,12 +21,14 @@ import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spi
     DataAgencyDialogComponent,
     AdminDocumentMenuForumComponent,
     DataFileDialogComponent,
-    ProgressSpinnerComponent
+    ProgressSpinnerComponent,
+    DataSoftSkillDialogComponent,
   ],
   entryComponents: [
     DataFileDialogComponent,
     DataAgencyDialogComponent,
-    ProgressSpinnerComponent
+    ProgressSpinnerComponent,
+    DataSoftSkillDialogComponent
   ],
   imports: [
     CommonModule,

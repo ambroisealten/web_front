@@ -13,7 +13,7 @@
       <div class="panel-heading">
         <div class="panel-title">
           <h3 data-toggle="collapse" data-parent="#accordion" href="#agencies">
-            Agences 
+            Agences
           </h3>
         </div>
         <button class="addButton" mat-icon-button (click)="addAgency()">+</button>
@@ -23,11 +23,33 @@
         <div id="agencies" class="panel-collapse collapse in">
           <div class="panel-body">
             {{agency.name}} : {{agency.place}} <button mat-raised-button
-              (click)="updateAgency(agency)">Modifier</button> <button class="removeButton" mat-icon-button (click)="removeAgency(agency)">x</button>
+              (click)="updateAgency(agency)">Modifier</button> <button class="removeButton" mat-icon-button
+              (click)="removeAgency(agency)">x</button>
           </div>
         </div>
       </ng-container>
     </div>
     <!--End Agency Panel-->
+    <!--Start Soft Skill Panel-->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">
+          <h3 data-toggle="collapse" data-parent="#accordion" href="#softSkills">
+            Soft Skills
+          </h3>
+        </div>
+        <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
+        <hr>
+      </div>
+      <ng-container *ngFor="let softSkill of getSoftSkills() ">
+        <div id="softSkills" class="panel-collapse collapse in">
+          <div class="panel-body">
+            {{softSkill.name}} <button mat-raised-button (click)="updateSoftSkill(softSkill)">Modifier</button>
+            <button class="removeButton" mat-icon-button (click)="removeSoftSkill(softSkill)">x</button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <!--End Soft Skill Panel-->
   </div>
 </div>

@@ -124,7 +124,7 @@ export class AdminService {
         return this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options);
     }
 
-    makeRequest(url: string, method: string, postParams, callback) {
+    makeRequest(url: string, method: string, postParams) {
         const token = window.sessionStorage.getItem('bearerToken');
 
         const headerParams = new HttpHeaders({

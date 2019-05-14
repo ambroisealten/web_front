@@ -1,6 +1,6 @@
 export class Agency {
 
-    constructor(private name: string, private place: string, private placeType: string) { }
+    constructor(public name: string, public place: string, public placeType: string) { }
 
     getName() {
       return this.name;
