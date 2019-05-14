@@ -23,10 +23,10 @@ export class PageSkillsHomeComponent implements OnInit {
 
   skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
-  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills'];
+  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills','Java','C++','.NET','PHP','SQL'];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
   //Tableau contenant les compétences
-  compColumns: string[] = [];
+  compColumns: string[] = ['Java','C++','.NET','PHP','SQL'];
 
   //Tableau contenant les compétences recherchées
   compFilter: string[] = [];
@@ -129,6 +129,7 @@ export class PageSkillsHomeComponent implements OnInit {
           tmpSkillSheet['Avis'] = this.instantiateProperty(skills['skillsSheet'], 'avis');
           tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'disponibility');
           tmpSkillSheet['Moyenne Soft Skills'] = this.getAverageSoftSkillGrade(skills['skillsSheet']['skillsList']);
+          
           this.compColumns.forEach(comp => {
             let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase())
             if (tmpCompResult != undefined) {
@@ -250,6 +251,10 @@ export class PageSkillsHomeComponent implements OnInit {
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
+    }
+    else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != ""){
+      this.compFilter.push(this.rechercheInputCpt);
+      this.searchSkillSheets();
     }
     this.rechercheInputCpt = "";
   }
