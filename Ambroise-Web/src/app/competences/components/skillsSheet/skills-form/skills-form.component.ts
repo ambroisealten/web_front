@@ -439,6 +439,20 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
     this.currentPerson = this.updatePersonFromFormItems();
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
+  }
+
+  /**
+   * Update person's opinion on select
+   */
+  onOpinionChange() {
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -508,6 +522,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * @param  person Person containing data to display
   */
   updateFormItemsFromPerson(person: Person) {
+    this.avis = person.opinion; // update avis
     if (person.role == PersonRole.APPLICANT) {
       this.formItems.forEach(item => {
         switch (item.id) {
