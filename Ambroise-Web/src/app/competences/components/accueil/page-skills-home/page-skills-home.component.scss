@@ -83,7 +83,7 @@ body {
   background: #f5f5f5;
 }
 
-mat-cell {
+.mat-cell {
   font-size: 12px;
 }
 
@@ -119,4 +119,13 @@ mat-cell {
 
 .mat-row:nth-child(even) {
   background-color: var(--ALTENLightGray);
+}
+
+.mat-row:hover {
+  cursor: pointer;
+  background-color: var(--ALTENMarinBlue) !important;
+}
+
+.mat-row:hover td {
+  color: white;
 }

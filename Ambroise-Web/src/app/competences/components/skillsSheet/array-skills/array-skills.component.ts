@@ -20,7 +20,7 @@ export class ArraySkillsComponent implements OnInit {
   @Input() datatype: string; // 'skills' or 'softSkills'
   @Input() dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
-  @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ; 
+  @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ;
 
   //Subscription ;
   skillsSubscription ;
@@ -53,16 +53,16 @@ export class ArraySkillsComponent implements OnInit {
   * Filters array on input
   * @param  filterValue input string
   */
-  applyFilterSkills(filterValue: string) {
+  /*applyFilterSkills(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  }*/
 
   /**
   * Adds a skill into the array
   * @param  event skillName from input
   */
   addSkill(event) {
-    if(event.target.value != '') {
+    if(event.target.value.trim() != '') {
       let skillName = event.target.value;
 
       // if skillname not already in array : add it
@@ -127,7 +127,7 @@ export class ArraySkillsComponent implements OnInit {
   */
   updateDataSourceInService() {
     this.checkGradeValues();
-    this.skillsEvent.emit(this.dataSourceArray) ; 
+    this.skillsEvent.emit(this.dataSourceArray) ;
   }
 
   /**

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-import { timeout, catchError } from 'rxjs/operators';
+import { timeout, catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Person } from '../models/person';
 import { SkillsSheet } from '../models/skillsSheet';
+import { ErrorService } from 'src/app/services/error.service';
 
 @Injectable()
 /**
@@ -16,7 +16,8 @@ export class SkillsSheetService {
   /**
   * Temporary hardcoded json for data
   */
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+    private errorService: ErrorService) { }
 
   token = window.sessionStorage.getItem("bearerToken");
   headers = new HttpHeaders({
@@ -32,7 +33,7 @@ export class SkillsSheetService {
   createNewSkillsSheet(skillsSheet: SkillsSheet) {
     return this.httpClient
       .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
   /**
@@ -42,21 +43,12 @@ export class SkillsSheetService {
   updateSkillsSheet(skillsSheet: SkillsSheet) {
     return this.httpClient
       .put<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
   handleSkillsSheetError(error) {
     LoggerService.log(error, LogLevel.DEBUG);
     return undefined;
-  }
-
-  /**
-   * HTTP Get request to retrieve all existant skillsSheets in db
-   */
-  getAllSkillSheets(mail: string): Observable<{} | SkillsSheet[]> {
-    return this.httpClient
-      .get<{} | SkillsSheet[]>(environment.serverAddress + '/skillsheetMail/' + mail, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
   }
 
   /**
@@ -66,19 +58,14 @@ export class SkillsSheetService {
   getSkillsSheetsByMail(mail: string) {
     return this.httpClient
       .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetMail/" + mail, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
   getAllSkillsSheetVersions(skillsSheetName: String, mailPersonAttachedTo: String) {
     return this.httpClient
       .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetVersion/" + skillsSheetName + "/" + mailPersonAttachedTo, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+      .pipe(timeout(5000), 
+        catchError(error => this.errorService.handleError(error)));
   }
-
-  handleError(error){
-    LoggerService.log(error, LogLevel.DEBUG); // TODO add errors in switch/case
-    return undefined;
-  }
-
 
 }

@@ -1,11 +1,14 @@
 <div class="currentSheetInfo">
   <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})</p>
+
   <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
     maxlength="30" [ngModel]="currentSkillsSheet.name">
+    <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+    <button mat-raised-button (click)="setViewPDF()">PDF</button>
 </div>
 
 <div>
-  <button mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+  
   <div class="grid-container">
     <div class="infoForm">
       <mat-form-field *ngFor="let item of formItems; let index = index;">
@@ -47,19 +50,19 @@
     </div>
 
     <div class="skillsArrays">
-      <app-array-skills class="skillsArray" 
-        [displayedColumns]="skillsDisplayedColumns" 
+      <app-array-skills class="skillsArray"
+        [displayedColumns]="skillsDisplayedColumns"
         [dataSourceArray]="skillsArray"
-        [headerRowHidden]="headerRowHiddenSkills" 
-        datatype="skills" 
-        [dataSource]="skillsArrayDataSource" 
+        [headerRowHidden]="headerRowHiddenSkills"
+        datatype="skills"
+        [dataSource]="skillsArrayDataSource"
         (skillsEvent)="updateChartSkills($event)"></app-array-skills>
-      <app-array-skills class="softSkillsArray" 
-        [displayedColumns]="softSkillsDisplayedColumns" 
-        [dataSourceArray]="softSkillsArray" 
-        [headerRowHidden]="headerRowHiddenSkills" 
-        datatype="softSkills" 
-        [dataSource]="softSkillsArrayDataSource" 
+      <app-array-skills class="softSkillsArray"
+        [displayedColumns]="softSkillsDisplayedColumns"
+        [dataSourceArray]="softSkillsArray"
+        [headerRowHidden]="headerRowHiddenSkills"
+        datatype="softSkills"
+        [dataSource]="softSkillsArrayDataSource"
         (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
     </div>
 

@@ -19,28 +19,28 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 })
 export class PageSkillsHomeComponent implements OnInit {
 
-  @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel ;
+  @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel;
 
   skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
-  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills', 'JEE', 'C++', '.NET', 'PHP', 'SQL'];
+  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills','Java','C++','.NET','PHP','SQL'];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
   //Tableau contenant les compétences
-  compColumns: string[] = ['JEE', 'C++', '.NET', 'PHP', 'SQL'];
+  compColumns: string[] = ['Java','C++','.NET','PHP','SQL'];
 
   //Tableau contenant les compétences recherchées
-  compFilter: string[] = [] ;
+  compFilter: string[] = [];
   //Tableau contenant les autres filtres
-  filter: string[] = [] ;
+  filter: string[] = [];
 
   rechercheInput: string;
   rechercheInputCpt: string;
 
   //current skills[]
-  currentSkills: Skills[] ;
+  currentSkills: Skills[];
 
   //Subscription
-  subMenusSubscription ;
+  subMenusSubscription;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -53,20 +53,24 @@ export class PageSkillsHomeComponent implements OnInit {
 
   ngOnInit() {
     this.searchSkillSheets();
-    this.createMenu(); 
-    this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action)) ;
+    this.createMenu();
+    this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
 
   ngOnDestroy(){
-    this.subMenusSubscription.unsubscribe() ; 
+    if(this.subMenusSubscription != undefined){
+      this.subMenusSubscription.unsubscribe() ; 
+    } else {
+      LoggerService.log("ERROR SUBSCRIPTION : subMenusSubscription (page-skills-home Component), should have been set up",LogLevel.DEV)
+    }
   }
   /**
    * Cherche toutes les skillSheets
    * @author Quentin Della-pasqua
    */
   searchSkillSheets() {
-    this.skillsService.getAllSkills(this.filter,this.compFilter).subscribe(skillsList => {
-      if (skillsList != undefined){
+    this.skillsService.getAllSkills(this.filter, this.compFilter).subscribe(skillsList => {
+      if (skillsList != undefined) {
         this.createDataSource(skillsList['results'] as Skills[])
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
@@ -77,8 +81,8 @@ export class PageSkillsHomeComponent implements OnInit {
    * Crée les menus associé à la vue
    * @author Quentin Della-Pasqua
    */
-  createMenu(){
-    let subMenu: SubMenu[] = [] ; 
+  createMenu() {
+    let subMenu: SubMenu[] = [];
     subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'add_circle', 'create', []))
     this.subMenusService.notifySubMenu(subMenu);
   }
@@ -94,8 +98,8 @@ export class PageSkillsHomeComponent implements OnInit {
       this.subMenusService.notifyMenuAction("");
       if (actionSplit[0] == this.router.url) {
         if (actionSplit[1] === 'create') {
-          this.createSkillsSheetModal() ;
-        } 
+          this.createSkillsSheetModal();
+        }
       }
     }
   }
@@ -112,32 +116,33 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param skillsList
    * @author Quentin Della-Pasqua
    */
-  createDataSource(skillsList: Skills[]){
+  createDataSource(skillsList: Skills[]) {
     let skillSheet: any[] = [];
-    if(skillsList != []){
-      this.currentSkills = skillsList ;
+    if (skillsList != []) {
+      this.currentSkills = skillsList;
       skillsList.forEach(skills => {
         let tmpSkillSheet: any = {};
-        if(skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')){
-          tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'] ;
-          tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'] ;
-          tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'],'job') ;
-          tmpSkillSheet['Avis'] = this.instantiateProperty( skills['skillsSheet'],'avis') ;
-          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'],'disponibility') ;
+        if (skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')) {
+          tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'];
+          tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
+          tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
+          tmpSkillSheet['Avis'] = this.instantiateProperty(skills['skillsSheet'], 'avis');
+          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'disponibility');
           tmpSkillSheet['Moyenne Soft Skills'] = this.getAverageSoftSkillGrade(skills['skillsSheet']['skillsList']);
+          
           this.compColumns.forEach(comp => {
             let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase())
-            if (tmpCompResult != undefined){
+            if (tmpCompResult != undefined) {
               tmpSkillSheet[comp] = tmpCompResult.grade;
             } else {
-              tmpSkillSheet[comp] = "" ;
+              tmpSkillSheet[comp] = "";
             }
           })
-          tmpSkillSheet['skills'] = skills ;
-          skillSheet.push(tmpSkillSheet) ;
+          tmpSkillSheet['skills'] = skills;
+          skillSheet.push(tmpSkillSheet);
         }
       })
-      this.skillsSheetDataSource = new MatTableDataSource(skillSheet) ;
+      this.skillsSheetDataSource = new MatTableDataSource(skillSheet);
     }
   }
 
@@ -147,9 +152,9 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param testedProperty 
    * @author Quentin Della-Pasqua
    */
-  instantiateProperty(property,testedProperty:string):any{
-    if(property.hasOwnProperty(testedProperty)){
-      return property[testedProperty] ;
+  instantiateProperty(property, testedProperty: string): any {
+    if (property.hasOwnProperty(testedProperty)) {
+      return property[testedProperty];
     }
     return "";
   }
@@ -159,19 +164,19 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param skillsList
    * @author Quentin Della-Pasqua, Camille Schnell
    */
-  getAverageSoftSkillGrade(skillsList: SkillGraduated[]):number {
+  getAverageSoftSkillGrade(skillsList: SkillGraduated[]): number {
     let sumGrades = 0;
     let countSoft = 0;
-    for(let softSkill of skillsList) {
-      if(softSkill['skill'].hasOwnProperty('isSoft')){
+    for (let softSkill of skillsList) {
+      if (softSkill['skill'].hasOwnProperty('isSoft')) {
         sumGrades += softSkill.grade;
-        countSoft += 1 ;
+        countSoft += 1;
       }
     }
-    if(countSoft != 0){
+    if (countSoft != 0) {
       return +(sumGrades / countSoft).toFixed(2);
     }
-    return 0 ;
+    return 0;
   }
 
   /**
@@ -183,9 +188,9 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-      let skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] == skillsSheetData['nameSkillsSheet'] );
-      this.skillsService.notifySkills(skills);
-      this.redirectToSkillsSheet(skills['skillsSheet']['name'],skills['skillsSheet']['versionNumber']);
+    let skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] == skillsSheetData['nameSkillsSheet']);
+    this.skillsService.notifySkills(skills);
+    this.redirectToSkillsSheet(skills['skillsSheet']['name'], skills['skillsSheet']['versionNumber']);
   }
 
   /**
@@ -199,17 +204,16 @@ export class PageSkillsHomeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(skills => {
       let currentSkills = skills as Skills;
-      if(skills != "canceled" && skills != undefined)
-      {
-        if(currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
-          this.personSkillsService.getPersonByMail(currentSkills.skillsSheet.mailPersonAttachedTo).subscribe( person => {
-            this.skillsService.notifySkills(new Skills(person as Person,currentSkills.skillsSheet))
+      if (skills != "canceled" && skills != undefined) {
+        if (currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
+          this.personSkillsService.getPersonByMail(currentSkills.skillsSheet.mailPersonAttachedTo).subscribe(person => {
+            this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet))
           });
           this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
         }
         else {
           this.personSkillsService.createNewPerson(currentSkills.person).subscribe(httpResponse => {
-            if(httpResponse != undefined) {
+            if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
               this.createNewSkillSheet(currentSkills.person, currentSkills.skillsSheet);
             }
           });
@@ -225,15 +229,15 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   createNewSkillSheet(person, skillsSheet) {
     this.skillsSheetService.createNewSkillsSheet(skillsSheet).subscribe(httpResponse => {
-      if(httpResponse != undefined) {
-        this.skillsService.notifySkills(new Skills(person,skillsSheet));
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+        this.skillsService.notifySkills(new Skills(person, skillsSheet));
         this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.versionNumber);
       }
     })
   }
 
-  redirectToSkillsSheet(name:string, version:number) {
-    this.router.navigate(['skills/skillsheet/'+name+'/'+version]);
+  redirectToSkillsSheet(name: string, version: number) {
+    this.router.navigate(['skills/skillsheet/' + name + '/' + version]);
   }
 
   /**
@@ -241,12 +245,16 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   doAddSkill() {
-    if (this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 &&  this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
+    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 && this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "") {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
-      this.expansionCPT.expanded = true ;
+      this.expansionCPT.expanded = true;
+    }
+    else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != ""){
+      this.compFilter.push(this.rechercheInputCpt);
+      this.searchSkillSheets();
     }
     this.rechercheInputCpt = "";
   }
@@ -256,7 +264,7 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Maxime Maquinghen
    */
   doAddFilter() {
-    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) == -1 &&  this.rechercheInput != null && !this.rechercheInput.match("^\ +")  && this.rechercheInput != "") {
+    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) == -1 && this.rechercheInput != null && !this.rechercheInput.match("^\ +") && this.rechercheInput != "") {
       this.filter.push(this.rechercheInput);
       this.searchSkillSheets();
     }
@@ -269,9 +277,20 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Maxime Maquinghen
    */
   deleteSkillWord(event) {
-    this.compFilter = this.compFilter.filter(el => el !== event.srcElement.alt);
-    this.displayedColumns = this.displayedColumns.filter(el => el !== event.srcElement.alt);
+    let skillWordToDelete = event.srcElement.alt;
+    this.compFilter = this.compFilter.filter(el => el !== skillWordToDelete);
+    if(!this.isSkillWordInBasics(skillWordToDelete)) this.displayedColumns = this.displayedColumns.filter(el => el !== skillWordToDelete);
     this.searchSkillSheets();
+  }
+
+  /**
+   * Checks if the skill Word is in our 'basics' skills
+   * 
+   * @param skillWord the skill Word that we might delete
+   * @author Lucas Royackkers
+   */
+  isSkillWordInBasics(skillWord){
+    return skillWord.toLowerCase() == "c++" || skillWord.toLowerCase() == "php" || skillWord.toLowerCase() == "sql" || skillWord.toLowerCase() == ".net" || skillWord.toLowerCase() == "java";
   }
 
   /**
