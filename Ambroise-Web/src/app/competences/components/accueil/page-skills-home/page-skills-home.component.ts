@@ -350,7 +350,6 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param  event catch the sort event
    */
   onColumnSort(sort) {
-    console.log(sort);
     if(sort.active && sort.direction != "") {
       this.searchSkillSheets(this.translateColumnName(sort.active) + ',' + sort.direction);
     }
