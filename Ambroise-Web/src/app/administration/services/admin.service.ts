@@ -5,6 +5,8 @@ import { timeout } from 'rxjs/internal/operators/timeout';
 import { catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { DocumentSet } from '../models/DocumentSet';
+import { File as Document } from '../models/File';
+
 
 @Injectable()
 export class AdminService {
@@ -123,7 +125,7 @@ export class AdminService {
         return this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options);
     }
 
-    uploadFile(file: File, path: string): Observable<HttpEvent<{}>> {
+    uploadFile(file: File, path: string): Observable<HttpEvent<string>> {
         const formdata: FormData = new FormData();
         const token = window.sessionStorage.getItem('bearerToken');
 
@@ -135,7 +137,7 @@ export class AdminService {
         });
 
         const req = new HttpRequest('POST', this.baseUrl + 'file', formdata, {
-            headers : headerParams,
+            headers: headerParams,
             reportProgress: true,
             responseType: 'text'
         });

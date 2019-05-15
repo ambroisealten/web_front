@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { File as Document } from '../../models/File';
 import { AdminService } from '../../services/admin.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -92,14 +92,13 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
       path: document.path,
     };
     this.adminService.deleteFile(params, null).subscribe(() => {
+      this.files.splice(this.files.indexOf(document), 1);
       dialogProgress.close();
     });
   }
 
   editDocument(document: Document) {
-
     const dialogDocument = this.openDialogDocument(document);
-
     dialogDocument.afterClosed().subscribe(
       (data: any) => {
         if (data) {
@@ -237,7 +236,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
   }
 
   toHexString(file: Document) {
-    const char: string[] = []
+    const char: string[] = [];
     for (const b of this.toByteArray(file._id.timestamp, file._id.machineIdentifier, file._id.processIdentifier, file._id.counter)) {
       char.push(this.HEX_CHARS[b >> 4 & 0xF]);
       char.push(this.HEX_CHARS[b & 0xF]);
@@ -313,14 +312,13 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.subMenusService.notifySubMenu(subMenu);
   }
 
-  selectFile(event) {
-    this.selectedFiles = event.target.files;
+  selectFile($event) {
+    this.selectedFiles = $event.target.files;
   }
 
 
   upload() {
     this.progress = 0;
-
     const dialogProgress = ProgressSpinnerComponent.openDialogProgressDeterminate(this.dialog, this.progressObservable);
 
     this.currentFileUpload = this.selectedFiles.item(0);
@@ -328,11 +326,17 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
       if (event.type === HttpEventType.UploadProgress) {
         this.progress = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
+        const fileData = JSON.parse(event.body);
+        const newFile: Document = new Document(fileData._id,
+          fileData.path,
+          fileData.extension,
+          fileData.dateOfCreation,
+          fileData.displayName);
+        this.files.push(newFile);
+        this.onFilesChange();
         dialogProgress.close();
       }
     });
-
-    this.selectedFiles = undefined;
   }
 
 }

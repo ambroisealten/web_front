@@ -36,7 +36,7 @@ export class ProgressSpinnerComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     ProgressSpinnerComponent.mode = 'determinate';
     progressObservable.subscribe(value => {
-      console.log(value);
+      ProgressSpinnerComponent.value = value;
     });
 
     dialogConfig.disableClose = true;
