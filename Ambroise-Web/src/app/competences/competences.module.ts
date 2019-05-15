@@ -23,6 +23,7 @@ import { IsNotLoginService } from '../services/isNotLogin.service';
 import { SkillsService } from './services/skills.service';
 import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
+import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-view/skills-sheet-view.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { ArrayObsService } from './services/arrayObs.service';
     PageSkillsHomeComponent,
     ArraySkillsComponent,
     ArraySkillsUpdatesComponent,
-    SkillsFormComponent
+    SkillsFormComponent,
+    SkillsSheetViewComponent
   ],
   imports: [
     CommonModule,
@@ -48,6 +50,7 @@ import { ArrayObsService } from './services/arrayObs.service';
   ],
   entryComponents: [
     ModalSkillsCandidateComponent,
+    SkillsFormComponent
     //ConfirmationDialogComponent
   ],
   providers: [

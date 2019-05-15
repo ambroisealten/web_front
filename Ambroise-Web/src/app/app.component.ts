@@ -27,7 +27,6 @@ export class AppComponent {
     //  Récupération de la variable d'environement "globalLogType" pour initialiser
     //  le LoggerService
     LoggerService.parseLogType(environment.globalLogType);
-    const helmet = require('helmet')
   }
 
   ngOnInit(){
