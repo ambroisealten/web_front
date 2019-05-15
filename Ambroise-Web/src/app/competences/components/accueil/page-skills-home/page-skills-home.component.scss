@@ -115,9 +115,13 @@ body {
   color: var(--ALTENLightGray);
   font-size: 12px;
   background: var(--ALTENBlue);
-  padding-left: 5% !important;
-  padding-right: 5% !important;
+  //padding-left: 5% !important;
+  //padding-right: 5% !important;
   min-width: 100px;
+}
+
+td.mat-cell:first-of-type{
+  padding-left: 0 !important;
 }
 
 .mat-row:nth-child(even) {
@@ -131,4 +135,12 @@ body {
 
 .mat-row:hover td {
   color: white;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  color: white !important;
+}
+
+::ng-deep .mat-sort-header-button {
+  margin: auto;
 }

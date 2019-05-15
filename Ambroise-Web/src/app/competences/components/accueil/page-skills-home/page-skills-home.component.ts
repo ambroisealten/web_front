@@ -5,7 +5,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { SkillGraduated } from 'src/app/competences/models/skillsSheet';
+import { SkillGraduated, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
 import { Person } from 'src/app/competences/models/person';
@@ -14,7 +14,6 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {map} from 'rxjs/operators';
-import { ConsoleReporter } from 'jasmine';
 import { SkillsListService } from '../../../services/skillsList.service';
 
 @Component({
@@ -85,7 +84,7 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   getSkillsList(){
     this.skillsListService.getAllSkills().subscribe(skillsList=> {
-      this.options = (skillsList as Skills[]).map(skill => skill.name);
+      this.options = (skillsList as Skill[]).map(skill => skill.name);
     });
   }
 
