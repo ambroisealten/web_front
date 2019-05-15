@@ -57,7 +57,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   }
 
   getSoftSkills() {
-    console.log(this.softSkills);
     return this.softSkills;
   }
 

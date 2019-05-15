@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { SubMenu } from 'src/app/header/models/menu';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -20,24 +21,6 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class AdminDocumentComponent implements OnInit, OnDestroy {
 
-  files: Document[] = [];
-  filesForForum: Document[] = [];
-  filesSet: Document[] = [];
-  allSet: DocumentSet[] = [];
-  currentSet: DocumentSet;
-
-  selectedFiles: FileList;
-  currentFileUpload: File;
-  progress: { percentage: number } = { percentage: 0 };
-
-  submenusSubscription;
-
-  HEX_CHARS = [
-    '0', '1', '2', '3', '4', '5', '6', '7',
-    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-  ];
-
-
   constructor(
     private adminService: AdminService,
     private dialog: MatDialog,
@@ -46,6 +29,29 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.fetchAllSet();
     this.searchFiles();
   }
+  progress = 0;
+
+  progressObservable = new Observable<number>((observer) => {
+    // observable execution
+    observer.next(this.progress);
+    observer.complete();
+  });
+
+  files: Document[] = [];
+  filesForForum: Document[] = [];
+  filesSet: Document[] = [];
+  allSet: DocumentSet[] = [];
+  currentSet: DocumentSet;
+
+  selectedFiles: FileList;
+  currentFileUpload: File;
+
+  submenusSubscription;
+
+  HEX_CHARS = [
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+  ];
 
   ngOnInit() {
     this.createMenu();
@@ -311,18 +317,22 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.selectedFiles = event.target.files;
   }
 
+
   upload() {
-    this.progress.percentage = 0;
+    this.progress = 0;
+
+    const dialogProgress = ProgressSpinnerComponent.openDialogProgressDeterminate(this.dialog, this.progressObservable);
 
     this.currentFileUpload = this.selectedFiles.item(0);
     this.adminService.uploadFile(this.currentFileUpload, '/forum/').subscribe(event => {
       if (event.type === HttpEventType.UploadProgress) {
-        this.progress.percentage = Math.round(100 * event.loaded / event.total);
+        this.progress = Math.round(100 * event.loaded / event.total);
       } else if (event instanceof HttpResponse) {
-        console.log('File is completely uploaded!');
+        dialogProgress.close();
       }
     });
 
     this.selectedFiles = undefined;
   }
+
 }
