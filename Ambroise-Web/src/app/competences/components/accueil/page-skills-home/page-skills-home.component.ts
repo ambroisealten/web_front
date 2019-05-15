@@ -13,9 +13,8 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ConsoleReporter } from 'jasmine';
-import { Skills } from '../../../models/skills';
 import { SkillsListService } from '../../../services/skillsList.service';
 
 @Component({
@@ -39,7 +38,7 @@ export class PageSkillsHomeComponent implements OnInit {
   //Tableau contenant les autres filtres
   filter: string[] = [];
 
-  //Tableau contenant toutes les options (compétences)
+  //Tableau contenant toutes les options (compétences) pour l'auto-complétion
   options : string[];
   filteredOptions : Observable<string[]>;
   myControl = new FormControl();

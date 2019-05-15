@@ -13,6 +13,10 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { MatTableDataSource } from '@angular/material';
 import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { SkillsListService } from '../../../services/skillsList.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -44,6 +48,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   //Form displayed
   formItems: any[];
+
+  //Tableau contenant toutes les options (compétences) pour l'auto-complétion
+  options : string[];
+  filteredOptions : Observable<string[]>;
+  myControl = new FormControl();
 
   //Charts
   skillsChart = Chart;
@@ -81,7 +90,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private personSkillsService: PersonSkillsService,
     private router: Router,
     private route: ActivatedRoute,
-    private subMenusService: SubMenusService) {
+    private subMenusService: SubMenusService,
+    private skillsListService :SkillsListService) {
   }
 
   /***********************************************************************\
@@ -96,7 +106,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    *        - init both charts of skills and soft skills
    */
   ngOnInit() {
-
+    this.getSkillsList();
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      map(value => this._filter(value))
+    );
     this.route.params.subscribe(param => {
       //Get param in the url
       this.name = param['name']
@@ -138,6 +151,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       //Update chart
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
+
+
   }
 
   ngOnDestroy() {
@@ -168,6 +183,32 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (!skillsSheetStored) {
       window.sessionStorage.setItem('skills', JSON.stringify(skillsSheets));
     }
+  }
+
+  /**
+   * Filtre toutes les options qui correspondent à l'input user
+   * 
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Lucas Royackkers
+   */
+  private _filter(value: string): string[] {
+    if(value.length != 0){
+      const filterValue = value.toLowerCase();
+      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+    else{
+      return [];
+    }
+  }
+
+  /**
+   * Cherche toutes les compétences en base
+   * @author Lucas Royackkers
+   */
+  getSkillsList(){
+    this.skillsListService.getAllSkills().subscribe(skillsList=> {
+      this.options = (skillsList as Skills[]).map(skill => skill.name);
+    });
   }
 
     /**

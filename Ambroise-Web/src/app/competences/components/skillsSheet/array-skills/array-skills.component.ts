@@ -3,6 +3,10 @@ import { MatTableDataSource } from '@angular/material';
 import { SkillsSheetService } from '../../../services/skillsSheet.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
+import { SkillsListService } from '../../../services/skillsList.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-array-skills',
@@ -22,16 +26,26 @@ export class ArraySkillsComponent implements OnInit {
 
   @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ;
 
+  //Tableau contenant toutes les options (compétences) pour l'auto-complétion
+  options : string[];
+  filteredOptions : Observable<string[]>;
+  myControl = new FormControl();
+
   //Subscription ;
   skillsSubscription ;
 
-  constructor(private arrayObsService: ArrayObsService) {
+  constructor(private arrayObsService: ArrayObsService,
+    private skillsListService : SkillsListService) {
   }
 
   /**
    * Inits dataSource of array : skills or soft skills
    */
   ngOnInit() {
+    this.getSkillsList();
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      map(value => this._filter(value))
+    );
   }
 
   ngOnDestroy(){
@@ -56,6 +70,33 @@ export class ArraySkillsComponent implements OnInit {
   /*applyFilterSkills(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }*/
+
+    /**
+   * Cherche toutes les compétences en base
+   * @author Lucas Royackkers
+   */
+  getSkillsList(){
+    this.skillsListService.getAllSkills().subscribe(skillsList=> {
+      this.options = (skillsList as Skills[]).map(skill => skill.name);
+    });
+  }
+
+    /**
+   * Filtre toutes les options qui correspondent à l'input user
+   * 
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Lucas Royackkers
+   */
+  private _filter(value: string): string[] {
+    if(value.length != 0){
+      const filterValue = value.toLowerCase();
+      this.rechercheInputCpt = value;
+      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+    else{
+      return [];
+    }
+  }
 
   /**
   * Adds a skill into the array

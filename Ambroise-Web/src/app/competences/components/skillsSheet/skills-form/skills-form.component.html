@@ -6,14 +6,21 @@
     <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
 </div>
 
+<ng-template #elseBlock>
+  <p>Diplôme</p>
+</ng-template>
+
 <div>
   
   <div class="grid-container">
     <div class="infoForm">
-      <mat-form-field *ngFor="let item of formItems; let index = index;">
-        <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
-          [disabled]="isPersonDataDisabled">
-      </mat-form-field>
+      <ng-container *ngFor="let item of formItems, let index = index;">
+          <mat-form-field *ngIf="index != 0; else elseBlock">
+              <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
+              [disabled]="isPersonDataDisabled">
+          </mat-form-field>
+      </ng-container> 
+      
 
       <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
         <mat-icon class="editIcon">edit</mat-icon>
