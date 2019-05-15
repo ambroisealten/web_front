@@ -5,13 +5,25 @@
   border-color: var(--ALTENBlue);
 }
 
-table,
-td, th {
-    border: 1px solid #333;
+table {
+  margin: 0%;
+  max-width: 75vw;
 }
 
-td p{
+th {
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--ALTENLightGray);
+  font-size: 12px;
+  background: var(--ALTENBlue);
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  min-width: 100px;
+}
+
+td {
   margin: auto;
+  font-size: 12px;
 }
 
 .download{
