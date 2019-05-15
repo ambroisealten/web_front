@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { File } from '../../models/File';
+import { File as Document } from '../../models/File';
 import { AdminService } from '../../services/admin.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog, MatDialogConfig } from '@angular/material';
@@ -10,6 +10,7 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 import { Router } from '@angular/router';
 import { SubMenu } from 'src/app/header/models/menu';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 
 @Component({
@@ -19,11 +20,15 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 })
 export class AdminDocumentComponent implements OnInit, OnDestroy {
 
-  files: File[] = [];
-  filesForForum: File[] = [];
-  filesSet: File[] = [];
+  files: Document[] = [];
+  filesForForum: Document[] = [];
+  filesSet: Document[] = [];
   allSet: DocumentSet[] = [];
   currentSet: DocumentSet;
+
+  selectedFiles: FileList;
+  currentFileUpload: File;
+  progress: { percentage: number } = { percentage: 0 };
 
   submenusSubscription;
 
@@ -59,7 +64,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.filesForForum = [];
     for (const file of this.files) {
       const filePath = file.path;
-      if (filePath.startsWith('/forum/') && !File.equals(this.filesSet, file)) {
+      if (filePath.startsWith('/forum/') && !Document.equals(this.filesSet, file)) {
         this.filesForForum.push(file);
       }
     }
@@ -73,7 +78,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     return this.files;
   }
 
-  removeDocument(document: File) {
+  removeDocument(document: Document) {
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
     const params = {
       _id: document._id,
@@ -85,7 +90,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     });
   }
 
-  editDocument(document: File) {
+  editDocument(document: Document) {
 
     const dialogDocument = this.openDialogDocument(document);
 
@@ -110,7 +115,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
       });
   }
 
-  openDialogDocument(document: File) {
+  openDialogDocument(document: Document) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
@@ -182,7 +187,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
   }
 
   searchFiles() {
-    this.adminService.getFiles().subscribe((filesList: File[]) => {
+    this.adminService.getFiles().subscribe((filesList: Document[]) => {
       if (filesList !== undefined) {
         filesList.forEach(file => {
           file._id = this.toHexString(file);
@@ -206,7 +211,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
   }
 
   fetchFile(fileName: string) {
-    this.adminService.getFile(fileName).subscribe((file: File) => {
+    this.adminService.getFile(fileName).subscribe((file: Document) => {
       if (file !== undefined) {
         file._id = this.toHexString(file);
         this.filesSet.push(file);
@@ -225,7 +230,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     });
   }
 
-  toHexString(file: File) {
+  toHexString(file: Document) {
     const char: string[] = []
     for (const b of this.toByteArray(file._id.timestamp, file._id.machineIdentifier, file._id.processIdentifier, file._id.counter)) {
       char.push(this.HEX_CHARS[b >> 4 & 0xF]);
@@ -300,5 +305,24 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     subMenu.push(this.subMenusService.createMenu('Documents', [], 'storage', 'redirect/admin/document', []));
     subMenu.push(this.subMenusService.createMenu('Données Applicatives', [], 'dashboard', 'redirect/admin/dataApp', []));
     this.subMenusService.notifySubMenu(subMenu);
+  }
+
+  selectFile(event) {
+    this.selectedFiles = event.target.files;
+  }
+
+  upload() {
+    this.progress.percentage = 0;
+
+    this.currentFileUpload = this.selectedFiles.item(0);
+    this.adminService.uploadFile(this.currentFileUpload, '/forum/').subscribe(event => {
+      if (event.type === HttpEventType.UploadProgress) {
+        this.progress.percentage = Math.round(100 * event.loaded / event.total);
+      } else if (event instanceof HttpResponse) {
+        console.log('File is completely uploaded!');
+      }
+    });
+
+    this.selectedFiles = undefined;
   }
 }

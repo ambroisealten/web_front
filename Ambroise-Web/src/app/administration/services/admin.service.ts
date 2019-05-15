@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { timeout } from 'rxjs/internal/operators/timeout';
 import { catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
@@ -8,7 +8,6 @@ import { DocumentSet } from '../models/DocumentSet';
 
 @Injectable()
 export class AdminService {
-
 
     constructor(private httpClient: HttpClient) { }
 
@@ -122,6 +121,26 @@ export class AdminService {
             headers: headerParams,
         };
         return this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options);
+    }
+
+    uploadFile(file: File, path: string): Observable<HttpEvent<{}>> {
+        const formdata: FormData = new FormData();
+        const token = window.sessionStorage.getItem('bearerToken');
+
+        formdata.append('file', file);
+        formdata.append('path', path);
+
+        const headerParams = new HttpHeaders({
+            Authorization: token !== '' ? token : ''
+        });
+
+        const req = new HttpRequest('POST', this.baseUrl + 'file', formdata, {
+            headers : headerParams,
+            reportProgress: true,
+            responseType: 'text'
+        });
+
+        return this.httpClient.request(req);
     }
 
     makeRequest(url: string, method: string, postParams) {
