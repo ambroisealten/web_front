@@ -137,9 +137,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
-    if (this.skillsSubscription != undefined) {
-      this.skillsSubscription.unsubscribe();
-    }
   }
 
   /***********************************************************************\
@@ -148,7 +145,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    *
   \***********************************************************************/
 
-  /**
+/**
  * Check among skillsSheet the one which correspond to the url
  * @param skillsSheets
  * @author Quentin Della-Pasqua

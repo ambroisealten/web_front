@@ -24,6 +24,7 @@ import { SkillsService } from './services/skills.service';
 import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
 import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-view/skills-sheet-view.component';
+import { PdfComponent } from './components/skillsSheet/pdf/pdf.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-
     ArraySkillsComponent,
     ArraySkillsUpdatesComponent,
     SkillsFormComponent,
-    SkillsSheetViewComponent
+    SkillsSheetViewComponent,
+    PdfComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +52,8 @@ import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-
   ],
   entryComponents: [
     ModalSkillsCandidateComponent,
-    SkillsFormComponent
+    SkillsFormComponent,
+    PdfComponent
     //ConfirmationDialogComponent
   ],
   providers: [

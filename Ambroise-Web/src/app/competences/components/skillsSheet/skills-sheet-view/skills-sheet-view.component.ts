@@ -10,6 +10,7 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 import { Skills } from 'src/app/competences/models/skills';
 import { Person } from 'src/app/competences/models/person';
+import { PdfComponent } from '../pdf/pdf.component';
 
 @Component({
   selector: 'app-skills-sheet-view',
@@ -65,6 +66,7 @@ export class SkillsSheetViewComponent implements OnInit, OnDestroy {
     if (this.skillsSubscription != undefined) {
       this.skillsSubscription.unsubscribe();
     }
+    this.subMenusService.resetSubMenu() ; 
   }
 
   /**
@@ -109,8 +111,14 @@ export class SkillsSheetViewComponent implements OnInit, OnDestroy {
     try {
       this.componentRef.destroy();
     } catch (e) {
-
     }
+    this.entry.clear();
+    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(PdfComponent);
+    this.componentRef = this.entry.createComponent(componentFactory);
+    const subBack: Subscription = this.componentRef.instance.goBack.subscribe(event => this.setSkillsFormComponent());
+    this.componentRef.onDestroy(() => subBack.unsubscribe());
   }
+
+  
 
 }
