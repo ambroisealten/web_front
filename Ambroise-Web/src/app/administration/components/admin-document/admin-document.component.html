@@ -3,11 +3,13 @@
   <h1>Documents de l'application</h1>
   <hr>
 
-  <label class="btn btn-default">
-    <input type="file" (change)="selectFile($event)">
-  </label>
-   
-  <button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload()">Upload</button>
+  <div id="upload">
+    <label class="btn btn-default">
+      <input id="chooseFile" type="file" (change)="selectFile($event)">
+      <button class="btn btn-success"
+        [disabled]="!selectedFiles" (click)="upload()">Upload</button>
+    </label>
+  </div>
 
   <table id="documentsTable">
     <thead>
