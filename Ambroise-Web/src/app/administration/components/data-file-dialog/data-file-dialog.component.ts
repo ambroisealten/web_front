@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
@@ -19,9 +19,9 @@ export class DataFileDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<DataFileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataFile) {
 
-      this.path = dataFile.path;
-      this.displayName = dataFile.displayName;
-      this.description = dataFile.description;
+    this.path = dataFile.path;
+    this.displayName = dataFile.displayName;
+    this.description = dataFile.description;
 
   }
 
@@ -32,12 +32,14 @@ export class DataFileDialogComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
       displayName: [this.displayName, []],
-      path: [this.path, []],
+      path: [this.path, [Validators.required, Validators.pattern('^\/.*\/$')]],
     });
   }
 
   save() {
-    this.dialogRef.close(this.form.value);
+    if (this.form.valid) {
+      this.dialogRef.close(this.form.value);
+    }
   }
 
   close() {

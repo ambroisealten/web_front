@@ -104,16 +104,16 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
           const oldPath = document.path;
-          document.path = data.path;
-          document.displayName = data.displayName;
           const postParams = {
             oldPath,
-            newPath: document.path,
-            displayName: document.displayName,
+            newPath: data.path,
+            displayName: data.displayName,
             _id: document._id,
             extension: document.extension
           };
           this.adminService.updateFile(postParams, '').subscribe(() => {
+            document.path = data.path;
+            document.displayName = data.displayName;
             dialogProgress.close();
           });
         }
@@ -319,7 +319,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
 
   upload() {
     this.progress = 0;
-    const dialogProgress = ProgressSpinnerComponent.openDialogProgressDeterminate(this.dialog, this.progressObservable);
+    const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
 
     this.currentFileUpload = this.selectedFiles.item(0);
     this.adminService.uploadFile(this.currentFileUpload, '/forum/').subscribe(event => {
