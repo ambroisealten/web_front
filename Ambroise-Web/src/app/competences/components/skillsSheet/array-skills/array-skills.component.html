@@ -1,4 +1,4 @@
-<ng-container *ngIf="datatype == 'skills'; else elseBlock">
+<ng-container *ngIf="!searchBarHidden">
   <mat-form-field>
       <input matInput placeholder="Recherche" (keyup.enter)="addSkill($event)"
       [formControl]="myControl" [matAutocomplete]="auto">
@@ -10,9 +10,6 @@
   </mat-form-field>
 </ng-container>
 
-<ng-template #elseBlock>
-  <p>Soft Skills</p>
-</ng-template>
 
 <div class="tab-div">
 <table mat-table [dataSource]="dataSource">

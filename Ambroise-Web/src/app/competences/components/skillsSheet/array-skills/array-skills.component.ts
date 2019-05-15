@@ -90,7 +90,6 @@ export class ArraySkillsComponent implements OnInit {
   private _filter(value: string): string[] {
     if(value.length != 0){
       const filterValue = value.toLowerCase();
-      this.rechercheInputCpt = value;
       return this.options.filter(option => option.toLowerCase().includes(filterValue));
     }
     else{
