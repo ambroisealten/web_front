@@ -44,7 +44,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ;
 
   headerRowHiddenModif = false;
-  headerRowHiddenSkills = true;
 
   //Form displayed
   formItems: any[];
@@ -148,18 +147,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       } else {
         this.formItems = null;
       }
-      //Update chart
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
 
 
+    this.enableEditIfFormFieldsEmpty();
   }
 
   ngOnDestroy() {
     if(this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
     if( this.skillsSubscription != undefined){
-      this.skillsSubscription.unsubscribe() ; 
+      this.skillsSubscription.unsubscribe() ;
     }
   }
 
@@ -317,56 +316,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
       });
       this.versionsArray = new MatTableDataSource(versions);
-    }
-  }
-
-  /**
-  * Updates form data of a skillSheet given a Person
-  * @param  person Person containing data to display
-  */
-  updateFormItemsFromPerson(person: Person) {
-    if (person.role == PersonRole.APPLICANT) {
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            item.model = person.highestDiploma;
-            break;
-          case 'highestDiplomaYear':
-            item.model = person.highestDiplomaYear;
-            break;
-          case 'employer':
-            item.model = person.employer;
-            break;
-          case 'job':
-            item.model = person.job;
-            break;
-          case 'monthlyWage':
-            item.model = person.monthlyWage;
-            break;
-          default:
-            break;
-        }
-      });
-    }
-    else if (person.role == PersonRole.CONSULTANT) {
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            item.model = person.highestDiploma;
-            break;
-          case 'highestDiplomaYear':
-            item.model = person.highestDiplomaYear;
-            break;
-          case 'job':
-            item.model = person.job;
-            break;
-          case 'monthlyWage':
-            item.model = person.monthlyWage;
-            break;
-          default:
-            break;
-        }
-      });
     }
   }
 
@@ -531,6 +480,20 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
     this.currentPerson = this.updatePersonFromFormItems();
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
+  }
+
+  /**
+   * Update person's opinion on select
+   */
+  onOpinionChange() {
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -547,6 +510,22 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
+  }
+
+  /**
+   * if no info about person yet : edit person form is enabled
+   */
+  enableEditIfFormFieldsEmpty() {
+    let allEmpty = true;
+    this.formItems.forEach(item => {
+      if(item.model != '' && item.model != '0') {
+        allEmpty = false;
+      }
+    });
+    if(allEmpty) {
+      this.isPersonDataDisabled = false;
+      this.isEditButtonHidden = true;
+    }
   }
 
   /**
@@ -577,6 +556,57 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     });
     return personToUpdate;
+  }
+
+  /**
+  * Updates form data of a skillSheet given a Person
+  * @param  person Person containing data to display
+  */
+  updateFormItemsFromPerson(person: Person) {
+    this.avis = person.opinion; // update avis
+    if (person.role == PersonRole.APPLICANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'employer':
+            item.model = person.employer;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+    else if (person.role == PersonRole.CONSULTANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
   }
 
   makeName() {

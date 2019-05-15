@@ -11,7 +11,7 @@
 </ng-template>
 
 <div>
-  
+
   <div class="grid-container">
     <div class="infoForm">
       <ng-container *ngFor="let item of formItems, let index = index;">
@@ -39,7 +39,7 @@
 
       <mat-form-field style="margin-top: 2%;">
         <mat-label>Avis</mat-label>
-        <mat-select [(ngModel)]="avis">
+        <mat-select [(ngModel)]="avis" (ngModelChange)="onOpinionChange()">
           <mat-option value="+++">+++</mat-option>
           <mat-option value="++">++</mat-option>
           <mat-option value="+">+</mat-option>
@@ -56,18 +56,24 @@
     </div>
 
     <div class="skillsArrays">
+      <div class="skillsArrayTitle">
+        Compétences
+      </div>
       <app-array-skills class="skillsArray"
         [displayedColumns]="skillsDisplayedColumns"
         [dataSourceArray]="skillsArray"
-        [headerRowHidden]="headerRowHiddenSkills"
-        datatype="skills"
+        [removeBtnHidden]="false"
+        [searchBarHidden]="false"
         [dataSource]="skillsArrayDataSource"
         (skillsEvent)="updateChartSkills($event)"></app-array-skills>
+      <div class="skillsArrayTitle">
+        Soft Skills
+      </div>
       <app-array-skills class="softSkillsArray"
         [displayedColumns]="softSkillsDisplayedColumns"
         [dataSourceArray]="softSkillsArray"
-        [headerRowHidden]="headerRowHiddenSkills"
-        datatype="softSkills"
+        [removeBtnHidden]="true"
+        [searchBarHidden]="true"
         [dataSource]="softSkillsArrayDataSource"
         (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
     </div>

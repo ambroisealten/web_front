@@ -20,8 +20,8 @@ export class ArraySkillsComponent implements OnInit {
 
   @Input() displayedColumns: string[]; // names of columns to display
   @Input() dataSourceArray: any[]; // data array
-  @Input() headerRowHidden: boolean; // is header row (columns title) hidden
-  @Input() datatype: string; // 'skills' or 'softSkills'
+  @Input() removeBtnHidden: boolean; // is remove button hidden in rows
+  @Input() searchBarHidden: boolean; // is search bar hidden
   @Input() dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
   @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ;
@@ -108,17 +108,11 @@ export class ArraySkillsComponent implements OnInit {
 
       // if skillname not already in array : add it
       if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
-        if(this.datatype == "softSkills") { // add isSoft field if soft skill
-          let softSkill = new Skill(skillName);
-          softSkill.isSoft = "";
-          this.dataSourceArray.push(new SkillGraduated(softSkill, 1));
-        }
-        else {
-          this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
-        }
-        this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
-        this.updateDataSourceInService();
+      this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
+      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+
+      this.updateDataSourceInService();
       }
       event.target.value = '';
     }
@@ -160,7 +154,6 @@ export class ArraySkillsComponent implements OnInit {
     });
 
     this.updateDataSourceInService();
-
   }
 
   /**

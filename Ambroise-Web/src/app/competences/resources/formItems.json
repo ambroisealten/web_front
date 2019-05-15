@@ -26,7 +26,7 @@
         },
         {
           "label": "Disponibilité",
-          "type": "date",
+          "type": "text",
           "id": "disponibility",
           "model": ""
         },
