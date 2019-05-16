@@ -5,7 +5,7 @@
 
   <div id="upload">
     <label class="btn btn-default">
-      <input id="chooseFile" type="file" (change)="selectFile($event)" [formControl]="clearControl">
+      <input multiple id="chooseFile" type="file" (change)="selectFile($event)" [formControl]="clearControl">
       <button class="btn btn-success"
         (click)="upload()" [disabled]="isNotSelectedFiles()">Upload</button>
     </label>

@@ -45,7 +45,6 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
   currentSet: DocumentSet;
 
   selectedFiles: FileList;
-  currentFileUpload: File;
   clearControl = new FormControl();
 
   submenusSubscription;
@@ -97,6 +96,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.adminService.deleteFile(params, null).subscribe(() => {
       this.files.splice(this.files.indexOf(document), 1);
       this.onFilesChange();
+      this.fetchAllSet();
       this.fetchCurrentSet();
       dialogProgress.close();
     });
@@ -211,6 +211,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
   }
 
   fetchCurrentSet() {
+    this.filesSet = [];
     this.adminService.getSetFiles(this.currentSet.name).subscribe((set: DocumentSet) => {
       if (set !== undefined) {
         this.currentSet = set;
@@ -327,25 +328,27 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     this.progress = 0;
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
 
-    this.currentFileUpload = this.selectedFiles.item(0);
-    this.adminService.uploadFile(this.currentFileUpload, '/forum/').subscribe(event => {
-      if (event.type === HttpEventType.UploadProgress) {
-        this.progress = Math.round(100 * event.loaded / event.total);
-      } else if (event instanceof HttpResponse) {
-        const fileData = JSON.parse(event.body);
-        const newFile: Document = new Document(fileData._id,
-          fileData.path,
-          fileData.extension,
-          fileData.dateOfCreation,
-          fileData.displayName);
-        newFile._id = this.toHexString(newFile);
-        this.files.push(newFile);
-        this.onFilesChange();
-        dialogProgress.close();
-      }
-    });
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      const currentFileUpload = this.selectedFiles.item(i);
+      this.adminService.uploadFile(currentFileUpload, '/forum/').subscribe(event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progress = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+          const fileData = JSON.parse(event.body);
+          const newFile: Document = new Document(fileData._id,
+            fileData.path,
+            fileData.extension,
+            fileData.dateOfCreation,
+            fileData.displayName);
+          newFile._id = this.toHexString(newFile);
+          this.files.push(newFile);
+        }
+      });
+    }
+    this.onFilesChange();
     this.clearControl.setValue('');
     this.selectedFiles = null;
+    dialogProgress.close();
   }
 
   isNotSelectedFiles() {
@@ -395,11 +398,11 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
         rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
         switching = true;
         // Each time a switch is done, increase this count by 1:
-        switchcount ++;
+        switchcount++;
       } else {
         /* If no switching has been done AND the direction is "asc",
         set the direction to "desc" and run the while loop again. */
-        if (switchcount == 0 && dir == 'asc') {
+        if (switchcount === 0 && dir === 'asc') {
           dir = 'desc';
           switching = true;
         }
