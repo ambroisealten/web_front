@@ -11,8 +11,10 @@
   <div class="grid-container">
     <div class="infoForm">
       <mat-form-field *ngFor="let item of formItems; let index = index;">
-        <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+        <input *ngIf="item.id != 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
           [disabled]="isPersonDataDisabled">
+        <input *ngIf="item.id == 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+          [disabled]="isPersonDataDisabled" [ngStyle]="{'color': inputFormTextColor}">
       </mat-form-field>
 
       <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">

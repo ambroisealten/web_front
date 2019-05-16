@@ -44,6 +44,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   //Form displayed
   formItems: any[];
 
+  // text color in person info form
+  inputFormTextColor: string = "var(--ALTENDarkGray)";
+
   //Charts
   skillsChart = Chart;
   softSkillsChart = Chart;
@@ -580,13 +583,16 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Dynamically change experience years when highest diploma year is updated
+   * Dynamically change experience years when highest diploma year is updated (text color change)
    * @param  item item containing highestDiplomaYear information
    */
   checkChangeExperienceTime(item) {
-    if(item.id == "highestDiplomaYear" && item.model.length == 4 && item.model < new Date().getFullYear() && item.model > 1960) {
+    if(item.id == "highestDiplomaYear" && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
         let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
         this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
+        this.inputFormTextColor = "var(--ALTENOrange)";
+    } else if(item.id == "experienceTime") { // set default gray color if experienceTime changed by user
+      this.inputFormTextColor = "var(--ALTENDarkGray)";
     }
   }
 
