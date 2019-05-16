@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SkillGraduated, SkillsSheet } from 'src/app/competences/models/skillsSheet';
+import { SkillGraduated, SkillsSheet, Skill } from 'src/app/competences/models/skillsSheet';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person } from 'src/app/competences/models/person';
@@ -76,6 +76,12 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill)
       }
     });
+    while(this.skillsArray.length < 12 ){
+      this.skillsArray.push(new SkillGraduated(new Skill("TEST"),1))
+    }
+    while(this.softSkillsArray.length < 7 ){
+      this.softSkillsArray.push(new SkillGraduated(new Skill("TEST"),1))
+    }
   }
 
   /**
@@ -159,6 +165,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   redirectAfterAction(redirect: string) {
     this.subMenusService.resetMenuAction();
+    this.subMenusService.resetSubMenu() ; 
     this.router.navigate([redirect]);
     this.goBack.next('skills/skillsheet/') ; 
   }
@@ -169,17 +176,14 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   downloadPDF(){
     var data = document.getElementById("contentToConvert") ; 
-    html2canvas(data).then(canvas => {  
-      // Few necessary setting options  
-      var imgWidth = 208;   
-      var pageHeight = 295;    
-      var imgHeight = canvas.height * imgWidth / canvas.width;  
-      var heightLeft = imgHeight;  
-  
+    html2canvas(data,{scale: 2.5}).then(canvas => {  
       const contentDataURL = canvas.toDataURL('image/png')  
+     
       let pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  
-      var position = 0;  
-      pdf.addImage(contentDataURL, 'PNG', 0, 0, 297, 210) ;
+      var width = pdf.internal.pageSize.getWidth();
+      var height = pdf.internal.pageSize.getHeight();
+
+      pdf.addImage(contentDataURL, 'PNG', 0, 0,297,210) ;
       pdf.save(this.name + '.pdf'); // Generated PDF   
     });  
   }
@@ -188,7 +192,7 @@ export class PdfComponent implements OnInit, OnDestroy {
    *
    *                          CHART FUNCTIONS
    *
-  \***********************************************************************/
+  \***********************************************************************/ 
 
   /**
    * Updates the radar chart for skills
