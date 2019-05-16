@@ -62,8 +62,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   name: string;
   version: number;
 
-  //
+  // avis + comment
   avis: string;
+  comment: string = "";
+
+  // edit enabled/disabled
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
@@ -128,9 +131,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (this.currentPerson.role == PersonRole.APPLICANT) {
         this.formItems = formItemsJSON["candidateFormItems"];
         this.updateFormItemsFromPerson(this.currentPerson);
+        this.comment = this.currentSkillsSheet.comment;
       } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
         this.formItems = formItemsJSON["consultantFormItems"];
         this.updateFormItemsFromPerson(this.currentPerson);
+        this.comment = this.currentSkillsSheet.comment;
       } else {
         this.formItems = null;
       }
@@ -318,7 +323,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
   let tmpExisting;
   if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-    this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+    this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+    this.currentSkillsSheet.comment = this.comment;
     this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
         this.currentSkillsSheet.versionNumber += 1
@@ -331,6 +337,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     });
   } else {
     this.currentSkillsSheet.versionNumber = 1;
+    this.currentSkillsSheet.comment = this.comment;
     this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
         let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
@@ -347,7 +354,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+      this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1
@@ -359,6 +367,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     } else {
       this.currentSkillsSheet.versionNumber = 1;
+      this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
@@ -567,6 +576,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             break;
         }
       });
+    }
+  }
+
+  /**
+   * Dynamically change experience years when highest diploma year is updated
+   * @param  item item containing highestDiplomaYear information
+   */
+  checkChangeExperienceTime(item) {
+    if(item.id == "highestDiplomaYear" && item.model.length == 4 && item.model < new Date().getFullYear() && item.model > 1960) {
+        let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
+        this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
     }
   }
 

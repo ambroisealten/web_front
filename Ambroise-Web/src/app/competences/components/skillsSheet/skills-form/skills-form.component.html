@@ -11,7 +11,7 @@
   <div class="grid-container">
     <div class="infoForm">
       <mat-form-field *ngFor="let item of formItems; let index = index;">
-        <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
+        <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
           [disabled]="isPersonDataDisabled">
       </mat-form-field>
 
@@ -44,7 +44,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <textarea matInput placeholder="Commentaire" maxlength="110"></textarea>
+        <textarea matInput placeholder="Commentaire" maxlength="110" [(ngModel)]="comment"></textarea>
       </mat-form-field>
     </div>
 
