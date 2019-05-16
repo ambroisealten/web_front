@@ -27,6 +27,7 @@ export class PdfComponent implements OnInit, OnDestroy {
   skillsArray: SkillGraduated[] = []; 
   softSkillsArray: SkillGraduated[] = []; 
   currentPerson: Person; 
+  personData: string; 
 
   //route param
   name: string ; 
@@ -47,6 +48,10 @@ export class PdfComponent implements OnInit, OnDestroy {
 
     //Person's Data
     this.currentPerson =  JSON.parse(window.sessionStorage.getItem('person')) as Person;
+    this.personData = this.currentPerson.surname + " "+ this.currentPerson.name.substr(0,1).toUpperCase() + "." 
+    if(this.currentPerson.job != ""){
+      this.personData += ", " + this.currentPerson.job;
+    }
 
     //setup array
     this.setupArray() ; 
@@ -62,6 +67,7 @@ export class PdfComponent implements OnInit, OnDestroy {
     if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
   }
+
 
   /**
    * setup data for pdf view

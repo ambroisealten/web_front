@@ -1,8 +1,18 @@
+.mat-raised-button {
+  background-color: var(--ALTENBlue);
+  color: white;
+  vertical-align: bottom;
+}
+
 .preview{
     padding:2%;
     margin-bottom:1%;
-    border-width:1px ;
-    border-color:black;
+}
+
+.preview-border{
+  border-width:1px ;
+  border-color:black;
+  border-style: solid;
 }
 
 #modules {
@@ -214,8 +224,6 @@
   */
   
   .footer {
-    display: grid;
-    grid-template-columns: 2.75fr 1fr;
     padding-left: 2%;
   }
   

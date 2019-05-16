@@ -1,83 +1,94 @@
-<button (click)=goBackToSkillsForm()>Go back !</button>
-<button (click)=downloadPDF()>Download</button>
+<button mat-raised-button (click)=goBackToSkillsForm()>
+  <mat-icon>arrow_back</mat-icon>
+  Retour modification fiche
+</button>
+<button mat-raised-button (click)=downloadPDF()>
+  <mat-icon>save_alt</mat-icon>
+  Télécharger
+</button>
 
 
 <div class="preview">
-  <div id="contentToConvert">
-    <div id="header">
-      <div class="surheader">
-        <nav class="navbar mb-0 navbar-expand-sm navbar-dark rounded-0">
-          <img src="assets/images/header-logo-alten.svg" alt="Logo ALTEN" id="logo" />
+  <div class="preview-border">
+    <div id="contentToConvert">
+      <div id="header">
+        <div class="surheader">
+          <nav class="navbar mb-0 navbar-expand-sm navbar-dark rounded-0">
+            <img src="assets/images/header-logo-alten.svg" alt="Logo ALTEN" id="logo" />
 
-          <div class="collapse navbar-collapse" class="headNavbar">
-            <div class="head-identity">
-              <h6> Titi B, Développeur Java </h6>
-            </div>
-          </div>
-        </nav>
-
-      </div>
-
-    </div>
-
-    <div class="color">
-      <div class="submenu">
-        <p>""</p>
-      </div>
-
-      <div class="grid-container">
-
-        <div class="left">
-          <div class="identity">
-            <div>
-              <h5 id="titre">DIPLOME</h5>
-              <div id="diplome">
-                <img src="../../assets/images/competence_icon.svg" />
-                <h5>Ingénieur-Epitech 2019</h5>
+            <div class="collapse navbar-collapse" class="headNavbar">
+              <div class="head-identity">
+                <h6> {{ personData }} </h6>
               </div>
             </div>
-            <div class="titre_soft">
-              <h5 id="titre">COMPÉTENCES TRANSVERSES</h5>
-              <div class="grid-Soft">
-                <ng-container *ngFor="let soft of softSkillsArray">
-                  <p>{{ soft.skill.name }}</p>
-                </ng-container>
-              </div>
-            </div>
-          </div>
-          <div class="right">
-            <div class="titre_cpt">
-              <h5 id="titre">COMPÉTENCES</h5>
-              <div class="grid-Skills">
-                <ng-container *ngFor="let skill of skillsArray">
-                  <p>{{ skill.skill.name }}</p>
-                </ng-container>
-              </div>
-            </div>
-          </div>
+          </nav>
+
         </div>
 
-        <div class="matrix">
-          <div class="chart-container">
-            <canvas id="canvasSkills"></canvas>
-          </div>
-          <div class="chart-container">
-            <canvas id="canvasSoftSkills"></canvas>
-          </div>
-        </div>
       </div>
-      <div class="footer">
-        <div class="description ">
+
+      <div class="color">
+        <div class="submenu">
+          <p>""</p>
+        </div>
+
+        <div class="grid-container">
+
           <div>
-            <p> ok </p>
-            <p> ok </p>
+          <div class="left">
+            <div class="identity">
+              <div>
+                <h5 id="titre">DIPLOME</h5>
+                <div id="diplome">
+                  <img src="../../assets/images/competence_icon.svg" />
+                  <h5>Ingénieur-Epitech 2019</h5>
+                </div>
+              </div>
+              <div class="titre_soft">
+                <h5 id="titre">COMPÉTENCES TRANSVERSES</h5>
+                <div class="grid-Soft">
+                  <ng-container *ngFor="let soft of softSkillsArray">
+                    <p>{{ soft.skill.name }}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="right">
+              <div class="titre_cpt">
+                <h5 id="titre">COMPÉTENCES</h5>
+                <div class="grid-Skills">
+                  <ng-container *ngFor="let skill of skillsArray">
+                    <p>{{ skill.skill.name }}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          
           </div>
-          <div>
-            <p> ok </p>
-            <p>ok </p>
+          <div class="footer">
+              <div class="description ">
+                <div>
+                  <p> ok </p>
+                  <p> ok </p>
+                </div>
+                <div>
+                  <p> ok </p>
+                  <p>ok </p>
+                </div>
+              </div>
+            </div>
+        </div>
+
+          <div class="matrix">
+            <div class="chart-container">
+              <canvas id="canvasSkills"></canvas>
+            </div>
+            <div class="chart-container">
+              <canvas id="canvasSoftSkills"></canvas>
+            </div>
           </div>
         </div>
-        <div></div>
+
       </div>
     </div>
   </div>
