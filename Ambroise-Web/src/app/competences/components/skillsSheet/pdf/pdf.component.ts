@@ -67,6 +67,12 @@ export class PdfComponent implements OnInit, OnDestroy {
       this.submenusSubscription.unsubscribe();
   }
 
+/***********************************************************************\
+*
+*                          Main Function
+*
+\*************************************************************************/
+
   /**
    * Set Identity data to display Surname Name and Job
    * @author Quentin Della-Pasqua
@@ -116,6 +122,35 @@ export class PdfComponent implements OnInit, OnDestroy {
   }
 
   /**
+  * Check s'il doit faire l'action, si oui, la réalise
+  * @param action
+  * @author Quentin Della-Pasqua
+  */
+  doAction(action: string) {
+    if (action != "") {
+      let actionSplit = action.split('//');
+      this.subMenusService.notifyMenuAction("");
+      if (actionSplit[0] == this.router.url) {
+        if (actionSplit[1] === 'create') {
+          this.createSkillsSheet();
+        } else if (actionSplit[1].match("^redirect/.*")) {
+          let redirect = actionSplit[1].substring(9);
+          if (('/' + redirect) != this.router.url + '/') {
+            this.router.navigate([redirect]);
+            this.goBack.next(redirect);
+          }
+        }
+      }
+    }
+  }
+
+  /***********************************************************************\
+  *
+  *                          SOUS-FONCTIONS
+  *
+ \*************************************************************************/
+
+  /**
    * Retrieve the right skillsSheet from storage 
    * @author Quentin Della-Pasqua
    */
@@ -141,29 +176,6 @@ export class PdfComponent implements OnInit, OnDestroy {
       }
     }
     return currentSkillsSheet;
-  }
-
-  /**
-  * Check s'il doit faire l'action, si oui, la réalise
-  * @param action
-  * @author Quentin Della-Pasqua
-  */
-  doAction(action: string) {
-    if (action != "") {
-      let actionSplit = action.split('//');
-      this.subMenusService.notifyMenuAction("");
-      if (actionSplit[0] == this.router.url) {
-        if (actionSplit[1] === 'create') {
-          this.createSkillsSheet();
-        } else if (actionSplit[1].match("^redirect/.*")) {
-          let redirect = actionSplit[1].substring(9);
-          if (('/' + redirect) != this.router.url + '/') {
-            this.router.navigate([redirect]);
-            this.goBack.next(redirect);
-          }
-        }
-      }
-    }
   }
 
   createSkillsSheet() {
