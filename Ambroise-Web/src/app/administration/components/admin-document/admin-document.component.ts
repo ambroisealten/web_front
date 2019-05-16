@@ -95,9 +95,8 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     };
     this.adminService.deleteFile(params, null).subscribe(() => {
       this.files.splice(this.files.indexOf(document), 1);
-      this.onFilesChange();
       this.fetchAllSet();
-      this.fetchCurrentSet();
+      this.onFilesChange();
       dialogProgress.close();
     });
   }
@@ -342,10 +341,10 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
             fileData.displayName);
           newFile._id = this.toHexString(newFile);
           this.files.push(newFile);
+          this.onFilesChange();
         }
       });
     }
-    this.onFilesChange();
     this.clearControl.setValue('');
     this.selectedFiles = null;
     dialogProgress.close();
