@@ -5,18 +5,18 @@
 
   <div id="upload">
     <label class="btn btn-default">
-      <input id="chooseFile" type="file" (change)="selectFile($event)">
+      <input id="chooseFile" type="file" (change)="selectFile($event)" [formControl]="clearControl">
       <button class="btn btn-success"
-        (click)="upload()">Upload</button>
+        (click)="upload()" [disabled]="isNotSelectedFiles()">Upload</button>
     </label>
   </div>
 
   <table id="documentsTable">
     <thead>
       <tr>
-        <th>Nom</th>
-        <th>Date de création</th>
-        <th>Collection</th>
+        <th (click)="sortTable(0)">Nom</th>
+        <th (click)="sortTable(1)">Date de création</th>
+        <th (click)="sortTable(2)">Collection</th>
         <th>Actions</th>
       </tr>
     </thead>

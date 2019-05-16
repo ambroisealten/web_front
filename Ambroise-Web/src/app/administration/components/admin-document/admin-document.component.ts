@@ -12,6 +12,7 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
 
   selectedFiles: FileList;
   currentFileUpload: File;
+  clearControl = new FormControl();
 
   submenusSubscription;
 
@@ -72,6 +74,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
       const filePath = file.path;
       if (filePath.startsWith('/forum/') && !Document.equals(this.filesSet, file)) {
         this.filesForForum.push(file);
+
       }
     }
   }
@@ -93,6 +96,8 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
     };
     this.adminService.deleteFile(params, null).subscribe(() => {
       this.files.splice(this.files.indexOf(document), 1);
+      this.onFilesChange();
+      this.fetchCurrentSet();
       dialogProgress.close();
     });
   }
@@ -114,6 +119,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
           this.adminService.updateFile(postParams, '').subscribe(() => {
             document.path = data.path;
             document.displayName = data.displayName;
+            this.fetchCurrentSet();
             dialogProgress.close();
           });
         }
@@ -332,11 +338,73 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
           fileData.extension,
           fileData.dateOfCreation,
           fileData.displayName);
+        newFile._id = this.toHexString(newFile);
         this.files.push(newFile);
         this.onFilesChange();
         dialogProgress.close();
       }
     });
+    this.clearControl.setValue('');
+    this.selectedFiles = null;
+  }
+
+  isNotSelectedFiles() {
+    return this.selectedFiles === undefined || this.selectedFiles === null;
+  }
+
+  sortTable(n) {
+    let table, rows, switching, i, x, y, shouldSwitch, dir: string, switchcount = 0;
+    table = document.getElementById('documentsTable');
+    switching = true;
+    // Set the sorting direction to ascending:
+    dir = 'asc';
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+      // Start by saying: no switching is done:
+      switching = false;
+      rows = table.rows;
+      /* Loop through all table rows (except the
+      first, which contains table headers): */
+      for (i = 1; i < (rows.length - 1); i++) {
+        // Start by saying there should be no switching:
+        shouldSwitch = false;
+        /* Get the two elements you want to compare,
+        one from current row and one from the next: */
+        x = rows[i].getElementsByTagName('TD')[n];
+        y = rows[i + 1].getElementsByTagName('TD')[n];
+        /* Check if the two rows should switch place,
+        based on the direction, asc or desc: */
+        if (dir === 'asc') {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            // If so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        } else if (dir === 'desc') {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            // If so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        /* If a switch has been marked, make the switch
+        and mark that a switch has been done: */
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        // Each time a switch is done, increase this count by 1:
+        switchcount ++;
+      } else {
+        /* If no switching has been done AND the direction is "asc",
+        set the direction to "desc" and run the while loop again. */
+        if (switchcount == 0 && dir == 'asc') {
+          dir = 'desc';
+          switching = true;
+        }
+      }
+    }
   }
 
 }
