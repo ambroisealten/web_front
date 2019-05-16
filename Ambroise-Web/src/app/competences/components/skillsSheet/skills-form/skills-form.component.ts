@@ -692,6 +692,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * @return           a radar chart
   */
   createOrUpdateChart(labels, data, elementId) {
+    let legendDisplayed = elementId === 'canvasSkills';
     return new Chart(elementId, {
       type: 'radar',
       data: {
@@ -711,6 +712,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }]
       },
       options: {
+        legend: {
+          display: legendDisplayed,
+          position: 'bottom',
+          onClick: (e) => e.stopPropagation()
+        },
         scale: {
           ticks: {
             min: 0,
