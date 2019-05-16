@@ -25,21 +25,21 @@
           "model": ""
         },
         {
-          "label": "Disponibilité",
-          "type": "text",
-          "id": "disponibility",
-          "model": ""
-        },
-        {
           "label": "Années d'expérience",
           "type": "number",
-          "id": "experienceYears",
+          "id": "experienceTime",
           "model": ""
         },
         {
           "label": "Prétention salariale",
           "type": "number",
           "id": "monthlyWage",
+          "model": ""
+        },
+        {
+          "label": "Disponibilité",
+          "type": "text",
+          "id": "disponibility",
           "model": ""
         }
       ],

@@ -504,13 +504,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         case 'employer':
           personToUpdate.employer = item.model;
           break;
+        case 'experienceTime':
+          personToUpdate.experienceTime = item.model;
+          break;
         case 'job':
           personToUpdate.job = item.model;
           break;
         case 'monthlyWage':
           personToUpdate.monthlyWage = item.model;
-          break;
-        default:
           break;
       }
     });
@@ -535,13 +536,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           case 'employer':
             item.model = person.employer;
             break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
+            break;
           case 'job':
             item.model = person.job;
             break;
           case 'monthlyWage':
             item.model = person.monthlyWage;
-            break;
-          default:
             break;
         }
       });
