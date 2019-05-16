@@ -95,7 +95,7 @@ export class PdfComponent implements OnInit, OnDestroy {
     if (this.currentPerson.highestDiplomaYear != "") {
       this.diplomaData += this.currentPerson.highestDiplomaYear;
     }
-    if (this.diplomaData != "") {
+    if (this.diplomaData == "") {
       this.diplomaData = "Donnée non renseignée"
     }
   }
@@ -115,10 +115,10 @@ export class PdfComponent implements OnInit, OnDestroy {
       }
     });
     while (this.skillsArray.length < 12) {
-      this.skillsArray.push(new SkillGraduated(new Skill("TEST"), 1))
+      this.skillsArray.push(new SkillGraduated(new Skill("Test"), 1))
     }
     while (this.softSkillsArray.length < 7) {
-      this.softSkillsArray.push(new SkillGraduated(new Skill("TEST"), 1))
+      this.softSkillsArray.push(new SkillGraduated(new Skill("Test"), 1))
     }
   }
 
@@ -220,7 +220,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   downloadPDF() {
     var data = document.getElementById("contentToConvert");
-    html2canvas(data, { scale: 2.5 }).then(canvas => {
+    html2canvas(data, { scale: 1 }).then(canvas => {
       const contentDataURL = canvas.toDataURL('image/png')
 
       let pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  
@@ -308,6 +308,9 @@ export class PdfComponent implements OnInit, OnDestroy {
             min: 0,
             max: 4,
             step: 0.5
+          },
+          pointLabels: {
+            fontSize: 16
           }
         },
         tooltips: {
