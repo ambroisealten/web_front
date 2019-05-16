@@ -6,8 +6,8 @@ import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.ser
 import { Person } from 'src/app/competences/models/person';
 import { Chart } from 'chart.js';
 
-import * as jspdf from 'jspdf';  
-import html2canvas from 'html2canvas'; 
+import * as jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-pdf',
@@ -24,17 +24,18 @@ export class PdfComponent implements OnInit, OnDestroy {
   softSkillsChart = Chart;
 
   //View's data
-  skillsArray: SkillGraduated[] = []; 
-  softSkillsArray: SkillGraduated[] = []; 
-  currentPerson: Person; 
-  personData: string; 
+  skillsArray: SkillGraduated[] = [];
+  softSkillsArray: SkillGraduated[] = [];
+  currentPerson: Person;
+  identityData: string = "";
+  diplomaData: string = "";
 
   //route param
-  name: string ; 
-  version: number ; 
+  name: string;
+  version: number;
 
   //Subscriptions 
-  submenusSubscription ; 
+  submenusSubscription;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -43,38 +44,62 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     //Url's param
-    this.name = this.route.snapshot.paramMap.get('name') ; 
-    this.version = +this.route.snapshot.paramMap.get('version'); 
+    this.name = this.route.snapshot.paramMap.get('name');
+    this.version = +this.route.snapshot.paramMap.get('version');
 
     //Person's Data
-    this.currentPerson =  JSON.parse(window.sessionStorage.getItem('person')) as Person;
-    this.personData = this.currentPerson.surname + " "+ this.currentPerson.name.substr(0,1).toUpperCase() + "." 
-    if(this.currentPerson.job != ""){
-      this.personData += ", " + this.currentPerson.job;
-    }
+    this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
+    this.setIdentityData();
+    this.setDiplomaData();
 
     //setup array
-    this.setupArray() ; 
-    this.updateChartSkills(this.skillsArray) ; 
-    this.updateChartSoftSkills(this.softSkillsArray) ;
-    
+    this.setupArray();
+    this.updateChartSkills(this.skillsArray);
+    this.updateChartSoftSkills(this.softSkillsArray);
+
 
     //Subscribe to action
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
   }
 
+  /**
+   * Set Identity data to display Surname Name and Job
+   * @author Quentin Della-Pasqua
+   */
+  setIdentityData() {
+    this.identityData += this.currentPerson.surname + " " + this.currentPerson.name.substr(0, 1).toUpperCase() + "."
+    if (this.currentPerson.job != "") {
+      this.identityData += ", " + this.currentPerson.job;
+    }
+  }
+
+  /**
+   * Set Diplomata data 
+   * @author Quentin Della-Pasqua
+   */
+  setDiplomaData() {
+    if (this.currentPerson.highestDiploma != "") {
+      this.diplomaData += this.currentPerson.highestDiploma + " - "
+    }
+    if (this.currentPerson.highestDiplomaYear != "") {
+      this.diplomaData += this.currentPerson.highestDiplomaYear;
+    }
+    if (this.diplomaData != "") {
+      this.diplomaData = "Donnée non renseignée"
+    }
+  }
 
   /**
    * setup data for pdf view
    * @author Quentin Della-Pasqua
    */
-  setupArray(){
-    let currentSkillsSheet: SkillsSheet = this.getSkillsSheet() ; 
+  setupArray() {
+    let currentSkillsSheet: SkillsSheet = this.getSkillsSheet();
     currentSkillsSheet.skillsList.forEach(skill => {
       if (skill['skill'].hasOwnProperty('isSoft')) {
         this.softSkillsArray.push(skill);
@@ -82,11 +107,11 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill)
       }
     });
-    while(this.skillsArray.length < 12 ){
-      this.skillsArray.push(new SkillGraduated(new Skill("TEST"),1))
+    while (this.skillsArray.length < 12) {
+      this.skillsArray.push(new SkillGraduated(new Skill("TEST"), 1))
     }
-    while(this.softSkillsArray.length < 7 ){
-      this.softSkillsArray.push(new SkillGraduated(new Skill("TEST"),1))
+    while (this.softSkillsArray.length < 7) {
+      this.softSkillsArray.push(new SkillGraduated(new Skill("TEST"), 1))
     }
   }
 
@@ -94,10 +119,10 @@ export class PdfComponent implements OnInit, OnDestroy {
    * Retrieve the right skillsSheet from storage 
    * @author Quentin Della-Pasqua
    */
-  getSkillsSheet(): SkillsSheet{
-    let currentSkillsSheet: SkillsSheet ; 
-    if(window.sessionStorage.getItem('skillsSheetVersions') == null || window.sessionStorage.getItem('skillsSheetVersions') == null){
-      this.router.navigate(['skills']) ; 
+  getSkillsSheet(): SkillsSheet {
+    let currentSkillsSheet: SkillsSheet;
+    if (window.sessionStorage.getItem('skillsSheetVersions') == null || window.sessionStorage.getItem('skillsSheetVersions') == null) {
+      this.router.navigate(['skills']);
     } else {
       let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
       if (versions[0].name != this.name) {
@@ -115,14 +140,14 @@ export class PdfComponent implements OnInit, OnDestroy {
         });
       }
     }
-    return currentSkillsSheet ;
+    return currentSkillsSheet;
   }
 
-   /**
-   * Check s'il doit faire l'action, si oui, la réalise
-   * @param action
-   * @author Quentin Della-Pasqua
-   */
+  /**
+  * Check s'il doit faire l'action, si oui, la réalise
+  * @param action
+  * @author Quentin Della-Pasqua
+  */
   doAction(action: string) {
     if (action != "") {
       let actionSplit = action.split('//');
@@ -133,8 +158,8 @@ export class PdfComponent implements OnInit, OnDestroy {
         } else if (actionSplit[1].match("^redirect/.*")) {
           let redirect = actionSplit[1].substring(9);
           if (('/' + redirect) != this.router.url + '/') {
-            this.router.navigate([redirect]) ; 
-            this.goBack.next(redirect) ; 
+            this.router.navigate([redirect]);
+            this.goBack.next(redirect);
           }
         }
       }
@@ -158,7 +183,7 @@ export class PdfComponent implements OnInit, OnDestroy {
       }
     })
   }
-  
+
   makeName() {
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -171,34 +196,34 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   redirectAfterAction(redirect: string) {
     this.subMenusService.resetMenuAction();
-    this.subMenusService.resetSubMenu() ; 
+    this.subMenusService.resetSubMenu();
     this.router.navigate([redirect]);
-    this.goBack.next('skills/skillsheet/') ; 
+    this.goBack.next('skills/skillsheet/');
   }
 
-  goBackToSkillsForm(){
-    this.goBack.next('goBack') ; 
+  goBackToSkillsForm() {
+    this.goBack.next('goBack');
   }
 
-  downloadPDF(){
-    var data = document.getElementById("contentToConvert") ; 
-    html2canvas(data,{scale: 2.5}).then(canvas => {  
-      const contentDataURL = canvas.toDataURL('image/png')  
-     
+  downloadPDF() {
+    var data = document.getElementById("contentToConvert");
+    html2canvas(data, { scale: 2.5 }).then(canvas => {
+      const contentDataURL = canvas.toDataURL('image/png')
+
       let pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  
       var width = pdf.internal.pageSize.getWidth();
       var height = pdf.internal.pageSize.getHeight();
 
-      pdf.addImage(contentDataURL, 'PNG', 0, 0,297,210) ;
+      pdf.addImage(contentDataURL, 'PNG', 0, 0, 297, 210);
       pdf.save(this.name + '.pdf'); // Generated PDF   
-    });  
+    });
   }
 
-   /***********************************************************************\
-   *
-   *                          CHART FUNCTIONS
-   *
-  \***********************************************************************/ 
+  /***********************************************************************\
+  *
+  *                          CHART FUNCTIONS
+  *
+ \***********************************************************************/
 
   /**
    * Updates the radar chart for skills
