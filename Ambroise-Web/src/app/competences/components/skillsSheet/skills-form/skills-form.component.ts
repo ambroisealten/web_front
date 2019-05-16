@@ -153,6 +153,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
     this.myControl.disable();
+    
     this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
   }
@@ -722,6 +723,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             min: 0,
             max: 4,
             step: 0.5
+          },
+          pointLabels: {
+            fontSize: 16
           }
         },
         tooltips: {
