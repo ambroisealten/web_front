@@ -35,12 +35,6 @@
           "type": "number",
           "id": "monthlyWage",
           "model": ""
-        },
-        {
-          "label": "Disponibilité",
-          "type": "text",
-          "id": "disponibility",
-          "model": ""
         }
       ],
 

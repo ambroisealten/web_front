@@ -29,6 +29,16 @@
         </button>
       </div>
 
+      <div class="disponibility-container">
+        <p class="disponibilityTitle">Disponibilité</p>
+        <button mat-icon-button class="newDisponibilityButton" (click)="addDisponibility()" [hidden]="isNewDispoButtonHidden">
+          <mat-icon class="addDispoIcon">add_circle_outline</mat-icon>
+        </button>
+        <button mat-icon-button class="editDisponibilityButton" (click)="addDisponibility()" [hidden]="!isNewDispoButtonHidden">
+          <mat-icon class="editDispoIcon">edit</mat-icon>
+        </button>
+      </div>
+
       <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
         [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>
 

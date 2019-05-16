@@ -11,8 +11,9 @@ import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatDialog, MatDialogConfig } from '@angular/material';
 import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
+import { ModalDisponibilityComponent } from '../modal-disponibility/modal-disponibility.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -73,6 +74,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
+  isNewDispoButtonHidden: boolean = false;
 
   //subscription
   submenusSubscription;
@@ -86,7 +88,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private personSkillsService: PersonSkillsService,
     private router: Router,
     private route: ActivatedRoute,
-    private subMenusService: SubMenusService) {
+    private subMenusService: SubMenusService,
+    private dialog: MatDialog) {
   }
 
   /***********************************************************************\
@@ -484,6 +487,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
     this.experienceTimeTextColor = "rgba(0,0,0,.38)";
+  }
+
+  addDisponibility() {
+    this.isNewDispoButtonHidden = true;
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(ModalDisponibilityComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(dispo => {
+    });
   }
 
   /**
