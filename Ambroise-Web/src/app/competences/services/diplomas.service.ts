@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Skills } from '../models/skills';
-import { SkillsSheet, Skill } from '../models/skillsSheet';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { timeout, catchError } from 'rxjs/operators';
@@ -12,7 +9,7 @@ import { ErrorService } from 'src/app/services/error.service';
 /**
 * Service to handle Skills models
 */
-export class SkillsListService {
+export class DiplomasService {
     
   constructor(private httpClient: HttpClient,
     private errorService: ErrorService) { }
@@ -25,20 +22,11 @@ export class SkillsListService {
   options = { headers: this.headers };
 
   /**
-   * HTTP Get request to get all Skills
+   * HTTP Get request to get all Diplomas
    */
-  getAllSkills() {
+  getAllDiplomas() {
     return this.httpClient
-      .get<Skill[]>(environment.serverAddress + '/skills/', this.options)
-      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
-  }
-
-  /**
-   * HTTP Get request to get all Skills (that are not soft)
-   */
-  getAllTechSkills(){
-    return this.httpClient
-      .get<Skill[]>(environment.serverAddress + '/techskills/', this.options)
+      .get(environment.serverAddress + '/diplomas/', this.options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 }

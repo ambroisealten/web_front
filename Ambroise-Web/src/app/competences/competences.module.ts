@@ -24,6 +24,7 @@ import { SkillsService } from './services/skills.service';
 import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
 import { SkillsListService } from './services/skillsList.service';
+import { DiplomasService } from './services/diplomas.service';
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import { SkillsListService } from './services/skillsList.service';
     SkillsSheetService,
     SkillsService,
     PersonSkillsService,
-    SkillsListService
+    SkillsListService,
+    DiplomasService
   ]
 })
 export class CompetencesModule { 

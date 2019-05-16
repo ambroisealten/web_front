@@ -4,6 +4,7 @@ import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,6 +18,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
+import { DiplomasService } from '../../../services/diplomas.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -36,21 +38,21 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   //Information of tech skills
   skillsArray: any[] = [];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
-  skillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ;
+  skillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
 
   //Information of soft skills
   softSkillsArray: any[] = [];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
-  softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>() ;
+  softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
 
   headerRowHiddenModif = false;
 
   //Form displayed
   formItems: any[];
 
-  //Tableau contenant toutes les options (compétences) pour l'auto-complétion
-  options : string[];
-  filteredOptions : Observable<string[]>;
+  //Tableau contenant toutes les options (diplômes) pour l'auto-complétion
+  options: string[];
+  filteredOptions: Observable<string[]>;
   myControl = new FormControl();
 
   //Charts
@@ -90,7 +92,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private subMenusService: SubMenusService,
-    private skillsListService :SkillsListService) {
+    private skillsListService: SkillsListService,
+    private diplomasService: DiplomasService) {
   }
 
   /***********************************************************************\
@@ -105,7 +108,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    *        - init both charts of skills and soft skills
    */
   ngOnInit() {
-    this.getSkillsList();
+    this.getDiplomas();
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
@@ -114,21 +117,21 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.name = param['name']
       this.version = + param['version']
       //Check if data already exists, person is more important than skillsSheet
-      if (window.sessionStorage.getItem('person') != null){
-        this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person  ;
-        if(window.sessionStorage.getItem('skills') != null){
-          if(window.sessionStorage.getItem('skillsSheetVersions') != null) {
+      if (window.sessionStorage.getItem('person') != null) {
+        this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
+        if (window.sessionStorage.getItem('skills') != null) {
+          if (window.sessionStorage.getItem('skillsSheetVersions') != null) {
             // get all versions of the current skillsSheet to display in versions array
             this.setupSkillsSheetFromVersions();
           }
           else {
-            this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true);
+            this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[], true);
           }
-          this.initializeView(new Skills(this.currentPerson,this.currentSkillsSheet),true) ;
-          this.createMenu() ;
+          this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
+          this.createMenu();
         } else {
           this.skillsSheetService.getSkillsSheetsByMail(this.currentPerson.mail).subscribe(skillsSheets => {
-            this.initVersionArray(false) ;
+            this.initVersionArray(false);
             this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
             this.createMenu();
           });
@@ -149,16 +152,16 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
-
-
+    this.myControl.disable();
+    this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
   }
 
   ngOnDestroy() {
-    if(this.submenusSubscription != undefined)
+    if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
-    if( this.skillsSubscription != undefined){
-      this.skillsSubscription.unsubscribe() ;
+    if (this.skillsSubscription != undefined) {
+      this.skillsSubscription.unsubscribe();
     }
   }
 
@@ -168,11 +171,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    *
   \***********************************************************************/
 
-    /**
-   * Check among skillsSheet the one which correspond to the url
-   * @param skillsSheets
-   * @author Quentin Della-Pasqua
-   */
+  /**
+ * Check among skillsSheet the one which correspond to the url
+ * @param skillsSheets
+ * @author Quentin Della-Pasqua
+ */
   setupSkillsSheet(skillsSheets: SkillsSheet[], skillsSheetStored: boolean) {
     skillsSheets.forEach(skillsSheet => {
       if (skillsSheet.versionNumber == this.version && skillsSheet.name == this.name) {
@@ -191,50 +194,55 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @author Lucas Royackkers
    */
   private _filter(value: string): string[] {
-    if(value.length != 0){
-      const filterValue = value.toLowerCase();
-      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    if (value != null) {
+      if (value.length != 0) {
+        const filterValue = value.toLowerCase();
+        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+      }
+      else{
+        return [];
+      }
     }
-    else{
+    else {
       return [];
     }
   }
 
   /**
-   * Cherche toutes les compétences en base
+   * Cherche tous les diplômes dans la base de données
    * @author Lucas Royackkers
    */
-  getSkillsList(){
-    this.skillsListService.getAllSkills().subscribe(skillsList=> {
-      this.options = (skillsList as Skills[]).map(skill => skill.name);
-    });
+  getDiplomas(){
+    this.diplomasService.getAllDiplomas().subscribe(diplomas =>{
+      this.options = (diplomas as Diploma[]).map(diploma => diploma.name);
+    })
   }
 
-    /**
-   * Check among skillsSheet versions the one which corresponds to the url
-   * @param skillsSheets
-   * @author Camille Schnell
-   */
+  /**
+ * Check among skillsSheet versions the one which corresponds to the url
+ * @param skillsSheets
+ * @author Camille Schnell
+ */
   setupSkillsSheetFromVersions() {
     let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-    if(versions[0].name != this.name){
-      this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[],true);
+    if (versions[0].name != this.name) {
+      this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[], true);
       this.initVersionArray(false);
     } else {
       versions.forEach(skillsSheet => {
-        if(skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
-            this.currentSkillsSheet = skillsSheet as SkillsSheet;
+        if (skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
+          this.currentSkillsSheet = skillsSheet as SkillsSheet;
         }
       });
       this.initVersionArray(true);
     }
   }
 
-   /**
-   * Initialize components (creating soft and tech skills array, set up var, etc..)
-   * @param skills
-   * @author Quentin Della-Pasqua
-   */
+  /**
+  * Initialize components (creating soft and tech skills array, set up var, etc..)
+  * @param skills
+  * @author Quentin Della-Pasqua
+  */
   initializeView(skills, personStored: boolean) {
     if (skills == undefined) {
       this.router.navigate(['skills']);
@@ -255,16 +263,16 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.countSkillsUpdate = 0;
       this.countSoftSkillsUpdate = 0;
       this.modifDetection = false;
-      this.skillsArrayDataSource = new MatTableDataSource(this.skillsArray) ;
-      this.updateChartSkills(this.skillsArray) ;
-      this.softSkillsArrayDataSource = new MatTableDataSource(this.softSkillsArray) ;
-      this.updateChartSoftSkills(this.softSkillsArray) ;
+      this.skillsArrayDataSource = new MatTableDataSource(this.skillsArray);
+      this.updateChartSkills(this.skillsArray);
+      this.softSkillsArrayDataSource = new MatTableDataSource(this.softSkillsArray);
+      this.updateChartSoftSkills(this.softSkillsArray);
       if (!personStored) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         this.skillsSheetService.getSkillsSheetsByMail(this.currentPerson.mail).subscribe(skillsSheets => {
           window.sessionStorage.setItem('skills', JSON.stringify(skillsSheets));
           this.createMenu();
-          this.initVersionArray(false) ;
+          this.initVersionArray(false);
         });
       }
     }
@@ -295,10 +303,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.subMenusService.notifySubMenu(subMenu)
   }
 
-  initVersionArray(skillsVersionsStored: boolean){
+  initVersionArray(skillsVersionsStored: boolean) {
     let versions = [];
     let versionDate = "";
-    if(!skillsVersionsStored) {
+    if (!skillsVersionsStored) {
       this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
         // init skillsSheet versions array
         (skillsSheetVersions as SkillsSheet[]).forEach(version => {
@@ -307,7 +315,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
         });
         this.versionsArray = new MatTableDataSource(versions);
-        window.sessionStorage.setItem("skillsSheetVersions",JSON.stringify(skillsSheetVersions));
+        window.sessionStorage.setItem("skillsSheetVersions", JSON.stringify(skillsSheetVersions));
       });
     } else {
       JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')).forEach(version => {
@@ -354,34 +362,34 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   /**
   * Calls skills service to save current skillsSheet
   */
- onSubmitForm() {
-  LoggerService.log("submit", LogLevel.DEBUG);
-  LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
-  let tmpExisting;
-  if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-    this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
-    this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-        this.currentSkillsSheet.versionNumber += 1
-        let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
-        this.initVersionArray(false);
-        this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-      }
-    });
-  } else {
-    this.currentSkillsSheet.versionNumber = 1;
-    this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-        let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(this.currentSkillsSheet);
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-      }
-    });
+  onSubmitForm() {
+    LoggerService.log("submit", LogLevel.DEBUG);
+    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    let tmpExisting;
+    if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+      this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+          this.currentSkillsSheet.versionNumber += 1
+          let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+          let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
+          window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+          this.initVersionArray(false);
+          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+        }
+      });
+    } else {
+      this.currentSkillsSheet.versionNumber = 1;
+      this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+          let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+          tmpSkillsSheets.push(this.currentSkillsSheet);
+          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+        }
+      });
+    }
   }
- }
 
   onSubmitRedirect(redirect: string) {
     LoggerService.log("submitRedirect", LogLevel.DEBUG);
@@ -433,8 +441,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   redirectAfterAction(redirect: string) {
-    if( this.skillsSubscription != undefined){
-      this.skillsSubscription.unsubscribe() ;
+    if (this.skillsSubscription != undefined) {
+      this.skillsSubscription.unsubscribe();
     }
     this.subMenusService.resetMenuAction();
     this.subMenusService.resetSubMenu();
@@ -471,6 +479,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
     this.tmpCurrentPerson = this.currentPerson;
+    this.myControl.enable();
   }
 
   /**
@@ -487,6 +496,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         LoggerService.log('Person updated', LogLevel.DEBUG);
       }
     });
+    this.myControl.disable();
   }
 
   /**
@@ -510,6 +520,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
+    this.myControl.disable();
   }
 
   /**
@@ -518,11 +529,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   enableEditIfFormFieldsEmpty() {
     let allEmpty = true;
     this.formItems.forEach(item => {
-      if(item.model != '' && item.model != '0') {
+      if (item.model != '' && item.model != '0') {
         allEmpty = false;
       }
     });
-    if(allEmpty) {
+    if (allEmpty) {
       this.isPersonDataDisabled = false;
       this.isEditButtonHidden = true;
     }
@@ -536,9 +547,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     let personToUpdate = this.currentPerson;
     this.formItems.forEach(item => {
       switch (item.id) {
-        case 'highestDiploma':
-          personToUpdate.highestDiploma = item.model;
-          break;
         case 'highestDiplomaYear':
           personToUpdate.highestDiplomaYear = item.model;
           break;
@@ -555,6 +563,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           break;
       }
     });
+    personToUpdate.highestDiploma = this.myControl.value;
     return personToUpdate;
   }
 
