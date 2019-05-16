@@ -1,6 +1,8 @@
 .preview{
     padding:2%;
     margin-bottom:1%;
+    border-width:1px ;
+    border-color:black;
 }
 
 #modules {
@@ -107,9 +109,8 @@
   .identity {
     padding: 5%;
     color: var(--ALTENDarkBlue);
-    //position: relative;
-    min-height:55vh;
-    max-height:55vh;
+    min-height:calc(96vw*0.65);
+    position: relative;
   }
   
   .grid-container {
