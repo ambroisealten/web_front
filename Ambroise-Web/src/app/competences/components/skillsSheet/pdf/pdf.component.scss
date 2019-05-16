@@ -107,7 +107,7 @@
   .identity {
     padding: 5%;
     color: var(--ALTENDarkBlue);
-    position: relative;
+    //position: relative;
     min-height:55vh;
     max-height:55vh;
   }
@@ -126,6 +126,8 @@
   }
   
   .left {
+    position: relative;
+
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
@@ -157,12 +159,12 @@
     position: absolute;
     bottom: 0px;
     left: 0px;
-    width: 94%;
+    width: 50%;
     display: block;
     padding: 2%;
-    margin: auto;
-    align-content: center;
-    margin-left: 3%;
+    //margin: auto;
+    //align-content: center;
+    margin-left: 1%;
   }
   
   .grid-Soft {
@@ -224,6 +226,7 @@
     background-color: white;
     border-left: 1vw solid var(--ALTENBlue);
     text-align: left;
+    margin-bottom: 1%;
   }
   
   .description div:nth-child(2) {
