@@ -112,7 +112,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
 
     this.route.params.subscribe(param => {
-      this.modifDetection = false ; 
+      this.modifDetection = false;
       //Get param in the url
       this.name = param['name']
       this.version = + param['version']
@@ -124,10 +124,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
       else {
         this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
-        this.initVersionArray(false) ; 
+        this.initVersionArray(false);
       }
       this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet));
-      this.createMenu() ; 
+      this.createMenu();
       //Update chart
     })
 
@@ -145,12 +145,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    *
   \***********************************************************************/
 
-/**
- * Check among skillsSheet the one which correspond to the url
- * @param skillsSheets
- * @author Quentin Della-Pasqua
- */
-  setupSkillsSheet(skillsSheets: SkillsSheet[]){
+  /**
+   * Check among skillsSheet the one which correspond to the url
+   * @param skillsSheets
+   * @author Quentin Della-Pasqua
+   */
+  setupSkillsSheet(skillsSheets: SkillsSheet[]) {
     skillsSheets.forEach(skillsSheet => {
       if (skillsSheet.versionNumber == this.version && skillsSheet.name == this.name) {
         this.currentSkillsSheet = skillsSheet;
@@ -158,31 +158,31 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     })
 
   }
-  
+
   /**
   * Create the menu corresponding to the view
   * @author Quentin Della-Pasqua
   */
- createMenu() {
-  let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'))
-  let subMenu: SubMenu[] = [];
-  subMenu.push(this.subMenusService.createMenu('Accueil', [], 'home', 'redirect/skills', []))
-  subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'note_add', 'create', []))
-  let count = 0;
-  let tmpSkillsSheet: SkillsSheet[] = [];
-  skillsSheets.forEach(skillsSheet => {
-    if (count < 3) {
-      subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber + '/', []))
-    } else {
-      tmpSkillsSheet.push(skillsSheet)
+  createMenu() {
+    let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'))
+    let subMenu: SubMenu[] = [];
+    subMenu.push(this.subMenusService.createMenu('Accueil', [], 'home', 'redirect/skills', []))
+    subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'note_add', 'create', []))
+    let count = 0;
+    let tmpSkillsSheet: SkillsSheet[] = [];
+    skillsSheets.forEach(skillsSheet => {
+      if (count < 3) {
+        subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber + '/', []))
+      } else {
+        tmpSkillsSheet.push(skillsSheet)
+      }
+      count++;
+    })
+    if (count > 3) {
+      subMenu.push(this.subMenusService.createMenu('Autres', tmpSkillsSheet, 'description', 'redirect/skills/skillsheet/', ['name', 'versionNumber']))
     }
-    count++;
-  })
-  if (count > 3) {
-    subMenu.push(this.subMenusService.createMenu('Autres', tmpSkillsSheet, 'description', 'redirect/skills/skillsheet/', ['name', 'versionNumber']))
+    this.subMenusService.notifySubMenu(subMenu)
   }
-  this.subMenusService.notifySubMenu(subMenu)
-}
 
 
   /**
@@ -526,36 +526,36 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  setViewPDF(){
-    if(this.modifDetection){
+  setViewPDF() {
+    if (this.modifDetection) {
       LoggerService.log("submit", LogLevel.DEBUG);
       LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
-    let tmpExisting;
-    if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
-      this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-          this.currentSkillsSheet.versionNumber += 1
-          let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-          let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
-          window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
-          this.initVersionArray(false);
-          this.pdf.next("pdf")
-        }
-      });
+      let tmpExisting;
+      if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
+        this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+        this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+          if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+            this.currentSkillsSheet.versionNumber += 1
+            let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+            let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
+            window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+            this.initVersionArray(false);
+            this.pdf.next("pdf")
+          }
+        });
+      } else {
+        this.currentSkillsSheet.versionNumber = 1;
+        this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+          if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+            let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+            tmpSkillsSheets.push(this.currentSkillsSheet);
+            window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+            this.pdf.next("pdf")
+          }
+        });
+      }
     } else {
-      this.currentSkillsSheet.versionNumber = 1;
-      this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-          let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-          tmpSkillsSheets.push(this.currentSkillsSheet);
-          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-          this.pdf.next("pdf")
-        }
-      });
-    }
-    } else {
-      this.pdf.next("") ; 
+      this.pdf.next("");
     }
   }
 
