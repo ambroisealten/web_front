@@ -1,0 +1,161 @@
+#modules {
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+  transition: linear 0.2s;
+}
+
+#moduleHome {
+  background-color: var(--ALTENWhiteModuleHome);
+  transition: linear 0.2s;
+}
+
+.otherModules {
+  width: 100%;
+  display: inline;
+  background-color: var(--ALTENWhiteModule);
+  margin: auto;
+  text-align: center;
+  transition: linear 0.2s;
+}
+
+.submenu {
+  background-image: linear-gradient(to right, var(--ALTENDarkBlue) 0%, var(--ALTENBlue) 40%);
+}
+
+.head-identity {
+  padding-left: 10%;
+  width: fit-content;
+  color: var(--ALTENDarkBlue);
+}
+.identity {
+  padding: 5%;
+  color: var(--ALTENDarkBlue);
+  position: relative;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  margin: auto;
+  height: 100%;
+}
+
+#titre {
+  background-color: var(--ALTENLightGray);
+  color: var(--ALTENDarkBlue);
+  padding-top: 50%;
+}
+
+.left {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#diplome {
+  border-left: 1vw solid var(--ALTENBlue);
+  background-color: white;
+  padding: 2%;
+  margin: auto;
+  align-content: center;
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  width: 100%;
+}
+
+#diplome img {
+  align-content: center;
+  width: 35%;
+}
+
+#diplome h5 {
+  margin: auto;
+  margin-left: 0;
+  text-align: left;
+}
+
+.titre_soft {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 94%;
+  display: block;
+  padding: 2%;
+  margin: auto;
+  align-content: center;
+  margin-left: 3%;
+}
+
+.grid-Soft {
+  border-left: 1vw solid var(--ALTENDarkBlue);
+  background-color: white;
+}
+
+div.grid-Soft p {
+  text-align: left;
+  padding-left: 5%;
+}
+
+.color {
+  background-color: var(--ALTENLightGray);
+}
+
+/*
+  // panneau de droite // compétences
+  */
+
+.right {
+  position: relative;
+}
+
+.titre_cpt {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 90%;
+  display: block;
+  margin-right: 2%;
+  padding: 2%;
+}
+
+.grid-Skills {
+  border-left: 1vw solid var(--ALTENDarkBlue);
+  background-color: white;
+}
+
+div.grid-Skills p {
+  display: block;
+  text-align: left;
+  padding-left: 5%;
+}
+
+/*
+  // footer 
+  */
+
+.footer {
+  display: grid;
+  grid-template-columns: 2.75fr 1fr;
+  padding-left: 2%;
+}
+
+.description {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background-color: white;
+  border-left: 1vw solid var(--ALTENBlue);
+  text-align: left;
+}
+
+.description div:nth-child(2) {
+  border-left: 0.25vw solid var(--ALTENDarkBlue);
+  padding-left: 2%;
+}
+
+div.description p {
+  margin-bottom: 0;
+  text-align: left;
+  padding-left: 5%;
+  margin-right: 5%;
+}
