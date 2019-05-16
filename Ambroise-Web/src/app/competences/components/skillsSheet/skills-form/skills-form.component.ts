@@ -44,8 +44,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   //Form displayed
   formItems: any[];
 
-  // text color in person info form
-  inputFormTextColor: string = "var(--ALTENDarkGray)";
+  // text color in person info form : default is mat input color
+  experienceTimeTextColor: string = "rgba(0,0,0,.38)";
 
   //Charts
   skillsChart = Chart;
@@ -442,6 +442,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
     this.tmpCurrentPerson = this.currentPerson;
+    this.experienceTimeTextColor = "var(--ALTENDarkGray)";
   }
 
   /**
@@ -458,6 +459,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         LoggerService.log('Person updated', LogLevel.DEBUG);
       }
     });
+    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
   }
 
   /**
@@ -481,6 +483,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
+    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
   }
 
   /**
@@ -590,9 +593,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if(item.id == "highestDiplomaYear" && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
         let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
         this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
-        this.inputFormTextColor = "var(--ALTENOrange)";
+        this.experienceTimeTextColor = "var(--ALTENOrange)";
     } else if(item.id == "experienceTime") { // set default gray color if experienceTime changed by user
-      this.inputFormTextColor = "var(--ALTENDarkGray)";
+      this.experienceTimeTextColor = "var(--ALTENDarkGray)";
     }
   }
 
