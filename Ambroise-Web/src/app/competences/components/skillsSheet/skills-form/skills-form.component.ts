@@ -365,13 +365,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * Calls skills service to save current skillsSheet
   */
   onSubmitForm() {
-    LoggerService.log("submit", LogLevel.DEBUG);
-    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     this.currentSkillsSheet.comment = this.comment;
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
-      LoggerService.log(this.currentSkillsSheet.comment+" : update",LogLevel.DEBUG);
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1
@@ -383,7 +380,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      LoggerService.log(this.currentSkillsSheet.comment+" : create",LogLevel.DEBUG);
       this.currentSkillsSheet.versionNumber = 1;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
@@ -398,7 +394,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   onSubmitRedirect(redirect: string) {
     LoggerService.log("submitRedirect", LogLevel.DEBUG);
-    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
