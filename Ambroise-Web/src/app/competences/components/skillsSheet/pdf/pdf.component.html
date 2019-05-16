@@ -1,5 +1,5 @@
-<button (click)=goBackToSkillsForm()>Go back !</button>
-<button (click)=downloadPDF()>Download</button>
+<button class="" mat-raised-button (click)=goBackToSkillsForm()>Go back !</button>
+<button class="" mat-raised-button (click)=downloadPDF()>Download</button>
 
 
 <div class="preview">
@@ -22,7 +22,6 @@
 
     <div class="color">
       <div class="submenu">
-        <p>""</p>
       </div>
 
       <div class="grid-container">
@@ -40,7 +39,7 @@
               <h5 id="titre">COMPÉTENCES TRANSVERSES</h5>
               <div class="grid-Soft">
                 <ng-container *ngFor="let soft of softSkillsArray">
-                  <p>{{ soft.skill.name }}</p>
+                  <p>{{ soft.skill.name}} {{ soft.grade }}</p>
                 </ng-container>
               </div>
             </div>
@@ -50,7 +49,7 @@
               <h5 id="titre">COMPÉTENCES</h5>
               <div class="grid-Skills">
                 <ng-container *ngFor="let skill of skillsArray">
-                  <p>{{ skill.skill.name }}</p>
+                  <p>{{ skill.skill.name }} {{ skill.grade }}</p>
                 </ng-container>
               </div>
             </div>

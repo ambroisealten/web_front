@@ -70,6 +70,7 @@ export class PdfComponent implements OnInit, OnDestroy {
   setupArray(){
     let currentSkillsSheet: SkillsSheet = this.getSkillsSheet() ; 
     currentSkillsSheet.skillsList.forEach(skill => {
+      console.log(skill);
       if (skill['skill'].hasOwnProperty('isSoft')) {
         this.softSkillsArray.push(skill);
       } else {
