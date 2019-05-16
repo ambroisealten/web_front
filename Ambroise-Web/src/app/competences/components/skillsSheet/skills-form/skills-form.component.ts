@@ -75,6 +75,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   //
   avis: string;
+  comment: string;
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
@@ -153,7 +154,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     })
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
     this.myControl.disable();
-    
     this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
   }
@@ -250,6 +250,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else {
       this.currentPerson = skills.person;
       this.currentSkillsSheet = skills.skillsSheet;
+      this.comment = skills.skillsSheet.comment;
       this.nameSkillsSheet = skills.skillsSheet.name;
       //this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
       this.softSkillsArray = [];
@@ -366,9 +367,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   onSubmitForm() {
     LoggerService.log("submit", LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    this.currentSkillsSheet.comment = this.comment;
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+      LoggerService.log(this.currentSkillsSheet.comment+" : update",LogLevel.DEBUG);
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1
@@ -380,6 +383,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }
       });
     } else {
+      LoggerService.log(this.currentSkillsSheet.comment+" : create",LogLevel.DEBUG);
       this.currentSkillsSheet.versionNumber = 1;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
@@ -583,6 +587,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           case 'highestDiplomaYear':
             item.model = person.highestDiplomaYear;
             break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
+            break;
           case 'employer':
             item.model = person.employer;
             break;
@@ -605,6 +612,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             break;
           case 'highestDiplomaYear':
             item.model = person.highestDiplomaYear;
+            break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
             break;
           case 'job':
             item.model = person.job;

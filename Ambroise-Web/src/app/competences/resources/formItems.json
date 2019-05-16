@@ -33,7 +33,7 @@
         {
           "label": "Années d'expérience",
           "type": "number",
-          "id": "experienceYears",
+          "id": "experienceTime",
           "model": ""
         },
         {
