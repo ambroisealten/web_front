@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoMaterialModule } from '../utils/shared-module/material-modules';
 
 //  ROUTING MODULE
@@ -43,6 +43,7 @@ import { ModalAvailabilityComponent } from './components/skillsSheet/modal-avail
     CommonModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     DemoMaterialModule,
   ],
   entryComponents: [

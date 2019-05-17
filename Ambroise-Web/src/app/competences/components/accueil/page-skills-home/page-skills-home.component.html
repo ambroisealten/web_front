@@ -93,8 +93,8 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="navigateToSkillsSheet(row)"></tr>
 
     </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 30]" showFirstLastButtons></mat-paginator>
   </div>
-  <mat-paginator [pageSizeOptions]="[5, 10, 30]" showFirstLastButtons></mat-paginator>
 
 
 </div>

@@ -36,6 +36,8 @@ export class PageSkillsHomeComponent implements OnInit {
   compFilter: string[] = [];
   //Tableau contenant les autres filtres
   filter: string[] = [];
+  //
+  sort = "" ; 
 
   //Tableau contenant toutes les options (compétences)
   options : string[];
@@ -65,7 +67,7 @@ export class PageSkillsHomeComponent implements OnInit {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
-    this.searchSkillSheets(",");
+    this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
@@ -93,7 +95,7 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-pasqua
    */
   searchSkillSheets() {
-    this.skillsService.getAllSkills(this.filter, this.compFilter).subscribe(skillsList => {
+    this.skillsService.getAllSkills(this.filter, this.compFilter,this.sort).subscribe(skillsList => {
       if (skillsList.hasOwnProperty('results')) {
         this.createDataSource(skillsList['results'] as Skills[])
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
@@ -291,12 +293,12 @@ export class PageSkillsHomeComponent implements OnInit {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
-      this.searchSkillSheets(",");
+      this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
     else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "" && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) != undefined){
       this.compFilter.push(this.rechercheInputCpt);
-      this.searchSkillSheets(",");
+      this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
     this.rechercheInputCpt = "";
@@ -310,7 +312,7 @@ export class PageSkillsHomeComponent implements OnInit {
   doAddFilter() {
     if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) == -1 && this.rechercheInput != null && !this.rechercheInput.match("^\ +") && this.rechercheInput != "") {
       this.filter.push(this.rechercheInput);
-      this.searchSkillSheets(",");
+      this.searchSkillSheets();
     }
     this.rechercheInput = "";
   }
@@ -324,7 +326,7 @@ export class PageSkillsHomeComponent implements OnInit {
     let skillWordToDelete = event.srcElement.alt;
     this.compFilter = this.compFilter.filter(el => el !== skillWordToDelete);
     if(!this.isSkillWordInBasics(skillWordToDelete)) this.displayedColumns = this.displayedColumns.filter(el => el !== skillWordToDelete);
-    this.searchSkillSheets(",");
+    this.searchSkillSheets();
   }
 
   /**
@@ -344,7 +346,7 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   deleteTagWord(event) {
     this.filter = this.filter.filter(el => el !== event.srcElement.alt);
-    this.searchSkillSheets(",");
+    this.searchSkillSheets();
   }
 
   /**
@@ -352,12 +354,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param  event catch the sort event
    */
   onColumnSort(sort) {
+
     if(sort.active && sort.direction != "") {
-      this.searchSkillSheets(this.translateColumnName(sort.active) + ',' + sort.direction);
+      sort = this.translateColumnName(sort.active) + ',' + sort.direction
     }
-    else {
-      this.searchSkillSheets(",");
-    }
+    this.searchSkillSheets() ; 
   }
 
   translateColumnName(name) {

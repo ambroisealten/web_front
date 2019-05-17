@@ -127,20 +127,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (window.sessionStorage.getItem('skillsSheetVersions') != null) {
         // get all versions of the current skillsSheet to display in versions array
         this.setupSkillsSheetFromVersions();
-      }
-      //if we are consultant or applicant we don't have the same information so we load the form that match with the role
-      let formItemsJSON = require('../../../resources/formItems.json');
-      if (this.currentPerson.role == PersonRole.APPLICANT) {
-        this.formItems = formItemsJSON["candidateFormItems"];
-        this.updateFormItemsFromPerson(this.currentPerson);
-        this.comment = this.currentSkillsSheet.comment;
-      } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
-        this.formItems = formItemsJSON["consultantFormItems"];
-        this.updateFormItemsFromPerson(this.currentPerson);
-        this.comment = this.currentSkillsSheet.comment;
       } else {
-        this.formItems = null;
+        this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
+        this.initVersionArray(false);
       }
+      this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet));
+      this.createMenu();
+      this.comment = this.currentSkillsSheet.comment;
     })
 
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -202,10 +195,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
 
   /**
- * Check among skillsSheet versions the one which corresponds to the url
- * @param skillsSheets
- * @author Camille Schnell
- */
+  * Check among skillsSheet versions the one which corresponds to the url
+  * @param skillsSheets
+  * @author Camille Schnell
+  */
   setupSkillsSheetFromVersions() {
     let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
     if (versions[0].name != this.name) {
@@ -346,463 +339,465 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-    onSubmitRedirect(redirect: string) {
-      LoggerService.log("submitRedirect", LogLevel.DEBUG);
+  onSubmitRedirect(redirect: string) {
+    LoggerService.log("submitRedirect", LogLevel.DEBUG);
+    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    let tmpExisting;
+    if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+      this.currentSkillsSheet.comment = this.comment;
+      this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+          this.currentSkillsSheet.versionNumber += 1
+          let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+          let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
+          window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+          this.redirectAfterAction(redirect)
+        }
+      });
+    } else {
+      this.currentSkillsSheet.versionNumber = 1;
+      this.currentSkillsSheet.comment = this.comment;
+      this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+          let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+          if (tmpSkillsSheets.find(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name) == undefined) {
+            tmpSkillsSheets.push(this.currentSkillsSheet);
+          }
+          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+          this.redirectAfterAction(redirect)
+        }
+      })
+    }
+  }
+
+  createSkillsSheet() {
+    let newSkillsSheet = new SkillsSheet("NEW-" + this.makeName(), this.currentPerson)
+    let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
+    newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name == newSkillsSheet.name) != undefined) {
+      newSkillsSheet.name = "NEW-" + this.makeName();
+    }
+    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+        let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.push(newSkillsSheet);
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
+        this.subMenusService.notifyMenuAction("");
+      }
+    })
+  }
+
+  redirectAfterAction(redirect: string) {
+    this.subMenusService.resetMenuAction();
+    this.router.navigate([redirect]);
+  }
+
+  /**
+   * Translates Person role
+   * @param  roleName role to translate
+   */
+  translate(roleName) {
+    return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
+  }
+
+  /**
+   * Checks if skillsSheetName is empty and sets old name if it is
+   * @param  event input name of skillsSheet
+   */
+  checkIfNameEmpty(event) {
+    let newSkillsSheetName = event.target.value;
+    if (newSkillsSheetName.trim() == "") {
+      event.target.value = this.currentSkillsSheet.name;
+    }
+    else {
+      this.currentSkillsSheet.name = newSkillsSheetName;
+      this.modifDetection = true;
+    }
+  }
+
+  /**
+   * On click on edit person button
+   */
+  editPerson() {
+    this.isEditButtonHidden = true;
+    this.isPersonDataDisabled = false;
+    this.tmpCurrentPerson = this.currentPerson;
+    this.experienceTimeTextColor = "var(--ALTENDarkGray)";
+  }
+
+  /**
+   * On click on save edit button : Person is updated in db
+   */
+  savePerson() {
+    this.isEditButtonHidden = false;
+    this.isPersonDataDisabled = true;
+    this.currentPerson = this.updatePersonFromFormItems();
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
+    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
+  }
+
+  /**
+   * Update person's opinion on select
+   */
+  onOpinionChange() {
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
+  }
+
+  /**
+   * On click on cancel edit button
+   */
+  cancelEditPerson() {
+    this.isEditButtonHidden = false;
+    this.isPersonDataDisabled = true;
+    this.currentPerson = this.tmpCurrentPerson;
+    this.updateFormItemsFromPerson(this.currentPerson);
+    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
+  }
+
+  /**
+   * On click open modal to add/update availability
+   */
+  addAvailability() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(dispo => {
+    });
+  }
+
+  /**
+   * if no info about person yet : edit person form is enabled
+   */
+  enableEditIfFormFieldsEmpty() {
+    let allEmpty = true;
+    this.formItems.forEach(item => {
+      if (item.model != '' && item.model != '0') {
+        allEmpty = false;
+      }
+    });
+    if (allEmpty) {
+      this.isPersonDataDisabled = false;
+      this.isEditButtonHidden = true;
+    }
+  }
+
+  /**
+   * Updates a Person with data retrieved from the "edit person form" of a skillsheet
+   * @return Person updated
+   */
+  updatePersonFromFormItems() {
+    let personToUpdate = this.currentPerson;
+    this.formItems.forEach(item => {
+      switch (item.id) {
+        case 'highestDiploma':
+          personToUpdate.highestDiploma = item.model;
+          break;
+        case 'highestDiplomaYear':
+          personToUpdate.highestDiplomaYear = item.model;
+          break;
+        case 'employer':
+          personToUpdate.employer = item.model;
+          break;
+        case 'experienceTime':
+          personToUpdate.experienceTime = item.model;
+          break;
+        case 'job':
+          personToUpdate.job = item.model;
+          break;
+        case 'monthlyWage':
+          personToUpdate.monthlyWage = item.model;
+          break;
+      }
+    });
+    return personToUpdate;
+  }
+
+  /**
+  * Updates form data of a skillSheet given a Person
+  * @param  person Person containing data to display
+  */
+  updateFormItemsFromPerson(person: Person) {
+    this.avis = person.opinion; // update avis
+    if (person.role == PersonRole.APPLICANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'employer':
+            item.model = person.employer;
+            break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+        }
+      });
+    }
+    else if (person.role == PersonRole.CONSULTANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }
+
+  /**
+   * Dynamically change experience years when highest diploma year is updated (text color change)
+   * @param  item item containing highestDiplomaYear information
+   */
+  checkChangeExperienceTime(item) {
+    if (item.id == "highestDiplomaYear" && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
+      let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
+      this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
+      this.experienceTimeTextColor = "var(--ALTENOrange)";
+    } else if (item.id == "experienceTime") { // set default gray color if experienceTime changed by user
+      this.experienceTimeTextColor = "var(--ALTENDarkGray)";
+    }
+  }
+
+  makeName() {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  setViewPDF() {
+    if (this.modifDetection) {
+      LoggerService.log("submit", LogLevel.DEBUG);
       LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
       let tmpExisting;
       if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-        this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
-        this.currentSkillsSheet.comment = this.comment;
+        this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
         this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
           if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
             this.currentSkillsSheet.versionNumber += 1
             let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
             let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
             window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
-            this.redirectAfterAction(redirect)
+            this.initVersionArray(false);
+            this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]) ; 
+            this.pdf.next("pdf")
           }
         });
       } else {
         this.currentSkillsSheet.versionNumber = 1;
-        this.currentSkillsSheet.comment = this.comment;
         this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
           if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
             let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-            if (tmpSkillsSheets.find(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name) == undefined) {
-              tmpSkillsSheets.push(this.currentSkillsSheet);
-            }
+            tmpSkillsSheets.push(this.currentSkillsSheet);
             window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-            this.redirectAfterAction(redirect)
-          }
-        })
-      }
-    }
-
-    createSkillsSheet() {
-      let newSkillsSheet = new SkillsSheet("NEW-" + this.makeName(), this.currentPerson)
-      let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-      let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
-      newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
-      while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name == newSkillsSheet.name) != undefined) {
-        newSkillsSheet.name = "NEW-" + this.makeName();
-      }
-      this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-          let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-          tmpSkillsSheets.push(newSkillsSheet);
-          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-          this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
-          this.subMenusService.notifyMenuAction("");
-        }
-      })
-    }
-
-    redirectAfterAction(redirect: string) {
-      this.subMenusService.resetMenuAction();
-      this.router.navigate([redirect]);
-    }
-
-    /**
-     * Translates Person role
-     * @param  roleName role to translate
-     */
-    translate(roleName) {
-      return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
-    }
-
-    /**
-     * Checks if skillsSheetName is empty and sets old name if it is
-     * @param  event input name of skillsSheet
-     */
-    checkIfNameEmpty(event) {
-      let newSkillsSheetName = event.target.value;
-      if (newSkillsSheetName.trim() == "") {
-        event.target.value = this.currentSkillsSheet.name;
-      }
-      else {
-        this.currentSkillsSheet.name = newSkillsSheetName;
-        this.modifDetection = true;
-      }
-    }
-
-    /**
-     * On click on edit person button
-     */
-    editPerson() {
-      this.isEditButtonHidden = true;
-      this.isPersonDataDisabled = false;
-      this.tmpCurrentPerson = this.currentPerson;
-      this.experienceTimeTextColor = "var(--ALTENDarkGray)";
-    }
-
-    /**
-     * On click on save edit button : Person is updated in db
-     */
-    savePerson() {
-      this.isEditButtonHidden = false;
-      this.isPersonDataDisabled = true;
-      this.currentPerson = this.updatePersonFromFormItems();
-      this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
-      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
-          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
-          LoggerService.log('Person updated', LogLevel.DEBUG);
-        }
-      });
-      this.experienceTimeTextColor = "rgba(0,0,0,.38)";
-    }
-
-    /**
-     * Update person's opinion on select
-     */
-    onOpinionChange() {
-      this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
-      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
-          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
-          LoggerService.log('Person updated', LogLevel.DEBUG);
-        }
-      });
-    }
-
-    /**
-     * On click on cancel edit button
-     */
-    cancelEditPerson() {
-      this.isEditButtonHidden = false;
-      this.isPersonDataDisabled = true;
-      this.currentPerson = this.tmpCurrentPerson;
-      this.updateFormItemsFromPerson(this.currentPerson);
-      this.experienceTimeTextColor = "rgba(0,0,0,.38)";
-    }
-
-    /**
-     * On click open modal to add/update availability
-     */
-    addAvailability() {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.autoFocus = true;
-
-      const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
-
-      dialogRef.afterClosed().subscribe(dispo => {
-      });
-    }
-
-    /**
-     * if no info about person yet : edit person form is enabled
-     */
-    enableEditIfFormFieldsEmpty() {
-      let allEmpty = true;
-      this.formItems.forEach(item => {
-        if (item.model != '' && item.model != '0') {
-          allEmpty = false;
-        }
-      });
-      if (allEmpty) {
-        this.isPersonDataDisabled = false;
-        this.isEditButtonHidden = true;
-      }
-    }
-
-    /**
-     * Updates a Person with data retrieved from the "edit person form" of a skillsheet
-     * @return Person updated
-     */
-    updatePersonFromFormItems() {
-      let personToUpdate = this.currentPerson;
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            personToUpdate.highestDiploma = item.model;
-            break;
-          case 'highestDiplomaYear':
-            personToUpdate.highestDiplomaYear = item.model;
-            break;
-          case 'employer':
-            personToUpdate.employer = item.model;
-            break;
-          case 'experienceTime':
-            personToUpdate.experienceTime = item.model;
-            break;
-          case 'job':
-            personToUpdate.job = item.model;
-            break;
-          case 'monthlyWage':
-            personToUpdate.monthlyWage = item.model;
-            break;
-        }
-      });
-      return personToUpdate;
-    }
-
-    /**
-    * Updates form data of a skillSheet given a Person
-    * @param  person Person containing data to display
-    */
-    updateFormItemsFromPerson(person: Person) {
-      this.avis = person.opinion; // update avis
-      if (person.role == PersonRole.APPLICANT) {
-        this.formItems.forEach(item => {
-          switch (item.id) {
-            case 'highestDiploma':
-              item.model = person.highestDiploma;
-              break;
-            case 'highestDiplomaYear':
-              item.model = person.highestDiplomaYear;
-              break;
-            case 'employer':
-              item.model = person.employer;
-              break;
-            case 'experienceTime':
-              item.model = person.experienceTime;
-              break;
-            case 'job':
-              item.model = person.job;
-              break;
-            case 'monthlyWage':
-              item.model = person.monthlyWage;
-              break;
+            this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]) ; 
+            this.pdf.next("pdf")
           }
         });
       }
-      else if (person.role == PersonRole.CONSULTANT) {
-        this.formItems.forEach(item => {
-          switch (item.id) {
-            case 'highestDiploma':
-              item.model = person.highestDiploma;
-              break;
-            case 'highestDiplomaYear':
-              item.model = person.highestDiplomaYear;
-              break;
-            case 'job':
-              item.model = person.job;
-              break;
-            case 'monthlyWage':
-              item.model = person.monthlyWage;
-              break;
-            default:
-              break;
+    } else {
+      this.pdf.next("");
+    }
+  }
+
+  /***********************************************************************\
+   *
+   *                          CHART FUNCTIONS
+   *
+  \***********************************************************************/
+
+  /**
+   * Updates the radar chart for skills
+   * @param  arraySkills Array containing updated skills
+   */
+  updateChartSkills(arraySkills: SkillGraduated[]) {
+    if (this.countSkillsUpdate >= 1) {
+      this.modifDetection = true;
+    }
+    this.countSkillsUpdate++;
+    if (typeof this.skillsChart != "function") {
+      this.skillsChart.destroy();
+    }
+    if (arraySkills.length != 0) {
+      let skillsLabels: string[] = [];
+      let skillsData: number[] = [];
+      arraySkills.forEach(function (skillGraduated) {
+        skillsLabels.push(skillGraduated.skill.name);
+        skillsData.push(skillGraduated.grade);
+      });
+      this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSkills');
+      this.skillsArray = arraySkills;
+      this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
+    }
+  }
+
+  /**
+   * Updates the radar chart for soft skills
+   * @param  arraySkills Array containing updated soft skills
+   */
+  updateChartSoftSkills(arraySoftSkills: SkillGraduated[]) {
+    if (this.countSoftSkillsUpdate >= 1) {
+      this.modifDetection = true;
+    }
+    this.countSoftSkillsUpdate++;
+    if (typeof this.softSkillsChart != "function") {
+      this.softSkillsChart.destroy();
+    }
+    if (arraySoftSkills.length != 0) {
+      let skillsLabels: string[] = [];
+      let skillsData: number[] = [];
+      arraySoftSkills.forEach(function (skillGraduated) {
+        skillsLabels.push(skillGraduated.skill.name);
+        skillsData.push(skillGraduated.grade);
+      });
+      this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSoftSkills');
+      this.softSkillsArray = arraySoftSkills;
+      this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
+    }
+  }
+
+  /**
+  * Create a radar chart (skills matrix)
+  * @param  labels    labels to display on the chart
+  * @param  data      data for the chart
+  * @param  elementId 'canvasSkills' or 'canvasSoftSkills'
+  * @return           a radar chart
+  */
+  createOrUpdateChart(labels, data, elementId) {
+    return new Chart(elementId, {
+      type: 'radar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Note',
+          data: data,
+          backgroundColor: [
+            'rgba(00, 139, 210, 0.2)',
+            'rgba(54, 162, 235, 0.2)'
+          ],
+          borderColor: [
+            'rgba(00, 139, 210, 1)',
+            'rgba(54, 162, 235, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scale: {
+          ticks: {
+            min: 0,
+            max: 4,
+            step: 0.5
           }
-        });
-      }
-    }
-
-    /**
-     * Dynamically change experience years when highest diploma year is updated (text color change)
-     * @param  item item containing highestDiplomaYear information
-     */
-    checkChangeExperienceTime(item) {
-      if (item.id == "highestDiplomaYear" && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
-        let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
-        this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
-        this.experienceTimeTextColor = "var(--ALTENOrange)";
-      } else if (item.id == "experienceTime") { // set default gray color if experienceTime changed by user
-        this.experienceTimeTextColor = "var(--ALTENDarkGray)";
-      }
-    }
-
-    makeName() {
-      let result = '';
-      let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let charactersLength = characters.length;
-      for (let i = 0; i < 10; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      }
-      return result;
-    }
-
-    setViewPDF() {
-      if (this.modifDetection) {
-        LoggerService.log("submit", LogLevel.DEBUG);
-        LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
-        let tmpExisting;
-        if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-          this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
-          this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-            if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-              this.currentSkillsSheet.versionNumber += 1
-              let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-              let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
-              window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
-              this.initVersionArray(false);
-              this.pdf.next("pdf")
-            }
-          });
-        } else {
-          this.currentSkillsSheet.versionNumber = 1;
-          this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-            if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-              let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-              tmpSkillsSheets.push(this.currentSkillsSheet);
-              window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-              this.pdf.next("pdf")
-            }
-          });
-        }
-      } else {
-        this.pdf.next("");
-      }
-    }
-
-    /***********************************************************************\
-     *
-     *                          CHART FUNCTIONS
-     *
-    \***********************************************************************/
-
-    /**
-     * Updates the radar chart for skills
-     * @param  arraySkills Array containing updated skills
-     */
-    updateChartSkills(arraySkills: SkillGraduated[]) {
-      if (this.countSkillsUpdate > 1) {
-        this.modifDetection = true;
-      }
-      this.countSkillsUpdate++;
-      if (typeof this.skillsChart != "function") {
-        this.skillsChart.destroy();
-      }
-      if (arraySkills.length != 0) {
-        let skillsLabels: string[] = [];
-        let skillsData: number[] = [];
-        arraySkills.forEach(function (skillGraduated) {
-          skillsLabels.push(skillGraduated.skill.name);
-          skillsData.push(skillGraduated.grade);
-        });
-        this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSkills');
-        this.skillsArray = arraySkills;
-        this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
-      }
-    }
-
-    /**
-     * Updates the radar chart for soft skills
-     * @param  arraySkills Array containing updated soft skills
-     */
-    updateChartSoftSkills(arraySoftSkills: SkillGraduated[]) {
-      if (this.countSoftSkillsUpdate > 1) {
-        this.modifDetection = true;
-      }
-      this.countSoftSkillsUpdate++;
-      if (typeof this.softSkillsChart != "function") {
-        this.softSkillsChart.destroy();
-      }
-      if (arraySoftSkills.length != 0) {
-        let skillsLabels: string[] = [];
-        let skillsData: number[] = [];
-        arraySoftSkills.forEach(function (skillGraduated) {
-          skillsLabels.push(skillGraduated.skill.name);
-          skillsData.push(skillGraduated.grade);
-        });
-        this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSoftSkills');
-        this.softSkillsArray = arraySoftSkills;
-        this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
-      }
-    }
-
-    /**
-    * Create a radar chart (skills matrix)
-    * @param  labels    labels to display on the chart
-    * @param  data      data for the chart
-    * @param  elementId 'canvasSkills' or 'canvasSoftSkills'
-    * @return           a radar chart
-    */
-    createOrUpdateChart(labels, data, elementId) {
-      return new Chart(elementId, {
-        type: 'radar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Note',
-            data: data,
-            backgroundColor: [
-              'rgba(00, 139, 210, 0.2)',
-              'rgba(54, 162, 235, 0.2)'
-            ],
-            borderColor: [
-              'rgba(00, 139, 210, 1)',
-              'rgba(54, 162, 235, 1)'
-            ],
-            borderWidth: 1
-          }]
         },
-        options: {
-          scale: {
-            ticks: {
-              min: 0,
-              max: 4,
-              step: 0.5
-            }
-          },
-          tooltips: {
-            callbacks: {
-              label: function (tooltipItem, data) {
-                var label = data.labels[tooltipItem.index];
-                return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-              }
-            }
-          },
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
-    }
-
-    /* takes a string phrase and breaks it into separate phrases
-    no bigger than 'maxwidth', breaks are made at complete words.*/
-    /**
-    * Breaks labels into arrays to display them in multiple lines in radar chart.
-    * Breaks are made at complete words.
-    * @param  labels   array of labels
-    * @param  maxwidth max width per line
-    * @return          new array with formatted labels
-    */
-    formatLabels(labels, maxwidth) {
-      let formattedLabels = [];
-
-      labels.forEach(function (label) {
-        let sections = [];
-        let words = label.split(" ");
-        let temp = "";
-
-        words.forEach(function (item, index) {
-          if (temp.length > 0) {
-            let concat = temp + ' ' + item;
-
-            if (concat.length > maxwidth) {
-              sections.push(temp);
-              temp = "";
-            }
-            else {
-              if (index == (words.length - 1)) {
-                sections.push(concat);
-                return;
-              }
-              else {
-                temp = concat;
-                return;
-              }
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var label = data.labels[tooltipItem.index];
+              return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
             }
           }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
 
-          if (index == (words.length - 1)) {
-            sections.push(item);
-            return;
-          }
+  /* takes a string phrase and breaks it into separate phrases
+  no bigger than 'maxwidth', breaks are made at complete words.*/
+  /**
+  * Breaks labels into arrays to display them in multiple lines in radar chart.
+  * Breaks are made at complete words.
+  * @param  labels   array of labels
+  * @param  maxwidth max width per line
+  * @return          new array with formatted labels
+  */
+  formatLabels(labels, maxwidth) {
+    let formattedLabels = [];
 
-          if (item.length < maxwidth) {
-            temp = item;
+    labels.forEach(function (label) {
+      let sections = [];
+      let words = label.split(" ");
+      let temp = "";
+
+      words.forEach(function (item, index) {
+        if (temp.length > 0) {
+          let concat = temp + ' ' + item;
+
+          if (concat.length > maxwidth) {
+            sections.push(temp);
+            temp = "";
           }
           else {
-            sections.push(item);
+            if (index == (words.length - 1)) {
+              sections.push(concat);
+              return;
+            }
+            else {
+              temp = concat;
+              return;
+            }
           }
+        }
 
-        });
-        formattedLabels.push(sections);
-      })
-      return formattedLabels;
-    }
+        if (index == (words.length - 1)) {
+          sections.push(item);
+          return;
+        }
 
+        if (item.length < maxwidth) {
+          temp = item;
+        }
+        else {
+          sections.push(item);
+        }
 
+      });
+      formattedLabels.push(sections);
+    })
+    return formattedLabels;
   }
+
+
+}

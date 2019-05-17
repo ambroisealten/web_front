@@ -86,6 +86,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     //  de l'utilisateur (Mission par défaut)
     this.isNotLoginService.notifyLoginOut(true) ;
     this.tokenService.notifyTokenReception(false) ;
-    this.router.navigate(['skills']);
+    this.router.navigate(['/skills']);
   }
 }

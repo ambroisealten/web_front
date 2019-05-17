@@ -8,6 +8,7 @@ import { Chart } from 'chart.js';
 
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import { SubMenu } from 'src/app/header/models/menu';
 
 @Component({
   selector: 'app-pdf',
@@ -43,6 +44,9 @@ export class PdfComponent implements OnInit, OnDestroy {
     private skillsSheetService: SkillsSheetService) { }
 
   ngOnInit() {
+    //
+    this.subMenusService.resetMenuAction();
+
     //Url's param
     this.name = this.route.snapshot.paramMap.get('name');
     this.version = +this.route.snapshot.paramMap.get('version');
@@ -57,6 +61,8 @@ export class PdfComponent implements OnInit, OnDestroy {
     this.updateChartSkills(this.skillsArray);
     this.updateChartSoftSkills(this.softSkillsArray);
 
+    //Créer les menus
+    this.createMenu(); 
 
     //Subscribe to action
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -105,9 +111,27 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @author Quentin Della-Pasqua
    */
   setupArray() {
-    let currentSkillsSheet: SkillsSheet = this.getSkillsSheet();
+    let currentSkillsSheet: SkillsSheet ;
+    if (window.sessionStorage.getItem('skillsSheetVersions') == null || window.sessionStorage.getItem('skillsSheetVersions') == null) {
+      this.router.navigate(['skills']);
+    } else {
+      let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
+      if (versions[0].name != this.name || versions[versions.length-1].versionNumber != this.version ) {
+        let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]
+        skillsSheets.forEach(skillsSheet => {
+          if (skillsSheet.versionNumber == this.version && skillsSheet.name == this.name) {
+            currentSkillsSheet = skillsSheet;
+          }
+        })
+      } else {
+        versions.forEach(skillsSheet => {
+          if (skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
+            currentSkillsSheet = skillsSheet as SkillsSheet;
+          }
+        });
+      }
+    }
     currentSkillsSheet.skillsList.forEach(skill => {
-      console.log(skill);
       if (skill['skill'].hasOwnProperty('isSoft')) {
         this.softSkillsArray.push(skill);
       } else {
@@ -145,39 +169,36 @@ export class PdfComponent implements OnInit, OnDestroy {
     }
   }
 
+    /**
+  * Create the menu corresponding to the view
+  * @author Quentin Della-Pasqua
+  */
+ createMenu() {
+  let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'))
+  let subMenu: SubMenu[] = [];
+  subMenu.push(this.subMenusService.createMenu('Accueil', [], 'home', 'redirect/skills', []))
+  subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'note_add', 'create', []))
+  let count = 0;
+  let tmpSkillsSheet: SkillsSheet[] = [];
+  skillsSheets.forEach(skillsSheet => {
+    if (count < 3) {
+      subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber + '/', []))
+    } else {
+      tmpSkillsSheet.push(skillsSheet)
+    }
+    count++;
+  })
+  if (count > 3) {
+    subMenu.push(this.subMenusService.createMenu('Autres', tmpSkillsSheet, 'description', 'redirect/skills/skillsheet/', ['name', 'versionNumber']))
+  }
+  this.subMenusService.notifySubMenu(subMenu)
+}
+
   /***********************************************************************\
   *
   *                          SOUS-FONCTIONS
   *
  \*************************************************************************/
-
-  /**
-   * Retrieve the right skillsSheet from storage 
-   * @author Quentin Della-Pasqua
-   */
-  getSkillsSheet(): SkillsSheet {
-    let currentSkillsSheet: SkillsSheet;
-    if (window.sessionStorage.getItem('skillsSheetVersions') == null || window.sessionStorage.getItem('skillsSheetVersions') == null) {
-      this.router.navigate(['skills']);
-    } else {
-      let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-      if (versions[0].name != this.name) {
-        let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]
-        skillsSheets.forEach(skillsSheet => {
-          if (skillsSheet.versionNumber == this.version && skillsSheet.name == this.name) {
-            currentSkillsSheet = skillsSheet;
-          }
-        })
-      } else {
-        versions.forEach(skillsSheet => {
-          if (skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
-            currentSkillsSheet = skillsSheet as SkillsSheet;
-          }
-        });
-      }
-    }
-    return currentSkillsSheet;
-  }
 
   createSkillsSheet() {
     let newSkillsSheet = new SkillsSheet("NEW-" + this.makeName(), this.currentPerson)
