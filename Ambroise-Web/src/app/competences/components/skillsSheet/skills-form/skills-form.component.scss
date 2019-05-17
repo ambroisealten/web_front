@@ -22,11 +22,19 @@
   margin: 3%;
 }
 
-.editButton:focus, .cancelButton:focus, .savePersonButton:focus {
-  outline: none;
+.availabilityTitle {
+  text-align:left;
+  margin-top: 3%;
 }
 
-.editButton, .cancelButton, .savePersonButton {
+.availability-container {
+  display: grid;
+  grid-template-columns: 7fr 1fr;
+  border-bottom: 1px solid var(--ALTENLightGray);
+}
+
+.editButton:focus, .cancelButton:focus, .savePersonButton:focus, .newAvailabilityButton, .editAvailabilityButton{
+  outline: none;
 }
 
 .editIcon {
@@ -52,6 +60,11 @@
   flex-direction: column;
   padding: 1% 2% 0 2%;
   border-right: 1px solid var(--ALTENBlue);
+}
+
+.skillsArrayTitle {
+  border-bottom: 1px solid var(--ALTENBlue);
+  margin-bottom: 2%;
 }
 
 .mat-form-field {

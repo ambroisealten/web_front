@@ -15,6 +15,9 @@ export class Person {
   highestDiploma: string;
   highestDiplomaYear: string ;
   opinion: string;
+  experienceTime: string;
+  availability: Availability;
+
 
   constructor(surname:string, name:string, mail:string, role:PersonRole) {
     this.surname = surname;
@@ -29,6 +32,7 @@ export class Person {
     this.highestDiploma = "" ;
     this.highestDiplomaYear = "" ;
     this.opinion = "";
+    this.experienceTime = "0";
   }
 }
 
@@ -36,4 +40,8 @@ export enum PersonRole {
   DEMISSIONAIRE = "DEMISSIONAIRE",
 	APPLICANT = "APPLICANT",
 	CONSULTANT = "CONSULTANT"
+}
+
+export class Availability {
+  
 }

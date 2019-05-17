@@ -3,7 +3,7 @@ import { NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DemoMaterialModule } from '../utils/material-modules';
 
 //  ROUTING MODULE
@@ -25,6 +25,8 @@ import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
 import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-view/skills-sheet-view.component';
 import { PdfComponent } from './components/skillsSheet/pdf/pdf.component';
+import { SkillsListService } from './services/skillsList.service';
+import { ModalAvailabilityComponent } from './components/skillsSheet/modal-availability/modal-availability.component';
 
 
 @NgModule({
@@ -36,6 +38,8 @@ import { PdfComponent } from './components/skillsSheet/pdf/pdf.component';
     SkillsFormComponent,
     SkillsSheetViewComponent,
     PdfComponent
+    SkillsFormComponent,
+    ModalAvailabilityComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +48,7 @@ import { PdfComponent } from './components/skillsSheet/pdf/pdf.component';
     CommonModule,
     HttpClientModule,
     FormsModule,
-    //ReactiveFormsModule,
+    ReactiveFormsModule,
     //BrowserModule,
     DemoMaterialModule,
     //BrowserAnimationsModule,
@@ -54,14 +58,16 @@ import { PdfComponent } from './components/skillsSheet/pdf/pdf.component';
     ModalSkillsCandidateComponent,
     SkillsFormComponent,
     PdfComponent
+    ModalAvailabilityComponent
     //ConfirmationDialogComponent
   ],
   providers: [
     SkillsSheetService,
     SkillsService,
     PersonSkillsService,
+    SkillsListService
   ]
 })
-export class CompetencesModule { 
+export class CompetencesModule {
 
 }
