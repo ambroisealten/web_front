@@ -32,8 +32,8 @@ export class ArraySkillsComponent implements OnInit {
   //Subscription ;
   skillsSubscription ;
 
-    private skillsListService : SkillsListService) {
-  constructor(private arrayObsService: ArrayObsService,
+    
+  constructor(private skillsListService : SkillsListService) {
   }
 
   /**

@@ -6,7 +6,7 @@ import { AdminDocumentComponent } from './components/admin-document/admin-docume
 import { DataAgencyDialogComponent } from './components/data-agency-dialog/data-agency-dialog.component';
 import { MatDialogModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DemoMaterialModule } from '../utils/material-modules';
+import { DemoMaterialModule } from '../utils/shared-module/material-modules';
 import { AdminService } from './services/admin.service';
 import { DataFileDialogComponent } from './components/data-file-dialog/data-file-dialog.component';
 import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spinner.component';

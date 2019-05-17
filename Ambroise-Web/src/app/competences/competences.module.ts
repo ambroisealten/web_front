@@ -50,7 +50,8 @@ import { DiplomasService } from './services/diplomas.service';
   entryComponents: [
     ModalSkillsCandidateComponent,
     SkillsFormComponent,
-    PdfComponent
+    PdfComponent,
+    ModalAvailabilityComponent
   ],
   providers: [
     SkillsSheetService,
