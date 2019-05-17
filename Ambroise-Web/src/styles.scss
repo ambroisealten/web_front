@@ -212,7 +212,7 @@ a{
 
 .tagWord{
     color :#043962;
-    text-align: center;
+    text-align: left;
     background-color: var(--ALTENGray);
     border-radius: 10px;
     transition: linear .2s;
@@ -263,6 +263,11 @@ div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
     float: left;
 }
 
-.closeTag:hover{
+.tagWordCpt:hover, .tagWord:hover {
+    background-color: var(--ALTENRed);
+    color : white;
+}
+
+.tagWordCpt:hover .closeTag, .tagWord:hover .closeTag{
     filter : brightness(0) invert(1);
 }

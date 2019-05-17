@@ -1,8 +1,11 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { SkillsSheetService } from '../../../services/skillsSheet.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
+import { SkillsListService } from '../../../services/skillsList.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-array-skills',
@@ -16,22 +19,32 @@ export class ArraySkillsComponent implements OnInit {
 
   @Input() displayedColumns: string[]; // names of columns to display
   @Input() dataSourceArray: any[]; // data array
-  @Input() headerRowHidden: boolean; // is header row (columns title) hidden
-  @Input() datatype: string; // 'skills' or 'softSkills'
+  @Input() removeBtnHidden: boolean; // is remove button hidden in rows
+  @Input() searchBarHidden: boolean; // is search bar hidden
   @Input() dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
   @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ;
 
+  //Tableau contenant toutes les options (compétences) pour l'auto-complétion
+  options : string[];
+  filteredOptions : Observable<string[]>;
+  myControl = new FormControl();
+
   //Subscription ;
   skillsSubscription ;
 
-  constructor(private arrayObsService: ArrayObsService) {
+  constructor(private arrayObsService: ArrayObsService,
+    private skillsListService : SkillsListService) {
   }
 
   /**
    * Inits dataSource of array : skills or soft skills
    */
   ngOnInit() {
+    this.getSkillsList();
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      map(value => this._filter(value))
+    );
   }
 
   ngOnDestroy(){
@@ -57,6 +70,32 @@ export class ArraySkillsComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }*/
 
+    /**
+   * Cherche toutes les compétences en base
+   * @author Lucas Royackkers
+   */
+  getSkillsList(){
+    this.skillsListService.getAllTechSkills().subscribe(skillsList=> {
+      this.options = (skillsList as Skill[]).map(skill => skill.name);
+    });
+  }
+
+    /**
+   * Filtre toutes les options qui correspondent à l'input user
+   * 
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Lucas Royackkers
+   */
+  private _filter(value: string): string[] {
+    if(value.length != 0){
+      const filterValue = value.toLowerCase();
+      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+    else{
+      return [];
+    }
+  }
+
   /**
   * Adds a skill into the array
   * @param  event skillName from input
@@ -67,17 +106,11 @@ export class ArraySkillsComponent implements OnInit {
 
       // if skillname not already in array : add it
       if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === skillName.toLowerCase().trim()) == -1) {
-        if(this.datatype == "softSkills") { // add isSoft field if soft skill
-          let softSkill = new Skill(skillName);
-          softSkill.isSoft = "";
-          this.dataSourceArray.push(new SkillGraduated(softSkill, 1));
-        }
-        else {
-          this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
-        }
-        this.dataSource = new MatTableDataSource(this.dataSourceArray);
 
-        this.updateDataSourceInService();
+      this.dataSourceArray.push(new SkillGraduated(new Skill(skillName), 1));
+      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+
+      this.updateDataSourceInService();
       }
       event.target.value = '';
     }
@@ -119,7 +152,6 @@ export class ArraySkillsComponent implements OnInit {
     });
 
     this.updateDataSourceInService();
-
   }
 
   /**

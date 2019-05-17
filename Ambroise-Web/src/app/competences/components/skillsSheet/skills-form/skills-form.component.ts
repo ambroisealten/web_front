@@ -4,6 +4,7 @@ import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -13,6 +14,11 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { MatTableDataSource } from '@angular/material';
 import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { SkillsListService } from '../../../services/skillsList.service';
+import { DiplomasService } from '../../../services/diplomas.service';
 
 @Component({
   selector: 'app-skills-form',
@@ -40,12 +46,16 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
 
   headerRowHiddenModif = false;
-  headerRowHiddenSkills = true;
 
   // Form displayed
   formItems: any[];
 
-  // Charts
+  //Tableau contenant toutes les options (diplômes) pour l'auto-complétion
+  options: string[];
+  filteredOptions: Observable<string[]>;
+  myControl = new FormControl();
+
+  //Charts
   skillsChart = Chart;
   softSkillsChart = Chart;
 
@@ -65,9 +75,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   //
   avis: string;
-  isEditButtonHidden = false;
-  isPersonDataDisabled = true;
-  isSkillsSheetNameEditable = false;
+  comment: string;
+  isEditButtonHidden: boolean = false;
+  isPersonDataDisabled: boolean = true;
+  isSkillsSheetNameEditable: boolean = false;
 
   // subscription
   submenusSubscription;
@@ -77,16 +88,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   nameSkillsSheet: string;
 
   constructor(private skillsService: SkillsService,
-              private skillsSheetService: SkillsSheetService,
-              private personSkillsService: PersonSkillsService,
-              private router: Router,
-              private route: ActivatedRoute,
-              private subMenusService: SubMenusService) {
+    private skillsSheetService: SkillsSheetService,
+    private personSkillsService: PersonSkillsService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private subMenusService: SubMenusService,
+    private skillsListService: SkillsListService,
+    private diplomasService: DiplomasService) {
     window.addEventListener('beforeunload', e => {
       if (this.modifDetection) {
+        this.onSubmitForm();
         (e || window.event).returnValue = null;
-        //this.onSubmitForm();
-        return 'Des modifications non enregistrées sont présentes. Souhaitez vous vraiment quitter la page?';
+        // return 'Des modifications non enregistrées sont présentes. Souhaitez vous vraiment quitter la page?';
       }
     });
   }
@@ -103,7 +116,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    *        - init both charts of skills and soft skills
    */
   ngOnInit() {
-
+    this.getDiplomas();
+    this.filteredOptions = this.myControl.valueChanges.pipe(
+      map(value => this._filter(value))
+    );
     this.route.params.subscribe(param => {
       // Get param in the url
       this.name = param['name'];
@@ -144,6 +160,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       // Update chart
     });
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
+    this.myControl.disable();
+    this.myControl.setValue(this.formItems[0].model);
+    this.enableEditIfFormFieldsEmpty();
   }
 
   ngOnDestroy() {
@@ -178,6 +197,37 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Filtre toutes les options qui correspondent à l'input user
+   * 
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Lucas Royackkers
+   */
+  private _filter(value: string): string[] {
+    if (value != null) {
+      if (value.length != 0) {
+        const filterValue = value.toLowerCase();
+        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+      }
+      else {
+        return [];
+      }
+    }
+    else {
+      return [];
+    }
+  }
+
+  /**
+   * Cherche tous les diplômes dans la base de données
+   * @author Lucas Royackkers
+   */
+  getDiplomas() {
+    this.diplomasService.getAllDiplomas().subscribe(diplomas => {
+      this.options = (diplomas as Diploma[]).map(diploma => diploma.name);
+    })
+  }
+
+  /**
  * Check among skillsSheet versions the one which corresponds to the url
  * @param skillsSheets
  * @author Camille Schnell
@@ -208,6 +258,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else {
       this.currentPerson = skills.person;
       this.currentSkillsSheet = skills.skillsSheet;
+      this.comment = skills.skillsSheet.comment;
       this.nameSkillsSheet = skills.skillsSheet.name;
       // this.lastModificationsArray = this.skillsSheetService.lastModificationsArray;
       this.softSkillsArray = [];
@@ -286,55 +337,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-  * Updates form data of a skillSheet given a Person
-  * @param  person Person containing data to display
-  */
-  updateFormItemsFromPerson(person: Person) {
-    if (person.role === PersonRole.APPLICANT) {
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            item.model = person.highestDiploma;
-            break;
-          case 'highestDiplomaYear':
-            item.model = person.highestDiplomaYear;
-            break;
-          case 'employer':
-            item.model = person.employer;
-            break;
-          case 'job':
-            item.model = person.job;
-            break;
-          case 'monthlyWage':
-            item.model = person.monthlyWage;
-            break;
-          default:
-            break;
-        }
-      });
-    } else if (person.role === PersonRole.CONSULTANT) {
-      this.formItems.forEach(item => {
-        switch (item.id) {
-          case 'highestDiploma':
-            item.model = person.highestDiploma;
-            break;
-          case 'highestDiplomaYear':
-            item.model = person.highestDiplomaYear;
-            break;
-          case 'job':
-            item.model = person.job;
-            break;
-          case 'monthlyWage':
-            item.model = person.monthlyWage;
-            break;
-          default:
-            break;
-        }
-      });
-    }
-  }
-
   /***********************************************************************\
    *
    *                          SOUS-FONCTIONS
@@ -371,19 +373,21 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * Calls skills service to save current skillsSheet
   */
   onSubmitForm() {
-    LoggerService.log('submit', LogLevel.DEBUG);
-    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    LoggerService.log('Submitting form', LogLevel.PROD);
+    this.currentSkillsSheet.comment = this.comment;
+    LoggerService.log(this.currentPerson,LogLevel.DEBUG);
+    LoggerService.log(this.comment,LogLevel.DEBUG);
     let tmpExisting;
-    if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) !== undefined) {
-      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+    if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-          this.currentSkillsSheet.versionNumber += 1;
-          const tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-          const tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet);
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+          this.currentSkillsSheet.versionNumber += 1
+          let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+          let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
-          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
         }
       });
     } else {
@@ -487,6 +491,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
     this.tmpCurrentPerson = this.currentPerson;
+    this.myControl.enable();
   }
 
   /**
@@ -496,6 +501,22 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
     this.currentPerson = this.updatePersonFromFormItems();
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.currentPerson.highestDiploma = this.myControl.value;
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+      }
+    });
+    this.myControl.disable();
+  }
+
+  /**
+   * Update person's opinion on select
+   */
+  onOpinionChange() {
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -512,6 +533,23 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
+    this.myControl.disable();
+  }
+
+  /**
+   * if no info about person yet : edit person form is enabled
+   */
+  enableEditIfFormFieldsEmpty() {
+    let allEmpty = true;
+    this.formItems.forEach(item => {
+      if (item.model != '' && item.model != '0') {
+        allEmpty = false;
+      }
+    });
+    if (allEmpty) {
+      this.isPersonDataDisabled = false;
+      this.isEditButtonHidden = true;
+    }
   }
 
   /**
@@ -522,9 +560,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     const personToUpdate = this.currentPerson;
     this.formItems.forEach(item => {
       switch (item.id) {
-        case 'highestDiploma':
-          personToUpdate.highestDiploma = item.model;
-          break;
         case 'highestDiplomaYear':
           personToUpdate.highestDiplomaYear = item.model;
           break;
@@ -541,7 +576,65 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           break;
       }
     });
+    personToUpdate.highestDiploma = this.myControl.value;
     return personToUpdate;
+  }
+
+  /**
+  * Updates form data of a skillSheet given a Person
+  * @param  person Person containing data to display
+  */
+  updateFormItemsFromPerson(person: Person) {
+    this.avis = person.opinion; // update avis
+    if (person.role == PersonRole.APPLICANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
+            break;
+          case 'employer':
+            item.model = person.employer;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
+    else if (person.role == PersonRole.CONSULTANT) {
+      this.formItems.forEach(item => {
+        switch (item.id) {
+          case 'highestDiploma':
+            item.model = person.highestDiploma;
+            break;
+          case 'highestDiplomaYear':
+            item.model = person.highestDiplomaYear;
+            break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
+            break;
+          case 'job':
+            item.model = person.job;
+            break;
+          case 'monthlyWage':
+            item.model = person.monthlyWage;
+            break;
+          default:
+            break;
+        }
+      });
+    }
   }
 
   makeName() {
@@ -618,6 +711,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * @return           a radar chart
   */
   createOrUpdateChart(labels, data, elementId) {
+    let legendDisplayed = elementId === 'canvasSkills';
     return new Chart(elementId, {
       type: 'radar',
       data: {
@@ -637,11 +731,19 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }]
       },
       options: {
+        legend: {
+          display: legendDisplayed,
+          position: 'bottom',
+          onClick: (e) => e.stopPropagation()
+        },
         scale: {
           ticks: {
             min: 0,
             max: 4,
             step: 0.5
+          },
+          pointLabels: {
+            fontSize: 16
           }
         },
         tooltips: {
