@@ -33,7 +33,7 @@ import { ModalAvailabilityComponent } from './components/skillsSheet/modal-avail
     ArraySkillsUpdatesComponent,
     SkillsFormComponent,
     SkillsSheetViewComponent,
-    PdfComponent
+    PdfComponent,
     SkillsFormComponent,
     ModalAvailabilityComponent
   ],
