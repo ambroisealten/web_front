@@ -411,7 +411,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     });
   }
  }
-/*
+
   onSubmitRedirect(redirect: string) {
     LoggerService.log("submitRedirect", LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
@@ -442,8 +442,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     this.modifDetection = false;
-  }*/
-
+  }
+/*
   onSubmitRedirect(redirect: string) {
     LoggerService.log('submitRedirect', LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
@@ -473,7 +473,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
   }
-
+*/
   createSkillsSheet() {
     const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
     const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
