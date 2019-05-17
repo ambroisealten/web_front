@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
-import {MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpansionPanel } from '@angular/material';
+import { MatDialogConfig, MatDialog, MatTableDataSource, MatPaginator, MatExpansionPanel } from '@angular/material';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { Router } from '@angular/router';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
@@ -13,36 +13,35 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
-import { ToastrService } from 'ngx-toastr';   
 
 @Component({
   selector: 'app-page-skills-home',
   templateUrl: './page-skills-home.component.html',
   styleUrls: ['./page-skills-home.component.scss']
 })
-export class PageSkillsHomeComponent implements OnInit {
+export class PageSkillsHomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel;
 
   skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
-  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills','Java','C++','.NET','PHP','SQL'];
+  displayedColumns: string[] = ['Nom Prénom', 'Métier', 'Avis', 'Disponibilité', 'Moyenne Soft Skills', 'Java', 'C++', '.NET', 'PHP', 'SQL'];
   //noCompColumns: string[] = ['Nom Prénom','Métier','Avis','Disponibilité'];
   //Tableau contenant les compétences
-  compColumns: string[] = ['Java','C++','.NET','PHP','SQL'];
+  compColumns: string[] = ['Java', 'C++', '.NET', 'PHP', 'SQL'];
 
   //Tableau contenant les compétences recherchées
   compFilter: string[] = [];
   //Tableau contenant les autres filtres
   filter: string[] = [];
   //
-  sort = "" ; 
+  sort = '';
 
   //Tableau contenant toutes les options (compétences) pour l'auto-complétion
-  options : string[];
-  filteredOptions : Observable<string[]>;
+  options: string[];
+  filteredOptions: Observable<string[]>;
   myControl = new FormControl();
 
   rechercheInput: string;
@@ -57,13 +56,12 @@ export class PageSkillsHomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private dialog: MatDialog,
-    private router: Router,
-    private skillsSheetService: SkillsSheetService,
-    private personSkillsService: PersonSkillsService,
-    private skillsService: SkillsService,
-    private subMenusService: SubMenusService, 
-    private skillsListService : SkillsListService,
-    private toastr: ToastrService) { }
+              private router: Router,
+              private skillsSheetService: SkillsSheetService,
+              private personSkillsService: PersonSkillsService,
+              private skillsService: SkillsService,
+              private subMenusService: SubMenusService,
+              private skillsListService: SkillsListService) { }
 
   ngOnInit() {
     this.getSkillsList();
@@ -75,11 +73,11 @@ export class PageSkillsHomeComponent implements OnInit {
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
 
-  ngOnDestroy(){
-    if(this.subMenusSubscription != undefined){
-      this.subMenusSubscription.unsubscribe() ;
+  ngOnDestroy() {
+    if (this.subMenusSubscription !== undefined) {
+      this.subMenusSubscription.unsubscribe();
     } else {
-      LoggerService.log("ERROR SUBSCRIPTION : subMenusSubscription (page-skills-home Component), should have been set up",LogLevel.DEV)
+      LoggerService.log('ERROR SUBSCRIPTION : subMenusSubscription (page-skills-home Component), should have been set up', LogLevel.DEV);
     }
   }
 
@@ -87,8 +85,8 @@ export class PageSkillsHomeComponent implements OnInit {
    * Cherche toutes les compétences en base
    * @author Lucas Royackkers
    */
-  getSkillsList(){
-    this.skillsListService.getAllSkills().subscribe(skillsList=> {
+  getSkillsList() {
+    this.skillsListService.getAllSkills().subscribe(skillsList => {
       this.options = (skillsList as Skill[]).map(skill => skill.name);
     });
   }
@@ -98,12 +96,12 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-pasqua
    */
   searchSkillSheets() {
-    this.skillsService.getAllSkills(this.filter, this.compFilter,this.sort).subscribe(skillsList => {
+    this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
       if (skillsList.hasOwnProperty('results')) {
-        this.createDataSource(skillsList['results'] as Skills[])
+        this.createDataSource(skillsList['results'] as Skills[]);
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
-    })
+    });
   }
 
   /**
@@ -113,12 +111,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Lucas Royackkers
    */
   private _filter(value: string): string[] {
-    if(value.length != 0){
+    if (value.length !== 0) {
       const filterValue = value.toLowerCase();
       this.rechercheInputCpt = value;
       return this.options.filter(option => option.toLowerCase().includes(filterValue));
-    }
-    else{
+    } else {
       return [];
     }
   }
@@ -128,8 +125,8 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   createMenu() {
-    let subMenu: SubMenu[] = [];
-    subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'add_circle', 'create', []))
+    const subMenu: SubMenu[] = [];
+    subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'add_circle', 'create', []));
     this.subMenusService.notifySubMenu(subMenu);
   }
 
@@ -139,10 +136,10 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   doAction(action: string) {
-    if (action != "") {
-      let actionSplit = action.split('//');
-      this.subMenusService.notifyMenuAction("");
-      if (actionSplit[0] == this.router.url) {
+    if (action !== '') {
+      const actionSplit = action.split('//');
+      this.subMenusService.notifyMenuAction('');
+      if (actionSplit[0] === this.router.url) {
         if (actionSplit[1] === 'create') {
           this.createSkillsSheetModal();
         }
@@ -163,11 +160,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua
    */
   createDataSource(skillsList: Skills[]) {
-    let skillSheet: any[] = [];
-    if (skillsList != []) {
+    const skillSheet: any[] = [];
+    if (skillsList !== []) {
       this.currentSkills = skillsList;
       skillsList.forEach(skills => {
-        let tmpSkillSheet: any = {};
+        const tmpSkillSheet: any = {};
         if (skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')) {
           tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'];
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
@@ -176,17 +173,17 @@ export class PageSkillsHomeComponent implements OnInit {
           tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'availability');
           tmpSkillSheet['Moyenne Soft Skills'] = this.instantiateProperty(skills['skillsSheet'], 'softSkillAverage');
           this.compColumns.forEach(comp => {
-            let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase())
-            if (tmpCompResult != undefined) {
+            const tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase());
+            if (tmpCompResult !== undefined) {
               tmpSkillSheet[comp] = tmpCompResult.grade;
             } else {
-              tmpSkillSheet[comp] = "";
+              tmpSkillSheet[comp] = '';
             }
-          })
+          });
           tmpSkillSheet['skills'] = skills;
           skillSheet.push(tmpSkillSheet);
         }
-      })
+      });
       this.skillsSheetDataSource = new MatTableDataSource(skillSheet);
     }
   }
@@ -201,7 +198,7 @@ export class PageSkillsHomeComponent implements OnInit {
     if (property.hasOwnProperty(testedProperty)) {
       return property[testedProperty];
     }
-    return "";
+    return '';
   }
 
   /**
@@ -212,13 +209,13 @@ export class PageSkillsHomeComponent implements OnInit {
   getAverageSoftSkillGrade(skillsList: SkillGraduated[]): number {
     let sumGrades = 0;
     let countSoft = 0;
-    for (let softSkill of skillsList) {
+    for (const softSkill of skillsList) {
       if (softSkill['skill'].hasOwnProperty('isSoft')) {
         sumGrades += softSkill.grade;
         countSoft += 1;
       }
     }
-    if (countSoft != 0) {
+    if (countSoft !== 0) {
       return +(sumGrades / countSoft).toFixed(2);
     }
     return 0;
@@ -233,7 +230,7 @@ export class PageSkillsHomeComponent implements OnInit {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    let skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] == skillsSheetData['nameSkillsSheet']);
+    const skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] === skillsSheetData['nameSkillsSheet']);
     this.skillsService.notifySkills(skills);
     this.redirectToSkillsSheet(skills['skillsSheet']['name'], skills['skillsSheet']['versionNumber']);
   }
@@ -248,20 +245,19 @@ export class PageSkillsHomeComponent implements OnInit {
     const dialogRef = this.dialog.open(ModalSkillsCandidateComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(skills => {
-      let currentSkills = skills as Skills;
-      if (skills != "canceled" && skills != undefined) {
-        if (currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
+      const currentSkills = skills as Skills;
+      if (skills !== 'canceled' && skills !== undefined) {
+        if (currentSkills.skillsSheet.versionDate !== '') { // if existant skillsSheet
           this.personSkillsService.getPersonByMail(currentSkills.skillsSheet.mailPersonAttachedTo).subscribe(person => {
-            if(person.hasOwnProperty('name')){
-              this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet))
+            if (person.hasOwnProperty('name')) {
+              this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet));
             }
           });
           this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
-        }
-        else {
+        } else {
           this.personSkillsService.createNewPersonAndSkillsSheet(currentSkills).subscribe(httpResponse => {
-            if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-              let testSkill = new Skills(currentSkills.person, currentSkills.skillsSheet);
+            if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+              const testSkill = new Skills(currentSkills.person, currentSkills.skillsSheet);
               this.skillsService.notifySkills(testSkill);
               this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
             }
@@ -278,11 +274,11 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   createNewSkillSheet(person, skillsSheet) {
     this.skillsSheetService.createNewSkillsSheet(skillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
         this.skillsService.notifySkills(new Skills(person, skillsSheet));
         this.redirectToSkillsSheet(skillsSheet.name, skillsSheet.versionNumber);
       }
-    })
+    });
   }
 
   redirectToSkillsSheet(name: string, version: number) {
@@ -294,20 +290,19 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Quentin Della-Pasqua, Lucas Royackkers
    */
   doAddSkill() {
-    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) == -1 && this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "" && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) != undefined) {
+    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1 && this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) !== undefined) {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
-    }
-    else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "" && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) != undefined){
+    } else if (this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) !== undefined) {
       this.compFilter.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
-    this.rechercheInputCpt = "";
-    this.myControl.setValue("");
+    this.rechercheInputCpt = '';
+    this.myControl.setValue('');
   }
 
   /**
@@ -315,11 +310,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Maxime Maquinghen
    */
   doAddFilter() {
-    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) == -1 && this.rechercheInput != null && !this.rechercheInput.match("^\ +") && this.rechercheInput != "") {
+    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) === -1 && this.rechercheInput !== null && !this.rechercheInput.match('^\ +') && this.rechercheInput !== '') {
       this.filter.push(this.rechercheInput);
       this.searchSkillSheets();
     }
-    this.rechercheInput = "";
+    this.rechercheInput = '';
   }
 
   /**
@@ -328,9 +323,9 @@ export class PageSkillsHomeComponent implements OnInit {
    * @author Maxime Maquinghen
    */
   deleteSkillWord(event) {
-    let skillWordToDelete = event.srcElement.alt;
+    const skillWordToDelete = event.srcElement.alt;
     this.compFilter = this.compFilter.filter(el => el !== skillWordToDelete);
-    if(!this.isSkillWordInBasics(skillWordToDelete)) this.displayedColumns = this.displayedColumns.filter(el => el !== skillWordToDelete);
+    if (!this.isSkillWordInBasics(skillWordToDelete)) { this.displayedColumns = this.displayedColumns.filter(el => el !== skillWordToDelete); }
     this.searchSkillSheets();
   }
 
@@ -340,8 +335,8 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param skillWord the skill Word that we might delete
    * @author Lucas Royackkers
    */
-  isSkillWordInBasics(skillWord){
-    return skillWord.toLowerCase() == "c++" || skillWord.toLowerCase() == "php" || skillWord.toLowerCase() == "sql" || skillWord.toLowerCase() == ".net" || skillWord.toLowerCase() == "java";
+  isSkillWordInBasics(skillWord) {
+    return skillWord.toLowerCase() === 'c++' || skillWord.toLowerCase() === 'php' || skillWord.toLowerCase() === 'sql' || skillWord.toLowerCase() === '.net' || skillWord.toLowerCase() === 'java';
   }
 
   /**
@@ -360,24 +355,24 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   onColumnSort(sort) {
 
-    if(sort.active && sort.direction != "") {
-      sort = this.translateColumnName(sort.active) + ',' + sort.direction
+    if (sort.active && sort.direction !== '') {
+      sort = this.translateColumnName(sort.active) + ',' + sort.direction;
     }
-    this.searchSkillSheets() ; 
+    this.searchSkillSheets();
   }
 
   translateColumnName(name) {
-    switch(name) {
-      case "Nom Prénom":
-        return "name";
-      case "Métier":
-        return "job";
-      case "Avis":
-        return "opinion";
-      case "Disponibilité":
-        return "availability";
-      case "Moyenne Soft Skills":
-        return "softskillsAverage";
+    switch (name) {
+      case 'Nom Prénom':
+        return 'name';
+      case 'Métier':
+        return 'job';
+      case 'Avis':
+        return 'opinion';
+      case 'Disponibilité':
+        return 'availability';
+      case 'Moyenne Soft Skills':
+        return 'softskillsAverage';
       default:
         return name;
     }
