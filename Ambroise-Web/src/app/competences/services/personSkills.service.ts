@@ -39,6 +39,20 @@ export class PersonSkillsService {
         .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
+  createNewPersonAndSkillsSheet(personAndSkillsSheet){
+    let urlRequest :string;
+    let person = personAndSkillsSheet.person;
+
+    if(person.role.toUpperCase() === PersonRole.APPLICANT)
+    urlRequest = environment.serverAddress + '/applicantAndSkillsSheet';
+    else
+    urlRequest = environment.serverAddress + '/consultant';
+
+    return this.httpClient
+        .post<Person>(urlRequest, personAndSkillsSheet, this.options)
+        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+  }
+
   /**
    * HTTP Put request to update a person in db
    * @param  person Person to update

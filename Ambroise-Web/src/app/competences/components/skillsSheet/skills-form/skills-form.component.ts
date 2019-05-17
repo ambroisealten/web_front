@@ -121,6 +121,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       // Get param in the url
       this.name = param['name'];
       this.version = + param['version'];
+      console.log(this.currentPerson);
+      console.log(this.currentSkillsSheet);
       // Check if data already exists, person is more important than skillsSheet
       if (window.sessionStorage.getItem('person') !== null) {
         this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
@@ -131,11 +133,15 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           } else {
             this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[], true);
           }
+          console.log(this.currentPerson);
+          console.log(this.currentSkillsSheet);
           this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
           this.createMenu();
         } else {
           this.skillsSheetService.getSkillsSheetsByMail(this.currentPerson.mail).subscribe(skillsSheets => {
             this.initVersionArray(false);
+            console.log(this.currentPerson);
+            console.log(this.currentSkillsSheet);
             this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
             this.createMenu();
           });
@@ -250,6 +256,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * @author Quentin Della-Pasqua
   */
   initializeView(skills, personStored: boolean) {
+    console.log(skills);
     if (skills === undefined) {
       this.router.navigate(['skills']);
     } else {
@@ -352,7 +359,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.subMenusService.notifyMenuAction('');
       if (actionSplit[0] === this.router.url) {
         if (actionSplit[1] === 'create') {
-          this.createSkillsSheet();
+          //this.createSkillsSheet();
         } else if (actionSplit[1].match('^redirect/.*')) {
           const redirect = actionSplit[1].substring(9);
           if (('/' + redirect) !== this.router.url + '/') {
@@ -433,22 +440,22 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   createSkillsSheet() {
-    const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
-    const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    const defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
-    newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
-    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
-      newSkillsSheet.name = 'NEW-' + this.makeName();
-    }
-    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(newSkillsSheet);
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
-        this.subMenusService.notifyMenuAction('');
-      }
-    });
+    // const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
+    // const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    // const defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
+    // newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+    // while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
+    //   newSkillsSheet.name = 'NEW-' + this.makeName();
+    // }
+    // this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+    //   if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+    //     const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    //     tmpSkillsSheets.push(newSkillsSheet);
+    //     window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+    //     this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
+    //     this.subMenusService.notifyMenuAction('');
+    //   }
+    // });
   }
 
   redirectAfterAction(redirect: string) {
