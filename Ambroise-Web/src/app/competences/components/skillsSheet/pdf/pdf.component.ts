@@ -241,7 +241,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   downloadPDF() {
     var data = document.getElementById("contentToConvert");
-    html2canvas(data, { scale: 2.5 }).then(canvas => {
+    html2canvas(data, { scale: 2.5, allowTaint : true, useCORS:true }).then(canvas => {
       const contentDataURL = canvas.toDataURL('image/jpeg')
 
       let pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  

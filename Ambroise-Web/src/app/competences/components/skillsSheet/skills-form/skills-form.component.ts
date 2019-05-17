@@ -19,6 +19,7 @@ import { map } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
 import { DiplomasService } from '../../../services/diplomas.service';
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-skills-form',
@@ -100,7 +101,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private subMenusService: SubMenusService,
     private skillsListService: SkillsListService,
-    private diplomasService: DiplomasService) {
+    private diplomasService: DiplomasService,
+    private toastrService: ToastrService) {
     window.addEventListener('beforeunload', () => {
       if (this.modifDetection) {
         this.onSubmitForm();
@@ -377,6 +379,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+          this.toastrService.info("Fiche de compétence mise à jour avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     } else {
@@ -388,6 +391,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+          this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     }
@@ -408,6 +412,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+          this.toastrService.info("Fiche de compétence mise à jour avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     } else {
@@ -419,6 +424,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+          this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     }
@@ -468,9 +474,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         tmpSkillsSheets.push(newSkillsSheet);
         window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-
         this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
         this.subMenusService.notifyMenuAction('');
+        this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
   }
@@ -526,6 +532,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
+        this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
     this.experienceTimeTextColor = "rgba(0,0,0,.38)";
@@ -541,6 +548,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
+        this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
   }
@@ -579,6 +587,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
           LoggerService.log('Person updated', LogLevel.DEBUG);
+          this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
       this.updateCurrentPersonAvailability();
@@ -740,6 +749,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
             this.initVersionArray(false);
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+            this.toastrService.info("SkillsSheet mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
             this.pdf.next("pdf")
           }
         });
@@ -751,6 +761,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             tmpSkillsSheets.push(this.currentSkillsSheet);
             window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+            this.toastrService.info("SkillsSheet créée avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
             this.pdf.next("pdf")
           }
         });

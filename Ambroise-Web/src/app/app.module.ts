@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';  
 
 //  ROUTING
 import { AppRoutingModule } from './app-routing.module';
@@ -34,6 +35,9 @@ import { ErrorService } from './services/error.service';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ToastrModule.forRoot({
+      preventDuplicates: true
+    }) 
   ],
   providers: [
     LoggerService,
