@@ -19,6 +19,7 @@ import { map } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
 import { DiplomasService } from '../../../services/diplomas.service';
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-skills-form',
@@ -101,7 +102,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private subMenusService: SubMenusService,
     private skillsListService: SkillsListService,
-    private diplomasService: DiplomasService) {
+    private diplomasService: DiplomasService,
+    private toastrService: ToastrService) {
     window.addEventListener('beforeunload', () => {
       if (this.modifDetection) {
         this.onSubmitForm();
@@ -347,7 +349,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.subMenusService.notifyMenuAction('');
       if (actionSplit[0] === this.router.url) {
         if (actionSplit[1] === 'create') {
-          //this.createSkillsSheet();
+          this.createSkillsSheet();
         } else if (actionSplit[1].match('^redirect/.*')) {
           const redirect = actionSplit[1].substring(9);
           if (('/' + redirect) !== this.router.url + '/') {
@@ -380,6 +382,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+          this.toastrService.info("Fiche de compétence mise à jour avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     } else {
@@ -391,6 +394,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+          this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     }
@@ -411,6 +415,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+          this.toastrService.info("Fiche de compétence mise à jour avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     } else {
@@ -422,12 +427,62 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+          this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     }
     this.modifDetection = false;
   }
-
+  /*
+    onSubmitRedirect(redirect: string) {
+      LoggerService.log('submitRedirect', LogLevel.DEBUG);
+      LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+      let tmpExisting;
+      if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) !== undefined) {
+        this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+        this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+          if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+            this.currentSkillsSheet.versionNumber += 1;
+            const tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+            const tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet);
+            window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+            this.redirectAfterAction(redirect);
+          }
+        });
+      } else {
+        this.currentSkillsSheet.versionNumber = 1;
+        this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+          if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+            const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+            if (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name) === undefined) {
+              tmpSkillsSheets.push(this.currentSkillsSheet);
+            }
+            window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+            this.redirectAfterAction(redirect);
+          }
+        });
+      }
+    }
+  */
+  createSkillsSheet() {
+    const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
+    const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    const defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
+    newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
+      newSkillsSheet.name = 'NEW-' + this.makeName();
+    }
+    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.push(newSkillsSheet);
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
+        this.subMenusService.notifyMenuAction('');
+        this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+      }
+    });
+  }
 
   redirectAfterAction(redirect: string) {
     this.subMenusService.resetMenuAction();
@@ -480,6 +535,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
+        this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
     this.experienceTimeTextColor = "rgba(0,0,0,.38)";
@@ -495,6 +551,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
+        this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
   }
@@ -533,6 +590,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
           LoggerService.log('Person updated', LogLevel.DEBUG);
+          this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
       this.updateCurrentPersonAvailability();
@@ -740,6 +798,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
             this.initVersionArray(false);
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+            this.toastrService.info("SkillsSheet mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
             this.pdf.next("pdf")
           }
         });
@@ -751,6 +810,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             tmpSkillsSheets.push(this.currentSkillsSheet);
             window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
+            this.toastrService.info("SkillsSheet créée avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
             this.pdf.next("pdf")
           }
         });

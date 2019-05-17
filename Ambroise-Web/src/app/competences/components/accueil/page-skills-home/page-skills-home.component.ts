@@ -15,6 +15,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {map} from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
+import { ToastrService } from 'ngx-toastr';   
 
 @Component({
   selector: 'app-page-skills-home',
@@ -60,7 +61,9 @@ export class PageSkillsHomeComponent implements OnInit {
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
     private skillsService: SkillsService,
-    private subMenusService: SubMenusService, private skillsListService : SkillsListService) { }
+    private subMenusService: SubMenusService, 
+    private skillsListService : SkillsListService,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
     this.getSkillsList();

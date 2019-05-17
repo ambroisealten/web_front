@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Router } from '@angular/router';
 import { LoggerService, LogLevel } from './logger.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class ErrorService {
 
-    constructor(
-        private router: Router,){}
+    constructor(private router: Router,
+        private toastr: ToastrService){}
 
     /**
      * Gere les erreurs http
@@ -25,6 +26,7 @@ export class ErrorService {
                 break ;
         }
         LoggerService.log(statusError + " : " + messageError, LogLevel.DEV) ; 
+        this.toastr.error(statusError + " - " + messageError, "Désolé, une erreur est survenue",{positionClass: 'toast-bottom-full-width' , closeButton: true})
         return error ; 
     }
 
