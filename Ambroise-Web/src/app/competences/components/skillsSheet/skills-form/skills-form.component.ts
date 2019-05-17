@@ -90,13 +90,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   // Name of the skillsSheet
   nameSkillsSheet: string;
+  tmpCurrentPerson: Person;
 
   constructor(private skillsService: SkillsService,
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
     private subMenusService: SubMenusService,
     private skillsListService: SkillsListService,
     private diplomasService: DiplomasService) {
@@ -410,7 +411,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     });
   }
  }
-
+/*
   onSubmitRedirect(redirect: string) {
     LoggerService.log("submitRedirect", LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
@@ -441,7 +442,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     this.modifDetection = false;
-  }
+  }*/
 
   onSubmitRedirect(redirect: string) {
     LoggerService.log('submitRedirect', LogLevel.DEBUG);
