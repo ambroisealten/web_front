@@ -73,9 +73,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   name: string;
   version: number;
 
-  //
+  //Initialisation vars
   avis: string;
-  comment: string;
+  comment: string = "";
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
