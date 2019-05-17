@@ -29,15 +29,17 @@
         </button>
       </div>
 
-      <div class="disponibility-container">
-        <p class="disponibilityTitle">Disponibilité</p>
-        <button mat-icon-button class="newDisponibilityButton" (click)="addDisponibility()" [hidden]="isNewDispoButtonHidden">
+      <div class="availability-container">
+        <p class="availabilityTitle">Disponibilité</p>
+        <button mat-icon-button class="newAvailabilityButton" (click)="addAvailability()" [hidden]="isNewDispoButtonHidden">
           <mat-icon class="addDispoIcon">add_circle_outline</mat-icon>
         </button>
-        <button mat-icon-button class="editDisponibilityButton" (click)="addDisponibility()" [hidden]="!isNewDispoButtonHidden">
+        <button mat-icon-button class="editAvailabilityButton" (click)="addAvailability()" [hidden]="!isNewDispoButtonHidden">
           <mat-icon class="editDispoIcon">edit</mat-icon>
         </button>
       </div>
+      <p class="availabilityValue"> {{ currentPerson.availability }} </p>
+
 
       <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
         [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>

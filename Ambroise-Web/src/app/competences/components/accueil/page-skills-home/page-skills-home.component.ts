@@ -168,7 +168,7 @@ export class PageSkillsHomeComponent implements OnInit {
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
           tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
           tmpSkillSheet['Avis'] = this.instantiateProperty(skills['person'], 'opinion');
-          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'disponibility');
+          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'availability');
           tmpSkillSheet['Moyenne Soft Skills'] = this.instantiateProperty(skills['skillsSheet'], 'softSkillAverage');
           this.compColumns.forEach(comp => {
             let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase())
@@ -367,7 +367,7 @@ export class PageSkillsHomeComponent implements OnInit {
       case "Avis":
         return "opinion";
       case "Disponibilité":
-        return "disponibility";
+        return "availability";
       case "Moyenne Soft Skills":
         return "softskillsAverage";
       default:

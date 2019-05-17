@@ -13,7 +13,7 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { MatTableDataSource, MatDialog, MatDialogConfig } from '@angular/material';
 import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
-import { ModalDisponibilityComponent } from '../modal-disponibility/modal-disponibility.component';
+import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -489,12 +489,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.experienceTimeTextColor = "rgba(0,0,0,.38)";
   }
 
-  addDisponibility() {
-    this.isNewDispoButtonHidden = true;
+  /**
+   * On click open modal to add/update availability
+   */
+  addAvailability() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
 
-    const dialogRef = this.dialog.open(ModalDisponibilityComponent, dialogConfig);
+    const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(dispo => {
     });

@@ -24,7 +24,7 @@ import { SkillsService } from './services/skills.service';
 import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
 import { SkillsListService } from './services/skillsList.service';
-import { ModalDisponibilityComponent } from './components/skillsSheet/modal-disponibility/modal-disponibility.component';
+import { ModalAvailabilityComponent } from './components/skillsSheet/modal-availability/modal-availability.component';
 
 
 @NgModule({
@@ -34,7 +34,7 @@ import { ModalDisponibilityComponent } from './components/skillsSheet/modal-disp
     ArraySkillsComponent,
     ArraySkillsUpdatesComponent,
     SkillsFormComponent,
-    ModalDisponibilityComponent
+    ModalAvailabilityComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +51,7 @@ import { ModalDisponibilityComponent } from './components/skillsSheet/modal-disp
   ],
   entryComponents: [
     ModalSkillsCandidateComponent,
-    ModalDisponibilityComponent
+    ModalAvailabilityComponent
     //ConfirmationDialogComponent
   ],
   providers: [
