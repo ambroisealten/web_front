@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole } from 'src/app/competences/models/person';
+import { Person, PersonRole, OnDateAvailability, OnTimeAvailibility, DurationType } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
@@ -56,6 +56,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
   newSkillsSheet: PageSkillsHomeComponent;
+
+  currentPersonAvailibility: string;
 
   //MODIF DETECTION
   countSkillsUpdate = 0;
@@ -137,10 +139,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (this.currentPerson.role == PersonRole.APPLICANT) {
         this.formItems = formItemsJSON["candidateFormItems"];
         this.updateFormItemsFromPerson(this.currentPerson);
+        this.updateCurrentPersonAvailability();
         this.comment = this.currentSkillsSheet.comment;
       } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
         this.formItems = formItemsJSON["consultantFormItems"];
         this.updateFormItemsFromPerson(this.currentPerson);
+        this.updateCurrentPersonAvailability();
         this.comment = this.currentSkillsSheet.comment;
       } else {
         this.formItems = null;
@@ -498,7 +502,23 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(dispo => {
+    dialogRef.afterClosed().subscribe(availability => {
+      if(availability instanceof OnDateAvailability) {
+        this.currentPerson.onDateAvailability = availability;
+        this.currentPerson.onTimeAvailibility = undefined;
+      }
+      else if(availability instanceof OnTimeAvailibility) {
+        this.currentPerson.onTimeAvailibility = availability;
+        this.currentPerson.onDateAvailability = undefined;
+      }
+      // update person
+      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          LoggerService.log('Person updated', LogLevel.DEBUG);
+        }
+      });
+      this.updateCurrentPersonAvailability();
     });
   }
 
@@ -598,6 +618,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             break;
         }
       });
+    }
+  }
+
+  updateCurrentPersonAvailability() {
+    if(this.currentPerson.onDateAvailability != undefined) {
+      this.currentPersonAvailibility = "Du " + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
+                                      + " au " +  new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
+    }
+    else if(this.currentPerson.onTimeAvailibility != undefined) {
+      this.currentPersonAvailibility = "Dans " + this.currentPerson.onTimeAvailibility.duration + " "
+                                      + DurationType[this.currentPerson.onTimeAvailibility.durationType];
     }
   }
 
