@@ -37,7 +37,7 @@ export class PageSkillsHomeComponent implements OnInit {
   //Tableau contenant les autres filtres
   filter: string[] = [];
   //
-  sort = "" ; 
+  sort = "" ;
 
   //Tableau contenant toutes les options (compétences) pour l'auto-complétion
   options : string[];
@@ -355,12 +355,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * Sort the columns
    * @param  event catch the sort event
    */
-  onColumnSort(sort) {
-
-    if(sort.active && sort.direction != "") {
-      sort = this.translateColumnName(sort.active) + ',' + sort.direction
+  onColumnSort(sortValue) {
+    if(sortValue.active && sortValue.direction != "") {
+      this.sort = this.translateColumnName(sortValue.active) + ',' + sortValue.direction
     }
-    this.searchSkillSheets() ; 
+    this.searchSkillSheets() ;
   }
 
   translateColumnName(name) {
