@@ -14,6 +14,9 @@ export class ModalAvailabilityComponent implements OnInit {
   duration: number;
   durationType: string;
 
+  isFirstPanelDisabled: boolean = false;
+  isSecondPanelDisabled: boolean = true;
+
   constructor(private dialogRef: MatDialogRef<ModalAvailabilityComponent>,
     private adapter: DateAdapter<any>) { }
 
@@ -46,6 +49,15 @@ export class ModalAvailabilityComponent implements OnInit {
       // close with new object
       this.dialogRef.close(onTimeAvailability);
     }
+  }
 
+  enableFirstPanel() {
+    this.isFirstPanelDisabled = false;
+    this.isSecondPanelDisabled = true;
+  }
+
+  enableSecondPanel() {
+    this.isSecondPanelDisabled = false;
+    this.isFirstPanelDisabled = true;
   }
 }
