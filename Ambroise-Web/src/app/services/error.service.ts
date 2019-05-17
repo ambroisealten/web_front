@@ -8,6 +8,11 @@ export class ErrorService {
     constructor(
         private router: Router,){}
 
+    /**
+     * Gere les erreurs http
+     * @param error 
+     * @author Quentin Della-Pasqua
+     */
     handleError(error): any{
         let statusError = error['error']['status'] ; 
         let messageError = error['error']['message'] ; 

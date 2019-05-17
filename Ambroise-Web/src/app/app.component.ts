@@ -6,7 +6,6 @@ import { HeaderUserComponent } from './header/components/header-user/header-user
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { SubMenusService } from './services/subMenus.service';
-import { Menu } from './header/models/menu';
 
 @Component({
   selector: 'app-root',
@@ -27,11 +26,13 @@ export class AppComponent {
     //  Récupération de la variable d'environement "globalLogType" pour initialiser
     //  le LoggerService
     LoggerService.parseLogType(environment.globalLogType);
-    const helmet = require('helmet')
   }
 
   ngOnInit(){
+
     this.isNotLoginService.inLoginObservable.subscribe(isNotLogin => this.handleHeader(isNotLogin));
+    
+    //Routing event handler
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(({urlAfterRedirects}: NavigationEnd) => {
@@ -39,6 +40,11 @@ export class AppComponent {
       });
   }
 
+  /**
+   * When we're go out of skills/skillsheet we clear the storage
+   * @param urlAfterRedirects 
+   * @author Quentin Della-Pasqua
+   */
   clearSkillsSheetStorage(urlAfterRedirects: string){
     if(this.previousRoute.includes("skills/skillsheet") && !urlAfterRedirects.includes("skills/skillsheet")){
       window.sessionStorage.removeItem('skills') ;
@@ -48,6 +54,12 @@ export class AppComponent {
     }
     this.previousRoute = urlAfterRedirects ;
   }
+
+  /**
+   * Create or destroy the header when we're at the login page
+   * @param isNotLogin 
+   * @author Quentin Della-Pasqua
+   */
   handleHeader(isNotLogin:boolean){
     if(!isNotLogin){
       try{

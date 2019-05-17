@@ -51,6 +51,10 @@ export class SkillsService {
         })
         if(comp== ""){
             comp = ","
+        } 
+
+        if(sortColumn == ""){
+            sortColumn =","
         }
 
         return this.httpClient

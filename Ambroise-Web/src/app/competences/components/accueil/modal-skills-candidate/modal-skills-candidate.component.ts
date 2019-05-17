@@ -138,7 +138,6 @@ export class ModalSkillsCandidateComponent implements OnInit {
   }
 
   closeWithExistantSkillsSheet(person: Person) {
-    console.log("ICI")
     this.skillsSheetService.getSkillsSheetsByMail(this.emailInput).subscribe(skillsSheetsList => {
       if(skillsSheetsList != undefined) {
         this.dialogRef.close(new Skills(person, skillsSheetsList[0] as SkillsSheet));

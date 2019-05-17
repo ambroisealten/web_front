@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 import { SkillsListService } from '../../../services/skillsList.service';
 import { Observable } from 'rxjs';
@@ -33,8 +32,8 @@ export class ArraySkillsComponent implements OnInit {
   //Subscription ;
   skillsSubscription ;
 
-  constructor(private arrayObsService: ArrayObsService,
     private skillsListService : SkillsListService) {
+  constructor(private arrayObsService: ArrayObsService,
   }
 
   /**
