@@ -60,7 +60,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   softSkillsChart = Chart;
 
   currentPerson: Person;
-  tmpCurrentPerson: Person;
   currentSkillsSheet: SkillsSheet;
   newSkillsSheet: PageSkillsHomeComponent;
 
@@ -254,6 +253,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (skills === undefined) {
       this.router.navigate(['skills']);
     } else {
+      
       this.currentPerson = skills.person;
       this.currentSkillsSheet = skills.skillsSheet;
       this.comment = skills.skillsSheet.comment;
@@ -488,7 +488,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   editPerson() {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
-    this.tmpCurrentPerson = this.currentPerson;
     this.myControl.enable();
   }
 
@@ -529,7 +528,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   cancelEditPerson() {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
-    this.currentPerson = this.tmpCurrentPerson;
     this.updateFormItemsFromPerson(this.currentPerson);
     this.myControl.disable();
   }
@@ -547,6 +545,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (allEmpty) {
       this.isPersonDataDisabled = false;
       this.isEditButtonHidden = true;
+      this.myControl.enable();
     }
   }
 
@@ -633,6 +632,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         }
       });
     }
+    this.myControl.setValue(this.currentPerson.highestDiploma);
   }
 
   makeName() {
