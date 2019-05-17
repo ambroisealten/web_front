@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener } from
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole, OnDateAvailability, OnTimeAvailibility, DurationType } from 'src/app/competences/models/person';
+import { Person, PersonRole, OnDateAvailability, OnTimeAvailability, DurationType } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
@@ -65,7 +65,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   currentSkillsSheet: SkillsSheet;
   newSkillsSheet: PageSkillsHomeComponent;
 
-  currentPersonAvailibility: string;
+  currentPersonAvailibility: string = "Cliquez pour ajouter une disponibilité";
+  isImmediatelyAvailableChecked: boolean = false;
 
   //MODIF DETECTION
   countSkillsUpdate = 0;
@@ -130,9 +131,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.currentPerson.role == PersonRole.APPLICANT) {
       this.formItems = formItemsJSON["candidateFormItems"];
       this.updateFormItemsFromPerson(this.currentPerson);
+      this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
       this.formItems = formItemsJSON["consultantFormItems"];
       this.updateFormItemsFromPerson(this.currentPerson);
+      this.updateCurrentPersonAvailability();
     } else {
       this.formItems = null;
     }
@@ -192,7 +195,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   /**
    * Filtre toutes les options qui correspondent à l'input user
-   * 
+   *
    * @param value la valeur renseignée par l'utilisateur
    * @author Lucas Royackkers
    */
@@ -510,7 +513,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   /**
    * On click open modal to add/update availability
    */
-  addAvailability() {
+  updateAvailability() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
 
@@ -519,10 +522,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(availability => {
       if (availability instanceof OnDateAvailability) {
         this.currentPerson.onDateAvailability = availability;
-        this.currentPerson.onTimeAvailibility = undefined;
+        this.currentPerson.onTimeAvailability = undefined;
       }
-      else if (availability instanceof OnTimeAvailibility) {
-        this.currentPerson.onTimeAvailibility = availability;
+      else if (availability instanceof OnTimeAvailability) {
+        this.currentPerson.onTimeAvailability = availability;
         this.currentPerson.onDateAvailability = undefined;
       }
       // update person
@@ -641,15 +644,61 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.myControl.setValue(this.currentPerson.highestDiploma);
   }
 
+  /**
+   * Update availability text for current person
+   */
   updateCurrentPersonAvailability() {
     if (this.currentPerson.onDateAvailability != undefined) {
-      this.currentPersonAvailibility = "Du " + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
-        + " au " + new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
+      if(this.currentPerson.onDateAvailability.finalDate != -1) {
+        this.currentPersonAvailibility = "Du " + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
+          + " au " + new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
+      }
+      else {
+        this.currentPersonAvailibility = "À partir du " + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString();
+      }
+      this.isNewDispoButtonHidden = true;
     }
-    else if (this.currentPerson.onTimeAvailibility != undefined) {
-      this.currentPersonAvailibility = "Dans " + this.currentPerson.onTimeAvailibility.duration + " "
-        + DurationType[this.currentPerson.onTimeAvailibility.durationType];
+    else if (this.currentPerson.onTimeAvailability != undefined) {
+      this.currentPersonAvailibility = "Dans " + this.currentPerson.onTimeAvailability.duration + " "
+        + DurationType[this.currentPerson.onTimeAvailability.durationType];
+      this.isNewDispoButtonHidden = true;
     }
+  }
+
+  /**
+   * Hide or unhide availability text and update person's availability
+   */
+  availabilityCbChanged() {
+    if(this.isImmediatelyAvailableChecked) {
+      let immediatelyDate = new OnTimeAvailability();
+      immediatelyDate.initDate = new Date().getTime();
+      immediatelyDate.duration = 0;
+      immediatelyDate.durationType = "DAY";
+
+      this.currentPerson.onTimeAvailability = immediatelyDate;
+      this.currentPerson.onDateAvailability = undefined;
+
+      // update person
+      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          LoggerService.log('Person updated', LogLevel.DEBUG);
+        }
+      });
+    }
+    else { // no availability -> update person
+      this.currentPerson.onTimeAvailability = undefined;
+      this.currentPerson.onDateAvailability = undefined;
+
+      // update person
+      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          LoggerService.log('Person updated', LogLevel.DEBUG);
+        }
+      });
+    }
+    this.currentPersonAvailibility = "Cliquez pour ajouter une disponibilité"; // reinitialize default text to display
   }
 
   /**
