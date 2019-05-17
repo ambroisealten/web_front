@@ -2,7 +2,6 @@
   <nav class="navbar mb-2 pr-5 navbar-light rounded-0">
     <div class="collapse navbar-collapse" class="headNavbar">
       <ul class="navbarContent">
-        <ng-container *ngIf="subMenus.length > 0">
           <ng-container *ngFor="let menu of subMenus">
             <ng-container *ngIf="menu.hasOwnProperty('subSubMenus') ; else elseBlock">
               <li class="nav-item dropdown headMenu">
@@ -27,7 +26,6 @@
               </div>
             </ng-template>
           </ng-container>
-        </ng-container>
       </ul>
     </div>
 

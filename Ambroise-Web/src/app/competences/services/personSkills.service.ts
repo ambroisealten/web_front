@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Person, PersonRole } from '../models/person';
 import { catchError, timeout } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { ErrorService } from 'src/app/services/error.service';
 
 @Injectable()
 /**
@@ -11,7 +12,8 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 */
 export class PersonSkillsService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+    private errorService: ErrorService) { }
 
   token = window.sessionStorage.getItem("bearerToken");
   headers = new HttpHeaders({
@@ -34,7 +36,7 @@ export class PersonSkillsService {
 
     return this.httpClient
         .post<Person>(urlRequest, person, this.options)
-        .pipe(timeout(5000), catchError(err => this.handleError(err)));
+        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -50,7 +52,7 @@ export class PersonSkillsService {
 
     return this.httpClient
         .put<Person>(urlRequest, person, this.options)
-        .pipe(timeout(5000), catchError(err => this.handleError(err)));
+        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -60,11 +62,7 @@ export class PersonSkillsService {
   getPersonByMail(mail: String) {
     return this.httpClient
       .get<Person>(environment.serverAddress + '/person/' + mail, this.options)
-      .pipe(timeout(5000), catchError(error => this.handleError(error)));
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
-  handleError(error) {
-    LoggerService.log(error, LogLevel.DEBUG);
-    return undefined;
-  }
 }

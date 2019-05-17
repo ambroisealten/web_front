@@ -7,3 +7,8 @@ table {
 tr.mat-row {
   height: 1.5rem;
 }
+
+.mat-row:hover {
+  background-color: #d3e7f5;
+  cursor: pointer;
+}

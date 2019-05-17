@@ -13,6 +13,7 @@ export class SkillsSheet {
       mailVersionAuthor: string;
       rolePersonAttachedTo: PersonRole;
       averageSoftSkillsGrade: number;
+      comment: string;
 
     constructor(name: string, person: Person) {
       this.name = name;
@@ -20,9 +21,10 @@ export class SkillsSheet {
       this.versionNumber = 1 ;
       this.versionDate = "";
       this.skillsList = [] ;
-      this.mailVersionAuthor = "tempUserAdminManager@mail.com";
+      this.mailVersionAuthor = "manager.manu@alten.com";
       this.rolePersonAttachedTo = person.role;
       this.averageSoftSkillsGrade = 0;
+      this.comment = "";
     }
 
     addSkill(skillToAdd: SkillGraduated){
@@ -73,10 +75,14 @@ export class Skill {
 export class SkillsSheetVersions {
   manager: string;
   date: string;
+  name: string;
+  versionNumber: number;
 
-  constructor(manager: string, date: string) {
+  constructor(manager: string, date: string, name: string, versionNumber: number) {
     this.manager = manager;
     this.date = date;
+    this.name = name;
+    this.versionNumber = versionNumber;
   }
 }
 

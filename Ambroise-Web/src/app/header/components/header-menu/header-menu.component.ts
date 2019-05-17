@@ -17,19 +17,21 @@ export class HeaderMenuComponent implements OnInit {
     subMenus: SubMenu[] = [] ; 
     done: boolean = false  ;
 
+    //Subscription
+    subMenusSubscription ;
+
     constructor(
         private router: Router,
         private subMenusService: SubMenusService) { }
 
     ngOnInit() {
-        //this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
-    }
-
-    ngAfterViewInit(){
-        this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
+        this.subMenusSubscription = this.subMenusService.subMenuObservable.subscribe(subMenus => this.setSubMenus(subMenus))
     }
 
     ngOnDestroy(){
+        if(this.subMenusSubscription != undefined){
+            this.subMenusSubscription.unsubscribe() ; 
+        }
     }
     
   setSubMenus(subMenus: SubMenu[]){

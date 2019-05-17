@@ -6,6 +6,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { timeout, catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { ErrorService } from 'src/app/services/error.service';
 
 @Injectable()
 /**
@@ -16,8 +17,9 @@ export class SkillsService {
     private skillsInformation = new BehaviorSubject(undefined);
     skillsObservable = this.skillsInformation.asObservable();
 
-    constructor(private httpClient: HttpClient) { }
-  
+    constructor(private httpClient: HttpClient,
+        private errorService: ErrorService) { }
+
     notifySkills(skills: Skills){
         this.skillsInformation.next(skills);
     }
@@ -26,7 +28,7 @@ export class SkillsService {
         this.skillsInformation.next(undefined);
     }
 
-    getAllSkills(noCompFilter:string[], compFilter: string[]):Observable<{} | Skills[]>{
+    getAllSkills(noCompFilter:string[], compFilter: string[], sortColumn: string):Observable<{} | Skills[]>{
 
         let token = window.sessionStorage.getItem("bearerToken");
         let headers = new HttpHeaders({
@@ -52,13 +54,8 @@ export class SkillsService {
         }
 
         return this.httpClient
-            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/", options)
-            .pipe(timeout(5000), catchError(error => this.handleError(error)));
-      }
-
-      handleError(error){
-        LoggerService.log(error, LogLevel.DEBUG);
-        return undefined;
+            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/" + sortColumn, options)
+            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
       }
 
 }
