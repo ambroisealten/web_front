@@ -24,7 +24,7 @@ export class ModalAvailabilityComponent implements OnInit {
     this.adapter.setLocale('fr');
   }
 
-  save() {
+  saveFirstPanel() {
     if(this.initDate != undefined) {
       // create object OnDateAvailability
       let onDateAvailability = new OnDateAvailability();
@@ -40,7 +40,10 @@ export class ModalAvailabilityComponent implements OnInit {
       // close with new object
       this.dialogRef.close(onDateAvailability);
     }
-    else if(this.duration != undefined && this.durationType != undefined) {
+  }
+
+  saveSecondPanel() {
+    if(this.duration != undefined && this.durationType != undefined) {
       // create and init object OnTimeAvailability
       let onTimeAvailability = new OnTimeAvailability();
       onTimeAvailability.initDate = new Date().getTime();
