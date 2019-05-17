@@ -84,8 +84,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     //  TO-DO : Creer un service de redirection
     //  changer la redirection après connection en fonction du module de préférence
     //  de l'utilisateur (Mission par défaut)
-    this.isNotLoginService.notifyLoginOut(true) ;
     this.tokenService.notifyTokenReception(false) ;
     this.router.navigate(['/skills']);
+    this.isNotLoginService.notifyLoginOut(true) ;
   }
 }

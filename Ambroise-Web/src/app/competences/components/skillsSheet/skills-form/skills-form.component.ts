@@ -384,6 +384,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         tmpSkillsSheets.push(newSkillsSheet);
         window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        
         this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
         this.subMenusService.notifyMenuAction("");
       }
