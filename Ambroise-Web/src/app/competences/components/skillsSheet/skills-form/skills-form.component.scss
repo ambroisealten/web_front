@@ -22,11 +22,19 @@
   margin: 3%;
 }
 
-.editButton:focus, .cancelButton:focus, .savePersonButton:focus {
-  outline: none;
+.availabilityTitle {
+  text-align:left;
+  margin-top: 3%;
 }
 
-.editButton, .cancelButton, .savePersonButton {
+.availability-container {
+  display: grid;
+  grid-template-columns: 7fr 1fr;
+  border-bottom: 1px solid var(--ALTENLightGray);
+}
+
+.editButton:focus, .cancelButton:focus, .savePersonButton:focus, .newAvailabilityButton, .editAvailabilityButton{
+  outline: none;
 }
 
 .editIcon {
@@ -99,6 +107,6 @@
 }
 
 .button_save {
-  margin-left: 30% !important;
-
+  margin-left: 25% !important;
+  margin-right: 1% !important;
 }

@@ -15,6 +15,12 @@ export class SubMenusService {
     constructor(){
     }
 
+    /**
+     * permet de créer les sous menus, si pas de sous-sous-menu labelSubSubMenu = [],
+     * pour créer les actions des sous-sous-menus specifier les attributs dans subAction,
+     * l'action sera alors de la forme action + sousAction + '/' + sousAction + '/' + ...
+     * @author Quentin Della-Pasqua
+     */
     createMenu(labelSubMenu: string, labelSubSubMenu: any[], icon: string, action: string,subAction: string[]):SubMenu{
         let subMenu = new SubMenu() ; 
         if(labelSubSubMenu.length == 0){

@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoggerService, LogLevel } from '../../services/logger.service';
 import { BehaviorSubject } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { timeout, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as sha512 from 'js-sha512';
 import { Router } from '@angular/router';
+import { ErrorService } from 'src/app/services/error.service';
 
 /**
  * Service pour le login
@@ -18,7 +19,8 @@ export class TokenService {
     tokenReceptionObservable = this.tokenReceptionState.asObservable();
 
     constructor(private httpClient: HttpClient,
-        private router: Router) { }
+        private router: Router,
+        private errorService: ErrorService) { }
 
     /**
      * Permet de récupérer un token de session valide si l'utilisateur rentre le bon
@@ -40,7 +42,7 @@ export class TokenService {
         //Requête POST au WS : login => Objectif récupérer un token de session valide
         return this.httpClient.post(environment.serverAddress + '/login', postParams)
             //Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
-            .pipe(timeout(5000))
+            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)))
             //Effectue une action dès la réception du token
             .subscribe(token => {
                 //Check si la propriété Token existe
@@ -49,30 +51,10 @@ export class TokenService {
                     window.sessionStorage.setItem("bearerToken",token['token']);
                     //Notification de l'observable pour notifier la réception d'un token
                     this.tokenReceptionState.next(true);
+                } else {
+                    LoggerService.log("Problème réception token !!",LogLevel.DEV)
                 }
             })
-            /*
-            .toPromise()
-            .then(token => {
-                if (token != undefined) {
-                    //console.log("Property token exist ? : " + token['token'])  ;
-                    window.sessionStorage.setItem("bearerToken",token['token']);
-                    this.tokenReceptionState.next(true);
-                }
-            })
-            */
-            /*
-            .catch(error => {
-                console.log(error);
-                //  TO-DO : traiter les erreur liée au timeout et les erreur HTTP
-            });
-            */
-
-        /*switch (error.status) {
-            case 0: alert("500 : internal server error"); break;
-            case 403: alert("identifiant/mdp incorrect"); break;
-            default: console.log("HEIN?  " + error); break;  //TO-LOG
-        }*/
 
     }
 

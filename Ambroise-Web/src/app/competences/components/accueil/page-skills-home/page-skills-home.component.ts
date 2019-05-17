@@ -36,6 +36,8 @@ export class PageSkillsHomeComponent implements OnInit {
   compFilter: string[] = [];
   //Tableau contenant les autres filtres
   filter: string[] = [];
+  //
+  sort = "" ; 
 
   //Tableau contenant toutes les options (compétences) pour l'auto-complétion
   options : string[];
@@ -65,7 +67,7 @@ export class PageSkillsHomeComponent implements OnInit {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
-    this.searchSkillSheets(",");
+    this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
@@ -92,9 +94,9 @@ export class PageSkillsHomeComponent implements OnInit {
    * Cherche toutes les skillSheets
    * @author Quentin Della-pasqua
    */
-  searchSkillSheets(sortColumn) {
-    this.skillsService.getAllSkills(this.filter, this.compFilter, sortColumn).subscribe(skillsList => {
-      if (skillsList != undefined) {
+  searchSkillSheets() {
+    this.skillsService.getAllSkills(this.filter, this.compFilter,this.sort).subscribe(skillsList => {
+      if (skillsList.hasOwnProperty('results')) {
         this.createDataSource(skillsList['results'] as Skills[])
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
@@ -168,7 +170,7 @@ export class PageSkillsHomeComponent implements OnInit {
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
           tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
           tmpSkillSheet['Avis'] = this.instantiateProperty(skills['person'], 'opinion');
-          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'disponibility');
+          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'availability');
           tmpSkillSheet['Moyenne Soft Skills'] = this.instantiateProperty(skills['skillsSheet'], 'softSkillAverage');
           this.compColumns.forEach(comp => {
             let tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase())
@@ -247,7 +249,9 @@ export class PageSkillsHomeComponent implements OnInit {
       if (skills != "canceled" && skills != undefined) {
         if (currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
           this.personSkillsService.getPersonByMail(currentSkills.skillsSheet.mailPersonAttachedTo).subscribe(person => {
-            this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet))
+            if(person.hasOwnProperty('name')){
+              this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet))
+            }
           });
           this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
         }
@@ -291,12 +295,12 @@ export class PageSkillsHomeComponent implements OnInit {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
-      this.searchSkillSheets(",");
+      this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
     else if(this.rechercheInputCpt != null && !this.rechercheInputCpt.match("^\ +") && this.rechercheInputCpt != "" && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) != undefined){
       this.compFilter.push(this.rechercheInputCpt);
-      this.searchSkillSheets(",");
+      this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
     this.rechercheInputCpt = "";
@@ -310,7 +314,7 @@ export class PageSkillsHomeComponent implements OnInit {
   doAddFilter() {
     if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) == -1 && this.rechercheInput != null && !this.rechercheInput.match("^\ +") && this.rechercheInput != "") {
       this.filter.push(this.rechercheInput);
-      this.searchSkillSheets(",");
+      this.searchSkillSheets();
     }
     this.rechercheInput = "";
   }
@@ -324,7 +328,7 @@ export class PageSkillsHomeComponent implements OnInit {
     let skillWordToDelete = event.srcElement.alt;
     this.compFilter = this.compFilter.filter(el => el !== skillWordToDelete);
     if(!this.isSkillWordInBasics(skillWordToDelete)) this.displayedColumns = this.displayedColumns.filter(el => el !== skillWordToDelete);
-    this.searchSkillSheets(",");
+    this.searchSkillSheets();
   }
 
   /**
@@ -344,7 +348,7 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   deleteTagWord(event) {
     this.filter = this.filter.filter(el => el !== event.srcElement.alt);
-    this.searchSkillSheets(",");
+    this.searchSkillSheets();
   }
 
   /**
@@ -352,12 +356,11 @@ export class PageSkillsHomeComponent implements OnInit {
    * @param  event catch the sort event
    */
   onColumnSort(sort) {
+
     if(sort.active && sort.direction != "") {
-      this.searchSkillSheets(this.translateColumnName(sort.active) + ',' + sort.direction);
+      sort = this.translateColumnName(sort.active) + ',' + sort.direction
     }
-    else {
-      this.searchSkillSheets(",");
-    }
+    this.searchSkillSheets() ; 
   }
 
   translateColumnName(name) {
@@ -369,7 +372,7 @@ export class PageSkillsHomeComponent implements OnInit {
       case "Avis":
         return "opinion";
       case "Disponibilité":
-        return "disponibility";
+        return "availability";
       case "Moyenne Soft Skills":
         return "softskillsAverage";
       default:

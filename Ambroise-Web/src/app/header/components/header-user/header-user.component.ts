@@ -1,13 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Router, Navigation } from '@angular/router';
-import { HeaderService } from '../../services/header.services' ; 
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { Router } from '@angular/router';
 import { Menu } from '../../models/menu' ; 
-import { CurrentModuleService } from '../../services/currentModule.services';
 import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
-import { SubMenusService } from 'src/app/services/subMenus.service';
-
 @Component({
   selector: 'app-header-user',
   templateUrl: './header-user.component.html',
@@ -16,50 +11,41 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 export class HeaderUserComponent implements OnInit {
 
   modules: Menu[] = [
-    {label: 'Missions', menus: []},
-    {label: 'Compétences', menus: []},
-    {label: 'Forum', menus: []}
+    { label: 'Missions', menus: [] },
+    { label: 'Compétences', menus: [] },
+    { label: 'Forum', menus: [] },
+    { label: 'Administration', menus: [] }
   ];
   currentModule: string = 'Compétences'; 
   done = false;
 
-  constructor(private titleService: Title, private router: Router,
-    private headerService: HeaderService, private currentModuleService: CurrentModuleService,
-    private isNotLoginService: IsNotLoginService,
-    private subMenusService: SubMenusService) { }
+  constructor(private titleService: Title,
+     private router: Router,
+    private isNotLoginService: IsNotLoginService){}
 
   ngOnInit() {
-    //this.headerService.notifyMenusReceived(this.modules) ;
-    //this.headerService.init().subscribe(menusReceived => this.setModule(menusReceived)) ; 
-    //this.currentModuleService.currentModuleObservable.subscribe(currentModule => this.setCurrentModule(currentModule)) ; 
   }
-
-  setModule(menusReceived: Menu[]){
-      if (menusReceived != undefined && !this.done) {
-        this.modules = menusReceived['modules'] ; 
-        this.done = true;
-        this.headerService.notifyMenusReceived(menusReceived) ; 
-      }
-  }
-
 
   setCurrentModule(currentModule) {
     this.currentModule = currentModule ;
-    this.currentModuleService.notifyCurrentModule(currentModule);
     switch(currentModule){
       case("Missions"):
         this.titleService.setTitle("Ambroise - Missions"); 
         this.router.navigate(['/missions']);
-        break; 
-      case("Compétences"):
-        this.titleService.setTitle("Ambroise - Compétences"); 
+        break;
+      case ("Compétences"):
+        this.titleService.setTitle("Ambroise - Compétences");
         this.router.navigate(['/skills']);
         break;
-      case("Forum"):
-        this.titleService.setTitle("Ambroise - Forum"); 
+      case ("Forum"):
+        this.titleService.setTitle("Ambroise - Forum");
         this.router.navigate(['/forum']);
         break;
-      default: 
+      case ("Administration"):
+        this.titleService.setTitle("Ambroise - Administration");
+        this.router.navigate(['/admin']);
+        break;
+      default:
         break;
     }
   }
@@ -75,20 +61,20 @@ export class HeaderUserComponent implements OnInit {
   }
   */
 
-  getCurrentModule():string{
-    return this.currentModule ;
+  getCurrentModule(): string {
+    return this.currentModule;
   }
 
   accountClick() {
     window.sessionStorage.clear();
     this.modules = [];
-    this.done = false ; 
-    this.isNotLoginService.notifyLoginOut(false) ;
+    this.done = false;
+    this.isNotLoginService.notifyLoginOut(false);
     this.router.navigate(['/login']);
   }
 
-  isDone():boolean{
-    return this.done ; 
+  isDone(): boolean {
+    return this.done;
   }
 
 }

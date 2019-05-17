@@ -4,7 +4,11 @@
 
   <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
     maxlength="30" [ngModel]="currentSkillsSheet.name">
-  <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+    <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+    <button mat-raised-button (click)="setViewPDF()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Aperçu PDF
+    </button>
 </div>
 
 <ng-template #elseBlock>
@@ -22,12 +26,12 @@
 
   <div class="grid-container">
     <div class="infoForm">
-      <ng-container *ngFor="let item of formItems, let index = index;">
-        <mat-form-field *ngIf="index != 0; else elseBlock">
-          <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
-            [disabled]="isPersonDataDisabled">
-        </mat-form-field>
-      </ng-container>
+      <mat-form-field *ngFor="let item of formItems; let index = index;">
+        <input *ngIf="item.id != 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+          [disabled]="isPersonDataDisabled">
+        <input *ngIf="item.id == 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+          [disabled]="isPersonDataDisabled" [ngStyle]="{'color': experienceTimeTextColor}">
+      </mat-form-field>
 
 
       <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
@@ -41,6 +45,18 @@
           <mat-icon class="cancelIcon">close</mat-icon>
         </button>
       </div>
+
+      <div class="availability-container">
+        <p class="availabilityTitle">Disponibilité</p>
+        <button mat-icon-button class="newAvailabilityButton" (click)="addAvailability()" [hidden]="isNewDispoButtonHidden">
+          <mat-icon class="addDispoIcon">add_circle_outline</mat-icon>
+        </button>
+        <button mat-icon-button class="editAvailabilityButton" (click)="addAvailability()" [hidden]="!isNewDispoButtonHidden">
+          <mat-icon class="editDispoIcon">edit</mat-icon>
+        </button>
+      </div>
+      <p class="availabilityValue"> {{ currentPersonAvailibility }} </p>
+
 
       <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
         [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>

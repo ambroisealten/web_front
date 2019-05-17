@@ -1,0 +1,106 @@
+<div class="admin-document">
+
+  <h1>Documents de l'application</h1>
+  <hr>
+
+  <div id="upload">
+    <label class="btn btn-default">
+      <input multiple id="chooseFile" type="file" (change)="selectFile($event)" [formControl]="clearControl">
+      <button class="btn btn-success"
+        (click)="upload()" [disabled]="isNotSelectedFiles()">Upload</button>
+    </label>
+  </div>
+
+  <table id="documentsTable">
+    <thead>
+      <tr>
+        <th (click)="sortTable(0)">Nom</th>
+        <th (click)="sortTable(1)">Date de création</th>
+        <th (click)="sortTable(2)">Collection</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let document of getDocuments() ">
+        <tr id="{{document._id}}">
+          <td>{{document.displayName}}</td>
+          <td>{{document.dateOfCreation | date: 'yyyy/MM/dd h:mm:ss a'}}</td>
+          <td>{{document.path}}</td>
+          <td><button class="removeButton btn" mat-icon-button (click)="removeDocument(document)">x</button><button
+              (click)="editDocument(document)" class="btn" mat-icon-button><i class="material-icons">edit</i></button>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+
+<div class="admin-document-forum">
+  <h2>Documents affichés dans le menu Forum</h2>
+  <mat-form-field>
+    <mat-label>Set de document</mat-label>
+    <mat-select (change)="setSelected($event)" id="currentSetName" [(value)]="currentSet.name">
+      <ng-container *ngFor="let set of getAllSets() ">
+        <ng-container *ngIf="set.name==currentSet.name">
+          <mat-option value="{{set.name}}" selected>
+            {{set.name}}
+          </mat-option>
+        </ng-container>
+        <ng-template #elseBlock>
+          <mat-option value="{{set.name}}">
+            {{set.name}}
+          </mat-option>
+        </ng-template>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="lists">
+    <div class="example-container">
+      <h2>Documents en stock</h2>
+      <div cdkDropList #docsList="cdkDropList" [cdkDropListData]="filesForForum"
+        [cdkDropListConnectedTo]="[docsForumList]" class="example-list" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let file of filesForForum" cdkDrag>
+          Titre : {{ file.displayName }} <span class="document-id">{{ file._id }}</span>
+          <ng-container *ngIf="file.extension == 'png'; then iconImage else elseIcon">
+          </ng-container>
+          <ng-template #elseIcon>
+            <ng-container *ngIf="file.extension == 'pdf'; else iconDoc">
+              <mat-icon>picture_as_pdf</mat-icon>
+            </ng-container>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #iconImage>
+      <mat-icon>image</mat-icon>
+    </ng-template>
+    <ng-template #iconDoc>
+      <mat-icon>insert_drive_file</mat-icon>
+    </ng-template>
+
+    <div class="example-container">
+      <h2>Documents dans le menu</h2>
+
+      <div cdkDropList #docsForumList="cdkDropList" [cdkDropListData]="filesSet" [cdkDropListConnectedTo]="[docsList]"
+        class="example-list" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let file of filesSet" cdkDrag>
+          Titre : {{ file.displayName }} <span class="document-id">{{ file._id}}</span>
+          <ng-container *ngIf="file.extension == 'png'; then iconImage else elseIcon">
+            <mat-icon>image</mat-icon>
+          </ng-container>
+          <ng-template #elseIcon>
+            <ng-container *ngIf="file.extension == 'pdf'; else iconDoc">
+              <mat-icon>picture_as_pdf</mat-icon>
+            </ng-container>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form (submit)="submitListForum()">
+    <input class="mat-raised-button customButton" type="submit" value="Enregistrer">
+  </form>
+</div>

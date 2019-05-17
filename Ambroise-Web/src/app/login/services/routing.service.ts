@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoggerService, LogLevel } from '../../services/logger.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { timeout } from 'rxjs/internal/operators/timeout';
-import { Routes, Route, Router } from '@angular/router';
+import {Route, Router } from '@angular/router';
+import { ErrorService } from 'src/app/services/error.service';
+import { catchError } from 'rxjs/operators';
 
 /**
  * Service pour récupérer les routes
@@ -12,12 +14,10 @@ import { Routes, Route, Router } from '@angular/router';
 @Injectable()
 export class RoutingService {
 
-    private routeReceptionStatut = new BehaviorSubject(undefined) ; 
-    routeReceptionObservable = this.routeReceptionStatut.asObservable() ; 
+    constructor(private httpClient: HttpClient, 
+        private errorService: ErrorService){}
 
-    constructor(private httpClient: HttpClient, private router: Router){}
-
-    public getRoute(): Observable<Route[]> {
+    public getRoute(): Observable<{} | Route[]> {
 
         let token = window.sessionStorage.getItem('bearerToken') ; 
         let headers = new HttpHeaders({
@@ -28,7 +28,7 @@ export class RoutingService {
 
         return this.httpClient
             .get<Route[]>( environment.serverAddress + '/configRouting', options)
-            .pipe(timeout(5000))
+            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)))
             
     }
 }
