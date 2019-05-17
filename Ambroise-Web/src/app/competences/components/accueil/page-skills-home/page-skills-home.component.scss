@@ -20,28 +20,31 @@ body {
   display: inline-block;
 }
 
+/*
 .starrating > input {
   display: none;
-} /* Remove radio buttons */
+} // Remove radio buttons
 
 .starrating > label:before {
-  content: "\f005"; /* Star */
+  content: "\f005"; // Star
   margin: 2px;
   font-size: 1em;
   font-family: FontAwesome;
 }
 
 .starrating > label {
-  color: #222222; /* Start color when not clicked */
+  color: #222222; // Start color when not clicked
 }
 
 .starrating > input:checked ~ label {
   color: #ffca08;
-} /* Set yellow color when star checked */
+} // Set yellow color when star checked
 
 .starrating > input:hover ~ label {
   color: #ffca08;
-} /* Set yellow color when star hover */
+} // Set yellow color when star hover
+
+*/
 
 .skillSheetInformation {
   margin-left: 2vw;
@@ -112,9 +115,11 @@ body {
   color: var(--ALTENLightGray);
   font-size: 12px;
   background: var(--ALTENBlue);
-  padding-left: 10px !important;
-  padding-right: 10px !important;
   min-width: 100px;
+}
+
+td.mat-cell:first-of-type{
+  padding-left: 0 !important;
 }
 
 .mat-row:nth-child(even) {
@@ -128,4 +133,12 @@ body {
 
 .mat-row:hover td {
   color: white;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  color: white !important;
+}
+
+::ng-deep .mat-sort-header-button {
+  margin: auto;
 }

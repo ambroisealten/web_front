@@ -1,86 +1,88 @@
 <button class="return_button" mat-raised-button (click)=goBackToSkillsForm()>
-  <mat-icon>arrow_back</mat-icon>
-  Retour modification fiche
+    <mat-icon>arrow_back</mat-icon>
+    Retour modification fiche
 </button>
 <button class="download" mat-raised-button (click)=downloadPDF()>
-  <mat-icon>save_alt</mat-icon>
-  Télécharger
+    <mat-icon>save_alt</mat-icon>
+    Télécharger
 </button>
 
 
 <div class="preview">
-  <div class="preview-border">
-    <div id="contentToConvert">
-      <div id="header_preview">
-        <div class="surheader_preview">
-            <img src="assets/images/header-logo-alten.svg" alt="Logo ALTEN" id="logo_preview" />
-              <div class="head-identity">
-                <h6> {{ personData }} </h6>
-              </div>
-            </div>
+    <div class="preview-border">
+        <div id="contentToConvert">
+            <div id="header_preview">
+                <div class="surheader_preview">
+                    <img src="assets/images/header-logo-alten.svg" alt="Logo ALTEN" id="logo_preview" />
+                    <div class="head-identity">
+                        <h6> {{ identityData }} </h6>
+                    </div>
+                </div>
 
-      </div>
-    <div class="color">
-      <div class="submenu_preview">
-      </div>
-        <div class="grid-container">
+            </div>
+            <div class="color">
+                <div class="submenu_preview">
+                </div>
+                <div class="grid-container">
 
-          <div>
-          <div class="left">
-            <div class="identity">
-              <div>
-                <h5 id="titre">DIPLOME</h5>
-                <div id="diplome">
-                  <img src="../../assets/images/competence_icon.svg" />
-                  <h5>Ingénieur-Epitech 2019</h5>
+                    <div>
+                        <div class="left">
+                            <div class="identity">
+                                <div class="diplome">
+                                    <h5 class="titre_diplome" id="titre">DIPLÔME</h5>
+                                    <div id="diplome">
+                                        <img src="../../assets/images/competence_icon.svg" />
+                                        <h5>{{ diplomaData }}</h5>
+                                    </div>
+                                </div>
+                                <div class="titre_soft">
+                                    <h5 id="titre">COMPÉTENCES TRANSVERSES</h5>
+                                    <div class="grid-Soft">
+                                        <ng-container *ngFor="let soft of softSkillsArray">
+                                            <p>{{ soft.skill.name }}
+                                                <span class="float_right"> {{ soft.grade }} </span></p>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="titre_cpt">
+                                    <h5 id="titre">COMPÉTENCES</h5>
+                                    <div class="grid-Skills">
+                                        <ng-container *ngFor="let skill of skillsArray">
+                                            <p>{{ skill.skill.name }}
+                                                <span class="float_right"> {{ skill.grade }}</span></p>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="footer">
+                            <div class="description ">
+                                <div>
+                                    <p> 1. Niveau d'information. </p>
+                                    <p> 3. Niveau d'autonomie, connaissances transverses </p>
+                                </div>
+                                <div>
+                                    <p> 2. Niveau de connaissance, besoin d'aide et de tutorat. </p>
+                                    <p> 4. Expert, capacité de former et d'encadrer une équipe. </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="matrix">
+                        <div class="chart-container">
+                            <canvas id="canvasSkills"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="canvasSoftSkills"></canvas>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="titre_soft">
-                <h5 id="titre">COMPÉTENCES TRANSVERSES</h5>
-                <div class="grid-Soft">
-                  <ng-container *ngFor="let soft of softSkillsArray">
-                    <p>{{ soft.skill.name }}</p>
-                  </ng-container>
-                </div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="titre_cpt">
-                <h5 id="titre">COMPÉTENCES</h5>
-                <div class="grid-Skills">
-                  <ng-container *ngFor="let skill of skillsArray">
-                    <p>{{ skill.skill.name }}</p>
-                  </ng-container>
-                </div>
-              </div>
-            </div>
-          
-          </div>
-          <div class="footer">
-              <div class="description ">
-                <div>
-                  <p> ok </p>
-                  <p> ok </p>
-                </div>
-                <div>
-                  <p> ok </p>
-                  <p>ok </p>
-                </div>
-              </div>
+
             </div>
         </div>
-
-          <div class="matrix">
-            <div class="chart-container">
-              <canvas id="canvasSkills"></canvas>
-            </div>
-            <div class="chart-container">
-              <canvas id="canvasSoftSkills"></canvas>
-            </div>
-          </div>
-        </div>
-
-      </div>
     </div>
-  </div>
 </div>

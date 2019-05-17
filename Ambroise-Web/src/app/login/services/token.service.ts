@@ -51,6 +51,8 @@ export class TokenService {
                     window.sessionStorage.setItem("bearerToken",token['token']);
                     //Notification de l'observable pour notifier la réception d'un token
                     this.tokenReceptionState.next(true);
+                } else {
+                    LoggerService.log("Problème réception token !!",LogLevel.DEV)
                 }
             })
 

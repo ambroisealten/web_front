@@ -11,12 +11,14 @@
 </div>
 
 <div>
-  
+
   <div class="grid-container">
     <div class="infoForm">
       <mat-form-field *ngFor="let item of formItems; let index = index;">
-        <input matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
+        <input *ngIf="item.id != 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
           [disabled]="isPersonDataDisabled">
+        <input *ngIf="item.id == 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+          [disabled]="isPersonDataDisabled" [ngStyle]="{'color': experienceTimeTextColor}">
       </mat-form-field>
 
       <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
@@ -31,12 +33,24 @@
         </button>
       </div>
 
+      <div class="availability-container">
+        <p class="availabilityTitle">Disponibilité</p>
+        <button mat-icon-button class="newAvailabilityButton" (click)="addAvailability()" [hidden]="isNewDispoButtonHidden">
+          <mat-icon class="addDispoIcon">add_circle_outline</mat-icon>
+        </button>
+        <button mat-icon-button class="editAvailabilityButton" (click)="addAvailability()" [hidden]="!isNewDispoButtonHidden">
+          <mat-icon class="editDispoIcon">edit</mat-icon>
+        </button>
+      </div>
+      <p class="availabilityValue"> {{ currentPerson.availability }} </p>
+
+
       <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
         [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>
 
       <mat-form-field style="margin-top: 2%;">
         <mat-label>Avis</mat-label>
-        <mat-select [(ngModel)]="avis">
+        <mat-select [(ngModel)]="avis" (ngModelChange)="onOpinionChange()">
           <mat-option value="+++">+++</mat-option>
           <mat-option value="++">++</mat-option>
           <mat-option value="+">+</mat-option>
@@ -48,23 +62,29 @@
       </mat-form-field>
 
       <mat-form-field>
-        <textarea matInput placeholder="Commentaire" maxlength="110"></textarea>
+        <textarea matInput placeholder="Commentaire" maxlength="110" [(ngModel)]="comment"></textarea>
       </mat-form-field>
     </div>
 
     <div class="skillsArrays">
+      <div class="skillsArrayTitle">
+        Compétences
+      </div>
       <app-array-skills class="skillsArray"
         [displayedColumns]="skillsDisplayedColumns"
         [dataSourceArray]="skillsArray"
-        [headerRowHidden]="headerRowHiddenSkills"
-        datatype="skills"
+        [removeBtnHidden]="false"
+        [searchBarHidden]="false"
         [dataSource]="skillsArrayDataSource"
         (skillsEvent)="updateChartSkills($event)"></app-array-skills>
+      <div class="skillsArrayTitle">
+        Soft Skills
+      </div>
       <app-array-skills class="softSkillsArray"
         [displayedColumns]="softSkillsDisplayedColumns"
         [dataSourceArray]="softSkillsArray"
-        [headerRowHidden]="headerRowHiddenSkills"
-        datatype="softSkills"
+        [removeBtnHidden]="true"
+        [searchBarHidden]="true"
         [dataSource]="softSkillsArrayDataSource"
         (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
     </div>

@@ -25,15 +25,9 @@
           "model": ""
         },
         {
-          "label": "Disponibilité",
-          "type": "date",
-          "id": "disponibility",
-          "model": ""
-        },
-        {
           "label": "Années d'expérience",
           "type": "number",
-          "id": "experienceYears",
+          "id": "experienceTime",
           "model": ""
         },
         {
