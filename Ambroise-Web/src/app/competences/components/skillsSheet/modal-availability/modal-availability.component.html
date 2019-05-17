@@ -10,6 +10,7 @@
 
     <mat-form-field>
       <input matInput [matDatepicker]="endPicker" placeholder="Date de fin" [(ngModel)]="finalDate">
+      <mat-hint align="start">* Champ facultatif</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>
     </mat-form-field>
@@ -18,7 +19,7 @@
 
   <div class="secondPanel">
     <mat-form-field>
-      <input matInput placeholder="Disponible dans" [(ngModel)]="duration" type="number">
+      <input matInput placeholder="Disponible dans" [(ngModel)]="duration" type="number" min="0">
     </mat-form-field>
 
     <mat-form-field>

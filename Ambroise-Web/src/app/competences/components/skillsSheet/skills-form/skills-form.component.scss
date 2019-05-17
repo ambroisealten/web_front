@@ -24,16 +24,46 @@
 
 .availabilityTitle {
   text-align:left;
+  margin-top: 2%;
+}
+
+.availability-title-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  border-bottom: 1px solid var(--ALTENLightGray);
+  border-top: 1px solid var(--ALTENBlue);
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: blue !important;
+}
+
+::ng-deep .mat-checkbox .mat-checkbox-frame {
+    border-color: var(--ALTENBlue);
+}
+
+::ng-deep .mat-checkbox:not(.mat-checkbox-disabled).mat-accent .mat-checkbox-ripple .mat-ripple-element {
+  background-color: var(--ALTENBlue);
+}
+
+.availabilityValue {
+    margin-top: 3%;
+}
+
+.availabilityValue:hover {
+  background-color: #d3e7f5;
+  cursor: pointer;
+}
+
+.checkBoxAvailability {
   margin-top: 3%;
 }
 
-.availability-container {
-  display: grid;
-  grid-template-columns: 7fr 1fr;
+.availability-value-container {
   border-bottom: 1px solid var(--ALTENLightGray);
 }
 
-.editButton:focus, .cancelButton:focus, .savePersonButton:focus, .newAvailabilityButton, .editAvailabilityButton{
+.editButton:focus, .cancelButton:focus, .savePersonButton:focus {
   outline: none;
 }
 

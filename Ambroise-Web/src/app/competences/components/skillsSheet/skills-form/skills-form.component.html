@@ -26,14 +26,6 @@
 
   <div class="grid-container">
     <div class="infoForm">
-      <mat-form-field *ngFor="let item of formItems; let index = index;">
-        <input *ngIf="item.id != 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
-          [disabled]="isPersonDataDisabled">
-        <input *ngIf="item.id == 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
-          [disabled]="isPersonDataDisabled" [ngStyle]="{'color': experienceTimeTextColor}">
-      </mat-form-field>
-
-
       <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
         <mat-icon class="editIcon">edit</mat-icon>
       </button>
@@ -45,17 +37,21 @@
           <mat-icon class="cancelIcon">close</mat-icon>
         </button>
       </div>
+      
+      <mat-form-field *ngFor="let item of formItems; let index = index;">
+        <input *ngIf="item.id != 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+          [disabled]="isPersonDataDisabled">
+        <input *ngIf="item.id == 'experienceTime'" matInput name="item.label" placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+          [disabled]="isPersonDataDisabled" [ngStyle]="{'color': experienceTimeTextColor}">
+      </mat-form-field>
 
-      <div class="availability-container">
+      <div class="availability-title-container">
         <p class="availabilityTitle">Disponibilité</p>
-        <button mat-icon-button class="newAvailabilityButton" (click)="addAvailability()" [hidden]="isNewDispoButtonHidden">
-          <mat-icon class="addDispoIcon">add_circle_outline</mat-icon>
-        </button>
-        <button mat-icon-button class="editAvailabilityButton" (click)="addAvailability()" [hidden]="!isNewDispoButtonHidden">
-          <mat-icon class="editDispoIcon">edit</mat-icon>
-        </button>
+        <mat-checkbox class="checkBoxAvailability" [(ngModel)]="isImmediatelyAvailableChecked" (ngModelChange)="availabilityCbChanged()">Immédiatement</mat-checkbox>
       </div>
-      <p class="availabilityValue"> {{ currentPersonAvailibility }} </p>
+      <div class="availability-value-container">
+        <p class="availabilityValue" (click)="updateAvailability()" [hidden]="isImmediatelyAvailableChecked"> {{ currentPersonAvailibility }} </p>
+      </div>
 
 
       <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
