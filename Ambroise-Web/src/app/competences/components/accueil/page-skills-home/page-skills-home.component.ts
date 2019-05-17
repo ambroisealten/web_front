@@ -252,12 +252,10 @@ export class PageSkillsHomeComponent implements OnInit {
           this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
         }
         else {
-          console.log(currentSkills);
           this.personSkillsService.createNewPersonAndSkillsSheet(currentSkills).subscribe(httpResponse => {
             if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
               let testSkill = new Skills(currentSkills.person, currentSkills.skillsSheet);
               this.skillsService.notifySkills(testSkill);
-              console.log(testSkill);
               this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
             }
           });

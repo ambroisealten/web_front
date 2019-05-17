@@ -121,8 +121,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       // Get param in the url
       this.name = param['name'];
       this.version = + param['version'];
-      console.log(this.currentPerson);
-      console.log(this.currentSkillsSheet);
       // Check if data already exists, person is more important than skillsSheet
       if (window.sessionStorage.getItem('person') !== null) {
         this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
@@ -133,15 +131,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           } else {
             this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[], true);
           }
-          console.log(this.currentPerson);
-          console.log(this.currentSkillsSheet);
           this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
           this.createMenu();
         } else {
           this.skillsSheetService.getSkillsSheetsByMail(this.currentPerson.mail).subscribe(skillsSheets => {
             this.initVersionArray(false);
-            console.log(this.currentPerson);
-            console.log(this.currentSkillsSheet);
             this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet), true);
             this.createMenu();
           });
@@ -256,7 +250,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * @author Quentin Della-Pasqua
   */
   initializeView(skills, personStored: boolean) {
-    console.log(skills);
     if (skills === undefined) {
       this.router.navigate(['skills']);
     } else {
