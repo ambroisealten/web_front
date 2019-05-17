@@ -5,6 +5,8 @@ import { SubMenusService } from 'src/app/services/subMenus.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person } from 'src/app/competences/models/person';
 import { Chart } from 'chart.js';
+import { SkillsListService } from '../../../services/skillsList.service';
+
 
 import * as jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -28,8 +30,8 @@ export class PdfComponent implements OnInit, OnDestroy {
   skillsArray: SkillGraduated[] = [];
   softSkillsArray: SkillGraduated[] = [];
   currentPerson: Person;
-  identityData: string = "";
-  diplomaData: string = "";
+  identityData: string = '';
+  diplomaData: string = '';
 
   //route param
   name: string;
@@ -39,9 +41,11 @@ export class PdfComponent implements OnInit, OnDestroy {
   submenusSubscription;
 
   constructor(private router: Router,
-    private route: ActivatedRoute,
-    private subMenusService: SubMenusService,
-    private skillsSheetService: SkillsSheetService) { }
+              private route: ActivatedRoute,
+              private subMenusService: SubMenusService,
+              private skillsSheetService: SkillsSheetService,
+              private skillsService: SkillsListService
+  ) { }
 
   ngOnInit() {
     //
@@ -62,31 +66,32 @@ export class PdfComponent implements OnInit, OnDestroy {
     this.updateChartSoftSkills(this.softSkillsArray);
 
     //Créer les menus
-    this.createMenu(); 
+    this.createMenu();
 
     //Subscribe to action
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
   }
 
   ngOnDestroy() {
-    if (this.submenusSubscription != undefined)
+    if (this.submenusSubscription !== undefined) {
       this.submenusSubscription.unsubscribe();
+    }
   }
 
-/***********************************************************************\
-*
-*                          Main Function
-*
-\*************************************************************************/
+  /***********************************************************************\
+  *
+  *                          Main Function
+  *
+  \*************************************************************************/
 
   /**
    * Set Identity data to display Surname Name and Job
    * @author Quentin Della-Pasqua
    */
   setIdentityData() {
-    this.identityData += this.currentPerson.surname + " " + this.currentPerson.name.substr(0, 1).toUpperCase() + "."
-    if (this.currentPerson.job != "") {
-      this.identityData += ", " + this.currentPerson.job;
+    this.identityData += this.currentPerson.surname + ' ' + this.currentPerson.name.substr(0, 1).toUpperCase() + '.';
+    if (this.currentPerson.job !== '') {
+      this.identityData += ', ' + this.currentPerson.job;
     }
   }
 
@@ -95,14 +100,14 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @author Quentin Della-Pasqua
    */
   setDiplomaData() {
-    if (this.currentPerson.highestDiploma != "") {
-      this.diplomaData += this.currentPerson.highestDiploma + " - "
+    if (this.currentPerson.highestDiploma !== '') {
+      this.diplomaData += this.currentPerson.highestDiploma + ' - ';
     }
-    if (this.currentPerson.highestDiplomaYear != "") {
+    if (this.currentPerson.highestDiplomaYear !== '') {
       this.diplomaData += this.currentPerson.highestDiplomaYear;
     }
-    if (this.diplomaData == "") {
-      this.diplomaData = "Donnée non renseignée"
+    if (this.diplomaData === '') {
+      this.diplomaData = 'Donnée non renseignée';
     }
   }
 
@@ -111,21 +116,21 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @author Quentin Della-Pasqua
    */
   setupArray() {
-    let currentSkillsSheet: SkillsSheet ;
-    if (window.sessionStorage.getItem('skillsSheetVersions') == null || window.sessionStorage.getItem('skillsSheetVersions') == null) {
+    let currentSkillsSheet: SkillsSheet;
+    if (window.sessionStorage.getItem('skillsSheetVersions') === null || window.sessionStorage.getItem('skillsSheetVersions') === null) {
       this.router.navigate(['skills']);
     } else {
-      let versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-      if (versions[0].name != this.name || versions[versions.length-1].versionNumber != this.version ) {
-        let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]
+      const versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
+      if (versions[0].name !== this.name || versions[versions.length - 1].versionNumber !== this.version) {
+        const skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         skillsSheets.forEach(skillsSheet => {
-          if (skillsSheet.versionNumber == this.version && skillsSheet.name == this.name) {
+          if (skillsSheet.versionNumber === this.version && skillsSheet.name === this.name) {
             currentSkillsSheet = skillsSheet;
           }
-        })
+        });
       } else {
         versions.forEach(skillsSheet => {
-          if (skillsSheet.name == this.name && skillsSheet.versionNumber == this.version) {
+          if (skillsSheet.name === this.name && skillsSheet.versionNumber === this.version) {
             currentSkillsSheet = skillsSheet as SkillsSheet;
           }
         });
@@ -135,14 +140,14 @@ export class PdfComponent implements OnInit, OnDestroy {
       if (skill['skill'].hasOwnProperty('isSoft')) {
         this.softSkillsArray.push(skill);
       } else {
-        this.skillsArray.push(skill)
+        this.skillsArray.push(skill);
       }
     });
     while (this.skillsArray.length < 12) {
-      this.skillsArray.push(new SkillGraduated(new Skill("Test"), 1))
+      this.skillsArray.push(new SkillGraduated(new Skill('Test'), 1));
     }
     while (this.softSkillsArray.length < 7) {
-      this.softSkillsArray.push(new SkillGraduated(new Skill("Test"), 1))
+      this.softSkillsArray.push(new SkillGraduated(new Skill('Test'), 1));
     }
   }
 
@@ -152,15 +157,15 @@ export class PdfComponent implements OnInit, OnDestroy {
   * @author Quentin Della-Pasqua
   */
   doAction(action: string) {
-    if (action != "") {
-      let actionSplit = action.split('//');
-      this.subMenusService.notifyMenuAction("");
-      if (actionSplit[0] == this.router.url) {
+    if (action !== '') {
+      const actionSplit = action.split('//');
+      this.subMenusService.notifyMenuAction('');
+      if (actionSplit[0] === this.router.url) {
         if (actionSplit[1] === 'create') {
           this.createSkillsSheet();
-        } else if (actionSplit[1].match("^redirect/.*")) {
-          let redirect = actionSplit[1].substring(9);
-          if (('/' + redirect) != this.router.url + '/') {
+        } else if (actionSplit[1].match('^redirect/.*')) {
+          const redirect = actionSplit[1].substring(9);
+          if (('/' + redirect) !== this.router.url + '/') {
             this.router.navigate([redirect]);
             this.goBack.next(redirect);
           }
@@ -169,30 +174,30 @@ export class PdfComponent implements OnInit, OnDestroy {
     }
   }
 
-    /**
-  * Create the menu corresponding to the view
-  * @author Quentin Della-Pasqua
-  */
- createMenu() {
-  let skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'))
-  let subMenu: SubMenu[] = [];
-  subMenu.push(this.subMenusService.createMenu('Accueil', [], 'home', 'redirect/skills', []))
-  subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'note_add', 'create', []))
-  let count = 0;
-  let tmpSkillsSheet: SkillsSheet[] = [];
-  skillsSheets.forEach(skillsSheet => {
-    if (count < 3) {
-      subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber + '/', []))
-    } else {
-      tmpSkillsSheet.push(skillsSheet)
+  /**
+* Create the menu corresponding to the view
+* @author Quentin Della-Pasqua
+*/
+  createMenu() {
+    const skillsSheets = JSON.parse(window.sessionStorage.getItem('skills'));
+    const subMenu: SubMenu[] = [];
+    subMenu.push(this.subMenusService.createMenu('Accueil', [], 'home', 'redirect/skills', []));
+    subMenu.push(this.subMenusService.createMenu('Nouvelle', [], 'note_add', 'create', []));
+    let count = 0;
+    const tmpSkillsSheet: SkillsSheet[] = [];
+    skillsSheets.forEach(skillsSheet => {
+      if (count < 3) {
+        subMenu.push(this.subMenusService.createMenu(skillsSheet.name, [], 'description', 'redirect/skills/skillsheet/' + skillsSheet.name + '/' + skillsSheet.versionNumber + '/', []));
+      } else {
+        tmpSkillsSheet.push(skillsSheet);
+      }
+      count++;
+    });
+    if (count > 3) {
+      subMenu.push(this.subMenusService.createMenu('Autres', tmpSkillsSheet, 'description', 'redirect/skills/skillsheet/', ['name', 'versionNumber']));
     }
-    count++;
-  })
-  if (count > 3) {
-    subMenu.push(this.subMenusService.createMenu('Autres', tmpSkillsSheet, 'description', 'redirect/skills/skillsheet/', ['name', 'versionNumber']))
+    this.subMenusService.notifySubMenu(subMenu);
   }
-  this.subMenusService.notifySubMenu(subMenu)
-}
 
   /***********************************************************************\
   *
@@ -201,28 +206,31 @@ export class PdfComponent implements OnInit, OnDestroy {
  \*************************************************************************/
 
   createSkillsSheet() {
-    let newSkillsSheet = new SkillsSheet("NEW-" + this.makeName(), this.currentPerson)
-    let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
-    newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
-    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name == newSkillsSheet.name) != undefined) {
-      newSkillsSheet.name = "NEW-" + this.makeName();
-    }
-    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
-        let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(newSkillsSheet);
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
+    const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
+    const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    this.skillsService.getSoftSkills().subscribe((result: Skill[]) => {
+      result.forEach(skill => {
+        newSkillsSheet.addSkill(new SkillGraduated(skill, 1));
+      });
+      while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
+        newSkillsSheet.name = 'NEW-' + this.makeName();
       }
-    })
+      this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+          const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+          tmpSkillsSheets.push(newSkillsSheet);
+          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+          this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
+        }
+      });
+    });
   }
 
   makeName() {
     let result = '';
-    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let charactersLength = characters.length;
-    for (let i = 0; i < 10; i++) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 10; i++) { } {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
@@ -240,11 +248,11 @@ export class PdfComponent implements OnInit, OnDestroy {
   }
 
   downloadPDF() {
-    var data = document.getElementById("contentToConvert");
+    var data = document.getElementById('contentToConvert');
     html2canvas(data, { scale: 2.5 }).then(canvas => {
-      const contentDataURL = canvas.toDataURL('image/jpeg')
+      const contentDataURL = canvas.toDataURL('image/jpeg');
 
-      let pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  
+      const pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  
       var width = pdf.internal.pageSize.getWidth();
       var height = pdf.internal.pageSize.getHeight();
 
@@ -264,13 +272,13 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @param  arraySkills Array containing updated skills
    */
   updateChartSkills(arraySkills: SkillGraduated[]) {
-    if (typeof this.skillsChart != "function") {
+    if (typeof this.skillsChart !== 'function') {
       this.skillsChart.destroy();
     }
-    if (arraySkills.length != 0) {
-      let skillsLabels: string[] = [];
-      let skillsData: number[] = [];
-      arraySkills.forEach(function (skillGraduated) {
+    if (arraySkills.length !== 0) {
+      const skillsLabels: string[] = [];
+      const skillsData: number[] = [];
+      arraySkills.forEach((skillGraduated) => {
         skillsLabels.push(skillGraduated.skill.name);
         skillsData.push(skillGraduated.grade);
       });
@@ -283,13 +291,13 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @param  arraySkills Array containing updated soft skills
    */
   updateChartSoftSkills(arraySoftSkills: SkillGraduated[]) {
-    if (typeof this.softSkillsChart != "function") {
+    if (typeof this.softSkillsChart !== 'function') {
       this.softSkillsChart.destroy();
     }
-    if (arraySoftSkills.length != 0) {
-      let skillsLabels: string[] = [];
-      let skillsData: number[] = [];
-      arraySoftSkills.forEach(function (skillGraduated) {
+    if (arraySoftSkills.length !== 0) {
+      const skillsLabels: string[] = [];
+      const skillsData: number[] = [];
+      arraySoftSkills.forEach((skillGraduated) => {
         skillsLabels.push(skillGraduated.skill.name);
         skillsData.push(skillGraduated.grade);
       });
@@ -336,7 +344,7 @@ export class PdfComponent implements OnInit, OnDestroy {
         },
         tooltips: {
           callbacks: {
-            label: function (tooltipItem, data) {
+            label: (tooltipItem, data) => {
               var label = data.labels[tooltipItem.index];
               return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
             }
@@ -358,23 +366,23 @@ export class PdfComponent implements OnInit, OnDestroy {
   * @return          new array with formatted labels
   */
   formatLabels(labels, maxwidth) {
-    let formattedLabels = [];
+    const formattedLabels = [];
 
-    labels.forEach(function (label) {
-      let sections = [];
-      let words = label.split(" ");
-      let temp = "";
+    labels.forEach((label) => {
+      const sections = [];
+      const words = label.split(' ');
+      let temp = '';
 
-      words.forEach(function (item, index) {
+      words.forEach((item, index) => {
         if (temp.length > 0) {
-          let concat = temp + ' ' + item;
+          const concat = temp + ' ' + item;
 
           if (concat.length > maxwidth) {
             sections.push(temp);
-            temp = "";
+            temp = '';
           }
           else {
-            if (index == (words.length - 1)) {
+            if (index === (words.length - 1)) {
               sections.push(concat);
               return;
             }
@@ -385,7 +393,7 @@ export class PdfComponent implements OnInit, OnDestroy {
           }
         }
 
-        if (index == (words.length - 1)) {
+        if (index === (words.length - 1)) {
           sections.push(item);
           return;
         }
@@ -399,7 +407,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
       });
       formattedLabels.push(sections);
-    })
+    });
     return formattedLabels;
   }
 
