@@ -95,11 +95,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private subMenusService: SubMenusService,
     private skillsListService: SkillsListService,
     private diplomasService: DiplomasService) {
-    window.addEventListener('beforeunload', e => {
+    window.addEventListener('beforeunload', () => {
       if (this.modifDetection) {
         this.onSubmitForm();
-        (e || window.event).returnValue = null;
-        // return 'Des modifications non enregistrées sont présentes. Souhaitez vous vraiment quitter la page?';
       }
     });
   }
