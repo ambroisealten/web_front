@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole } from 'src/app/competences/models/person';
+import { Person, PersonRole, OnDateAvailability, OnTimeAvailibility, DurationType } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
@@ -12,13 +12,14 @@ import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { SubMenu } from 'src/app/header/models/menu';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatDialog, MatDialogConfig } from '@angular/material';
 import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
 import { DiplomasService } from '../../../services/diplomas.service';
+import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -50,11 +51,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   // Form displayed
   formItems: any[];
 
-  //Tableau contenant toutes les options (diplômes) pour l'auto-complétion
+  // text color in person info form : default is mat input color
+  experienceTimeTextColor: string = "rgba(0,0,0,.38)";
+
   options: string[];
   filteredOptions: Observable<string[]>;
   myControl = new FormControl();
-
   //Charts
   skillsChart = Chart;
   softSkillsChart = Chart;
@@ -63,7 +65,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   currentSkillsSheet: SkillsSheet;
   newSkillsSheet: PageSkillsHomeComponent;
 
-  // MODIF DETECTION
+  currentPersonAvailibility: string;
+
+  //MODIF DETECTION
   countSkillsUpdate = 0;
   countSoftSkillsUpdate = 0;
   modifDetection = false;
@@ -72,12 +76,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   name: string;
   version: number;
 
-  //Initialisation vars
+  // avis + comment
   avis: string;
   comment: string = "";
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
+  isNewDispoButtonHidden: boolean = false;
 
   // subscription
   submenusSubscription;
@@ -91,6 +96,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private personSkillsService: PersonSkillsService,
     private router: Router,
     private route: ActivatedRoute,
+    private dialog: MatDialog) {
     private subMenusService: SubMenusService,
     private skillsListService: SkillsListService,
     private diplomasService: DiplomasService) {
@@ -148,9 +154,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (this.currentPerson.role === PersonRole.APPLICANT) {
         this.formItems = formItemsJSON['candidateFormItems'];
         this.updateFormItemsFromPerson(this.currentPerson);
-      } else if (this.currentPerson.role.toUpperCase() === PersonRole.CONSULTANT) {
-        this.formItems = formItemsJSON['consultantFormItems'];
+        this.updateCurrentPersonAvailability();
+        this.comment = this.currentSkillsSheet.comment;
+      } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
+        this.formItems = formItemsJSON["consultantFormItems"];
         this.updateFormItemsFromPerson(this.currentPerson);
+        this.updateCurrentPersonAvailability();
+        this.comment = this.currentSkillsSheet.comment;
       } else {
         this.formItems = null;
       }
@@ -370,14 +380,44 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   /**
   * Calls skills service to save current skillsSheet
   */
-  onSubmitForm() {
-    LoggerService.log('Submitting form', LogLevel.PROD);
+ onSubmitForm() {
+  LoggerService.log("submit", LogLevel.DEBUG);
+  LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+  let tmpExisting;
+  if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
+    this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
     this.currentSkillsSheet.comment = this.comment;
-    LoggerService.log(this.currentPerson,LogLevel.DEBUG);
-    LoggerService.log(this.comment,LogLevel.DEBUG);
+    this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+        this.currentSkillsSheet.versionNumber += 1
+        let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+        this.initVersionArray(false);
+        this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+      }
+    });
+  } else {
+    this.currentSkillsSheet.versionNumber = 1;
+    this.currentSkillsSheet.comment = this.comment;
+    this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
+        let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.push(this.currentSkillsSheet);
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
+      }
+    });
+  }
+ }
+
+  onSubmitRedirect(redirect: string) {
+    LoggerService.log("submitRedirect", LogLevel.DEBUG);
+    LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
-      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber
+      this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+      this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1
@@ -390,6 +430,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     } else {
       this.currentSkillsSheet.versionNumber = 1;
+      this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
           const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
@@ -488,6 +529,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   editPerson() {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
+    this.tmpCurrentPerson = this.currentPerson;
+    this.experienceTimeTextColor = "var(--ALTENDarkGray)";
     this.myControl.enable();
   }
 
@@ -506,6 +549,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         LoggerService.log('Person updated', LogLevel.DEBUG);
       }
     });
+    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
     this.myControl.disable();
   }
 
@@ -529,7 +573,37 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
     this.updateFormItemsFromPerson(this.currentPerson);
+    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
     this.myControl.disable();
+  }
+
+  /**
+   * On click open modal to add/update availability
+   */
+  addAvailability() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(availability => {
+      if(availability instanceof OnDateAvailability) {
+        this.currentPerson.onDateAvailability = availability;
+        this.currentPerson.onTimeAvailibility = undefined;
+      }
+      else if(availability instanceof OnTimeAvailibility) {
+        this.currentPerson.onTimeAvailibility = availability;
+        this.currentPerson.onDateAvailability = undefined;
+      }
+      // update person
+      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          LoggerService.log('Person updated', LogLevel.DEBUG);
+        }
+      });
+      this.updateCurrentPersonAvailability();
+    });
   }
 
   /**
@@ -563,13 +637,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         case 'employer':
           personToUpdate.employer = item.model;
           break;
+        case 'experienceTime':
+          personToUpdate.experienceTime = item.model;
+          break;
         case 'job':
           personToUpdate.job = item.model;
           break;
         case 'monthlyWage':
           personToUpdate.monthlyWage = item.model;
-          break;
-        default:
           break;
       }
     });
@@ -598,13 +673,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           case 'employer':
             item.model = person.employer;
             break;
+          case 'experienceTime':
+            item.model = person.experienceTime;
+            break;
           case 'job':
             item.model = person.job;
             break;
           case 'monthlyWage':
             item.model = person.monthlyWage;
-            break;
-          default:
             break;
         }
       });
@@ -633,6 +709,31 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     this.myControl.setValue(this.currentPerson.highestDiploma);
+  }
+
+  updateCurrentPersonAvailability() {
+    if(this.currentPerson.onDateAvailability != undefined) {
+      this.currentPersonAvailibility = "Du " + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
+                                      + " au " +  new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
+    }
+    else if(this.currentPerson.onTimeAvailibility != undefined) {
+      this.currentPersonAvailibility = "Dans " + this.currentPerson.onTimeAvailibility.duration + " "
+                                      + DurationType[this.currentPerson.onTimeAvailibility.durationType];
+    }
+  }
+
+  /**
+   * Dynamically change experience years when highest diploma year is updated (text color change)
+   * @param  item item containing highestDiplomaYear information
+   */
+  checkChangeExperienceTime(item) {
+    if(item.id == "highestDiplomaYear" && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
+        let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
+        this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
+        this.experienceTimeTextColor = "var(--ALTENOrange)";
+    } else if(item.id == "experienceTime") { // set default gray color if experienceTime changed by user
+      this.experienceTimeTextColor = "var(--ALTENDarkGray)";
+    }
   }
 
   makeName() {

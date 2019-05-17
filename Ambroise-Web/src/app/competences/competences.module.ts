@@ -24,6 +24,7 @@ import { SkillsService } from './services/skills.service';
 import { PersonSkillsService } from './services/personSkills.service';
 import { ArrayObsService } from './services/arrayObs.service';
 import { SkillsListService } from './services/skillsList.service';
+import { ModalAvailabilityComponent } from './components/skillsSheet/modal-availability/modal-availability.component';
 import { DiplomasService } from './services/diplomas.service';
 
 
@@ -33,7 +34,8 @@ import { DiplomasService } from './services/diplomas.service';
     PageSkillsHomeComponent,
     ArraySkillsComponent,
     ArraySkillsUpdatesComponent,
-    SkillsFormComponent
+    SkillsFormComponent,
+    ModalAvailabilityComponent
   ],
   imports: [
     CommonModule,
@@ -50,6 +52,7 @@ import { DiplomasService } from './services/diplomas.service';
   ],
   entryComponents: [
     ModalSkillsCandidateComponent,
+    ModalAvailabilityComponent
     //ConfirmationDialogComponent
   ],
   providers: [
@@ -60,6 +63,6 @@ import { DiplomasService } from './services/diplomas.service';
     DiplomasService
   ]
 })
-export class CompetencesModule { 
+export class CompetencesModule {
 
 }
