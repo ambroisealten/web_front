@@ -76,7 +76,7 @@ export class ArraySkillsComponent implements OnInit {
    */
   getSkillsList(){
     this.skillsListService.getAllTechSkills().subscribe(skillsList=> {
-      this.options = (skillsList as Skills[]).map(skill => skill.name);
+      this.options = (skillsList as Skill[]).map(skill => skill.name);
     });
   }
 
