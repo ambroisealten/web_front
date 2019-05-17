@@ -16,7 +16,7 @@ export class Person {
   highestDiplomaYear: string ;
   opinion: string;
   experienceTime: string;
-  onTimeAvailibility: OnTimeAvailibility;
+  onTimeAvailability: OnTimeAvailability;
   onDateAvailability: OnDateAvailability;
 
 
@@ -37,14 +37,14 @@ export class Person {
   }
 }
 
-export class OnTimeAvailibility {
+export class OnTimeAvailability {
   duration: number;
-  durationType: DurationType;
+  durationType: string;
   initDate: number;
 
   constructor() {
     this.duration = 0;
-    this.durationType = DurationType.WEEK;
+    this.durationType = "WEEK";
     this.initDate = 0;
   }
 }
@@ -54,7 +54,7 @@ export class OnDateAvailability {
   initDate: number;
 
   constructor() {
-    this.finalDate = 0;
+    this.finalDate = -1;
     this.initDate = 0;
   }
 }
