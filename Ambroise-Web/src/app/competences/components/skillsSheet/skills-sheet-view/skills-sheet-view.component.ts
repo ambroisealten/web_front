@@ -3,11 +3,8 @@ import { SkillsFormComponent } from '../skills-form/skills-form.component';
 import { Subscription } from 'rxjs';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { SubMenusService } from 'src/app/services/subMenus.service';
-import { SubMenu } from 'src/app/header/models/menu';
-import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
 import { Skills } from 'src/app/competences/models/skills';
 import { Person } from 'src/app/competences/models/person';
 import { PdfComponent } from '../pdf/pdf.component';
@@ -33,9 +30,7 @@ export class SkillsSheetViewComponent implements OnInit, OnDestroy {
 
   constructor(private skillsService: SkillsService,
     private skillsSheetService: SkillsSheetService,
-    private personSkillsService: PersonSkillsService,
     private router: Router,
-    private route: ActivatedRoute,
     private componentFactoryResolver: ComponentFactoryResolver,
     private subMenusService: SubMenusService) { }
 

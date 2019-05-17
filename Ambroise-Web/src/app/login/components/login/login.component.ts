@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TokenService } from '../../services/token.service';
 import { Router, Route } from '@angular/router';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-import { RoutingService } from '../../services/routing.service';
 import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
 
 @Component({
@@ -11,7 +10,10 @@ import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+
+  //Subscription
+  tokenSubscription;
 
   // used to set validators
   validationForm: FormGroup;
@@ -22,7 +24,6 @@ export class LoginComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private tokenService: TokenService,
-    private routingService: RoutingService,
     private router: Router,
     private isNotLoginService: IsNotLoginService) {
       this.isNotLoginService.notifyLoginOut(false);
@@ -36,11 +37,21 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required]]
     });
 
-    this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
+    this.tokenSubscription = this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
+  }
+
+  ngOnDestroy(){
+    if(this.tokenSubscription != undefined){
+      this.tokenSubscription.unsubscribe() ; 
+    } else {
+      LoggerService.log("Oups Something Went Wrong !, Subscription Login failed !", LogLevel.DEV) ; 
+    }
   }
 
   // convenience getter for easy access to form fields
-  get validationFormControls() { return this.validationForm.controls; }
+  get validationFormControls() { 
+    return this.validationForm.controls; 
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -73,8 +84,8 @@ export class LoginComponent implements OnInit {
     //  TO-DO : Creer un service de redirection
     //  changer la redirection après connection en fonction du module de préférence
     //  de l'utilisateur (Mission par défaut)
-    this.isNotLoginService.notifyLoginOut(true) ;
     this.tokenService.notifyTokenReception(false) ;
-    this.router.navigate(['skills']);
+    this.router.navigate(['/skills']);
+    this.isNotLoginService.notifyLoginOut(true) ;
   }
 }

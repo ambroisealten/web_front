@@ -2,15 +2,9 @@ import { NgModule } from '@angular/core';
 
 //    IMPORT MODULES
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginRoutingModule } from './login-routing.module';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogModule } from '@angular/material';
-import { DemoMaterialModule } from '../utils/material-modules';
-import { BrowserModule } from '@angular/platform-browser';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 //    IMPORT COMPOSANTS
 import { LoginComponent } from './components/login/login.component' ; 
@@ -25,18 +19,14 @@ import { RoutingService } from './services/routing.service';
 @NgModule({
   declarations: [
     LoginComponent,
-    SignupComponent,
+    SignupComponent
   ],
   imports: [
     LoginRoutingModule,
     CommonModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule,
-    BrowserModule,
-    DemoMaterialModule,
-    BrowserAnimationsModule,
-    MatDialogModule
+    ReactiveFormsModule
   ],
   providers: [
     TokenService,

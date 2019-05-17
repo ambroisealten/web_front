@@ -5,11 +5,8 @@ import { PageSkillsHomeComponent } from './components/accueil/page-skills-home/p
 import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-view/skills-sheet-view.component';
 
 const compRoutes: Routes = [
-  { path: '', redirectTo:'skills', pathMatch:'full' },
-  { path:'skills', children: [
-    { path: '',  component: PageSkillsHomeComponent },
-    { path:'skillsheet/:name/:version', component: SkillsSheetViewComponent }
-  ]}
+  { path: '', component: PageSkillsHomeComponent },
+  { path:'skillsheet/:name/:version', component: SkillsSheetViewComponent },
 ];
 
 @NgModule({

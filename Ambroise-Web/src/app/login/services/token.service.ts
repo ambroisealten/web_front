@@ -42,7 +42,7 @@ export class TokenService {
         //Requête POST au WS : login => Objectif récupérer un token de session valide
         return this.httpClient.post(environment.serverAddress + '/login', postParams)
             //Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
-            .pipe(timeout(5000),catchError(err => this.errorService.handleError(err)))
+            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)))
             //Effectue une action dès la réception du token
             .subscribe(token => {
                 //Check si la propriété Token existe
@@ -55,28 +55,6 @@ export class TokenService {
                     LoggerService.log("Problème réception token !!",LogLevel.DEV)
                 }
             })
-            /*
-            .toPromise()
-            .then(token => {
-                if (token != undefined) {
-                    //console.log("Property token exist ? : " + token['token'])  ;
-                    window.sessionStorage.setItem("bearerToken",token['token']);
-                    this.tokenReceptionState.next(true);
-                }
-            })
-            */
-            /*
-            .catch(error => {
-                console.log(error);
-                //  TO-DO : traiter les erreur liée au timeout et les erreur HTTP
-            });
-            */
-
-        /*switch (error.status) {
-            case 0: alert("500 : internal server error"); break;
-            case 403: alert("identifiant/mdp incorrect"); break;
-            default: console.log("HEIN?  " + error); break;  //TO-LOG
-        }*/
 
     }
 

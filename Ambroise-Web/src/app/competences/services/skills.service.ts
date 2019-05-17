@@ -19,7 +19,7 @@ export class SkillsService {
 
     constructor(private httpClient: HttpClient,
         private errorService: ErrorService) { }
-  
+
     notifySkills(skills: Skills){
         this.skillsInformation.next(skills);
     }
@@ -28,7 +28,7 @@ export class SkillsService {
         this.skillsInformation.next(undefined);
     }
 
-    getAllSkills(noCompFilter:string[], compFilter: string[]):Observable<{} | Skills[]>{
+    getAllSkills(noCompFilter:string[], compFilter: string[], sortColumn: string):Observable<{} | Skills[]>{
 
         let token = window.sessionStorage.getItem("bearerToken");
         let headers = new HttpHeaders({
@@ -51,10 +51,14 @@ export class SkillsService {
         })
         if(comp== ""){
             comp = ","
+        } 
+
+        if(sortColumn == ""){
+            sortColumn =","
         }
 
         return this.httpClient
-            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/", options)
+            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/" + sortColumn, options)
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
       }
 

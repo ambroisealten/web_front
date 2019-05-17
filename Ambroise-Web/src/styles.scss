@@ -263,6 +263,11 @@ div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
     float: left;
 }
 
-.closeTag:hover{
+.tagWordCpt:hover {
+    background-color: var(--ALTENRed);
+    color : white;
+}
+
+.tagWordCpt:hover .closeTag{
     filter : brightness(0) invert(1);
 }
