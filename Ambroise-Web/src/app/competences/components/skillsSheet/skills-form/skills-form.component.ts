@@ -490,6 +490,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.currentPerson = this.updatePersonFromFormItems();
     this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.currentPerson.highestDiploma = this.myControl.value;
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
