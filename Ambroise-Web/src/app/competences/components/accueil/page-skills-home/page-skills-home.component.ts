@@ -70,7 +70,7 @@ export class PageSkillsHomeComponent implements OnInit {
    */
   searchSkillSheets() {
     this.skillsService.getAllSkills(this.filter, this.compFilter).subscribe(skillsList => {
-      if (skillsList != undefined) {
+      if (skillsList.hasOwnProperty('results')) {
         this.createDataSource(skillsList['results'] as Skills[])
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
@@ -207,7 +207,9 @@ export class PageSkillsHomeComponent implements OnInit {
       if (skills != "canceled" && skills != undefined) {
         if (currentSkills.skillsSheet.versionDate != "") { // if existant skillsSheet
           this.personSkillsService.getPersonByMail(currentSkills.skillsSheet.mailPersonAttachedTo).subscribe(person => {
-            this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet))
+            if(person.hasOwnProperty('name')){
+              this.skillsService.notifySkills(new Skills(person as Person, currentSkills.skillsSheet))
+            }
           });
           this.redirectToSkillsSheet(currentSkills.skillsSheet.name, currentSkills.skillsSheet.versionNumber);
         }

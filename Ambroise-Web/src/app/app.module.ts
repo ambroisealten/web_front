@@ -3,10 +3,7 @@ import { NgModule } from '@angular/core';
 //  IMPORT INTERNAL MODULE
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DemoMaterialModule } from './utils/material-modules';
-import { MatDialogModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 //  ROUTING
 import { AppRoutingModule } from './app-routing.module';
@@ -16,20 +13,13 @@ import { AppComponent } from './app.component';
 import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
 
 //  IMPORT FEATURE MODULE
-import { ForumModule } from './forum/forum.module';
-import { MissionsModule } from './missions/missions.module';
 import { FooterModule } from './footer/footer.module';
-import { LoginModule } from './login/login.module';
 import { HeaderModule } from './header/header.module';
-import { CompetencesModule } from './competences/competences.module';
 
 // SERVICE
 import { LoggerService } from './services/logger.service';
 import { IsNotLoginService } from './services/isNotLogin.service' ;
-import { SkillsSheetService } from './competences/services/skillsSheet.service';
-import { PersonSkillsService } from './competences/services/personSkills.service';
 import { SubMenusService } from './services/subMenus.service';
-import { ArrayObsService } from './competences/services/arrayObs.service';
 import { ErrorService } from './services/error.service';
 
 @NgModule({
@@ -38,26 +28,16 @@ import { ErrorService } from './services/error.service';
     ConfirmationDialogComponent
   ],
   imports: [
-    LoginModule,
-    CompetencesModule,
-    ForumModule,
-    MissionsModule,
     HeaderModule,
     FooterModule,
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DemoMaterialModule,
-    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    HttpClientModule,
   ],
   providers: [
     LoggerService,
     IsNotLoginService,
-    SkillsSheetService,
-    PersonSkillsService,
     SubMenusService,
     ErrorService
   ],

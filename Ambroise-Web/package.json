@@ -25,7 +25,6 @@
     "chart.js": "^2.8.0",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
-    "helmet": "^3.18.0",
     "html2canvas": "^1.0.0-rc.1",
     "jquery": "^3.4.1",
     "js-sha512": "^0.8.0",

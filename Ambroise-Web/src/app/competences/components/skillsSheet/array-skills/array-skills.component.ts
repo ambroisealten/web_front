@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { SkillsSheetService } from '../../../services/skillsSheet.service';
-import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Skill, SkillGraduated } from 'src/app/competences/models/skillsSheet';
 
 @Component({
@@ -21,11 +19,8 @@ export class ArraySkillsComponent implements OnInit {
   @Input() dataSource: MatTableDataSource<SkillGraduated[]>; // data as MatTableDataSource
 
   @Output() skillsEvent = new EventEmitter<SkillGraduated[]>() ;
-
-  //Subscription ;
-  skillsSubscription ;
-
-  constructor(private arrayObsService: ArrayObsService) {
+  
+  constructor() {
   }
 
   /**

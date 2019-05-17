@@ -5,7 +5,6 @@ import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.ser
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
-import { ArrayObsService } from 'src/app/competences/services/arrayObs.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Skills } from 'src/app/competences/models/skills';
 import { SubMenusService } from 'src/app/services/subMenus.service';
@@ -18,7 +17,6 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
   selector: 'app-skills-form',
   templateUrl: './skills-form.component.html',
   styleUrls: ['./skills-form.component.scss'],
-  providers: [ArrayObsService]
 })
 /**
 * Component containing the skillsSheet creation form.
@@ -242,14 +240,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     let versionDate = "";
     if (!skillsVersionsStored) {
       this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
-        // init skillsSheet versions array
-        (skillsSheetVersions as SkillsSheet[]).forEach(version => {
-          versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
-          let managerName = version.mailVersionAuthor.split('.')[0] + ' ' + version.mailVersionAuthor.split('.')[1];
-          versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
-        });
-        this.versionsArray = new MatTableDataSource(versions);
-        window.sessionStorage.setItem("skillsSheetVersions", JSON.stringify(skillsSheetVersions));
+        if ((skillsSheetVersions as SkillsSheet[]).length > 0 && skillsSheetVersions[0].hasOwnProperty('versionDate')) {
+          // init skillsSheet versions array
+          (skillsSheetVersions as SkillsSheet[]).forEach(version => {
+            versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
+            let managerName = version.mailVersionAuthor.split('.')[0] + ' ' + version.mailVersionAuthor.split('.')[1];
+            versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
+          });
+          this.versionsArray = new MatTableDataSource(versions);
+          window.sessionStorage.setItem("skillsSheetVersions", JSON.stringify(skillsSheetVersions));
+        }
+
       });
     } else {
       JSON.parse(window.sessionStorage.getItem('skillsSheetVersions')).forEach(version => {
