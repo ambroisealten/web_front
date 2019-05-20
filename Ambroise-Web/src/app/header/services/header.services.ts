@@ -6,23 +6,18 @@ import { timeout, catchError } from 'rxjs/operators';
 import { Menu } from '../models/menu';
 import { environment } from 'src/environments/environment';
 import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 @Injectable()
 export class HeaderService {
 
     constructor(private httpClient: HttpClient,
-        private errorService: ErrorService) { }
+        private errorService: ErrorService,
+        private httpHeaderService: HttpHeaderService) { }
 
     init(): Observable<{} | Menu[]> {
 
-        let token = window.sessionStorage.getItem("bearerToken");
-        LoggerService.log("Appel de : init()", LogLevel.DEBUG);
-
-        let headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-        });
-        let options = { headers: headers };
+        let options = this.httpHeaderService.getHttpHeaders() ; 
 
         return this.httpClient
             .get<Menu[]>(environment.serverAddress + '/configMenu', options)
