@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Person, PersonRole } from '../models/person';
 import { catchError, timeout } from 'rxjs/operators';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
@@ -22,7 +21,7 @@ export class PersonSkillsService {
    * @param  person Person to create
    */
   createNewPerson(person: Person) {
-    let urlRequest :string;
+    let urlRequest: string;
 
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
@@ -55,10 +54,10 @@ export class PersonSkillsService {
    * @param  person Person to update
    */
   updatePerson(person: Person) {
-    let urlRequest :string;
-    if(person.role.toUpperCase() === PersonRole.APPLICANT)
+    let urlRequest: string;
+    if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
-    else
+    } else {
       urlRequest = environment.serverAddress + '/consultant';
     }
     let options = this.httpHeaderService.getHttpHeaders() ;

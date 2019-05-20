@@ -1,33 +1,36 @@
-<h2 mat-dialog-title>Ajout de la disponibilité</h2>
+<h2 mat-dialog-title class="dialogTitle">Ajout de la disponibilité</h2>
 
 <mat-dialog-content>
-  <div class="firstPanel">
+  <div class="firstPanel" (click)="enableFirstPanel()">
     <mat-form-field>
-      <input matInput [matDatepicker]="startPicker" placeholder="Date de début" [(ngModel)]="initDate">
+      <input matInput [matDatepicker]="startPicker" placeholder="Date de début" [(ngModel)]="initDate" [disabled]="isFirstPanelDisabled">
       <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
       <mat-datepicker #startPicker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [matDatepicker]="endPicker" placeholder="Date de fin" [(ngModel)]="finalDate">
+      <input matInput [matDatepicker]="endPicker" placeholder="Date de fin" [(ngModel)]="finalDate" [disabled]="isFirstPanelDisabled">
+      <mat-hint align="start">* Champ facultatif</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="save()">Valider</button>
+    <button mat-raised-button class="saveButton" color="primary" (click)="saveFirstPanel()" [disabled]="isFirstPanelDisabled">Valider</button>
   </div>
 
-  <div class="secondPanel">
+  <div class="separationBorder"></div>
+
+  <div class="secondPanel" (click)="enableSecondPanel()">
     <mat-form-field>
-      <input matInput placeholder="Disponible dans" [(ngModel)]="duration" type="number">
+      <input matInput placeholder="Disponible dans" [(ngModel)]="duration" type="number" min="0" [disabled]="isSecondPanelDisabled">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select [(ngModel)]="durationType">
+      <mat-select [(ngModel)]="durationType" [disabled]="isSecondPanelDisabled">
         <mat-option value="DAY">Jours</mat-option>
         <mat-option value="WEEK">Semaines</mat-option>
         <mat-option value="MONTH">Mois</mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="save()">Valider</button>
+    <button mat-raised-button class="saveButton" color="primary" (click)="saveSecondPanel()" [disabled]="isSecondPanelDisabled">Valider</button>
   </div>
 </mat-dialog-content>

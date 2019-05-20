@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener } from
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole, OnDateAvailability, OnTimeAvailibility, DurationType } from 'src/app/competences/models/person';
-import { SkillsSheet, SkillGraduated, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { Person, PersonRole, OnDateAvailability, OnTimeAvailability, DurationType } from 'src/app/competences/models/person';
+import { SkillsSheet, SkillGraduated, SkillsSheetVersions, Skill } from 'src/app/competences/models/skillsSheet';
 import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -53,7 +53,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   formItems: any[];
 
   // text color in person info form : default is mat input color
-  experienceTimeTextColor: string = "rgba(0,0,0,.38)";
+  experienceTimeTextColor: string = 'rgba(0,0,0,.38)';
 
   options: string[];
   filteredOptions: Observable<string[]>;
@@ -66,7 +66,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   currentSkillsSheet: SkillsSheet;
   newSkillsSheet: PageSkillsHomeComponent;
 
-  currentPersonAvailibility: string;
+  currentPersonAvailibility: string = 'Cliquez pour ajouter une disponibilité';
+  isImmediatelyAvailableChecked: boolean = false;
 
   //MODIF DETECTION
   countSkillsUpdate = 0;
@@ -79,7 +80,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   // avis + comment
   avis: string;
-  comment: string = "";
+  comment: string = '';
   isEditButtonHidden: boolean = false;
   isPersonDataDisabled: boolean = true;
   isSkillsSheetNameEditable: boolean = false;
@@ -130,11 +131,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     //if we are consultant or applicant we don't have the same information so we load the form that match with the role
     let formItemsJSON = require('../../../resources/formItems.json');
     if (this.currentPerson.role == PersonRole.APPLICANT) {
-      this.formItems = formItemsJSON["candidateFormItems"];
+      this.formItems = formItemsJSON['candidateFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
+      this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
-      this.formItems = formItemsJSON["consultantFormItems"];
+      this.formItems = formItemsJSON['consultantFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
+      this.updateCurrentPersonAvailability();
     } else {
       this.formItems = null;
     }
@@ -194,7 +197,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   /**
    * Filtre toutes les options qui correspondent à l'input user
-   * 
+   *
    * @param value la valeur renseignée par l'utilisateur
    * @author Lucas Royackkers
    */
@@ -315,7 +318,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             versions.push(new SkillsSheetVersions(managerName, versionDate, version.name, version.versionNumber));
           });
           this.versionsArray = new MatTableDataSource(versions);
-          window.sessionStorage.setItem("skillsSheetVersions", JSON.stringify(skillsSheetVersions));
+          window.sessionStorage.setItem('skillsSheetVersions', JSON.stringify(skillsSheetVersions));
         }
 
       });
@@ -365,7 +368,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   * Calls skills service to save current skillsSheet
   */
   onSubmitForm() {
-    LoggerService.log("submit", LogLevel.DEBUG);
+    LoggerService.log('submit', LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
@@ -379,7 +382,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info("Fiche de compétence mise à jour avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     } else {
@@ -391,14 +394,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
     }
   }
 
   onSubmitRedirect(redirect: string) {
-    LoggerService.log("submitRedirect", LogLevel.DEBUG);
+    LoggerService.log('submitRedirect', LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
@@ -434,8 +437,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   createSkillsSheet() {
     const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
     const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    const defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
-    newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
+    this.skillsListService.getSoftSkills().subscribe((result: Skill[]) => {
+      result.forEach(skill => {
+        newSkillsSheet.addSkill(new SkillGraduated(skill, 1));
+      });
+    });
     while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
       newSkillsSheet.name = 'NEW-' + this.makeName();
     }
@@ -446,7 +452,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
         this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
         this.subMenusService.notifyMenuAction('');
-        this.toastrService.info("Fiche de compétence créée avec succès !","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
   }
@@ -485,7 +491,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = true;
     this.isPersonDataDisabled = false;
     this.tmpCurrentPerson = this.currentPerson;
-    this.experienceTimeTextColor = "var(--ALTENDarkGray)";
+    this.experienceTimeTextColor = 'var(--ALTENDarkGray)';
     this.myControl.enable();
   }
 
@@ -496,16 +502,16 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
     this.currentPerson = this.updatePersonFromFormItems();
-    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : '';
     this.currentPerson.highestDiploma = this.myControl.value;
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
-    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
+    this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
     this.myControl.disable();
   }
 
@@ -513,12 +519,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update person's opinion on select
    */
   onOpinionChange() {
-    this.currentPerson.opinion = this.avis != undefined ? this.avis : "";
+    this.currentPerson.opinion = this.avis != undefined ? this.avis : '';
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
   }
@@ -530,14 +536,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
     this.updateFormItemsFromPerson(this.currentPerson);
-    this.experienceTimeTextColor = "rgba(0,0,0,.38)";
+    this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
     this.myControl.disable();
   }
 
   /**
    * On click open modal to add/update availability
    */
-  addAvailability() {
+  updateAvailability() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
 
@@ -546,10 +552,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(availability => {
       if (availability instanceof OnDateAvailability) {
         this.currentPerson.onDateAvailability = availability;
-        this.currentPerson.onTimeAvailibility = undefined;
+        this.currentPerson.onTimeAvailability = undefined;
       }
-      else if (availability instanceof OnTimeAvailibility) {
-        this.currentPerson.onTimeAvailibility = availability;
+      else if (availability instanceof OnTimeAvailability) {
+        this.currentPerson.onTimeAvailability = availability;
         this.currentPerson.onDateAvailability = undefined;
       }
       // update person
@@ -557,7 +563,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
           LoggerService.log('Person updated', LogLevel.DEBUG);
-          this.toastrService.info("Information mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
       this.updateCurrentPersonAvailability();
@@ -669,6 +675,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.myControl.setValue(this.currentPerson.highestDiploma);
   }
 
+  /**
+   * Update availability text for current person
+   */
   updateCurrentPersonAvailability() {
     if (this.currentPerson.onDateAvailability != undefined) {
       if (this.currentPerson.onDateAvailability.finalDate != -1) {
@@ -689,10 +698,42 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.isNewDispoButtonHidden = true;
       }
     }
-    else if (this.currentPerson.onTimeAvailibility != undefined) {
-      this.currentPersonAvailibility = "Dans " + this.currentPerson.onTimeAvailibility.duration + " "
-        + DurationType[this.currentPerson.onTimeAvailibility.durationType];
+  }
+
+  /**
+   * Hide or unhide availability text and update person's availability
+   */
+  availabilityCbChanged() {
+    if (this.isImmediatelyAvailableChecked) {
+      let immediatelyDate = new OnTimeAvailability();
+      immediatelyDate.initDate = new Date().getTime();
+      immediatelyDate.duration = 0;
+      immediatelyDate.durationType = 'DAY';
+
+      this.currentPerson.onTimeAvailability = immediatelyDate;
+      this.currentPerson.onDateAvailability = undefined;
+
+      // update person
+      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          LoggerService.log('Person updated', LogLevel.DEBUG);
+        }
+      });
     }
+    else { // no availability -> update person
+      this.currentPerson.onTimeAvailability = undefined;
+      this.currentPerson.onDateAvailability = undefined;
+
+      // update person
+      this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+        if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
+          window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          LoggerService.log('Person updated', LogLevel.DEBUG);
+        }
+      });
+    }
+    this.currentPersonAvailibility = 'Cliquez pour ajouter une disponibilité'; // reinitialize default text to display
   }
 
   /**
@@ -700,12 +741,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @param  item item containing highestDiplomaYear information
    */
   checkChangeExperienceTime(item) {
-    if (item.id == "highestDiplomaYear" && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
-      let experienceTimeIndex = this.formItems.findIndex(item => item.id == "experienceTime");
+    if (item.id == 'highestDiplomaYear' && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
+      let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
       this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
-      this.experienceTimeTextColor = "var(--ALTENOrange)";
-    } else if (item.id == "experienceTime") { // set default gray color if experienceTime changed by user
-      this.experienceTimeTextColor = "var(--ALTENDarkGray)";
+      this.experienceTimeTextColor = 'var(--ALTENOrange)';
+    } else if (item.id == 'experienceTime') { // set default gray color if experienceTime changed by user
+      this.experienceTimeTextColor = 'var(--ALTENDarkGray)';
     }
   }
 
@@ -721,7 +762,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   setViewPDF() {
     if (this.modifDetection) {
-      LoggerService.log("submit", LogLevel.DEBUG);
+      LoggerService.log('submit', LogLevel.DEBUG);
       LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
       let tmpExisting;
       if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
@@ -734,8 +775,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
             this.initVersionArray(false);
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-            this.toastrService.info("SkillsSheet mise à jour avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
-            this.pdf.next("pdf")
+            this.toastrService.info('SkillsSheet mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+            this.pdf.next('pdf')
           }
         });
       } else {
@@ -746,13 +787,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             tmpSkillsSheets.push(this.currentSkillsSheet);
             window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-            this.toastrService.info("SkillsSheet créée avec succès","",{positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
-            this.pdf.next("pdf")
+            this.toastrService.info('SkillsSheet créée avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+            this.pdf.next('pdf')
           }
         });
       }
     } else {
-      this.pdf.next("");
+      this.pdf.next('');
     }
   }
 
