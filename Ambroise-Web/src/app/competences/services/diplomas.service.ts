@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { timeout, catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 @Injectable()
 /**
@@ -12,21 +13,16 @@ import { ErrorService } from 'src/app/services/error.service';
 export class DiplomasService {
     
   constructor(private httpClient: HttpClient,
-    private errorService: ErrorService) { }
-
-  token = window.sessionStorage.getItem("bearerToken");
-  headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': this.token != "" ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-  });
-  options = { headers: this.headers };
+    private errorService: ErrorService,
+    private httpHeaderService: HttpHeaderService) { }
 
   /**
    * HTTP Get request to get all Diplomas
    */
   getAllDiplomas() {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .get(environment.serverAddress + '/diplomas/', this.options)
+      .get(environment.serverAddress + '/diplomas/', options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 }
