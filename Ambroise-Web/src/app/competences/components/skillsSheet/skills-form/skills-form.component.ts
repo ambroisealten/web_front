@@ -19,6 +19,7 @@ import { map } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
 import { DiplomasService } from '../../../services/diplomas.service';
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
+import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -456,6 +457,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
   */
   createSkillsSheet() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+
+    const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
+
     const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
     const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
     const defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
