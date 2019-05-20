@@ -41,10 +41,10 @@ export class PdfComponent implements OnInit, OnDestroy {
   submenusSubscription;
 
   constructor(private router: Router,
-              private route: ActivatedRoute,
-              private subMenusService: SubMenusService,
-              private skillsSheetService: SkillsSheetService,
-              private skillsService: SkillsListService
+    private route: ActivatedRoute,
+    private subMenusService: SubMenusService,
+    private skillsSheetService: SkillsSheetService,
+    private skillsService: SkillsListService
   ) { }
 
   ngOnInit() {
@@ -202,21 +202,16 @@ export class PdfComponent implements OnInit, OnDestroy {
   createSkillsSheet() {
     const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
     const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    this.skillsService.getSoftSkills().subscribe((result: Skill[]) => {
-      result.forEach(skill => {
-        newSkillsSheet.addSkill(new SkillGraduated(skill, 1));
-      });
-      while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
-        newSkillsSheet.name = 'NEW-' + this.makeName();
+    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
+      newSkillsSheet.name = 'NEW-' + this.makeName();
+    }
+    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.push(newSkillsSheet);
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
       }
-      this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-          const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-          tmpSkillsSheets.push(newSkillsSheet);
-          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-          this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
-        }
-      });
     });
   }
 
@@ -243,7 +238,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   downloadPDF() {
     var data = document.getElementById("contentToConvert");
-    html2canvas(data, { scale: 2.5, allowTaint : true, useCORS:true }).then(canvas => {
+    html2canvas(data, { scale: 2.5, allowTaint: true, useCORS: true }).then(canvas => {
       const contentDataURL = canvas.toDataURL('image/jpeg')
 
       const pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  
