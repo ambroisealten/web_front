@@ -76,7 +76,6 @@
   width: calc(96vw * 0.04);
   height: calc(96vw * 0.085);
   min-width: 50px;
-  background-color: white;
 }
 
 #logo {
@@ -87,7 +86,6 @@
   position: absolute;
   left: 0;
   z-index: 5;
-  background-color: rgba(255, 255, 255, 0.95);
 }
 
 @media (max-width: 400px) {
