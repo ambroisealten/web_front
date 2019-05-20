@@ -5,6 +5,7 @@ import { timeout, catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { SkillsSheet } from '../models/skillsSheet';
 import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 @Injectable()
 /**
@@ -13,22 +14,17 @@ import { ErrorService } from 'src/app/services/error.service';
 export class SkillsSheetService {
 
   constructor(private httpClient: HttpClient,
-    private errorService: ErrorService) { }
-
-  token = window.sessionStorage.getItem("bearerToken");
-  headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': this.token != "" ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-  });
-  options = { headers: this.headers };
+    private errorService: ErrorService,
+    private httpHeaderService: HttpHeaderService) { }
 
   /**
    * HTTP Post request to create a new skillsSheet in db
    * @param  skillsSheet skillsSheet to create
    */
   createNewSkillsSheet(skillsSheet: SkillsSheet) {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, this.options)
+      .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
@@ -37,8 +33,9 @@ export class SkillsSheetService {
    * @param  skillsSheet skillsSheet to update
    */
   updateSkillsSheet(skillsSheet: SkillsSheet) {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .put<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, this.options)
+      .put<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
@@ -47,8 +44,9 @@ export class SkillsSheetService {
    * @param  mail skillsSheets's associated mail
    */
   getSkillsSheetsByMail(mail: string) {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetMail/" + mail, this.options)
+      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetMail/" + mail, options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
@@ -58,8 +56,9 @@ export class SkillsSheetService {
    * @param mailPersonAttachedTo 
    */
   getAllSkillsSheetVersions(skillsSheetName: String, mailPersonAttachedTo: String) {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetVersion/" + skillsSheetName + "/" + mailPersonAttachedTo, this.options)
+      .get<SkillsSheet[]>(environment.serverAddress + "/skillsheetVersion/" + skillsSheetName + "/" + mailPersonAttachedTo, options)
       .pipe(timeout(5000), 
         catchError(error => this.errorService.handleError(error)));
   }

@@ -138,12 +138,6 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill)
       }
     });
-    while (this.skillsArray.length < 12) {
-      this.skillsArray.push(new SkillGraduated(new Skill("Test"), 1))
-    }
-    while (this.softSkillsArray.length < 7) {
-      this.softSkillsArray.push(new SkillGraduated(new Skill("Test"), 1))
-    }
   }
 
   /**

@@ -22,6 +22,7 @@ import { LoggerService } from './services/logger.service';
 import { IsNotLoginService } from './services/isNotLogin.service' ;
 import { SubMenusService } from './services/subMenus.service';
 import { ErrorService } from './services/error.service';
+import { HttpHeaderService } from './services/httpHeaderService';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { ErrorService } from './services/error.service';
     LoggerService,
     IsNotLoginService,
     SubMenusService,
-    ErrorService
+    ErrorService,
+    HttpHeaderService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

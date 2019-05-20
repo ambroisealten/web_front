@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { timeout, catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 @Injectable()
 /**
@@ -15,21 +16,24 @@ import { ErrorService } from 'src/app/services/error.service';
 export class SkillsListService {
     
   constructor(private httpClient: HttpClient,
-    private errorService: ErrorService) { }
+    private errorService: ErrorService,
+    private httpHeaderService: HttpHeaderService) { }
 
-  token = window.sessionStorage.getItem("bearerToken");
-  headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': this.token != "" ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-  });
-  options = { headers: this.headers };
 
   /**
    * HTTP Get request to get all Skills
    */
   getAllSkills() {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .get<Skill[]>(environment.serverAddress + '/skills/', this.options)
+      .get<Skill[]>(environment.serverAddress + '/skills/', options)
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+  }
+
+  getSoftSkills() : Observable<{} | Skill[]>{
+    let options = this.httpHeaderService.getHttpHeaders() ;
+    return this.httpClient
+      .get<Skill[]>(environment.serverAddress + '/softskills/', options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
@@ -37,8 +41,9 @@ export class SkillsListService {
    * HTTP Get request to get all Skills (that are not soft)
    */
   getAllTechSkills(){
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .get<Skill[]>(environment.serverAddress + '/techskills/', this.options)
+      .get<Skill[]>(environment.serverAddress + '/techskills/', options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 }

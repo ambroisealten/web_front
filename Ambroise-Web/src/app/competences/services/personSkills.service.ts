@@ -5,6 +5,7 @@ import { Person, PersonRole } from '../models/person';
 import { catchError, timeout } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 @Injectable()
 /**
@@ -13,14 +14,8 @@ import { ErrorService } from 'src/app/services/error.service';
 export class PersonSkillsService {
 
   constructor(private httpClient: HttpClient,
-    private errorService: ErrorService) { }
-
-  token = window.sessionStorage.getItem("bearerToken");
-  headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': this.token != "" ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-  });
-  options = { headers: this.headers };
+              private errorService: ErrorService,
+              private httpHeaderService: HttpHeaderService) { }
 
   /**
    * HTTP Post request to create a new Person in db
@@ -29,14 +24,30 @@ export class PersonSkillsService {
   createNewPerson(person: Person) {
     let urlRequest :string;
 
-    if(person.role.toUpperCase() === PersonRole.APPLICANT)
-    urlRequest = environment.serverAddress + '/applicant';
-    else
-    urlRequest = environment.serverAddress + '/consultant';
-
+    if (person.role.toUpperCase() === PersonRole.APPLICANT) {
+      urlRequest = environment.serverAddress + '/applicant';
+    } else {
+      urlRequest = environment.serverAddress + '/consultant';
+    }
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-        .post<Person>(urlRequest, person, this.options)
-        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .post<Person>(urlRequest, person, options)
+      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+  }
+
+  createNewPersonAndSkillsSheet(personAndSkillsSheet) {
+    let urlRequest: string;
+    const person = personAndSkillsSheet.person;
+
+    if (person.role.toUpperCase() === PersonRole.APPLICANT) {
+      urlRequest = environment.serverAddress + '/applicantAndSkillsSheet';
+    } else {
+      urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
+    }
+    let options = this.httpHeaderService.getHttpHeaders() ;
+    return this.httpClient
+      .post<Person>(urlRequest, personAndSkillsSheet, options)
+      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -49,19 +60,21 @@ export class PersonSkillsService {
       urlRequest = environment.serverAddress + '/applicant';
     else
       urlRequest = environment.serverAddress + '/consultant';
-
+    }
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-        .put<Person>(urlRequest, person, this.options)
-        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .put<Person>(urlRequest, person, options)
+      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
    * HTTP Get request to get a Person given its mail
    * @param  mail Person's mail
    */
-  getPersonByMail(mail: String) {
+  getPersonByMail(mail: string) {
+    let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
-      .get<Person>(environment.serverAddress + '/person/' + mail, this.options)
+      .get<Person>(environment.serverAddress + '/person/' + mail, options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
