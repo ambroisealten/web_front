@@ -53,7 +53,8 @@ import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new
     ModalSkillsCandidateComponent,
     SkillsFormComponent,
     PdfComponent,
-    ModalAvailabilityComponent
+    ModalAvailabilityComponent,
+    ModalNewSkillsSheetComponent
   ],
   providers: [
     SkillsSheetService,

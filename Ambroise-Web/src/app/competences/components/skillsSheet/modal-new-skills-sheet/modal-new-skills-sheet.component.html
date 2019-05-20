@@ -3,9 +3,9 @@
 <mat-dialog-content>
   <div class="name" >
     <mat-form-field>
-        <input class="imput" matInput placeholder="Nom de la nouvelle fiche">
+        <input class="imput" matInput placeholder="Nom de la nouvelle fiche" [(ngModel)]="name">
     </mat-form-field>
 
-    <button mat-raised-button class="saveButton" color="primary" (click)="saveName()">Valider</button>
+    <button mat-raised-button class="saveButton" color="primary" (click)="saveName()" (keyup)="checkname($event)">Valider</button>
   </div>
 </mat-dialog-content>
