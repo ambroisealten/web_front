@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Person, PersonRole } from '../models/person';
 import { catchError, timeout } from 'rxjs/operators';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { ErrorService } from 'src/app/services/error.service';
 
 @Injectable()
@@ -13,12 +12,12 @@ import { ErrorService } from 'src/app/services/error.service';
 export class PersonSkillsService {
 
   constructor(private httpClient: HttpClient,
-    private errorService: ErrorService) { }
+              private errorService: ErrorService) { }
 
-  token = window.sessionStorage.getItem("bearerToken");
+  token = window.sessionStorage.getItem('bearerToken');
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
-    'Authorization': this.token != "" ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+    Authorization: this.token !== '' ? this.token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
   });
   options = { headers: this.headers };
 
@@ -27,16 +26,32 @@ export class PersonSkillsService {
    * @param  person Person to create
    */
   createNewPerson(person: Person) {
-    let urlRequest :string;
+    let urlRequest: string;
 
-    if(person.role.toUpperCase() === PersonRole.APPLICANT)
-    urlRequest = environment.serverAddress + '/applicant';
-    else
-    urlRequest = environment.serverAddress + '/consultant';
+    if (person.role.toUpperCase() === PersonRole.APPLICANT) {
+      urlRequest = environment.serverAddress + '/applicant';
+    } else {
+      urlRequest = environment.serverAddress + '/consultant';
+    }
 
     return this.httpClient
-        .post<Person>(urlRequest, person, this.options)
-        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .post<Person>(urlRequest, person, this.options)
+      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+  }
+
+  createNewPersonAndSkillsSheet(personAndSkillsSheet) {
+    let urlRequest: string;
+    const person = personAndSkillsSheet.person;
+
+    if (person.role.toUpperCase() === PersonRole.APPLICANT) {
+      urlRequest = environment.serverAddress + '/applicantAndSkillsSheet';
+    } else {
+      urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
+    }
+
+    return this.httpClient
+      .post<Person>(urlRequest, personAndSkillsSheet, this.options)
+      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -44,22 +59,23 @@ export class PersonSkillsService {
    * @param  person Person to update
    */
   updatePerson(person: Person) {
-    let urlRequest :string;
-    if(person.role.toUpperCase() === PersonRole.APPLICANT)
+    let urlRequest: string;
+    if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
-    else
+    } else {
       urlRequest = environment.serverAddress + '/consultant';
+    }
 
     return this.httpClient
-        .put<Person>(urlRequest, person, this.options)
-        .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .put<Person>(urlRequest, person, this.options)
+      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
    * HTTP Get request to get a Person given its mail
    * @param  mail Person's mail
    */
-  getPersonByMail(mail: String) {
+  getPersonByMail(mail: string) {
     return this.httpClient
       .get<Person>(environment.serverAddress + '/person/' + mail, this.options)
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));

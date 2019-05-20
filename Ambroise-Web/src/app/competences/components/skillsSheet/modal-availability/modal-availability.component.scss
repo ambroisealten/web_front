@@ -1,9 +1,40 @@
+.dialogTitle {
+  background-color: var(--ALTENDarkBlue);
+  color: white;
+}
+
 .firstPanel {
-  border-bottom: 1px solid var(--ALTENBlue);
-  margin-bottom: 5%;
-  padding-bottom: 5%;
+  display: flex;
+  flex-direction: column;
+  padding: 10%;
+  width: 100%;
+  border: 1px solid var(--ALTENBlue);
+  border-top: 5px solid var(--ALTENBlue);
+}
+
+.separationBorder {
+  border-right: 1px solid var(--ALTENBlue);
+  margin-right: 50%;
+}
+
+.secondPanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 10%;
+  border: 1px solid var(--ALTENBlue);
+  border-top: 5px solid var(--ALTENBlue);
 }
 
 .mat-form-field {
   margin-right: 5%;
+}
+
+.saveButton {
+  margin-top: 5%;
+}
+
+mat-dialog-content {
+  display: grid;
+  grid-template-columns: 1fr 0.25fr 1fr;
 }

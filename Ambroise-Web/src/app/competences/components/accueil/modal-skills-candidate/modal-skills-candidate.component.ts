@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { SkillsSheet } from '../../../models/skillsSheet';
+import { SkillsSheet, Skill, SkillGraduated } from '../../../models/skillsSheet';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Person, PersonRole } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { Skills } from 'src/app/competences/models/skills';
+import { SkillsListService } from '../../../services/skillsList.service';
 
 @Component({
   selector: 'app-modal-skills-candidate',
@@ -28,7 +29,8 @@ export class ModalSkillsCandidateComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>,
     private skillsSheetService: SkillsSheetService,
-    private personSkillsService: PersonSkillsService
+    private personSkillsService: PersonSkillsService,
+    private skillsService: SkillsListService
   ) { }
 
   ngOnInit() {
@@ -122,13 +124,14 @@ export class ModalSkillsCandidateComponent implements OnInit {
         else { // create person
           newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole);
         }
-
-        let skillsSheet : SkillsSheet;
         if(isNewSkillsSheet) { // create skillsSheet
           let newSkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
-          let defaultSoftSkills = require('../../../resources/defaultSoftSkills.json');
-          newSkillsSheet.skillsList = defaultSoftSkills['softSkillsList'];
-          this.dialogRef.close(new Skills(newPerson, newSkillsSheet));
+          this.skillsService.getSoftSkills().subscribe((result:Skill[]) => {
+            result.forEach(skill => {
+              newSkillsSheet.addSkill(new SkillGraduated(skill,1));
+            });
+            this.dialogRef.close(new Skills(newPerson, newSkillsSheet));
+          });
         }
         else { // skillsSheet exists
           this.closeWithExistantSkillsSheet(newPerson);

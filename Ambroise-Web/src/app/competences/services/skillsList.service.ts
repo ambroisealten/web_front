@@ -33,6 +33,12 @@ export class SkillsListService {
       .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
 
+  getSoftSkills() : Observable<{} | Skill[]>{
+    return this.httpClient
+      .get<Skill[]>(environment.serverAddress + '/softskills/', this.options)
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+  }
+
   /**
    * HTTP Get request to get all Skills (that are not soft)
    */
