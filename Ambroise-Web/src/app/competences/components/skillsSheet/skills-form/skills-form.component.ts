@@ -468,29 +468,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   createSkillsSheet() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      person: this.currentPerson
+    }
 
     const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
-
-    const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
-    const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    this.skillsListService.getSoftSkills().subscribe((result: Skill[]) => {
-      result.forEach(skill => {
-        newSkillsSheet.addSkill(new SkillGraduated(skill, 1));
-      });
-    });
-    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
-      newSkillsSheet.name = 'NEW-' + this.makeName();
-    }
-    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(newSkillsSheet);
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
-        this.subMenusService.notifyMenuAction('');
-        this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
-      }
-    });
+    
   }
 
   redirectAfterAction(redirect: string) {
