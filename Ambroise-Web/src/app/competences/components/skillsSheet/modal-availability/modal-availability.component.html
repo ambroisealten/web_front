@@ -14,7 +14,7 @@
       <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>
     </mat-form-field>
-    <button mat-raised-button class="saveButton" color="primary" (click)="save()" [disabled]="isFirstPanelDisabled">Valider</button>
+    <button mat-raised-button class="saveButton" color="primary" (click)="saveFirstPanel()" [disabled]="isFirstPanelDisabled">Valider</button>
   </div>
 
   <div class="separationBorder"></div>
@@ -31,6 +31,6 @@
         <mat-option value="MONTH">Mois</mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button class="saveButton" color="primary" (click)="save()" [disabled]="isSecondPanelDisabled">Valider</button>
+    <button mat-raised-button class="saveButton" color="primary" (click)="saveSecondPanel()" [disabled]="isSecondPanelDisabled">Valider</button>
   </div>
 </mat-dialog-content>
