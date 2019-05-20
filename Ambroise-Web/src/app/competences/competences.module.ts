@@ -24,6 +24,7 @@ import { PdfComponent } from './components/skillsSheet/pdf/pdf.component';
 import { SkillsListService } from './services/skillsList.service';
 import { ModalAvailabilityComponent } from './components/skillsSheet/modal-availability/modal-availability.component';
 import { DiplomasService } from './services/diplomas.service';
+import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new-skills-sheet/modal-new-skills-sheet.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { DiplomasService } from './services/diplomas.service';
     SkillsSheetViewComponent,
     PdfComponent,
     SkillsFormComponent,
-    ModalAvailabilityComponent
+    ModalAvailabilityComponent,
+    ModalNewSkillsSheetComponent
   ],
   imports: [
     CommonModule,

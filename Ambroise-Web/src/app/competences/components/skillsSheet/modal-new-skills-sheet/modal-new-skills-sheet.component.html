@@ -1,0 +1,11 @@
+<h2 mat-dialog-title class="dialogTitle">Ajout de la disponibilité</h2>
+
+<mat-dialog-content>
+  <div class="firstPanel" (click)="enableFirstPanel()">
+    <mat-form-field>
+        <input matInput placeholder="Nom de la nouvelle fiche">
+    </mat-form-field>
+
+    <button mat-raised-button class="saveButton" color="primary" (click)="saveName()" >Valider</button>
+  </div>
+</mat-dialog-content>
