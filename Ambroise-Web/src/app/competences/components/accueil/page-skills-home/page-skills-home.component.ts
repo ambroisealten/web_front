@@ -190,27 +190,25 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   getPersonAvailability(availability){
-    if(availability.hasOwnProperty("initDate")){
+    console.log(availability);
+    if(availability.initDate != 0){
       let initDate = new Date(availability.initDate);
-      if(availability.hasOwnProperty("finalDate")){
-        let fDate = new Date(availability.finalDate);
-        return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
+      if(availability.finalDate != 0){
+        if (availability.duration == 0 && availability.durationType == ""){
+          return "Inconnue";
+        }
+        else{
+          let fDate = new Date(availability.finalDate);
+          return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
+        } 
       }
       else{
         return "A partir du "+initDate.toLocaleDateString();
       }
     }
     else{
-      let initDate = new Date(availability.initDate);
-      let finalDate = availability.finalDate;
-      if(finalDate != 1){
-        console.log("Du "+initDate+" au "+new Date(finalDate));
-      }
-      else{
-        console.log("A partir du "+initDate);
-      }
+      return "Inconnue";
     }
-    return "Oskour";
   }
 
   /**

@@ -19,7 +19,7 @@ export class Person {
   availability : Availability;
 
 
-  constructor(surname:string, name:string, mail:string, role:PersonRole) {
+  constructor(surname:string, name:string, mail:string, role:PersonRole,availability : Availability) {
     this.surname = surname;
     this.name = name;
     this.mail = mail;
@@ -33,6 +33,7 @@ export class Person {
     this.highestDiplomaYear = "" ;
     this.opinion = "";
     this.experienceTime = "0";
+    this.availability = availability;
   }
 }
 
