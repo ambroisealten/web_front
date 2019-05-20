@@ -37,12 +37,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   versionsArray = new MatTableDataSource();
   lastModifDisplayedColumns: string[] = ['manager', 'date'];
 
-  // Information of tech skills
+  // Informations of tech skills
   skillsArray: any[] = [];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
   skillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
 
-  // Information of soft skills
+  // Informations of soft skills
   softSkillsArray: any[] = [];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
   softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
@@ -74,7 +74,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   countSoftSkillsUpdate = 0;
   modifDetection = false;
 
-  // information contains in the path
+  // Informations contains in the path
   name: string;
   version: number;
 
@@ -128,7 +128,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       map(value => this._filter(value))
     );
     this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
-    //if we are consultant or applicant we don't have the same information so we load the form that match with the role
+    //if we are consultant or applicant we don't have the same Informations so we load the form that match with the role
     let formItemsJSON = require('../../../resources/formItems.json');
     if (this.currentPerson.role == PersonRole.APPLICANT) {
       this.formItems = formItemsJSON['candidateFormItems'];
@@ -508,7 +508,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Informations mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
     this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
@@ -524,7 +524,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Informations mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
       }
     });
   }
@@ -563,7 +563,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
           LoggerService.log('Person updated', LogLevel.DEBUG);
-          this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Informations mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
       });
       this.updateCurrentPersonAvailability();
@@ -738,7 +738,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   /**
    * Dynamically change experience years when highest diploma year is updated (text color change)
-   * @param  item item containing highestDiplomaYear information
+   * @param  item item containing highestDiplomaYear Informations
    */
   checkChangeExperienceTime(item) {
     if (item.id == 'highestDiplomaYear' && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
