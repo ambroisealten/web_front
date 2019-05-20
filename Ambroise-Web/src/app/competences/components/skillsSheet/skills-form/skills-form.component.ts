@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener } from
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole, OnDateAvailability, OnTimeAvailability, DurationType } from 'src/app/competences/models/person';
+import { Person, PersonRole, Availability, DurationType } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions, Skill } from 'src/app/competences/models/skillsSheet';
 import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
@@ -205,7 +205,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (value != null) {
       if (value.length != 0) {
         const filterValue = value.toLowerCase();
-        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+        return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
       }
       else {
         return [];
@@ -534,6 +534,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.currentPerson = this.updatePersonFromFormItems();
     this.currentPerson.opinion = this.avis != undefined ? this.avis : '';
     this.currentPerson.highestDiploma = this.myControl.value;
+    console.log(this.currentPerson);
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -580,18 +581,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(availability => {
-      if (availability instanceof OnDateAvailability) {
-        this.currentPerson.onDateAvailability = availability;
-        this.currentPerson.onTimeAvailability = undefined;
-      }
-      else if (availability instanceof OnTimeAvailability) {
-        this.currentPerson.onTimeAvailability = availability;
-        this.currentPerson.onDateAvailability = undefined;
-      }
+      this.currentPerson.availability = availability;
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          console.log(this.currentPerson);
           LoggerService.log('Person updated', LogLevel.DEBUG);
           this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
         }
@@ -709,19 +704,19 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if (this.currentPerson.onDateAvailability != undefined) {
-      if (this.currentPerson.onDateAvailability.finalDate != -1) {
-        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
-          + ' au ' + new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
+    if (this.currentPerson.availability != undefined) {
+      if (this.currentPerson.availability.finalDate != -1) {
+        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
+          + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
       }
       else {
-        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString();
+        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
       }
       this.isNewDispoButtonHidden = true;
     }
-    else if (this.currentPerson.onTimeAvailability != undefined) {
-      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.onTimeAvailability.duration + ' '
-        + DurationType[this.currentPerson.onTimeAvailability.durationType];
+    else if (this.currentPerson.availability != undefined) {
+      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+        + DurationType[this.currentPerson.availability.durationType];
       this.isNewDispoButtonHidden = true;
     }
   }
@@ -731,25 +726,24 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   availabilityCbChanged() {
     if (this.isImmediatelyAvailableChecked) {
-      let immediatelyDate = new OnTimeAvailability();
+      let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
       immediatelyDate.duration = 0;
       immediatelyDate.durationType = 'DAY';
 
-      this.currentPerson.onTimeAvailability = immediatelyDate;
-      this.currentPerson.onDateAvailability = undefined;
+      this.currentPerson.availability = immediatelyDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+          console.log(this.currentPerson);
           LoggerService.log('Person updated', LogLevel.DEBUG);
         }
       });
     }
     else { // no availability -> update person
-      this.currentPerson.onTimeAvailability = undefined;
-      this.currentPerson.onDateAvailability = undefined;
+      this.currentPerson.availability = undefined;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {

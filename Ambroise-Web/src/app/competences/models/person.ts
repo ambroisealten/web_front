@@ -16,8 +16,7 @@ export class Person {
   highestDiplomaYear: string ;
   opinion: string;
   experienceTime: string;
-  onTimeAvailability: OnTimeAvailability;
-  onDateAvailability: OnDateAvailability;
+  availability : Availability;
 
 
   constructor(surname:string, name:string, mail:string, role:PersonRole) {
@@ -37,27 +36,20 @@ export class Person {
   }
 }
 
-export class OnTimeAvailability {
-  duration: number;
-  durationType: string;
-  initDate: number;
-
-  constructor() {
+export class Availability{
+  duration : number;
+  durationType : string;
+  initDate : number;
+  finalDate : number;
+  
+  constructor(){
     this.duration = 0;
-    this.durationType = "WEEK";
+    this.durationType = "";
     this.initDate = 0;
+    this.finalDate = 0;
   }
 }
 
-export class OnDateAvailability {
-  finalDate: number;
-  initDate: number;
-
-  constructor() {
-    this.finalDate = -1;
-    this.initDate = 0;
-  }
-}
 
 export enum PersonRole {
   DEMISSIONNAIRE = "DEMISSIONNAIRE",

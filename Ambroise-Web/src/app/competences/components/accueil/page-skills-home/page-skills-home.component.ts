@@ -98,6 +98,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   searchSkillSheets() {
     this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
       if (skillsList.hasOwnProperty('results')) {
+        console.log(skillsList['results']);
         this.createDataSource(skillsList['results'] as Skills[]);
         setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
       }
@@ -114,7 +115,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     if (value.length !== 0) {
       const filterValue = value.toLowerCase();
       this.rechercheInputCpt = value;
-      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+      return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
     } else {
       return [];
     }
@@ -170,7 +171,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
           tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
           tmpSkillSheet['Avis'] = this.instantiateProperty(skills['person'], 'opinion');
-          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'availability');
+          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'availability') != "" ? this.getPersonAvailability(this.instantiateProperty(skills['person'], 'availability')) : "Inconnue";
           tmpSkillSheet['Moyenne Soft Skills'] = this.instantiateProperty(skills['skillsSheet'], 'softSkillAverage');
           this.compColumns.forEach(comp => {
             const tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase());
@@ -186,6 +187,30 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       });
       this.skillsSheetDataSource = new MatTableDataSource(skillSheet);
     }
+  }
+
+  getPersonAvailability(availability){
+    if(availability.hasOwnProperty("initDate")){
+      let initDate = new Date(availability.initDate);
+      if(availability.hasOwnProperty("finalDate")){
+        let fDate = new Date(availability.finalDate);
+        return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
+      }
+      else{
+        return "A partir du "+initDate.toLocaleDateString();
+      }
+    }
+    else{
+      let initDate = new Date(availability.initDate);
+      let finalDate = availability.finalDate;
+      if(finalDate != 1){
+        console.log("Du "+initDate+" au "+new Date(finalDate));
+      }
+      else{
+        console.log("A partir du "+initDate);
+      }
+    }
+    return "Oskour";
   }
 
   /**
