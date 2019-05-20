@@ -42,7 +42,7 @@ export class TokenService {
         //Requête POST au WS : login => Objectif récupérer un token de session valide
         return this.httpClient.post(environment.serverAddress + '/login', postParams)
             //Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
-            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)))
+            .pipe(catchError(err => this.errorService.handleError(err)))
             //Effectue une action dès la réception du token
             .subscribe(token => {
                 //Check si la propriété Token existe
