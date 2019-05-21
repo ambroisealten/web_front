@@ -702,25 +702,29 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if (this.currentPerson.availability.finalDate != 0) {
-      this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
-        + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
-    }
-    else {
-      if(this.currentPerson.availability.duration != 0){
-        if(this.currentPerson.availability.duration == -1){
-          this.currentPersonAvailibility = 'Ajouter une disponibilité';
+    if(this.currentPerson.availability != undefined){
+      if (this.currentPerson.availability.finalDate != 0) {
+        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
+          + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
+      }
+      else {
+        if(this.currentPerson.availability.duration != 0){
+          if(this.currentPerson.availability.duration == -1){
+            this.currentPersonAvailibility = 'Ajouter une disponibilité';
+          }
+          else{
+            this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType];
+          }
         }
         else{
-          this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType];
+          this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
         }
       }
-      else{
-        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
-      }
+      this.isNewDispoButtonHidden = true;
     }
-    this.isNewDispoButtonHidden = true;
-
+    else{
+      this.currentPersonAvailibility = "Ajouter une disponibilité";
+    }
   }
 
   /**
