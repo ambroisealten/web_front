@@ -49,7 +49,6 @@ export class ModalAvailabilityComponent implements OnInit {
       availability.initDate = new Date().getTime();
       availability.duration = this.duration;
       availability.durationType = this.durationType;
-      console.log(availability);
       // close with new object
       this.dialogRef.close(availability);
     }

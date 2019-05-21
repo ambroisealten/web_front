@@ -122,7 +122,7 @@ export class ModalSkillsCandidateComponent implements OnInit {
           newPerson = person as Person;
         }
         else { // create person
-          newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole);
+          newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole, null);
         }
         if(isNewSkillsSheet) { // create skillsSheet
           let newSkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);

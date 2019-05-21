@@ -133,11 +133,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.currentPerson.role == PersonRole.APPLICANT) {
       this.formItems = formItemsJSON['candidateFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
+      if(this.currentPerson.role == "APPLICANT")
       this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
       this.formItems = formItemsJSON['consultantFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
-      this.updateCurrentPersonAvailability();
     } else {
       this.formItems = null;
     }
@@ -534,7 +534,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.currentPerson = this.updatePersonFromFormItems();
     this.currentPerson.opinion = this.avis != undefined ? this.avis : '';
     this.currentPerson.highestDiploma = this.myControl.value;
-    console.log(this.currentPerson);
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -586,7 +585,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
-          console.log(this.currentPerson);
           LoggerService.log('Person updated', LogLevel.DEBUG);
           this.toastrService.info('Information mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
@@ -704,16 +702,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    console.log(this.currentPerson);
     if (this.currentPerson.availability.finalDate != 0) {
       this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
         + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
     }
     else {
       if(this.currentPerson.duration != 0){
-        this.currentPersonAvailibility = 'Après '+this.currentPerson.duration + " " + this.currentPerson.durationType + " (à compter du " + new Date(this.currentPerson.availability.initDate).toLocaleDateString() + ")";
+        this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType] + " (à compter du " + new Date(this.currentPerson.availability.initDate).toLocaleDateString() + ")";
       }
-      this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
+      else{
+        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
+      }
     }
     this.isNewDispoButtonHidden = true;
 
@@ -735,7 +734,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
-          console.log(this.currentPerson);
           LoggerService.log('Person updated', LogLevel.DEBUG);
         }
       });

@@ -59,7 +59,7 @@ export enum PersonRole {
 }
 
 export enum DurationType {
-  DAY = "jours",
-  WEEK = "semaines",
-  MONTH = "mois"
+  DAYS = "jours",
+  WEEKS = "semaines",
+  MONTHS = "mois"
 }
