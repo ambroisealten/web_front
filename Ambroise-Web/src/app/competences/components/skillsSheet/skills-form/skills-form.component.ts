@@ -667,26 +667,28 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if (this.currentPerson.availability.finalDate != 0) {
-      this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
-        + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
+    if(this.currentPerson.availability != undefined){
+      if (this.currentPerson.availability.finalDate != 0) {
+        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
+          + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
+      }
+      else {
+        if(this.currentPerson.availability.duration != 0){
+          if(this.currentPerson.availability.duration == -1){
+            this.currentPersonAvailibility = 'Ajouter une disponibilité';
+          }
+          else{
+            this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType];
+          }
+        }
+        else{
+          this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
+        }
+      }
+      this.isNewDispoButtonHidden = true;
     }
-    else {
-      if(this.currentPerson.availability.duration != 0){
-        this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType] + " (à compter du " + new Date(this.currentPerson.availability.initDate).toLocaleDateString() + ")";
-      }
-      else{
-        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
-      }
-    }
-    else if (this.currentPerson.onTimeAvailability != undefined) {
-      if (this.currentPerson.onTimeAvailability.duration == 0 && DurationType[this.currentPerson.onTimeAvailability.durationType] == "jours") {
-        this.isImmediatelyAvailableChecked = true;
-      } else {
-        this.currentPersonAvailibility = 'Dans ' + this.currentPerson.onTimeAvailability.duration + ' '
-          + DurationType[this.currentPerson.onTimeAvailability.durationType];
-        this.isNewDispoButtonHidden = true;
-      }
+    else{
+      this.currentPersonAvailibility = "Ajouter une disponibilité";
     }
   }
 
@@ -698,7 +700,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
       immediatelyDate.duration = 0;
-      immediatelyDate.durationType = 'FOREVER';
+      immediatelyDate.durationType = "FOREVER";
 
       this.currentPerson.availability = immediatelyDate;
 
@@ -711,7 +713,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     else { // no availability -> update person
-      this.currentPerson.availability = undefined;
+      let nullDate = new Availability();
+      nullDate.initDate = new Date().getTime();
+      nullDate.duration = -1;
+      nullDate.durationType = ""; 
+
+      this.currentPerson.availability = nullDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
