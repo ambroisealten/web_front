@@ -662,7 +662,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if( DurationType[this.currentPerson.availability.durationType] == "FOREVER"){
+    if( DurationType[this.currentPerson.availability.durationType] == "toujours" && this.currentPerson.availability.duration != -1){
       this.isImmediatelyAvailableChecked = true;
     } else if (this.currentPerson.availability.duration == 0){
       if (this.currentPerson.availability.finalDate != 0) {
