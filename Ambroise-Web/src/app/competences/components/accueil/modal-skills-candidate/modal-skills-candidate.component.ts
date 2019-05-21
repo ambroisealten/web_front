@@ -116,7 +116,7 @@ export class ModalSkillsCandidateComponent implements OnInit {
   save(isNewSkillsSheet) {
     let personRole = this.role ? PersonRole.CONSULTANT : PersonRole.APPLICANT;
     this.personSkillsService.getPersonByMail(this.emailInput).subscribe(person => {
-      if (person != undefined) {
+      if (person != undefined) { 
         let newPerson: Person;
         if (person.hasOwnProperty('mail')) { // person exists
           newPerson = person as Person;

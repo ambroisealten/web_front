@@ -704,7 +704,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       let nullDate = new Availability();
       nullDate.initDate = new Date().getTime();
       nullDate.duration = -1;
-      nullDate.durationType = "";
+      nullDate.durationType = "DAYS";
 
       this.currentPerson.availability = nullDate;
 
