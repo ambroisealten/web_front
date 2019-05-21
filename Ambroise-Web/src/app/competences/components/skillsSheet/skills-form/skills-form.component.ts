@@ -417,7 +417,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate([redirect])
-          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     } else {
@@ -429,7 +429,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate([redirect]);
-          this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     }
@@ -498,7 +498,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info('Informations mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
       }
     });
     this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
@@ -514,7 +514,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info('Informations mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
       }
     });
   }
@@ -546,7 +546,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
           LoggerService.log('Person updated', LogLevel.DEBUG);
-          this.toastrService.info('Informations mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
       this.updateCurrentPersonAvailability();
@@ -662,28 +662,21 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if(this.currentPerson.availability != undefined){
+    if( DurationType[this.currentPerson.availability.durationType] == "FOREVER"){
+      this.isImmediatelyAvailableChecked = true;
+    } else if (this.currentPerson.availability.duration == 0){
       if (this.currentPerson.availability.finalDate != 0) {
         this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
           + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
+      } else {
+        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
       }
-      else {
-        if(this.currentPerson.availability.duration != 0){
-          if(this.currentPerson.availability.duration == -1){
-            this.currentPersonAvailibility = 'Ajouter une disponibilité';
-          }
-          else{
-            this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType];
-          }
-        }
-        else{
-          this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
-        }
-      }
+    } else if (this.currentPerson.availability.duration == -1){
+      this.isNewDispoButtonHidden = false ;
+    } else {
+      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+          + DurationType[this.currentPerson.availability.durationType];
       this.isNewDispoButtonHidden = true;
-    }
-    else{
-      this.currentPersonAvailibility = "Ajouter une disponibilité";
     }
   }
 

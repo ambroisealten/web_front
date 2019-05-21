@@ -44,8 +44,8 @@ export class Availability{
   finalDate : number;
   
   constructor(){
-    this.duration = 0;
-    this.durationType = "";
+    this.duration = -1;
+    this.durationType = "DAYS";
     this.initDate = 0;
     this.finalDate = 0;
   }
