@@ -15,6 +15,7 @@ export class ErrorService {
      * @author Quentin Della-Pasqua
      */
     handleError(error): any{
+        console.log(error);
         let statusError = error['error']['status'] ; 
         let messageError = error['error']['message'] ; 
         switch(statusError){

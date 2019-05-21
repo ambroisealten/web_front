@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener } from
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole, OnDateAvailability, OnTimeAvailability, DurationType } from 'src/app/competences/models/person';
+import { Person, PersonRole, Availability, DurationType } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions, Skill } from 'src/app/competences/models/skillsSheet';
 import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
@@ -133,11 +133,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.currentPerson.role == PersonRole.APPLICANT) {
       this.formItems = formItemsJSON['candidateFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
+      if(this.currentPerson.role == "APPLICANT")
       this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
       this.formItems = formItemsJSON['consultantFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
-      this.updateCurrentPersonAvailability();
     } else {
       this.formItems = null;
     }
@@ -205,7 +205,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (value != null) {
       if (value.length != 0) {
         const filterValue = value.toLowerCase();
-        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+        return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
       }
       else {
         return [];
@@ -382,7 +382,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     } else {
@@ -394,7 +394,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     }
@@ -452,7 +452,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
         this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
         this.subMenusService.notifyMenuAction('');
-        this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
       }
     });
   }
@@ -550,14 +550,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(availability => {
-      if (availability instanceof OnDateAvailability) {
-        this.currentPerson.onDateAvailability = availability;
-        this.currentPerson.onTimeAvailability = undefined;
-      }
-      else if (availability instanceof OnTimeAvailability) {
-        this.currentPerson.onTimeAvailability = availability;
-        this.currentPerson.onDateAvailability = undefined;
-      }
+      this.currentPerson.availability = availability;
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
@@ -679,25 +672,25 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if (this.currentPerson.onDateAvailability != undefined) {
-      if (this.currentPerson.onDateAvailability.finalDate != -1) {
-        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
-          + ' au ' + new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
-      }
-      else {
-        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString();
-      }
-      this.isNewDispoButtonHidden = true;
+    if (this.currentPerson.availability.finalDate != 0) {
+      this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
+        + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
     }
-    else if (this.currentPerson.onTimeAvailability != undefined) {
-      if( this.currentPerson.onTimeAvailability.duration == 0 && DurationType[this.currentPerson.onTimeAvailability.durationType] == "jours"){
-        this.isImmediatelyAvailableChecked = true ; 
-      } else {
-        this.currentPersonAvailibility = 'Dans ' + this.currentPerson.onTimeAvailability.duration + ' '
-        + DurationType[this.currentPerson.onTimeAvailability.durationType];
-      this.isNewDispoButtonHidden = true;
+    else {
+      if(this.currentPerson.availability.duration != 0){
+        if(this.currentPerson.availability.duration == -1){
+          this.currentPersonAvailibility = 'Ajouter une disponibilité';
+        }
+        else{
+          this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType];
+        }
+      }
+      else{
+        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
       }
     }
+    this.isNewDispoButtonHidden = true;
+
   }
 
   /**
@@ -705,13 +698,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   availabilityCbChanged() {
     if (this.isImmediatelyAvailableChecked) {
-      let immediatelyDate = new OnTimeAvailability();
+      let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
       immediatelyDate.duration = 0;
-      immediatelyDate.durationType = 'DAY';
+      immediatelyDate.durationType = "FOREVER";
 
-      this.currentPerson.onTimeAvailability = immediatelyDate;
-      this.currentPerson.onDateAvailability = undefined;
+      this.currentPerson.availability = immediatelyDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
@@ -722,8 +714,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     else { // no availability -> update person
-      this.currentPerson.onTimeAvailability = undefined;
-      this.currentPerson.onDateAvailability = undefined;
+      let nullDate = new Availability();
+      nullDate.initDate = new Date().getTime();
+      nullDate.duration = -1;
+      nullDate.durationType = ""; 
+
+      this.currentPerson.availability = nullDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
@@ -775,7 +771,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
             this.initVersionArray(false);
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-            this.toastrService.info('SkillsSheet mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+            this.toastrService.info('SkillsSheet mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
             this.pdf.next('pdf')
           }
         });
@@ -787,7 +783,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             tmpSkillsSheets.push(this.currentSkillsSheet);
             window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-            this.toastrService.info('SkillsSheet créée avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+            this.toastrService.info('SkillsSheet créée avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
             this.pdf.next('pdf')
           }
         });

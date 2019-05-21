@@ -26,9 +26,9 @@
 
     <mat-form-field>
       <mat-select [(ngModel)]="durationType" [disabled]="isSecondPanelDisabled">
-        <mat-option value="DAY">Jours</mat-option>
-        <mat-option value="WEEK">Semaines</mat-option>
-        <mat-option value="MONTH">Mois</mat-option>
+        <mat-option value="DAYS">Jours</mat-option>
+        <mat-option value="WEEKS">Semaines</mat-option>
+        <mat-option value="MONTHS">Mois</mat-option>
       </mat-select>
     </mat-form-field>
     <button mat-raised-button class="saveButton" color="primary" (click)="saveSecondPanel()" [disabled]="isSecondPanelDisabled">Valider</button>
