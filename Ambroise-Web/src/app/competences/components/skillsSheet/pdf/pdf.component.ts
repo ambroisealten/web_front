@@ -65,6 +65,10 @@ export class PdfComponent implements OnInit, OnDestroy {
     this.updateChartSkills(this.skillsArray);
     this.updateChartSoftSkills(this.softSkillsArray);
 
+    if(this.skillsArray.length == 0){
+      this.skillsArray.push({skill: {name: "Aucune compétence définie"}, grade: null} as SkillGraduated)
+    }
+
     //Créer les menus
     this.createMenu();
 
@@ -121,7 +125,8 @@ export class PdfComponent implements OnInit, OnDestroy {
       this.router.navigate(['skills']);
     } else {
       const versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-      if (versions[0].name !== this.name || versions[versions.length - 1].versionNumber !== this.version) {
+      console.log(versions[versions.length - 1].versionNumber)
+      if (versions[0].name !== this.name || versions[0].versionNumber < this.version) {
         const skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         skillsSheets.forEach(skillsSheet => {
           if (skillsSheet.versionNumber === this.version && skillsSheet.name === this.name) {

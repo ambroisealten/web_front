@@ -354,9 +354,8 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    * @param  event catch the sort event
    */
   onColumnSort(sort) {
-
     if (sort.active && sort.direction !== '') {
-      sort = this.translateColumnName(sort.active) + ',' + sort.direction;
+      this.sort = this.translateColumnName(sort.active) + ',' + sort.direction;
     }
     this.searchSkillSheets();
   }
