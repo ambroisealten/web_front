@@ -8,7 +8,7 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 import { SkillGraduated, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { Person, DurationType, Duration } from 'src/app/competences/models/person';
+import { Person, DurationType } from 'src/app/competences/models/person';
 import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
