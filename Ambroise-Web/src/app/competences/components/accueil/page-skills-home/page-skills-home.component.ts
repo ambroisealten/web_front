@@ -191,7 +191,10 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   getPersonAvailability(availability, role : string){
     if(availability != ''){
       if(role == "APPLICANT"){
-        if(availability.initDate != 0){
+        if ( DurationType[availability.durationType] == "toujours" && availability.duration != -1){
+          return "Immédiatement";
+        }
+         else if(availability.initDate != 0){
           let initDate = new Date(availability.initDate);
           if(availability.finalDate != 0){
             if (availability.duration == 0 && availability.durationType == ""){
