@@ -708,7 +708,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
     else {
       if(this.currentPerson.availability.duration != 0){
-        this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType] + " (à compter du " + new Date(this.currentPerson.availability.initDate).toLocaleDateString() + ")";
+        if(this.currentPerson.availability.duration == -1){
+          this.currentPersonAvailibility = 'Ajouter une disponibilité';
+        }
+        else{
+          this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType];
+        }
       }
       else{
         this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
