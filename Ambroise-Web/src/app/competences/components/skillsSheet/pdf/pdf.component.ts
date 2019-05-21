@@ -125,7 +125,6 @@ export class PdfComponent implements OnInit, OnDestroy {
       this.router.navigate(['skills']);
     } else {
       const versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-      console.log(versions[versions.length - 1].versionNumber)
       if (versions[0].name !== this.name || versions[0].versionNumber < this.version) {
         const skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         skillsSheets.forEach(skillsSheet => {
