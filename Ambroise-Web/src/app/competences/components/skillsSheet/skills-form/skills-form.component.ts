@@ -143,6 +143,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.formItems = null;
     }
 
+    console.log(this.currentPerson);
     this.route.params.subscribe(param => {
       this.modifDetection = false;
       //Get param in the url
