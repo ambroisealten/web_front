@@ -93,7 +93,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
       extension: document.extension,
       path: document.path,
     };
-    this.adminService.deleteFile(params, null).subscribe(() => {
+    this.adminService.deleteFile(params).subscribe(() => {
       this.files.splice(this.files.indexOf(document), 1);
       this.fetchAllSet();
       this.onFilesChange();
@@ -115,7 +115,7 @@ export class AdminDocumentComponent implements OnInit, OnDestroy {
             _id: document._id,
             extension: document.extension
           };
-          this.adminService.updateFile(postParams, '').subscribe(() => {
+          this.adminService.updateFile(postParams).subscribe(() => {
             document.path = data.path;
             document.displayName = data.displayName;
             this.fetchCurrentSet();

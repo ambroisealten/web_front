@@ -5,138 +5,80 @@ import { timeout } from 'rxjs/internal/operators/timeout';
 import { catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { DocumentSet } from '../models/DocumentSet';
+import { environment } from 'src/environments/environment';
 import { File as Document } from '../models/File';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 
 @Injectable()
 export class AdminService {
 
-    constructor(private httpClient: HttpClient) { }
+    constructor(private httpClient: HttpClient,private httpHeaderService: HttpHeaderService) { }
 
-    baseUrl = 'http://localhost:8080/';
-
-    deleteFile(postParams, callback) {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
+    deleteFile(postParams) {
         const options = {
-            headers: headerParams,
+            headers: this.httpHeaderService.getHttpHeaders()['headers'],
             params: postParams
         };
-        return this.httpClient.delete(this.baseUrl + 'file', options);
+        return this.httpClient.delete(environment.serverAddress + '/file', options);
     }
 
-    updateFile(postParams, callback) {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
+    updateFile(postParams) {
         const options = {
-            headers: headerParams,
+            headers: this.httpHeaderService.getHttpHeaders()['headers'],
             params: postParams
         };
-        return this.httpClient.put(this.baseUrl + 'file', postParams, options);
+        return this.httpClient.put(environment.serverAddress + '/file', postParams, options);
     }
 
     getFile(fileName: string): Observable<{} | File> {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
         const options = {
             params: { fileName, },
-            headers: headerParams,
+            headers: this.httpHeaderService.getHttpHeaders()['headers'],
         };
         return this.httpClient
-            .get<{} | File>(this.baseUrl + 'file', options)
+            .get<{} | File>(environment.serverAddress + '/file', options)
             .pipe(timeout(5000), catchError(error => this.handleError(error)));
     }
 
     getFiles(): Observable<{} | File[]> {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
-        const options = {
-            headers: headerParams,
-        };
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
-            .get<{} | File[]>(this.baseUrl + 'files', options)
+            .get<{} | File[]>(environment.serverAddress + '/files', options)
             .pipe(timeout(5000), catchError(error => this.handleError(error)));
     }
 
     getSetFiles(set: string): Observable<{} | DocumentSet> {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
         const options = {
             params: { set, },
-            headers: headerParams,
+            headers: this.httpHeaderService.getHttpHeaders()['headers'],
         };
         return this.httpClient
-            .get<{} | File[]>(this.baseUrl + 'admin/documentset', options)
+            .get<{} | File[]>(environment.serverAddress + '/admin/documentset', options)
             .pipe(timeout(5000), catchError(error => this.handleError(error)));
     }
 
     getAllSet(): Observable<{} | DocumentSet[]> {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
-        const options = {
-            headers: headerParams,
-        };
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
-            .get<{} | File[]>(this.baseUrl + 'admin/documentset/all', options)
+            .get<{} | File[]>(environment.serverAddress + '/admin/documentset/all', options)
             .pipe(timeout(5000), catchError(error => this.handleError(error)));
     }
 
     saveSet(postParams) {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
-        const options = {
-            headers: headerParams,
-        };
-        return this.httpClient.put(this.baseUrl + 'admin/documentset', postParams, options);
+        const options = this.httpHeaderService.getHttpHeaders();
+        return this.httpClient.put(environment.serverAddress + '/admin/documentset', postParams, options);
     }
 
     uploadFile(file: File, path: string): Observable<HttpEvent<string>> {
         const formdata: FormData = new FormData();
-        const token = window.sessionStorage.getItem('bearerToken');
 
         formdata.append('file', file);
         formdata.append('path', path);
 
-        const headerParams = new HttpHeaders({
-            Authorization: token !== '' ? token : ''
-        });
+        const headerParams = this.httpHeaderService.getHttpHeaders()['headers'];
 
-        const req = new HttpRequest('POST', this.baseUrl + 'file', formdata, {
+        const req = new HttpRequest('POST', environment.serverAddress + 'file', formdata, {
             headers: headerParams,
             reportProgress: true,
             responseType: 'text'
@@ -146,27 +88,20 @@ export class AdminService {
     }
 
     makeRequest(url: string, method: string, postParams) {
-        const token = window.sessionStorage.getItem('bearerToken');
-
-        const headerParams = new HttpHeaders({
-            'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
-        });
-
         const options = {
             body: postParams,
-            headers: headerParams,
+            headers: this.httpHeaderService.getHttpHeaders()['headers'],
         };
 
         switch (method) {
             case 'get':
-                return this.httpClient.get(this.baseUrl + url, options);
+                return this.httpClient.get(environment.serverAddress + url, options);
             case 'post':
-                return this.httpClient.post(this.baseUrl + url, postParams, options);
+                return this.httpClient.post(environment.serverAddress + url, postParams, options);
             case 'put':
-                return this.httpClient.put(this.baseUrl + url, postParams, options);
+                return this.httpClient.put(environment.serverAddress + url, postParams, options);
             case 'delete':
-                return this.httpClient.delete(this.baseUrl + url, options);
+                return this.httpClient.delete(environment.serverAddress + url, options);
             default:
         }
     }

@@ -49,7 +49,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   fetchAgencies() {
     this.agencies = [];
-    this.adminService.makeRequest('agencies', 'get', '').subscribe((agenciesList: Agency[]) => {
+    this.adminService.makeRequest('/agencies', 'get', '').subscribe((agenciesList: Agency[]) => {
       for (const agency of agenciesList) {
         this.agencies.push(new Agency(agency.name, agency.place, agency.placeType));
       }
@@ -62,7 +62,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   fetchSoftSkills() {
     this.softSkills = [];
-    this.adminService.makeRequest('softskills', 'get', '').subscribe((softSkillList: SoftSkill[]) => {
+    this.adminService.makeRequest('/softskills', 'get', '').subscribe((softSkillList: SoftSkill[]) => {
       for (const softSkill of softSkillList) {
         this.softSkills.push(new SoftSkill(softSkill.name));
       }
@@ -71,7 +71,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   onClickSynchroniseGeoApi() {
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-    this.adminService.makeRequest('admin/synchronize/geographics', 'post', '').subscribe(() => {
+    this.adminService.makeRequest('/admin/synchronize/geographics', 'post', '').subscribe(() => {
       dialogProgress.close();
     });
     // TODO Attention, on a pas de moyen de savoir si une mise à jour à été faite sur la base distante
@@ -84,7 +84,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       place: agency.getPlace(),
       placeType: agency.getPlaceType()
     };
-    this.adminService.makeRequest('agency', 'delete', postParams).subscribe(() => {
+    this.adminService.makeRequest('/agency', 'delete', postParams).subscribe(() => {
       this.fetchAgencies();
       dialogProgress.close();
     });
@@ -95,7 +95,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     const postParams = {
       name: softSkill.getName(),
     };
-    this.adminService.makeRequest('skill', 'delete', postParams).subscribe(() => {
+    this.adminService.makeRequest('/skill', 'delete', postParams).subscribe(() => {
       this.fetchSoftSkills();
       dialogProgress.close();
     });
@@ -117,7 +117,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             place: agency.getPlace(),
             placeType: agency.getPlaceType()
           };
-          this.adminService.makeRequest('agency', 'post', postParams).subscribe(() => {
+          this.adminService.makeRequest('/agency', 'post', postParams).subscribe(() => {
             this.fetchAgencies();
             dialogProgress.close();
           });
@@ -138,7 +138,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             name: softSkill.name,
             isSoft: softSkill.isSoft,
           };
-          this.adminService.makeRequest('skill', 'post', postParams).subscribe(() => {
+          this.adminService.makeRequest('/skill', 'post', postParams).subscribe(() => {
             this.fetchSoftSkills();
             dialogProgress.close();
           });
@@ -163,7 +163,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             place: agency.getPlace(),
             placeType: agency.getPlaceType()
           };
-          this.adminService.makeRequest('agency', 'put', postParams).subscribe(() => {
+          this.adminService.makeRequest('/agency', 'put', postParams).subscribe(() => {
             this.fetchAgencies();
             dialogProgress.close();
           });
@@ -185,7 +185,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             name: softSkill.getName(),
             isSoft: softSkill.getIsSoft(),
           };
-          this.adminService.makeRequest('skill', 'put', postParams).subscribe(() => {
+          this.adminService.makeRequest('/skill', 'put', postParams).subscribe(() => {
             this.fetchSoftSkills();
             dialogProgress.close();
           });
