@@ -8,7 +8,7 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 import { SkillGraduated, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { Person } from 'src/app/competences/models/person';
+import { Person, DurationType, Duration } from 'src/app/competences/models/person';
 import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
@@ -114,7 +114,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     if (value.length !== 0) {
       const filterValue = value.toLowerCase();
       this.rechercheInputCpt = value;
-      return this.options.filter(option => option.toLowerCase().includes(filterValue));
+      return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
     } else {
       return [];
     }
@@ -170,7 +170,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
           tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
           tmpSkillSheet['Avis'] = this.instantiateProperty(skills['person'], 'opinion');
-          tmpSkillSheet['Disponibilité'] = this.instantiateProperty(skills['person'], 'availability');
+          tmpSkillSheet['Disponibilité'] = this.getPersonAvailability(this.instantiateProperty(skills['person'], 'availability'),skills['person']['role']);
           tmpSkillSheet['Moyenne Soft Skills'] = this.instantiateProperty(skills['skillsSheet'], 'softSkillAverage');
           this.compColumns.forEach(comp => {
             const tmpCompResult = skills['skillsSheet']['skillsList'].find(skill => skill['skill']['name'].toLowerCase() == comp.toLowerCase());
@@ -185,6 +185,35 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
         }
       });
       this.skillsSheetDataSource = new MatTableDataSource(skillSheet);
+    }
+  }
+
+  getPersonAvailability(availability, role : string){
+    if(role == "APPLICANT"){
+      if(availability.initDate != 0){
+        let initDate = new Date(availability.initDate);
+        if(availability.finalDate != 0){
+          if (availability.duration == 0 && availability.durationType == ""){
+            return "Inconnue";
+          }
+          else{
+            let fDate = new Date(availability.finalDate);
+            return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
+          } 
+        }
+        else if(availability.duration == 0){
+          return "A partir du "+initDate.toLocaleDateString();
+        }
+        else{
+          return "Dans "+availability.duration+" "+ DurationType[availability.durationType]+" ( à compter du "+initDate.toLocaleDateString()+")";
+        }
+      }
+      else{
+        return "Inconnue";
+      }
+    }
+    else{
+      return "Consultant";
     }
   }
 

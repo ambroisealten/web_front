@@ -80,8 +80,9 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
   private _filter(value: string): string[] {
     if (value.length !== 0) {
       const filterValue = value.toLowerCase();
-      return this.options.filter(option => option.toLowerCase().includes(filterValue));
-    } else {
+      return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
+    }
+    else{
       return [];
     }
   }
