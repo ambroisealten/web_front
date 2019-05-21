@@ -41,10 +41,10 @@ export class PdfComponent implements OnInit, OnDestroy {
   submenusSubscription;
 
   constructor(private router: Router,
-              private route: ActivatedRoute,
-              private subMenusService: SubMenusService,
-              private skillsSheetService: SkillsSheetService,
-              private skillsService: SkillsListService
+    private route: ActivatedRoute,
+    private subMenusService: SubMenusService,
+    private skillsSheetService: SkillsSheetService,
+    private skillsService: SkillsListService
   ) { }
 
   ngOnInit() {
@@ -64,6 +64,10 @@ export class PdfComponent implements OnInit, OnDestroy {
     this.setupArray();
     this.updateChartSkills(this.skillsArray);
     this.updateChartSoftSkills(this.softSkillsArray);
+
+    if(this.skillsArray.length == 0){
+      this.skillsArray.push({skill: {name: "Aucune compétence définie"}, grade: null} as SkillGraduated)
+    }
 
     //Créer les menus
     this.createMenu();
@@ -121,7 +125,8 @@ export class PdfComponent implements OnInit, OnDestroy {
       this.router.navigate(['skills']);
     } else {
       const versions = JSON.parse(window.sessionStorage.getItem('skillsSheetVersions'));
-      if (versions[0].name !== this.name || versions[versions.length - 1].versionNumber !== this.version) {
+      console.log(versions[versions.length - 1].versionNumber)
+      if (versions[0].name !== this.name || versions[0].versionNumber < this.version) {
         const skillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         skillsSheets.forEach(skillsSheet => {
           if (skillsSheet.versionNumber === this.version && skillsSheet.name === this.name) {
@@ -143,12 +148,6 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill);
       }
     });
-    while (this.skillsArray.length < 12) {
-      this.skillsArray.push(new SkillGraduated(new Skill('Test'), 1));
-    }
-    while (this.softSkillsArray.length < 7) {
-      this.softSkillsArray.push(new SkillGraduated(new Skill('Test'), 1));
-    }
   }
 
   /**
@@ -208,21 +207,16 @@ export class PdfComponent implements OnInit, OnDestroy {
   createSkillsSheet() {
     const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
     const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    this.skillsService.getSoftSkills().subscribe((result: Skill[]) => {
-      result.forEach(skill => {
-        newSkillsSheet.addSkill(new SkillGraduated(skill, 1));
-      });
-      while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
-        newSkillsSheet.name = 'NEW-' + this.makeName();
+    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
+      newSkillsSheet.name = 'NEW-' + this.makeName();
+    }
+    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.push(newSkillsSheet);
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
       }
-      this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-        if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-          const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-          tmpSkillsSheets.push(newSkillsSheet);
-          window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-          this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
-        }
-      });
     });
   }
 
@@ -249,7 +243,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
   downloadPDF() {
     var data = document.getElementById("contentToConvert");
-    html2canvas(data, { scale: 2.5, allowTaint : true, useCORS:true }).then(canvas => {
+    html2canvas(data, { scale: 2.5, allowTaint: true, useCORS: true }).then(canvas => {
       const contentDataURL = canvas.toDataURL('image/jpeg')
 
       const pdf = new jspdf('landscape', undefined, 'a4'); // A4 size page of PDF  

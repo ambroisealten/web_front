@@ -1,104 +1,107 @@
 <div class="currentSheetInfo">
-  <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})
-  </p>
-
-  <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
-    maxlength="30" [ngModel]="currentSkillsSheet.name">
-  <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
-  <button mat-raised-button (click)="setViewPDF()">
-    <mat-icon>picture_as_pdf</mat-icon>
-    Aperçu PDF
-  </button>
-</div>
-
-<div>
-
-  <div class="grid-container">
-    <div class="infoForm">
-      <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
-        <mat-icon class="editIcon">edit</mat-icon>
-      </button>
-      <div>
-        <button mat-icon-button class="savePersonButton" (click)="savePerson()" [hidden]="!isEditButtonHidden">
-          <mat-icon class="savePersonIcon">check</mat-icon>
-        </button>
-        <button mat-icon-button class="cancelButton" (click)="cancelEditPerson()" [hidden]="!isEditButtonHidden">
-          <mat-icon class="cancelIcon">close</mat-icon>
-        </button>
-      </div>
-
-      <mat-form-field *ngFor="let item of formItems; let index = index;">
-        <input *ngIf="item.id != 'experienceTime' && item.id != 'highestDiploma'" matInput name="{{item.label}}"
-          placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
-          (ngModelChange)="checkChangeExperienceTime(item)" [disabled]="isPersonDataDisabled">
-        <input *ngIf="item.id == 'experienceTime'" matInput name="{{item.label}}" placeholder={{item.label}}
-          [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
-          [disabled]="isPersonDataDisabled" [ngStyle]="{'color': experienceTimeTextColor}">
-        <input *ngIf="item.id == 'highestDiploma'" matInput name="{{formItems[0].label}}"
-          placeholder="{{formItems[0].label}}" [formControl]="myControl" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-            {{option}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <div class="availability-title-container">
-        <p class="availabilityTitle">Disponibilité</p>
-        <mat-checkbox class="checkBoxAvailability" [(ngModel)]="isImmediatelyAvailableChecked"
-          (ngModelChange)="availabilityCbChanged()">Immédiatement</mat-checkbox>
-      </div>
-      <div class="availability-value-container">
-        <p class="availabilityValue" (click)="updateAvailability()" [hidden]="isImmediatelyAvailableChecked">
-          {{ currentPersonAvailibility }} </p>
-      </div>
-
-
-      <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
-        [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>
-      <mat-form-field style="margin-top: 2%;">
-        <mat-label>Avis</mat-label>
-        <mat-select [(ngModel)]="avis" (ngModelChange)="onOpinionChange()">
-          <mat-option value="+++">+++</mat-option>
-          <mat-option value="++">++</mat-option>
-          <mat-option value="+">+</mat-option>
-          <mat-option value="-">-</mat-option>
-          <mat-option value="--">--</mat-option>
-          <mat-option value="---">---</mat-option>
-          <mat-option value="NOK">NOK</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field>
-        <textarea matInput placeholder="Commentaire" maxlength="110" [(ngModel)]="comment"></textarea>
-      </mat-form-field>
-    </div>
-
-    <div class="skillsArrays">
-      <div class="skillsArrayTitle">
-        Compétences
-      </div>
-      <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray"
-        [removeBtnHidden]="false" [searchBarHidden]="false" [dataSource]="skillsArrayDataSource"
-        (skillsEvent)="updateChartSkills($event)"></app-array-skills>
-      <div class="skillsArrayTitle">
-        Soft Skills
-      </div>
-      <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns"
-        [dataSourceArray]="softSkillsArray" [removeBtnHidden]="true" [searchBarHidden]="true"
-        [dataSource]="softSkillsArrayDataSource" (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
-    </div>
-
-
-    <div class="matrix">
-      <div class="chart-container">
-        <canvas id="canvasSkills"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="canvasSoftSkills"></canvas>
-      </div>
-    </div>
-
-
+    <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})
+    </p>
+  
+    <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
+      maxlength="30" [ngModel]="currentSkillsSheet.name">
+    <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
+    <button mat-raised-button (click)="setViewPDF()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Aperçu PDF
+    </button>
   </div>
-</div>
+  
+  <div>
+  
+    <div class="grid-container">
+      <div class="infoForm">
+        <button mat-icon-button class="editButton" (click)="editPerson()" [hidden]="isEditButtonHidden">
+          <mat-icon class="editIcon">edit</mat-icon>
+        </button>
+        <div>
+          <button mat-icon-button class="savePersonButton" (click)="savePerson()" [hidden]="!isEditButtonHidden">
+            <mat-icon class="savePersonIcon">check</mat-icon>
+          </button>
+          <button mat-icon-button class="cancelButton" (click)="cancelEditPerson()" [hidden]="!isEditButtonHidden">
+            <mat-icon class="cancelIcon">close</mat-icon>
+          </button>
+        </div>
+  
+        <mat-form-field *ngFor="let item of formItems; let index = index;">
+          <input *ngIf="item.id != 'experienceTime' && item.id != 'highestDiploma'" matInput name="{{item.label}}"
+            placeholder={{item.label}} [type]="item.type" [(ngModel)]="item.model"
+            (ngModelChange)="checkChangeExperienceTime(item)" [disabled]="isPersonDataDisabled">
+          <input *ngIf="item.id == 'experienceTime'" matInput name="{{item.label}}" placeholder={{item.label}}
+            [type]="item.type" [(ngModel)]="item.model" (ngModelChange)="checkChangeExperienceTime(item)"
+            [disabled]="isPersonDataDisabled" [ngStyle]="{'color': experienceTimeTextColor}">
+          <input *ngIf="item.id == 'highestDiploma'" matInput name="{{formItems[0].label}}"
+            placeholder="{{formItems[0].label}}" [formControl]="myControl" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+              {{option}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+  
+        <ng-container *ngIf="currentPerson.role == 'APPLICANT'">
+          <div class="availability-title-container">
+            <p class="availabilityTitle">Disponibilité</p>
+            <mat-checkbox class="checkBoxAvailability" [(ngModel)]="isImmediatelyAvailableChecked"
+              (ngModelChange)="availabilityCbChanged()">Immédiatement</mat-checkbox>
+          </div>
+          <div class="availability-value-container">
+            <p class="availabilityValue" (click)="updateAvailability()" [hidden]="isImmediatelyAvailableChecked">
+              {{ currentPersonAvailibility }} </p>
+          </div>
+        </ng-container>
+  
+  
+        <app-array-skillsUpdates [displayedColumns]="lastModifDisplayedColumns" [dataSource]="versionsArray"
+          [headerRowHidden]="headerRowHiddenModif"></app-array-skillsUpdates>
+  
+        <mat-form-field style="margin-top: 2%;">
+          <mat-label>Avis</mat-label>
+          <mat-select [(ngModel)]="avis" (ngModelChange)="onOpinionChange()">
+            <mat-option value="+++">+++</mat-option>
+            <mat-option value="++">++</mat-option>
+            <mat-option value="+">+</mat-option>
+            <mat-option value="-">-</mat-option>
+            <mat-option value="--">--</mat-option>
+            <mat-option value="---">---</mat-option>
+            <mat-option value="NOK">NOK</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <textarea matInput placeholder="Commentaire" maxlength="110" [(ngModel)]="comment"></textarea>
+        </mat-form-field>
+      </div>
+  
+      <div class="skillsArrays">
+        <div class="skillsArrayTitle">
+          Compétences
+        </div>
+        <app-array-skills class="skillsArray" [displayedColumns]="skillsDisplayedColumns" [dataSourceArray]="skillsArray"
+          [removeBtnHidden]="false" [searchBarHidden]="false" [dataSource]="skillsArrayDataSource"
+          (skillsEvent)="updateChartSkills($event)"></app-array-skills>
+        <div class="skillsArrayTitle">
+          Soft Skills
+        </div>
+        <app-array-skills class="softSkillsArray" [displayedColumns]="softSkillsDisplayedColumns"
+          [dataSourceArray]="softSkillsArray" [removeBtnHidden]="true" [searchBarHidden]="true"
+          [dataSource]="softSkillsArrayDataSource" (skillsEvent)="updateChartSoftSkills($event)"></app-array-skills>
+      </div>
+  
+  
+      <div class="matrix">
+        <div class="chart-container">
+          <canvas id="canvasSkills"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="canvasSoftSkills"></canvas>
+        </div>
+      </div>
+  
+  
+    </div>
+  </div>

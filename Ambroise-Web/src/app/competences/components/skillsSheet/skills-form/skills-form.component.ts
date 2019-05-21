@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener } from
 import { Chart } from 'chart.js';
 import { LogLevel, LoggerService } from 'src/app/services/logger.service';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole, OnDateAvailability, OnTimeAvailability, DurationType } from 'src/app/competences/models/person';
+import { Person, PersonRole, Availability, DurationType } from 'src/app/competences/models/person';
 import { SkillsSheet, SkillGraduated, SkillsSheetVersions, Skill } from 'src/app/competences/models/skillsSheet';
 import { Diploma } from '../../../models/diploma';
 import { SkillsService } from 'src/app/competences/services/skills.service';
@@ -38,12 +38,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   versionsArray = new MatTableDataSource();
   lastModifDisplayedColumns: string[] = ['manager', 'date'];
 
-  // Information of tech skills
+  // Informations of tech skills
   skillsArray: any[] = [];
   skillsDisplayedColumns: string[] = ['skillName', 'grade'];
   skillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
 
-  // Information of soft skills
+  // Informations of soft skills
   softSkillsArray: any[] = [];
   softSkillsDisplayedColumns: string[] = ['skillName', 'grade'];
   softSkillsArrayDataSource = new MatTableDataSource<SkillGraduated[]>();
@@ -75,7 +75,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   countSoftSkillsUpdate = 0;
   modifDetection = false;
 
-  // information contains in the path
+  // Informations contains in the path
   name: string;
   version: number;
 
@@ -129,20 +129,21 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       map(value => this._filter(value))
     );
     this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
-    //if we are consultant or applicant we don't have the same information so we load the form that match with the role
+    //if we are consultant or applicant we don't have the same Informations so we load the form that match with the role
     let formItemsJSON = require('../../../resources/formItems.json');
     if (this.currentPerson.role == PersonRole.APPLICANT) {
       this.formItems = formItemsJSON['candidateFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
-      this.updateCurrentPersonAvailability();
+      if(this.currentPerson.role == "APPLICANT")
+        this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
       this.formItems = formItemsJSON['consultantFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
-      this.updateCurrentPersonAvailability();
     } else {
       this.formItems = null;
     }
 
+    console.log(this.currentPerson);
     this.route.params.subscribe(param => {
       this.modifDetection = false;
       //Get param in the url
@@ -206,7 +207,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (value != null) {
       if (value.length != 0) {
         const filterValue = value.toLowerCase();
-        return this.options.filter(option => option.toLowerCase().includes(filterValue));
+        return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
       }
       else {
         return [];
@@ -383,7 +384,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     } else {
@@ -395,7 +396,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     }
@@ -415,8 +416,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet)
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
-          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber])
-          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.router.navigate([redirect])
+          this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     } else {
@@ -427,44 +428,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
           tmpSkillsSheets.push(this.currentSkillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-          this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-          this.toastrService.info('Fiche de compétence créée avec succès !', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.router.navigate([redirect]);
+          this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
     }
     this.modifDetection = false;
   }
-  /*
-    onSubmitRedirect(redirect: string) {
-      LoggerService.log('submitRedirect', LogLevel.DEBUG);
-      LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
-      let tmpExisting;
-      if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) !== undefined) {
-        this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
-        this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-          if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-            this.currentSkillsSheet.versionNumber += 1;
-            const tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-            const tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet);
-            window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
-            this.redirectAfterAction(redirect);
-          }
-        });
-      } else {
-        this.currentSkillsSheet.versionNumber = 1;
-        this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
-          if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-            const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-            if (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name) === undefined) {
-              tmpSkillsSheets.push(this.currentSkillsSheet);
-            }
-            window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-            this.redirectAfterAction(redirect);
-          }
-        });
-      }
-    }
-  */
+
   createSkillsSheet() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
@@ -473,7 +444,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
 
     const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
-    
+
   }
 
   redirectAfterAction(redirect: string) {
@@ -527,7 +498,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
       }
     });
     this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
@@ -543,7 +514,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
-        this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+        this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
       }
     });
   }
@@ -569,20 +540,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ModalAvailabilityComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(availability => {
-      if (availability instanceof OnDateAvailability) {
-        this.currentPerson.onDateAvailability = availability;
-        this.currentPerson.onTimeAvailability = undefined;
-      }
-      else if (availability instanceof OnTimeAvailability) {
-        this.currentPerson.onTimeAvailability = availability;
-        this.currentPerson.onDateAvailability = undefined;
-      }
+      this.currentPerson.availability = availability;
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
           window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
           LoggerService.log('Person updated', LogLevel.DEBUG);
-          this.toastrService.info('Information mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+          this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         }
       });
       this.updateCurrentPersonAvailability();
@@ -698,19 +662,20 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if (this.currentPerson.onDateAvailability != undefined) {
-      if (this.currentPerson.onDateAvailability.finalDate != -1) {
-        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString()
-          + ' au ' + new Date(this.currentPerson.onDateAvailability.finalDate).toLocaleDateString();
+    if( DurationType[this.currentPerson.availability.durationType] == "toujours" && this.currentPerson.availability.duration != -1){
+      this.isImmediatelyAvailableChecked = true;
+    } else if (this.currentPerson.availability.duration == 0){
+      if (this.currentPerson.availability.finalDate != 0) {
+        this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
+          + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
+      } else {
+        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
       }
-      else {
-        this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.onDateAvailability.initDate).toLocaleDateString();
-      }
-      this.isNewDispoButtonHidden = true;
-    }
-    else if (this.currentPerson.onTimeAvailability != undefined) {
-      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.onTimeAvailability.duration + ' '
-        + DurationType[this.currentPerson.onTimeAvailability.durationType];
+    } else if (this.currentPerson.availability.duration == -1){
+      this.isNewDispoButtonHidden = false ;
+    } else {
+      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+          + DurationType[this.currentPerson.availability.durationType];
       this.isNewDispoButtonHidden = true;
     }
   }
@@ -720,13 +685,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   availabilityCbChanged() {
     if (this.isImmediatelyAvailableChecked) {
-      let immediatelyDate = new OnTimeAvailability();
+      let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
       immediatelyDate.duration = 0;
-      immediatelyDate.durationType = 'DAY';
+      immediatelyDate.durationType = "FOREVER";
 
-      this.currentPerson.onTimeAvailability = immediatelyDate;
-      this.currentPerson.onDateAvailability = undefined;
+      this.currentPerson.availability = immediatelyDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
@@ -737,8 +701,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     else { // no availability -> update person
-      this.currentPerson.onTimeAvailability = undefined;
-      this.currentPerson.onDateAvailability = undefined;
+      let nullDate = new Availability();
+      nullDate.initDate = new Date().getTime();
+      nullDate.duration = -1;
+      nullDate.durationType = "DAYS";
+
+      this.currentPerson.availability = nullDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
@@ -753,7 +721,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   /**
    * Dynamically change experience years when highest diploma year is updated (text color change)
-   * @param  item item containing highestDiplomaYear information
+   * @param  item item containing highestDiplomaYear Informations
    */
   checkChangeExperienceTime(item) {
     if (item.id == 'highestDiplomaYear' && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
@@ -790,7 +758,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
             this.initVersionArray(false);
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-            this.toastrService.info('SkillsSheet mise à jour avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+            this.toastrService.info('SkillsSheet mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
             this.pdf.next('pdf')
           }
         });
@@ -802,7 +770,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
             tmpSkillsSheets.push(this.currentSkillsSheet);
             window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
             this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
-            this.toastrService.info('SkillsSheet créée avec succès', '', {positionClass: 'toast-bottom-full-width' , timeOut: 1850, closeButton: true}) ; 
+            this.toastrService.info('SkillsSheet créée avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
             this.pdf.next('pdf')
           }
         });

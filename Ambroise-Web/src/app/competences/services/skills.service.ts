@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { timeout, catchError } from 'rxjs/operators';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 
 @Injectable()
 /**
@@ -18,7 +19,8 @@ export class SkillsService {
     skillsObservable = this.skillsInformation.asObservable();
 
     constructor(private httpClient: HttpClient,
-        private errorService: ErrorService) { }
+        private errorService: ErrorService,
+        private httpHeaderService: HttpHeaderService) { }
 
     notifySkills(skills: Skills){
         this.skillsInformation.next(skills);
@@ -30,12 +32,7 @@ export class SkillsService {
 
     getAllSkills(noCompFilter:string[], compFilter: string[], sortColumn: string):Observable<{} | Skills[]>{
 
-        let token = window.sessionStorage.getItem("bearerToken");
-        let headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-        });
-        let options = { headers: headers };
+       let options = this.httpHeaderService.getHttpHeaders() ;
 
         let noComp: string = "";
         noCompFilter.forEach(filter => {
