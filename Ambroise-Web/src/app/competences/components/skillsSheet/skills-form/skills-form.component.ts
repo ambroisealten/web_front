@@ -135,7 +135,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.formItems = formItemsJSON['candidateFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
       if(this.currentPerson.role == "APPLICANT")
-      this.updateCurrentPersonAvailability();
+        this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
       this.formItems = formItemsJSON['consultantFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
@@ -435,7 +435,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
     this.modifDetection = false;
   }
- 
+
   createSkillsSheet() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
@@ -444,7 +444,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
 
     const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
-    
+
   }
 
   redirectAfterAction(redirect: string) {
@@ -711,7 +711,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       let nullDate = new Availability();
       nullDate.initDate = new Date().getTime();
       nullDate.duration = -1;
-      nullDate.durationType = ""; 
+      nullDate.durationType = "";
 
       this.currentPerson.availability = nullDate;
 
