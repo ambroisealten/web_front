@@ -194,7 +194,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
         let initDate = new Date(availability.initDate);
         if(availability.finalDate != 0){
           if (availability.duration == 0 && availability.durationType == ""){
-            return "Inconnue";
+            return "Non renseignée";
           }
           else{
             let fDate = new Date(availability.finalDate);
@@ -204,16 +204,19 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
         else if(availability.duration == 0){
           return "A partir du "+initDate.toLocaleDateString();
         }
+        else if(availability.duration == -1){
+          return "Non renseignée";
+        }
         else{
-          return "Dans "+availability.duration+" "+ DurationType[availability.durationType]+" ( à compter du "+initDate.toLocaleDateString()+")";
+          return "Dans "+availability.duration+" "+ DurationType[availability.durationType];
         }
       }
       else{
-        return "Inconnue";
+        return "Non renseignée";
       }
     }
     else{
-      return "Consultant";
+      return "";
     }
   }
 
