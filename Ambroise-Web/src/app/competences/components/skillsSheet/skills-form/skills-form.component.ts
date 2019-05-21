@@ -726,7 +726,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
       immediatelyDate.duration = 0;
-      immediatelyDate.durationType = 'FOREVER';
+      immediatelyDate.durationType = "FOREVER";
 
       this.currentPerson.availability = immediatelyDate;
 
@@ -739,7 +739,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
     }
     else { // no availability -> update person
-      this.currentPerson.availability = undefined;
+      let nullDate = new Availability();
+      nullDate.initDate = new Date().getTime();
+      nullDate.duration = -1;
+      nullDate.durationType = ""; 
+
+      this.currentPerson.availability = nullDate;
 
       // update person
       this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
