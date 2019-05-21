@@ -677,7 +677,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
     }
     else {
-      if(this.currentPerson.duration != 0){
+      if(this.currentPerson.availability.duration != 0){
         this.currentPersonAvailibility = 'Dans '+this.currentPerson.availability.duration + " " + DurationType[this.currentPerson.availability.durationType] + " (à compter du " + new Date(this.currentPerson.availability.initDate).toLocaleDateString() + ")";
       }
       else{
