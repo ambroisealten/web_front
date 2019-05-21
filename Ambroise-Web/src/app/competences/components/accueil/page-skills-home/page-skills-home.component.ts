@@ -189,34 +189,39 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   getPersonAvailability(availability, role : string){
-    if(role == "APPLICANT"){
-      if(availability.initDate != 0){
-        let initDate = new Date(availability.initDate);
-        if(availability.finalDate != 0){
-          if (availability.duration == 0 && availability.durationType == ""){
+    if(availability != ''){
+      if(role == "APPLICANT"){
+        if(availability.initDate != 0){
+          let initDate = new Date(availability.initDate);
+          if(availability.finalDate != 0){
+            if (availability.duration == 0 && availability.durationType == ""){
+              return "Non renseignée";
+            }
+            else{
+              let fDate = new Date(availability.finalDate);
+              return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
+            } 
+          }
+          else if(availability.duration == 0){
+            return "A partir du "+initDate.toLocaleDateString();
+          }
+          else if(availability.duration == -1){
             return "Non renseignée";
           }
           else{
-            let fDate = new Date(availability.finalDate);
-            return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
-          } 
-        }
-        else if(availability.duration == 0){
-          return "A partir du "+initDate.toLocaleDateString();
-        }
-        else if(availability.duration == -1){
-          return "Non renseignée";
+            return "Dans "+availability.duration+" "+ DurationType[availability.durationType];
+          }
         }
         else{
-          return "Dans "+availability.duration+" "+ DurationType[availability.durationType];
+          return "Non renseignée";
         }
       }
       else{
-        return "Non renseignée";
+        return "";
       }
     }
     else{
-      return "";
+      return "Non renseignée";
     }
   }
 
