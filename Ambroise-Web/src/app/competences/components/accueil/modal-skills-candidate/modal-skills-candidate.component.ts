@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { SkillsSheet, Skill, SkillGraduated } from '../../../models/skillsSheet';
 import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole } from 'src/app/competences/models/person';
+import { Person, PersonRole, Availability } from 'src/app/competences/models/person';
 import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
 import { Skills } from 'src/app/competences/models/skills';
 import { SkillsListService } from '../../../services/skillsList.service';
@@ -122,7 +122,7 @@ export class ModalSkillsCandidateComponent implements OnInit {
           newPerson = person as Person;
         }
         else { // create person
-          newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole, null);
+          newPerson = new Person(this.firstname, this.lastname, this.emailInput, personRole, new Availability());
         }
         if (isNewSkillsSheet) { // create skillsSheet
           let newSkillsSheet = new SkillsSheet(this.skillsSheetName, newPerson);
