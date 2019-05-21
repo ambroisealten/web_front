@@ -56,12 +56,12 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private dialog: MatDialog,
-              private router: Router,
-              private skillsSheetService: SkillsSheetService,
-              private personSkillsService: PersonSkillsService,
-              private skillsService: SkillsService,
-              private subMenusService: SubMenusService,
-              private skillsListService: SkillsListService) { }
+    private router: Router,
+    private skillsSheetService: SkillsSheetService,
+    private personSkillsService: PersonSkillsService,
+    private skillsService: SkillsService,
+    private subMenusService: SubMenusService,
+    private skillsListService: SkillsListService) { }
 
   ngOnInit() {
     this.getSkillsList();

@@ -20,6 +20,7 @@ import { SkillsListService } from '../../../services/skillsList.service';
 import { DiplomasService } from '../../../services/diplomas.service';
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 import { ToastrService } from 'ngx-toastr';
+import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -435,26 +436,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
  
   createSkillsSheet() {
-    const newSkillsSheet = new SkillsSheet('NEW-' + this.makeName(), this.currentPerson);
-    const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-    this.skillsListService.getSoftSkills().subscribe((result: Skill[]) => {
-      result.forEach(skill => {
-        newSkillsSheet.addSkill(new SkillGraduated(skill, 1));
-      });
-    });
-    while (tmpSkillsSheets.find(skillsSheet => skillsSheet.name === newSkillsSheet.name) !== undefined) {
-      newSkillsSheet.name = 'NEW-' + this.makeName();
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      person: this.currentPerson
     }
-    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(newSkillsSheet);
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        this.redirectAfterAction('skills/skillsheet/' + newSkillsSheet.name + '/1');
-        this.subMenusService.notifyMenuAction('');
-        this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
-      }
-    });
+
+    const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
+    
   }
 
   redirectAfterAction(redirect: string) {

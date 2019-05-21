@@ -1,7 +1,7 @@
 table {
   width: 100%;
   text-align: left;
-  margin-bottom: 2%;
+  margin-bottom: 2%; 
 }
 
 tr.mat-row {
@@ -11,4 +11,13 @@ tr.mat-row {
 .mat-row:hover {
   background-color: #d3e7f5;
   cursor: pointer;
+}
+
+.modif { 
+  max-height : 12vh !important;
+  overflow: auto !important;
+}
+
+.mat-header-cell{
+  background-color: inherit;
 }
