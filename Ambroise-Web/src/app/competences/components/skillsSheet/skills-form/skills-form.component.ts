@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, Testability } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,7 @@ import { SkillsListService } from '../../../services/skillsList.service';
 import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-skills-form',
@@ -74,6 +75,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   countSkillsUpdate = 0;
   countSoftSkillsUpdate = 0;
   modifDetection = false;
+  personModifDetection = false;
+  minYear = 0;
+  maxYear = 0;
 
   // Informations contains in the path
   name: string;
@@ -105,7 +109,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private skillsListService: SkillsListService,
     private diplomasService: DiplomasService,
     private toastrService: ToastrService) {
-    window.addEventListener('beforeunload', () => {
+      this.minYear = environment.minYear;
+      this.maxYear = new Date().getFullYear();
+    window.addEventListener('beforeunload', (event) => {
+      this.updatePersonFromFormItems();
       if (this.modifDetection) {
         this.onSubmitForm();
       }
@@ -435,6 +442,20 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.modifDetection = false;
   }
 
+  checkChange(){
+    this.updatePersonFromFormItems();
+    if(this.currentPerson.monthlyWage < 0){
+      this.currentPerson.monthlyWage = 0;
+    }
+    if(parseInt(this.currentPerson.experienceTime) < 0){
+      this.currentPerson.experienceTime = 0;
+    }
+    if((this.currentPerson.highestDiplomaYear > this.maxYear) || (this.currentPerson.highestDiplomaYear < this.minYear)){
+      this.currentPerson.highestDiplomaYear = this.maxYear;
+    }
+    this.updateFormItemsFromPerson(this.currentPerson);
+  }
+
   createSkillsSheet() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
@@ -490,9 +511,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   savePerson() {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
+    this.checkChange();
     this.currentPerson = this.updatePersonFromFormItems();
     this.currentPerson.opinion = this.avis != undefined ? this.avis : '';
     this.currentPerson.highestDiploma = this.myControl.value;
+    this.currentPerson.highestDiplomaYear = this.currentPerson.highestDiplomaYear.toString();
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -551,6 +574,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.updateCurrentPersonAvailability();
     });
   }
+
+  checkIfInfosEmpty(){
+    return (this.currentPerson.employer == "" && this.currentPerson.experienceTime == "0" && this.currentPerson.highestDiploma == "" && this.currentPerson.highestDiplomaYear == "" && this.currentPerson.job == "" && this.currentPerson.monthlyWage == "0" && this.currentPerson.opinion == "");
+  }
+
 
   /**
    * if no info about person yet : edit person form is enabled
@@ -723,11 +751,22 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @param  item item containing highestDiplomaYear Informations
    */
   checkChangeExperienceTime(item) {
-    if (item.id == 'highestDiplomaYear' && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
+    this.updatePersonFromFormItems();
+    console.log(item.model);
+    if (item.id == 'highestDiplomaYear' && item.model <= this.maxYear && item.model > environment.minYear) {
       let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
-      this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
+      this.formItems[experienceTimeIndex].model = this.maxYear - item.model;
       this.experienceTimeTextColor = 'var(--ALTENOrange)';
-    } else if (item.id == 'experienceTime') { // set default gray color if experienceTime changed by user
+    } 
+    else if ((item.id == 'highestDiplomaYear' && item.model > this.maxYear) || (item.id == 'highestDiplomaYear' && item.model > this.minYear)) {
+      let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
+      let highestDiplomaYearIndex = this.formItems.findIndex(item => item.id == 'highestDiplomaYear');
+      this.formItems[experienceTimeIndex].model = 0;
+      this.formItems[highestDiplomaYearIndex].model = this.maxYear;
+      this.currentPerson.highestDiplomaYear = this.maxYear.toString();
+      this.updateFormItemsFromPerson(this.currentPerson);
+    }
+    else if (item.id == 'experienceTime') { // set default gray color if experienceTime changed by user
       this.experienceTimeTextColor = 'var(--ALTENDarkGray)';
     }
   }

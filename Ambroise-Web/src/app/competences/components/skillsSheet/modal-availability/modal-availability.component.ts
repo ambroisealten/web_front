@@ -36,6 +36,12 @@ export class ModalAvailabilityComponent implements OnInit {
     }
   }
 
+  durationChanged(){
+    if(this.duration < 0){
+      this.duration = 0;
+    }
+  }
+
   saveFirstPanel() {
     if(this.initDate != undefined) {
       // create object Availability

@@ -24,7 +24,7 @@
 
   <div class="secondPanel" (click)="enableSecondPanel()">
     <mat-form-field>
-      <input matInput placeholder="Disponible dans" [(ngModel)]="duration" type="number" min="0"
+      <input matInput placeholder="Disponible dans" [(ngModel)]="duration" type="number" min="0" (ngModelChange)="durationChanged()"
         [disabled]="isSecondPanelDisabled">
     </mat-form-field>
 

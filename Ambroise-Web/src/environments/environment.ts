@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   globalLogType: "JOKE",
   serverAddress: "http://" + "localhost:8080",
-  defaultModule: 'Missions'
+  defaultModule: 'Missions',
+  minYear : 1920
 };
 
 /*
