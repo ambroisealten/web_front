@@ -752,7 +752,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   checkChangeExperienceTime(item) {
     this.updatePersonFromFormItems();
-    console.log(item.model);
     if (item.id == 'highestDiplomaYear' && item.model <= this.maxYear && item.model > environment.minYear) {
       let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
       this.formItems[experienceTimeIndex].model = this.maxYear - item.model;
