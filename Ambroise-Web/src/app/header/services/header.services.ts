@@ -1,27 +1,23 @@
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { LoggerService, LogLevel } from 'src/app/services/logger.service';
-import { timeout, catchError } from 'rxjs/operators';
-import { Menu } from '../models/menu';
-import { environment } from 'src/environments/environment';
+import { catchError, timeout } from 'rxjs/operators';
 import { ErrorService } from 'src/app/services/error.service';
 import { HttpHeaderService } from 'src/app/services/httpHeaderService';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class HeaderService {
 
-    constructor(private httpClient: HttpClient,
+    constructor(
+        private httpClient: HttpClient,
         private errorService: ErrorService,
         private httpHeaderService: HttpHeaderService) { }
 
-    init(): Observable<{} | Menu[]> {
-
-        let options = this.httpHeaderService.getHttpHeaders() ; 
+    init() {
+        const options = this.httpHeaderService.getHttpHeaders();
 
         return this.httpClient
-            .get<Menu[]>(environment.serverAddress + '/configMenu', options)
-            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)))
-
+            .get(environment.serverAddress + '/configMenu', options)
+            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
     }
 }
