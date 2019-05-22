@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatTableDataSource } from '@angular/material';
 import { DataAgencyDialogComponent } from 'src/app/administration/components/data-agency-dialog/data-agency-dialog.component';
 import { AdminService } from 'src/app/administration/services/admin.service';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
