@@ -445,14 +445,14 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   checkChange(){
     this.updatePersonFromFormItems();
-    if(this.currentPerson.monthlyWage < 0){
-      this.currentPerson.monthlyWage = 0;
+    if(+this.currentPerson.monthlyWage < 0){
+      this.currentPerson.monthlyWage = "0";
     }
-    if(parseInt(this.currentPerson.experienceTime) < 0){
-      this.currentPerson.experienceTime = 0;
+    if(+this.currentPerson.experienceTime < 0){
+      this.currentPerson.experienceTime = "0";
     }
-    if((this.currentPerson.highestDiplomaYear > this.maxYear) || (this.currentPerson.highestDiplomaYear < this.minYear)){
-      this.currentPerson.highestDiplomaYear = this.maxYear;
+    if((+this.currentPerson.highestDiplomaYear > this.maxYear) || (+this.currentPerson.highestDiplomaYear < this.minYear)){
+      this.currentPerson.highestDiplomaYear = this.maxYear+"";
     }
     this.updateFormItemsFromPerson(this.currentPerson);
   }
