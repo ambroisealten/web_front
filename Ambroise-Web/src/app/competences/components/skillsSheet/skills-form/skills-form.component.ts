@@ -99,19 +99,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   nameSkillsSheet: string;
   tmpCurrentPerson: Person;
 
-  constructor(private skillsService: SkillsService,
+  constructor(
     private skillsSheetService: SkillsSheetService,
     private personSkillsService: PersonSkillsService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private subMenusService: SubMenusService,
-    private skillsListService: SkillsListService,
     private diplomasService: DiplomasService,
     private toastrService: ToastrService) {
-      this.minYear = environment.minYear;
-      this.maxYear = new Date().getFullYear();
-    window.addEventListener('beforeunload', (event) => {
+    this.minYear = environment.minYear;
+    this.maxYear = environment.maxYear;
+    window.addEventListener('beforeunload', () => {
       this.updatePersonFromFormItems();
       if (this.modifDetection) {
         this.onSubmitForm();
@@ -141,7 +140,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.currentPerson.role == PersonRole.APPLICANT) {
       this.formItems = formItemsJSON['candidateFormItems'];
       this.updateFormItemsFromPerson(this.currentPerson);
-      if(this.currentPerson.role == "APPLICANT")
+      if (this.currentPerson.role == "APPLICANT")
         this.updateCurrentPersonAvailability();
     } else if (this.currentPerson.role.toUpperCase() == PersonRole.CONSULTANT) {
       this.formItems = formItemsJSON['consultantFormItems'];
@@ -176,7 +175,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.dialog.closeAll() ; 
+    this.dialog.closeAll();
     if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
     if (this.skillsSubscription !== undefined) {
@@ -443,16 +442,16 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.modifDetection = false;
   }
 
-  checkChange(){
+  checkChange() {
     this.updatePersonFromFormItems();
-    if(+this.currentPerson.monthlyWage < 0){
+    if (+this.currentPerson.monthlyWage < 0) {
       this.currentPerson.monthlyWage = "0";
     }
-    if(+this.currentPerson.experienceTime < 0){
+    if (+this.currentPerson.experienceTime < 0) {
       this.currentPerson.experienceTime = "0";
     }
-    if((+this.currentPerson.highestDiplomaYear > this.maxYear) || (+this.currentPerson.highestDiplomaYear < this.minYear)){
-      this.currentPerson.highestDiplomaYear = this.maxYear+"";
+    if ((+this.currentPerson.highestDiplomaYear > environment.maxYear) || (+this.currentPerson.highestDiplomaYear < this.minYear)) {
+      this.currentPerson.highestDiplomaYear = environment.maxYear + "";
     }
     this.updateFormItemsFromPerson(this.currentPerson);
   }
@@ -576,7 +575,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkIfInfosEmpty(){
+  checkIfInfosEmpty() {
     return (this.currentPerson.employer == "" && this.currentPerson.experienceTime == "0" && this.currentPerson.highestDiploma == "" && this.currentPerson.highestDiplomaYear == "" && this.currentPerson.job == "" && this.currentPerson.monthlyWage == "0" && this.currentPerson.opinion == "");
   }
 
@@ -690,24 +689,24 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update availability text for current person
    */
   updateCurrentPersonAvailability() {
-    if( DurationType[this.currentPerson.availability.durationType] == "toujours" && this.currentPerson.availability.duration != -1){
+    if (DurationType[this.currentPerson.availability.durationType] == "toujours" && this.currentPerson.availability.duration != -1) {
       this.isImmediatelyAvailableChecked = true;
-    } else if (this.currentPerson.availability.duration == -2){
+    } else if (this.currentPerson.availability.duration == -2) {
       if (this.currentPerson.availability.finalDate != 0) {
         this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
           + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
       } else {
         this.currentPersonAvailibility = 'À partir du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString();
       }
-    } else if (this.currentPerson.availability.duration == -1){
-      this.isNewDispoButtonHidden = false ;
+    } else if (this.currentPerson.availability.duration == -1) {
+      this.isNewDispoButtonHidden = false;
     } else {
-      if(this.currentPerson.availability.duration > 1 && DurationType[this.currentPerson.availability.durationType] !="mois"){
+      if (this.currentPerson.availability.duration > 1 && DurationType[this.currentPerson.availability.durationType] != "mois") {
         this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
-        + DurationType[this.currentPerson.availability.durationType] +"s";
+          + DurationType[this.currentPerson.availability.durationType] + "s";
       } else {
         this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
-        + DurationType[this.currentPerson.availability.durationType];
+          + DurationType[this.currentPerson.availability.durationType];
       }
       this.isNewDispoButtonHidden = true;
     }
@@ -720,7 +719,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.isImmediatelyAvailableChecked) {
       let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
-      immediatelyDate.duration = 0 ; 
+      immediatelyDate.duration = 0;
       immediatelyDate.durationType = "FOREVER";
 
       this.currentPerson.availability = immediatelyDate;
@@ -758,17 +757,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   checkChangeExperienceTime(item) {
     this.updatePersonFromFormItems();
-    if (item.id == 'highestDiplomaYear' && item.model <= this.maxYear && item.model > environment.minYear) {
+    if (item.id == 'highestDiplomaYear' && item.model <= environment.maxYear && item.model > environment.minYear) {
       let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
-      this.formItems[experienceTimeIndex].model = this.maxYear - item.model;
+      this.formItems[experienceTimeIndex].model = environment.maxYear - item.model;
       this.experienceTimeTextColor = 'var(--ALTENOrange)';
-    } 
-    else if ((item.id == 'highestDiplomaYear' && item.model > this.maxYear) || (item.id == 'highestDiplomaYear' && item.model > this.minYear)) {
+    }
+    else if ((item.id == 'highestDiplomaYear' && item.model > environment.maxYear) || (item.id == 'highestDiplomaYear' && item.model > this.minYear)) {
       let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
       let highestDiplomaYearIndex = this.formItems.findIndex(item => item.id == 'highestDiplomaYear');
       this.formItems[experienceTimeIndex].model = 0;
-      this.formItems[highestDiplomaYearIndex].model = this.maxYear;
-      this.currentPerson.highestDiplomaYear = this.maxYear.toString();
+      this.formItems[highestDiplomaYearIndex].model = environment.maxYear;
+      this.currentPerson.highestDiplomaYear = environment.maxYear.toString();
       this.updateFormItemsFromPerson(this.currentPerson);
     }
     else if (item.id == 'experienceTime') { // set default gray color if experienceTime changed by user
