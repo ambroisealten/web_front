@@ -93,3 +93,18 @@ li {
     cursor: pointer;
 }
 
+
+.selected{
+   border-bottom: 2px solid var(--ALTENDarkBlue);
+}
+
+.selectedDD{
+    background-color: var(--ALTENDarkBlue);
+    color: white !important;
+    width:100%;
+}
+
+.selectedDD .dropdown-item{
+    color:white !important ; 
+}
+
