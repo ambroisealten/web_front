@@ -7,7 +7,8 @@ export const environment = {
   globalLogType: "JOKE",
   serverAddress: "http://" + "localhost:8080",
   defaultModule: 'Missions',
-  minYear : 1920
+  minYear : 1920,
+  maxYear : new Date().getFullYear() + 5
 };
 
 /*
