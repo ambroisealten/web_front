@@ -103,6 +103,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   }
 
   removeSoftSkill(softSkill: SoftSkill) {
+    console.log("ALLOO");
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
     const postParams = {
       name: softSkill.getName(),

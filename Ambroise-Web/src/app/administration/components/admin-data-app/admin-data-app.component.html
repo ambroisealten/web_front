@@ -49,7 +49,7 @@
             <ng-container matColumnDef="Delete" sticky>
               <th mat-header-cell *matHeaderCellDef> Supression </th>
               <td mat-cell *matCellDef="let softSkills"
-                (click)="deleteAgency(softSkills.name)"> <i class="material-icons">
+                (click)="removeSoftSkill(softSkills)"> <i class="material-icons">
                   delete
                 </i> </td>
             </ng-container>
