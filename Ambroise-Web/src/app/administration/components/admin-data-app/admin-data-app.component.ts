@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatTableDataSource } from '@angular/material';
-import { DataAgencyDialogComponent } from 'src/app/administration/components/data-agency-dialog/data-agency-dialog.component';
+import { DataAgencyDialogComponent } from 'src/app/administration/components/modal-administation/data-agency-dialog/data-agency-dialog.component';
 import { AdminService } from 'src/app/administration/services/admin.service';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
 import { SubMenusService } from 'src/app/services/subMenus.service';
@@ -9,7 +9,7 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { SoftSkill } from '../../models/SoftSkill';
 import { Agency } from '../../models/Agency';
-import { DataSoftSkillDialogComponent } from '../data-soft-skill-dialog/data-soft-skill-dialog.component';
+import { DataSoftSkillDialogComponent } from '../modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
 
 @Component({
   selector: 'app-admin-data-app',
@@ -17,9 +17,18 @@ import { DataSoftSkillDialogComponent } from '../data-soft-skill-dialog/data-sof
   styleUrls: ['./admin-data-app.component.scss']
 })
 export class AdminDataAppComponent implements OnInit, OnDestroy {
-  agencies: Agency[];
-  softSkills: SoftSkill[];
   submenusSubscription;
+
+  //SoftSkill data 
+  softSkills: SoftSkill[];
+  softSkillsSources: MatTableDataSource<any[]> = new MatTableDataSource();
+  displayedsoftSkillsColumns: string[] = ['Nom', 'Delete'];
+
+  // agency data 
+  agencies: Agency[];
+  currentAgency: string[];
+  agenciesSources: MatTableDataSource<any[]> = new MatTableDataSource();
+  displayedAgencyColumns: string[] = ['Nom', 'Lieu', 'Type de lieu', 'Delete'];
 
   constructor(
     private adminService: AdminService,
@@ -53,8 +62,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       for (const agency of agenciesList) {
         this.agencies.push(new Agency(agency.name, agency.place, agency.placeType));
       }
+      this.agenciesSources = new MatTableDataSource<any>(this.agencies)
     });
   }
+
 
   getSoftSkills() {
     return this.softSkills;
@@ -66,6 +77,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       for (const softSkill of softSkillList) {
         this.softSkills.push(new SoftSkill(softSkill.name));
       }
+      this.softSkillsSources = new MatTableDataSource<any>(this.softSkills)
     });
   }
 
@@ -125,6 +137,35 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       });
   }
 
+  deleteAgency(agencyName, agencyPlace, agencyPlaceType) {
+    //TODO
+
+  }
+   changeAgency(agencyName, agencyPlace, agencyPlaceType) {
+
+    const agency = new Agency(agencyName, agencyPlace, agencyPlaceType);
+    const dialogAgency = this.openDialogAgency(agency);
+
+    dialogAgency.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          agency.setName(data.name);
+          agency.setPlace(data.place);
+          agency.setPlaceType(data.placeType);
+          const postParams = {
+            name: agency.getName(),
+            place: agency.getPlace(),
+            placeType: agency.getPlaceType()
+          };
+          this.adminService.makeRequest('/agency', 'post', postParams).subscribe(() => {
+            this.fetchAgencies();
+            dialogProgress.close();
+          });
+        }
+      });
+   }
+
   addSoftSkill() {
     const softSkill = new SoftSkill('');
     const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
@@ -144,6 +185,33 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
           });
         }
       });
+  }
+
+  changeSoftSkill(softSkillName) {
+    const softSkill = new SoftSkill(softSkillName);
+    const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
+
+    dialogSoftSkill.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          const oldName = softSkill.getName();
+          softSkill.setName(data.name);
+          const postParams = {
+            oldName: oldName,
+            name: softSkill.name,
+            isSoft: softSkill.isSoft,
+          };
+          this.adminService.makeRequest('/skill', 'put', postParams).subscribe(() => {
+            this.fetchSoftSkills();
+            dialogProgress.close();
+          });
+        }
+      });
+  }
+
+  deleteSoftSkill() {
+
   }
 
   updateAgency(agency: Agency) {

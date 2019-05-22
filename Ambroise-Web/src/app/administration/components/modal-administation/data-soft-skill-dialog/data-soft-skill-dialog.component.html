@@ -3,11 +3,11 @@
 <mat-dialog-content [formGroup]="form">
 
     <mat-form-field>
-        <input matInput placeholder="Nom du SoftSkill" formControlName="name">
+        <input matInput placeholder="Nom du SoftSkill" formControlName="name" [(ngModel)]="name" (keyup)="onChange($event)">
     </mat-form-field>
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <button class="mat-raised-button" (click)="close()">Fermer</button>
-    <button class="mat-raised-button mat-primary" (click)="save()">Enregistrer</button>
+    <button class="mat-raised-button mat-primary" (click)="save()" [disabled]="valide">Enregistrer</button>
 </mat-dialog-actions>
