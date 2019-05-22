@@ -2,7 +2,7 @@
   <table mat-table [dataSource]="dataSource">
 
     <ng-container [matColumnDef]="displayedColumns[0]">
-      <th mat-header-cell *matHeaderCellDef > {{displayedColumns[0] | titlecase }} </th>
+      <th mat-header-cell *matHeaderCellDef class="header_modif"> {{displayedColumns[0] | titlecase }} </th>
       <td mat-cell *matCellDef="let element"> {{element.manager | titlecase}} </td>
     </ng-container>
 
