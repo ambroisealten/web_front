@@ -11,12 +11,7 @@ import { HeaderService } from '../../services/header.services';
 })
 export class HeaderUserComponent implements OnInit {
 
-  modules: Menu[] = [
-    // { label: 'Missions', menus: [] },
-    // { label: 'Compétences', menus: [] },
-    // { label: 'Forum', menus: [] },
-    // { label: 'Administration', menus: [] }
-  ];
+  modules: Menu[] = [];
   currentModule = 'Compétences';
   done = false;
 
