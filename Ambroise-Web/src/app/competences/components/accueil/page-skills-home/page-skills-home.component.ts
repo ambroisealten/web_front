@@ -181,6 +181,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
         const tmpSkillSheet: any = {};
         if (skills['person'].hasOwnProperty('name') && skills['person'].hasOwnProperty('surname')) {
           tmpSkillSheet['nameSkillsSheet'] = skills['skillsSheet']['name'];
+          tmpSkillSheet['mail'] = skills['person']['mail'] ; 
           tmpSkillSheet['Nom Prénom'] = skills['person']['name'] + ' ' + skills['person']['surname'];
           tmpSkillSheet['Métier'] = this.instantiateProperty(skills['person'], 'job');
           tmpSkillSheet['Avis'] = this.instantiateProperty(skills['person'], 'opinion');
@@ -211,22 +212,23 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
          else if(availability.initDate != 0){
           let initDate = new Date(availability.initDate);
           if(availability.finalDate != 0){
-            if (availability.duration == 0 && availability.durationType == ""){
-              return "Non renseignée";
-            }
-            else{
               let fDate = new Date(availability.finalDate);
               return "Du "+initDate.toLocaleDateString()+" au "+fDate.toLocaleDateString();
-            } 
           }
-          else if(availability.duration == 0){
+          else if(availability.duration == -2){
             return "A partir du "+initDate.toLocaleDateString();
           }
           else if(availability.duration == -1){
             return "Non renseignée";
           }
           else{
-            return "Dans "+availability.duration+" "+ DurationType[availability.durationType];
+            if(availability.duration > 1 && DurationType[availability.durationType] !="mois"){
+              return 'Dans ' + availability.duration + ' '
+              + DurationType[availability.durationType] +"s";
+            } else {
+              return 'Dans ' + availability.duration + ' '
+              + DurationType[availability.durationType];
+            }
           }
         }
         else{
@@ -284,7 +286,8 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    const skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] === skillsSheetData['nameSkillsSheet']);
+    console.log(skillsSheetData)
+    const skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] === skillsSheetData['nameSkillsSheet'] && skills.person.mail == skillsSheetData.mail);
     this.skillsService.notifySkills(skills);
     this.redirectToSkillsSheet(skills['skillsSheet']['name'], skills['skillsSheet']['versionNumber']);
   }

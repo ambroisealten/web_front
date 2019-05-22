@@ -53,7 +53,7 @@ export class ModalAvailabilityComponent implements OnInit {
         let final = new Date(this.finalDate).getTime();
         availability.finalDate = final;
       }
-      availability.duration = 0;
+      availability.duration = -2;
       availability.initDate = init;
       
       // close with new object

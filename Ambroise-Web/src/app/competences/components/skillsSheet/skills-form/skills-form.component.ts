@@ -176,6 +176,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.dialog.closeAll() ; 
     if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
     if (this.skillsSubscription !== undefined) {
@@ -691,7 +692,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   updateCurrentPersonAvailability() {
     if( DurationType[this.currentPerson.availability.durationType] == "toujours" && this.currentPerson.availability.duration != -1){
       this.isImmediatelyAvailableChecked = true;
-    } else if (this.currentPerson.availability.duration == 0){
+    } else if (this.currentPerson.availability.duration == -2){
       if (this.currentPerson.availability.finalDate != 0) {
         this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
           + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
@@ -701,8 +702,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else if (this.currentPerson.availability.duration == -1){
       this.isNewDispoButtonHidden = false ;
     } else {
-      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
-          + DurationType[this.currentPerson.availability.durationType];
+      if(this.currentPerson.availability.duration > 1 && DurationType[this.currentPerson.availability.durationType] !="mois"){
+        this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+        + DurationType[this.currentPerson.availability.durationType] +"s";
+      } else {
+        this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+        + DurationType[this.currentPerson.availability.durationType];
+      }
       this.isNewDispoButtonHidden = true;
     }
   }
@@ -714,7 +720,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.isImmediatelyAvailableChecked) {
       let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
-      immediatelyDate.duration = 0;
+      immediatelyDate.duration = 0 ; 
       immediatelyDate.durationType = "FOREVER";
 
       this.currentPerson.availability = immediatelyDate;

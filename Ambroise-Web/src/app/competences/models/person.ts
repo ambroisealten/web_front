@@ -59,8 +59,8 @@ export enum PersonRole {
 }
 
 export enum DurationType {
-  DAYS = "jours",
-  WEEKS = "semaines",
+  DAYS = "jour",
+  WEEKS = "semaine",
   MONTHS = "mois",
   FOREVER = "toujours"
 }
