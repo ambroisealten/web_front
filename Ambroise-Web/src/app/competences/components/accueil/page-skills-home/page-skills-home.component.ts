@@ -105,14 +105,14 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       this.skillsService.getAllSkills(this.filter.concat(this.avis as string[]),this.compFilter,this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
-          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+          this.skillsSheetDataSource.paginator = this.paginator
         }
       }); ; 
     } else {
       this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
-          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+          this.skillsSheetDataSource.paginator = this.paginator
         }
       }); 
     }
@@ -410,8 +410,10 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   onColumnSort(sort) {
     if (sort.active && sort.direction !== '') {
       this.sort = this.translateColumnName(sort.active) + ',' + sort.direction;
+      this.searchSkillSheets();
+    } else {
+      this.sort = ","
     }
-    this.searchSkillSheets();
   }
 
   translateColumnName(name) {
