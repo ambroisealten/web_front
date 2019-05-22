@@ -5,7 +5,7 @@ table {
 }
 
 tr.mat-row {
-  height: 1.5rem;
+  height: 4vh !important;
 }
 
 .mat-row:hover {
@@ -14,10 +14,14 @@ tr.mat-row {
 }
 
 .modif { 
-  max-height : 12vh !important;
+  max-height : 24vh !important;
   overflow: auto !important;
 }
 
 .mat-header-cell{
   background-color: inherit;
+}
+
+thead tr.mat-header-row{
+  height: fit-content !important;
 }

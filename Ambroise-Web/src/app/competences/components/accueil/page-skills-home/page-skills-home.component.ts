@@ -78,6 +78,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.dialog.closeAll() ;
     if (this.subMenusSubscription !== undefined) {
       this.subMenusSubscription.unsubscribe();
     } else {
@@ -100,12 +101,21 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    * @author Quentin Della-pasqua
    */
   searchSkillSheets() {
-    this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
-      if (skillsList.hasOwnProperty('results')) {
-        this.createDataSource(skillsList['results'] as Skills[]);
-        setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
-      }
-    });
+    if(this.avis != undefined){
+      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[]),this.compFilter,this.sort).subscribe(skillsList => {
+        if (skillsList.hasOwnProperty('results')) {
+          this.createDataSource(skillsList['results'] as Skills[]);
+          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+        }
+      }); ; 
+    } else {
+      this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
+        if (skillsList.hasOwnProperty('results')) {
+          this.createDataSource(skillsList['results'] as Skills[]);
+          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+        }
+      }); 
+    }
   }
 
   /**
@@ -418,24 +428,6 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
         return 'softskillsAverage';
       default:
         return name;
-    }
-  }
-
-  opinionFilter(){
-    if(this.avis != undefined){
-      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[]),this.compFilter,this.sort).subscribe(skillsList => {
-        if (skillsList.hasOwnProperty('results')) {
-          this.createDataSource(skillsList['results'] as Skills[]);
-          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
-        }
-      }); ; 
-    } else {
-      this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
-        if (skillsList.hasOwnProperty('results')) {
-          this.createDataSource(skillsList['results'] as Skills[]);
-          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
-        }
-      }); 
     }
   }
 
