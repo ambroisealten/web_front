@@ -1,12 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
-import { Person } from 'src/app/competences/models/person';
-import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
-import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
-import { SubMenusService } from 'src/app/services/subMenus.service';
-import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Person } from 'src/app/competences/models/person';
+import { SkillsSheet } from 'src/app/competences/models/skillsSheet';
+import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
+import { SubMenusService } from 'src/app/services/subMenus.service';
+import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
 
 @Component({
   selector: 'app-modal-new-skills-sheet',
@@ -52,8 +52,9 @@ export class ModalNewSkillsSheetComponent implements OnInit {
     const newSkillsSheet = new SkillsSheet(this.name, this.currentPerson);
     this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
+        let createdSkillsSheet = JSON.parse(httpResponse['message']) as SkillsSheet;
         const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(newSkillsSheet);
+        tmpSkillsSheets.push(createdSkillsSheet);
         window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
         this.router.navigate(['skills/skillsheet/' + this.name + '/1']);
         this.subMenusService.notifyMenuAction('');

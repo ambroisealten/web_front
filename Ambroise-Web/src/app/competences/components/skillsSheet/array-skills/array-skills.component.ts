@@ -131,9 +131,9 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
 
     this.dataSourceArray.forEach(skillGraduated => {
       if (skillGraduated.skill.name === skillName) {
-        if (grade === 1.5 && event.target.className === 'incrementButton') {
+        if (grade == 1.5 && event.target.className === 'incrementButton') {
           skillGraduated.grade = 2;
-        } else if (grade === 1.5 && event.target.className === 'decrementButton') {
+        } else if (grade == 1.5 && event.target.className === 'decrementButton') {
           skillGraduated.grade = 1;
         } else {
           skillGraduated.grade = +grade;

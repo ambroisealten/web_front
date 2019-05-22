@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { SubMenu } from '../../models/menu';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class HeaderMenuComponent implements OnInit {
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private subMenusService: SubMenusService) { }
 
     ngOnInit() {
@@ -42,6 +43,13 @@ export class HeaderMenuComponent implements OnInit {
 
     sendAction(action: string) {
         this.subMenusService.notifyMenuAction(this.router.url + "//" + action);
+    }
+
+    isCurrentSubMenu(subMenu): boolean{
+        if(subMenu.hasOwnProperty('label') && subMenu.label === this.router.url.split('/')[3]){
+            return true ; 
+        }
+        return false ; 
     }
 
 }

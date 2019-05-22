@@ -76,9 +76,9 @@ export class AdminService {
         formdata.append('file', file);
         formdata.append('path', path);
 
-        const headerParams = this.httpHeaderService.getHttpHeaders()['headers'];
+        const headerParams = this.httpHeaderService.getHttpHeadersWithouContentType()['headers'];
 
-        const req = new HttpRequest('POST', environment.serverAddress + 'file', formdata, {
+        const req = new HttpRequest('POST', environment.serverAddress + '/file', formdata, {
             headers: headerParams,
             reportProgress: true,
             responseType: 'text'

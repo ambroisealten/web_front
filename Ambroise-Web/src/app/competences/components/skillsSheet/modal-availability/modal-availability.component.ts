@@ -36,6 +36,12 @@ export class ModalAvailabilityComponent implements OnInit {
     }
   }
 
+  durationChanged(){
+    if(this.duration < 0){
+      this.duration = 0;
+    }
+  }
+
   saveFirstPanel() {
     if(this.initDate != undefined) {
       // create object Availability
@@ -47,7 +53,7 @@ export class ModalAvailabilityComponent implements OnInit {
         let final = new Date(this.finalDate).getTime();
         availability.finalDate = final;
       }
-      availability.duration = 0;
+      availability.duration = -2;
       availability.initDate = init;
       
       // close with new object

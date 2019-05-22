@@ -1,26 +1,27 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, HostListener } from '@angular/core';
-import { Chart } from 'chart.js';
-import { LogLevel, LoggerService } from 'src/app/services/logger.service';
-import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
-import { Person, PersonRole, Availability, DurationType } from 'src/app/competences/models/person';
-import { SkillsSheet, SkillGraduated, SkillsSheetVersions, Skill } from 'src/app/competences/models/skillsSheet';
-import { Diploma } from '../../../models/diploma';
-import { SkillsService } from 'src/app/competences/services/skills.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Skills } from 'src/app/competences/models/skills';
-import { SubMenusService } from 'src/app/services/subMenus.service';
-import { SubMenu } from 'src/app/header/models/menu';
-import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
-import { MatTableDataSource, MatDialog, MatDialogConfig } from '@angular/material';
-import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, Testability } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatTableDataSource } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Chart } from 'chart.js';
+import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SkillsListService } from '../../../services/skillsList.service';
+import { Availability, DurationType, Person, PersonRole } from 'src/app/competences/models/person';
+import { Skills } from 'src/app/competences/models/skills';
+import { SkillGraduated, SkillsSheet, SkillsSheetVersions } from 'src/app/competences/models/skillsSheet';
+import { PersonSkillsService } from 'src/app/competences/services/personSkills.service';
+import { SkillsService } from 'src/app/competences/services/skills.service';
+import { SkillsSheetService } from 'src/app/competences/services/skillsSheet.service';
+import { SubMenu } from 'src/app/header/models/menu';
+import { LoggerService, LogLevel } from 'src/app/services/logger.service';
+import { SubMenusService } from 'src/app/services/subMenus.service';
+import { Diploma } from '../../../models/diploma';
 import { DiplomasService } from '../../../services/diplomas.service';
+import { SkillsListService } from '../../../services/skillsList.service';
+import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-skills-home.component';
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
-import { ToastrService } from 'ngx-toastr';
 import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-skills-form',
@@ -74,6 +75,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   countSkillsUpdate = 0;
   countSoftSkillsUpdate = 0;
   modifDetection = false;
+  personModifDetection = false;
+  minYear = 0;
+  maxYear = 0;
 
   // Informations contains in the path
   name: string;
@@ -105,7 +109,10 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     private skillsListService: SkillsListService,
     private diplomasService: DiplomasService,
     private toastrService: ToastrService) {
-    window.addEventListener('beforeunload', () => {
+      this.minYear = environment.minYear;
+      this.maxYear = new Date().getFullYear();
+    window.addEventListener('beforeunload', (event) => {
+      this.updatePersonFromFormItems();
       if (this.modifDetection) {
         this.onSubmitForm();
       }
@@ -169,6 +176,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.dialog.closeAll() ; 
     if (this.submenusSubscription != undefined)
       this.submenusSubscription.unsubscribe();
     if (this.skillsSubscription !== undefined) {
@@ -435,6 +443,20 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.modifDetection = false;
   }
 
+  checkChange(){
+    this.updatePersonFromFormItems();
+    if(+this.currentPerson.monthlyWage < 0){
+      this.currentPerson.monthlyWage = "0";
+    }
+    if(+this.currentPerson.experienceTime < 0){
+      this.currentPerson.experienceTime = "0";
+    }
+    if((+this.currentPerson.highestDiplomaYear > this.maxYear) || (+this.currentPerson.highestDiplomaYear < this.minYear)){
+      this.currentPerson.highestDiplomaYear = this.maxYear+"";
+    }
+    this.updateFormItemsFromPerson(this.currentPerson);
+  }
+
   createSkillsSheet() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
@@ -490,9 +512,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   savePerson() {
     this.isEditButtonHidden = false;
     this.isPersonDataDisabled = true;
+    this.checkChange();
     this.currentPerson = this.updatePersonFromFormItems();
     this.currentPerson.opinion = this.avis != undefined ? this.avis : '';
     this.currentPerson.highestDiploma = this.myControl.value;
+    this.currentPerson.highestDiplomaYear = this.currentPerson.highestDiplomaYear.toString();
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] == 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
@@ -551,6 +575,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.updateCurrentPersonAvailability();
     });
   }
+
+  checkIfInfosEmpty(){
+    return (this.currentPerson.employer == "" && this.currentPerson.experienceTime == "0" && this.currentPerson.highestDiploma == "" && this.currentPerson.highestDiplomaYear == "" && this.currentPerson.job == "" && this.currentPerson.monthlyWage == "0" && this.currentPerson.opinion == "");
+  }
+
 
   /**
    * if no info about person yet : edit person form is enabled
@@ -663,7 +692,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   updateCurrentPersonAvailability() {
     if( DurationType[this.currentPerson.availability.durationType] == "toujours" && this.currentPerson.availability.duration != -1){
       this.isImmediatelyAvailableChecked = true;
-    } else if (this.currentPerson.availability.duration == 0){
+    } else if (this.currentPerson.availability.duration == -2){
       if (this.currentPerson.availability.finalDate != 0) {
         this.currentPersonAvailibility = 'Du ' + new Date(this.currentPerson.availability.initDate).toLocaleDateString()
           + ' au ' + new Date(this.currentPerson.availability.finalDate).toLocaleDateString();
@@ -673,8 +702,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else if (this.currentPerson.availability.duration == -1){
       this.isNewDispoButtonHidden = false ;
     } else {
-      this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
-          + DurationType[this.currentPerson.availability.durationType];
+      if(this.currentPerson.availability.duration > 1 && DurationType[this.currentPerson.availability.durationType] !="mois"){
+        this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+        + DurationType[this.currentPerson.availability.durationType] +"s";
+      } else {
+        this.currentPersonAvailibility = 'Dans ' + this.currentPerson.availability.duration + ' '
+        + DurationType[this.currentPerson.availability.durationType];
+      }
       this.isNewDispoButtonHidden = true;
     }
   }
@@ -686,7 +720,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (this.isImmediatelyAvailableChecked) {
       let immediatelyDate = new Availability();
       immediatelyDate.initDate = new Date().getTime();
-      immediatelyDate.duration = 0;
+      immediatelyDate.duration = 0 ; 
       immediatelyDate.durationType = "FOREVER";
 
       this.currentPerson.availability = immediatelyDate;
@@ -723,11 +757,21 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @param  item item containing highestDiplomaYear Informations
    */
   checkChangeExperienceTime(item) {
-    if (item.id == 'highestDiplomaYear' && item.model.length == 4 && item.model <= new Date().getFullYear() && item.model > 1960) {
+    this.updatePersonFromFormItems();
+    if (item.id == 'highestDiplomaYear' && item.model <= this.maxYear && item.model > environment.minYear) {
       let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
-      this.formItems[experienceTimeIndex].model = new Date().getFullYear() - item.model;
+      this.formItems[experienceTimeIndex].model = this.maxYear - item.model;
       this.experienceTimeTextColor = 'var(--ALTENOrange)';
-    } else if (item.id == 'experienceTime') { // set default gray color if experienceTime changed by user
+    } 
+    else if ((item.id == 'highestDiplomaYear' && item.model > this.maxYear) || (item.id == 'highestDiplomaYear' && item.model > this.minYear)) {
+      let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
+      let highestDiplomaYearIndex = this.formItems.findIndex(item => item.id == 'highestDiplomaYear');
+      this.formItems[experienceTimeIndex].model = 0;
+      this.formItems[highestDiplomaYearIndex].model = this.maxYear;
+      this.currentPerson.highestDiplomaYear = this.maxYear.toString();
+      this.updateFormItemsFromPerson(this.currentPerson);
+    }
+    else if (item.id == 'experienceTime') { // set default gray color if experienceTime changed by user
       this.experienceTimeTextColor = 'var(--ALTENDarkGray)';
     }
   }

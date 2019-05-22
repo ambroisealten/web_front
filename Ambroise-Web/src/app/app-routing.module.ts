@@ -8,7 +8,7 @@ const appRoutes: Routes = [
   { path:'missions', loadChildren: './missions/missions.module#MissionsModule' }, 
   { path:'forum', loadChildren: './forum/forum.module#ForumModule' },
   { path:'admin', loadChildren: './administration/administration.module#AdministrationModule' },
-  //{ path:'**', redirectTo: '/login', pathMatch: 'full' },
+  { path:'**', redirectTo: '/login', pathMatch: 'full' },
 ];
 
 @NgModule({
