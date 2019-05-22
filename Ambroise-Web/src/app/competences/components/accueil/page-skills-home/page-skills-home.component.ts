@@ -13,7 +13,7 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { SkillsListService } from '../../../services/skillsList.service';
 
 @Component({
@@ -24,6 +24,10 @@ import { SkillsListService } from '../../../services/skillsList.service';
 export class PageSkillsHomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel;
+
+  opinionList = ["+++","++","+","-","--","---","NOK"] ; 
+
+  avis ; 
 
   skillsSheetDataSource: MatTableDataSource<any[]> = new MatTableDataSource();
   //Tableau countenant les headers
@@ -224,7 +228,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       }
     }
     else{
-      return "Non renseignée";
+      return "";
     }
   }
 
@@ -417,6 +421,23 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  opinionFilter(){
+    if(this.avis != undefined){
+      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[]),this.compFilter,this.sort).subscribe(skillsList => {
+        if (skillsList.hasOwnProperty('results')) {
+          this.createDataSource(skillsList['results'] as Skills[]);
+          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+        }
+      }); ; 
+    } else {
+      this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
+        if (skillsList.hasOwnProperty('results')) {
+          this.createDataSource(skillsList['results'] as Skills[]);
+          setTimeout(() => this.skillsSheetDataSource.paginator = this.paginator);
+        }
+      }); 
+    }
+  }
 
   /**
    * Get the value of the rating

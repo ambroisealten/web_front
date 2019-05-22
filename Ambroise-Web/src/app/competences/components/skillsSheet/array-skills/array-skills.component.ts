@@ -117,7 +117,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
 
     this.dataSourceArray.splice(skillIndex, 1);
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
-
+    
     this.updateDataSourceInService();
   }
 

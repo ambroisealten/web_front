@@ -4,14 +4,14 @@
   <div class="firstPanel" (click)="enableFirstPanel()">
     <mat-form-field>
       <input matInput [matDatepicker]="startPicker" placeholder="Date de début" [(ngModel)]="initDate"
-        [disabled]="isFirstPanelDisabled">
+        [disabled]="isFirstPanelDisabled" min="{{ currentDate }}" (ngModelChange)="reloadDateMin()">
       <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
       <mat-datepicker #startPicker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field>
       <input matInput [matDatepicker]="endPicker" placeholder="Date de fin" [(ngModel)]="finalDate"
-        [disabled]="isFirstPanelDisabled">
+        [disabled]="isFirstPanelDisabled" min="{{ dateMin }}">
       <mat-hint align="start">* Champ facultatif</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>

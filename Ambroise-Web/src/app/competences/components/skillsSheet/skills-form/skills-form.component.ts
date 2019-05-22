@@ -143,7 +143,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.formItems = null;
     }
 
-    console.log(this.currentPerson);
     this.route.params.subscribe(param => {
       this.modifDetection = false;
       //Get param in the url
@@ -806,9 +805,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         skillsData.push(skillGraduated.grade);
       });
       this.skillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSkills');
-      this.skillsArray = arraySkills;
-      this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
     }
+    this.skillsArray = arraySkills;
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
   }
 
   /**
@@ -831,9 +830,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         skillsData.push(skillGraduated.grade);
       });
       this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSoftSkills');
-      this.softSkillsArray = arraySoftSkills;
-      this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
     }
+    this.softSkillsArray = arraySoftSkills;
+    this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
   }
 
   /**

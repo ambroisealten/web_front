@@ -14,14 +14,26 @@ export class ModalAvailabilityComponent implements OnInit {
   duration: number;
   durationType: string;
 
+  currentDate : string;
+  dateMin : string;
+
   isFirstPanelDisabled: boolean = false;
   isSecondPanelDisabled: boolean = true;
 
   constructor(private dialogRef: MatDialogRef<ModalAvailabilityComponent>,
-    private adapter: DateAdapter<any>) { }
+    private adapter: DateAdapter<any>) {
+      this.dateMin = this.formatDate(new Date());
+      this.currentDate = this.formatDate(new Date());
+     }
 
   ngOnInit() {
     this.adapter.setLocale('fr');
+  }
+
+  reloadDateMin(){
+    if(this.initDate != undefined){
+      this.dateMin = this.formatDate(new Date(this.initDate));
+    }
   }
 
   saveFirstPanel() {
@@ -35,12 +47,25 @@ export class ModalAvailabilityComponent implements OnInit {
         let final = new Date(this.finalDate).getTime();
         availability.finalDate = final;
       }
-
+      availability.duration = 0;
       availability.initDate = init;
+      
       // close with new object
       this.dialogRef.close(availability);
     }
   }
+
+ formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
   saveSecondPanel() {
     if(this.duration != undefined && this.durationType != undefined) {
