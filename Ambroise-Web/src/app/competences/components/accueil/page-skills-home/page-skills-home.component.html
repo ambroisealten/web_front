@@ -25,10 +25,11 @@
         <mat-form-field class="avisSelect">
           <mat-label>Avis</mat-label>
           <mat-select [(value)]="avis" (selectionChange)="opinionFilter()">
+            <mat-option>Aucun</mat-option>
             <mat-option *ngFor="let opinion of opinionList" [value]="opinion">
               {{opinion}}
             </mat-option>
-            <mat-option>Aucun</mat-option>
+
           </mat-select>
         </mat-form-field>
 
