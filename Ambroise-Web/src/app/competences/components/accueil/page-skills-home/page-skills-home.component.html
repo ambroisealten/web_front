@@ -24,7 +24,7 @@
 
         <mat-form-field class="avisSelect">
           <mat-label>Avis</mat-label>
-          <mat-select [(value)]="avis" (selectionChange)="opinionFilter()">
+          <mat-select [(value)]="avis" (selectionChange)=" searchSkillSheets()">
             <mat-option *ngFor="let opinion of opinionList" [value]="opinion">
               {{opinion}}
             </mat-option>

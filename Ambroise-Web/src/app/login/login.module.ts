@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginRoutingModule } from './login-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material';
 
 //    IMPORT COMPOSANTS
 import { LoginComponent } from './components/login/login.component' ; 
@@ -26,7 +27,7 @@ import { RoutingService } from './services/routing.service';
     CommonModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     TokenService,
