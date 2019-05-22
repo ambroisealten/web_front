@@ -286,7 +286,6 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   navigateToSkillsSheet(skillsSheetData) {
-    console.log(skillsSheetData)
     const skills = this.currentSkills.find(skills => skills['skillsSheet']['name'] === skillsSheetData['nameSkillsSheet'] && skills.person.mail == skillsSheetData.mail);
     this.skillsService.notifySkills(skills);
     this.redirectToSkillsSheet(skills['skillsSheet']['name'], skills['skillsSheet']['versionNumber']);

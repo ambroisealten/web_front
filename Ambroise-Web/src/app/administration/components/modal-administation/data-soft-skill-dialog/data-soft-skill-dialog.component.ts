@@ -13,6 +13,8 @@ export class DataSoftSkillDialogComponent implements OnInit {
   name: string;
   description: string;
 
+  valide: boolean = true;
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DataSoftSkillDialogComponent>,
@@ -26,6 +28,15 @@ export class DataSoftSkillDialogComponent implements OnInit {
     this.form = this.fb.group({
       name: [this.name, []],
     });
+  }
+
+  onChange() {
+    if (this.name == "") {
+      this.valide = true;
+    }
+    else {
+      this.valide = false;
+    }
   }
 
   save() {

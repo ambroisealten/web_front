@@ -52,13 +52,11 @@ export class HeaderUserComponent implements OnInit {
 
 
   initModules() {
-    console.log(this.modules);
     this.headerService.init().subscribe((menus) => {
       const modules = menus['modules'];
       for (const module of modules) {
         this.modules.push(new Menu(module.label, module.routerLink));
       }
-      console.log(this.modules);
       return this.modules;
     });
   }

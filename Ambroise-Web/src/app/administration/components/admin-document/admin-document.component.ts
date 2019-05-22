@@ -3,7 +3,6 @@ import { File as Document } from '../../models/File';
 import { AdminService } from '../../services/admin.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DataFileDialogComponent } from '../data-file-dialog/data-file-dialog.component';
 import { DocumentSet } from '../../models/DocumentSet';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
 import { SubMenusService } from 'src/app/services/subMenus.service';
@@ -13,6 +12,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
+import { DataFileDialogComponent } from '../modal-administation/data-file-dialog/data-file-dialog.component';
 
 
 @Component({
