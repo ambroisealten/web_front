@@ -10,6 +10,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { SoftSkill } from '../../models/SoftSkill';
 import { Agency } from '../../models/Agency';
 import { DataSoftSkillDialogComponent } from '../modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-admin-data-app',
@@ -66,6 +67,42 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     });
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      this.saveSoftSkillsOrder(event.container.data);
+    }
+  }
+
+
+  saveSoftSkillsOrder(dropList : any[]){
+    const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+    let finalList = [];
+    let order = 0;
+    for (let i = 0; i < dropList.length; i++) {
+      order++;
+      let child = dropList[i];
+      child.setOrder(order);
+      finalList.push(child);
+    }
+    if (finalList.length === 0) {
+      const ok = confirm('Êtes-vous sûr de ne vouloir mettre aucune compétence Soft dans la base de données ?');
+      if (!ok) {
+        return;
+      }
+    }
+    const postParams = {
+      softSkillsList : finalList
+    }
+    console.log(postParams);
+    /*
+    this.adminService.makeRequest('/softSkillsOrder','post',postParams).subscribe(() =>{
+      this.fetchSoftSkills();
+      dialogProgress.close();
+    });
+    */
+    dialogProgress.close();
+  }
 
   getSoftSkills() {
     return this.softSkills;
