@@ -223,33 +223,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       });
   }
 
-  changeSoftSkill(softSkillName) {
-    const softSkill = new SoftSkill(softSkillName);
-    const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
-
-    dialogSoftSkill.afterClosed().subscribe(
-      (data: any) => {
-        if (data) {
-          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          const oldName = softSkill.getName();
-          softSkill.setName(data.name);
-          const postParams = {
-            oldName: oldName,
-            name: softSkill.name,
-            isSoft: softSkill.isSoft,
-          };
-          this.adminService.makeRequest('/skill', 'put', postParams).subscribe(() => {
-            this.fetchSoftSkills();
-            dialogProgress.close();
-          });
-        }
-      });
-  }
-
-  deleteSoftSkill() {
-
-  }
-
   updateAgency(agency: Agency) {
     const dialogAgency = this.openDialogAgency(agency);
 
