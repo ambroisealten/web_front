@@ -46,7 +46,7 @@ export class HeaderMenuComponent implements OnInit {
     }
 
     isCurrentSubMenu(subMenu): boolean{
-        if(subMenu.hasOwnProperty('label') && subMenu.label === this.router.url.split('/')[3]){
+        if(subMenu.hasOwnProperty('label') && subMenu.label === decodeURIComponent(this.router.url.split('/')[3])){
             return true ; 
         }
         return false ; 
