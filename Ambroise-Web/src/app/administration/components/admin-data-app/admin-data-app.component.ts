@@ -95,13 +95,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       softSkillsList : finalList
     }
     console.log(postParams);
-    /*
-    this.adminService.makeRequest('/softSkillsOrder','post',postParams).subscribe(() =>{
+    this.adminService.makeRequest('/softSkillsOrder','put',postParams).subscribe(() =>{
       this.fetchSoftSkills();
       dialogProgress.close();
     });
-    */
-    dialogProgress.close();
   }
 
   getSoftSkills() {
@@ -112,10 +109,13 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.softSkills = [];
     this.adminService.makeRequest('/softskills', 'get', '').subscribe((softSkillList: SoftSkill[]) => {
       for (const softSkill of softSkillList) {
-        this.softSkills.push(new SoftSkill(softSkill.name));
+        console.log(softSkill);
+        this.softSkills.push(new SoftSkill(softSkill.name,softSkill.order));
       }
+      this.softSkills.sort((e1,e2) => e1.getOrder() - e2.getOrder());
       this.softSkillsSources = new MatTableDataSource<any>(this.softSkills)
     });
+    
   }
 
   onClickSynchroniseGeoApi() {
@@ -204,7 +204,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
    }
 
   addSoftSkill() {
-    const softSkill = new SoftSkill('');
+    const softSkill = new SoftSkill('',this.softSkills.length+1);
     const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
 
     dialogSoftSkill.afterClosed().subscribe(
@@ -215,6 +215,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
           const postParams = {
             name: softSkill.name,
             isSoft: softSkill.isSoft,
+            order : softSkill.order
           };
           this.adminService.makeRequest('/skill', 'post', postParams).subscribe(() => {
             this.fetchSoftSkills();
