@@ -10,6 +10,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { SoftSkill } from '../../models/SoftSkill';
 import { Agency } from '../../models/Agency';
 import { DataSoftSkillDialogComponent } from '../modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-admin-data-app',
@@ -66,6 +67,38 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     });
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      this.saveSoftSkillsOrder(event.container.data);
+    }
+  }
+
+
+  saveSoftSkillsOrder(dropList : any[]){
+    const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+    let finalList = [];
+    let order = 0;
+    for (let i = 0; i < dropList.length; i++) {
+      order++;
+      let child = dropList[i];
+      child.setOrder(order);
+      finalList.push(child);
+    }
+    if (finalList.length === 0) {
+      const ok = confirm('Êtes-vous sûr de ne vouloir mettre aucune compétence Soft dans la base de données ?');
+      if (!ok) {
+        return;
+      }
+    }
+    const postParams = {
+      softSkillsList : finalList
+    }
+    this.adminService.makeRequest('/softSkillsOrder','put',postParams).subscribe(() =>{
+      this.fetchSoftSkills();
+      dialogProgress.close();
+    });
+  }
 
   getSoftSkills() {
     return this.softSkills;
@@ -75,10 +108,12 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.softSkills = [];
     this.adminService.makeRequest('/softskills', 'get', '').subscribe((softSkillList: SoftSkill[]) => {
       for (const softSkill of softSkillList) {
-        this.softSkills.push(new SoftSkill(softSkill.name));
+        this.softSkills.push(new SoftSkill(softSkill.name,softSkill.order));
       }
+      this.softSkills.sort((e1,e2) => e1.getOrder() - e2.getOrder());
       this.softSkillsSources = new MatTableDataSource<any>(this.softSkills)
     });
+    
   }
 
   onClickSynchroniseGeoApi() {
@@ -167,7 +202,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
    }
 
   addSoftSkill() {
-    const softSkill = new SoftSkill('');
+    const softSkill = new SoftSkill('',this.softSkills.length+1);
     const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
 
     dialogSoftSkill.afterClosed().subscribe(
@@ -178,6 +213,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
           const postParams = {
             name: softSkill.name,
             isSoft: softSkill.isSoft,
+            order : softSkill.order
           };
           this.adminService.makeRequest('/skill', 'post', postParams).subscribe(() => {
             this.fetchSoftSkills();
@@ -185,33 +221,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
           });
         }
       });
-  }
-
-  changeSoftSkill(softSkillName) {
-    const softSkill = new SoftSkill(softSkillName);
-    const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
-
-    dialogSoftSkill.afterClosed().subscribe(
-      (data: any) => {
-        if (data) {
-          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          const oldName = softSkill.getName();
-          softSkill.setName(data.name);
-          const postParams = {
-            oldName: oldName,
-            name: softSkill.name,
-            isSoft: softSkill.isSoft,
-          };
-          this.adminService.makeRequest('/skill', 'put', postParams).subscribe(() => {
-            this.fetchSoftSkills();
-            dialogProgress.close();
-          });
-        }
-      });
-  }
-
-  deleteSoftSkill() {
-
   }
 
   updateAgency(agency: Agency) {
