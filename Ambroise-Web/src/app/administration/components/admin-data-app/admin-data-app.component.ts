@@ -94,7 +94,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     const postParams = {
       softSkillsList : finalList
     }
-    console.log(postParams);
     this.adminService.makeRequest('/softSkillsOrder','put',postParams).subscribe(() =>{
       this.fetchSoftSkills();
       dialogProgress.close();
@@ -109,7 +108,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.softSkills = [];
     this.adminService.makeRequest('/softskills', 'get', '').subscribe((softSkillList: SoftSkill[]) => {
       for (const softSkill of softSkillList) {
-        console.log(softSkill);
         this.softSkills.push(new SoftSkill(softSkill.name,softSkill.order));
       }
       this.softSkills.sort((e1,e2) => e1.getOrder() - e2.getOrder());
