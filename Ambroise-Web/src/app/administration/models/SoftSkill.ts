@@ -1,9 +1,18 @@
 export class SoftSkill {
-
+    public order: number;
     public isSoft: string;
 
-    constructor(public name: string) {
+    constructor(public name: string, order : number) {
         this.setIsSoft('true');
+        this.order = order;
+    }
+
+    public getOrder(){
+        return this.order;
+    }
+
+    public setOrder(order : number){
+        this.order = order;
     }
 
     public getName() {

@@ -39,24 +39,22 @@
 
       <!--Start Soft Skill Panel-->
       <mat-tab label="SoftSkill">
+        <h4>Ici vous pouvez modifier les Soft Skills et changer l'ordre dans lesquelles ces dernières vont apparaître dans l'application</h4>
         <div class="softSkillTab">
           <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          <table mat-table [dataSource]="softSkillsSources" class="mat-elevation-z8">
-            <ng-container matColumnDef="Nom" sticky>
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let softSkills" (click)="changeSoftSkill(softSkills.name)"> {{softSkills.name}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Delete" sticky>
-              <th mat-header-cell *matHeaderCellDef> Supression </th>
-              <td mat-cell *matCellDef="let softSkills"
-                (click)="removeSoftSkill(softSkills)"> <i class="material-icons">
-                  delete
-                </i> </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedsoftSkillsColumns" sticky></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedsoftSkillsColumns;"></tr>
-          </table>
+          <div cdkDropList #docsList="cdkDropList" [cdkDropListData]="softSkills" class="example-list"
+            (cdkDropListDropped)="drop($event)" (ngModelChange)="saveSoftSkillsOrder()">
+            <div class="example-box" *ngFor="let softSkill of softSkills" cdkDrag>
+              {{ softSkill.getName() }} 
+              <i (click)="removeSoftSkill(softSkill)" class="material-icons">
+                delete
+              </i>
+            </div>
+          </div>
+
         </div>
+
+
 
       </mat-tab>
       <!--End Soft Skill Panel-->
