@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginRoutingModule } from './login-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material';
 
 //    IMPORT COMPOSANTS
 import { LoginComponent } from './components/login/login.component' ; 
@@ -28,6 +28,7 @@ import { RoutingService } from './services/routing.service';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    MatCheckboxModule,
   ],
   providers: [
     TokenService,

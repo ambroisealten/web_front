@@ -12,7 +12,7 @@ import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  //Subscription
+  // Subscription
   tokenSubscription;
 
   // used to set validators
@@ -22,35 +22,36 @@ export class LoginComponent implements OnInit, OnDestroy {
   userEmail: string;
   userPswd: string;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private formBuilder: FormBuilder,
     private tokenService: TokenService,
     private router: Router,
     private isNotLoginService: IsNotLoginService) {
-      this.isNotLoginService.notifyLoginOut(false);
-    }
+    this.isNotLoginService.notifyLoginOut(false);
+  }
 
   ngOnInit() {
-    window.sessionStorage.clear() ; 
+    window.sessionStorage.clear();
     // init validators
     this.validationForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")]],
+      email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$')]],
       password: ['', [Validators.required]]
     });
 
     this.tokenSubscription = this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
   }
 
-  ngOnDestroy(){
-    if(this.tokenSubscription != undefined){
-      this.tokenSubscription.unsubscribe() ; 
+  ngOnDestroy() {
+    if (this.tokenSubscription != undefined) {
+      this.tokenSubscription.unsubscribe();
     } else {
-      LoggerService.log("Oups Something Went Wrong !, Subscription Login failed !", LogLevel.DEV) ; 
+      LoggerService.log('Oups Something Went Wrong !, Subscription Login failed !', LogLevel.DEV);
     }
   }
 
   // convenience getter for easy access to form fields
-  get validationFormControls() { 
-    return this.validationForm.controls; 
+  get validationFormControls() {
+    return this.validationForm.controls;
   }
 
   onSubmit() {
@@ -61,31 +62,31 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.tokenService.signIn(this.validationForm.value.email, this.validationForm.value.password) ;
+    this.tokenService.signIn(this.validationForm.value.email, this.validationForm.value.password);
 
   }
 
-  //Check if has to do the redirection
-  isRedirect(tokenReceived: boolean){
-    LoggerService.log("token received : " + tokenReceived, LogLevel.DEBUG);
+  // Check if has to do the redirection
+  isRedirect(tokenReceived: boolean) {
+    LoggerService.log('token received : ' + tokenReceived, LogLevel.DEBUG);
     if (tokenReceived) {
-        //this.routingService.getRoute().subscribe(routes => this.setRoutes(routes)) ;
-        this.redirectToHomePage() ;
+      // this.routingService.getRoute().subscribe(routes => this.setRoutes(routes)) ;
+      this.redirectToHomePage();
     }
   }
 
-  setRoutes(routes: Route[]){
-    LoggerService.log("Routes received: " + routes, LogLevel.DEBUG);
-    this.router.resetConfig(routes) ;
-    this.redirectToHomePage() ;
+  setRoutes(routes: Route[]) {
+    LoggerService.log('Routes received: ' + routes, LogLevel.DEBUG);
+    this.router.resetConfig(routes);
+    this.redirectToHomePage();
   }
 
-  redirectToHomePage(){
+  redirectToHomePage() {
     //  TO-DO : Creer un service de redirection
     //  changer la redirection après connection en fonction du module de préférence
     //  de l'utilisateur (Mission par défaut)
-    this.tokenService.notifyTokenReception(false) ;
+    this.tokenService.notifyTokenReception(false);
     this.router.navigate(['/skills']);
-    this.isNotLoginService.notifyLoginOut(true) ;
+    this.isNotLoginService.notifyLoginOut(true);
   }
 }
