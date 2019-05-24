@@ -16,6 +16,7 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
 export class ModalNewSkillsSheetComponent implements OnInit {
 
   name: string;
+  errorMessage : string;
 
   currentPerson: Person;
   currentSkillsSheet: SkillsSheet;
@@ -32,6 +33,7 @@ export class ModalNewSkillsSheetComponent implements OnInit {
     private router: Router,
     @Inject(MAT_DIALOG_DATA) data) {
     this.currentPerson = data.person;
+    this.errorMessage = "";
   }
 
   ngOnInit() {
@@ -40,10 +42,16 @@ export class ModalNewSkillsSheetComponent implements OnInit {
   }
 
   onChange() {
-    if (this.name == "" || this.tmpSkillsSheets.find(skillsSheet => skillsSheet.name === this.name) !== undefined) {
+    if (this.name == ""){
       this.valide = true;
+      this.errorMessage = "Veuillez entrer un nom valide pour la fiche";
+    }
+    else if(this.tmpSkillsSheets.find(skillsSheet => skillsSheet.name === this.name) !== undefined) {
+      this.valide = true;
+      this.errorMessage = "Cette fiche existe déjà";
     }
     else {
+      this.errorMessage = "";
       this.valide = false;
     }
   }
