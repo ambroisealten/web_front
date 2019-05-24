@@ -21,7 +21,10 @@ export class ErrorService {
             case(401): 
                 this.router.navigate(['login']) ; 
                 break ; 
-                
+            case(403):
+                if (this.router.url == '/login')
+                    messageError = "Requête refusée. Identifiants et/ou mot de passe incorrects";
+                break;
             default: 
                 break ;
         }
