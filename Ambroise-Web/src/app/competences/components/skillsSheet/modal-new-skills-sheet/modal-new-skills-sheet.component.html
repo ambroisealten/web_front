@@ -6,7 +6,7 @@
       <input class="input" matInput placeholder="Nom de la nouvelle fiche" [(ngModel)]="name"
         (keyup)="onChange($event)">
     </mat-form-field>
-
+    <p class="errorMessage"> {{ errorMessage }} </p>
     <button mat-raised-button class="saveButton" color="primary" (click)="saveName()"
       [disabled]="valide">Valider</button>
   </div>

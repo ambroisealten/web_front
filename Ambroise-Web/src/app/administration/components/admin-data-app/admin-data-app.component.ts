@@ -111,7 +111,8 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
         this.softSkills.push(new SoftSkill(softSkill.name,softSkill.order));
       }
       this.softSkills.sort((e1,e2) => e1.getOrder() - e2.getOrder());
-      this.softSkillsSources = new MatTableDataSource<any>(this.softSkills)
+      this.softSkillsSources = new MatTableDataSource<any>(this.softSkills);
+      window.sessionStorage.setItem('softSkills',JSON.stringify(this.softSkills));
     });
     
   }
@@ -273,7 +274,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   openDialogAgency(agency: Agency) {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
+    dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.hasBackdrop = true;
     dialogConfig.direction = 'ltr';
@@ -293,7 +294,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   openDialogSoftSkill(softSkill: SoftSkill) {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = true;
+    dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.hasBackdrop = true;
     dialogConfig.direction = 'ltr';

@@ -25,6 +25,8 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
 
   @Output() skillsEvent = new EventEmitter<SkillGraduated[]>();
 
+  skillAdd: string = "" ; 
+
   // Tableau contenant toutes les options (compétences) pour l'auto-complétion
   options: string[];
   filteredOptions: Observable<string[]>;
@@ -109,6 +111,16 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
         this.updateDataSourceInService();
       }
       event.target.value = '';
+    } 
+  }
+
+  addSkillAutocomplete(event){
+    if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === event.toLowerCase().trim()) === -1){
+      this.dataSourceArray.push(new SkillGraduated(new Skill(event), 1));
+      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+
+      this.updateDataSourceInService();
+      this.skillAdd = "" ; 
     }
   }
 
