@@ -145,3 +145,14 @@
   margin-left: 25% !important;
   margin-right: 1% !important;
 }
+
+.mat-option.mat-selected:not(.mat-option-multiple):not(.mat-option-disabled), .mat-option:focus:not(.mat-option-disabled), .mat-option:hover:not(.mat-option-disabled) {
+  background-color: var(--ALTENDarkBlue) !important ; 
+  color: white !important ; 
+}
+
+
+.mat-option.mat-active {
+  background-color: var(--ALTENDarkBlue) !important ; 
+  color: white !important ; 
+}

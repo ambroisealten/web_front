@@ -6,7 +6,7 @@ import { SkillsSheetViewComponent } from './components/skillsSheet/skills-sheet-
 
 const compRoutes: Routes = [
   { path: '', component: PageSkillsHomeComponent },
-  { path:'skillsheet/:name/:version', component: SkillsSheetViewComponent },
+  { path:'skillsheet/:name/:version', component: SkillsSheetViewComponent }
 ];
 
 @NgModule({
