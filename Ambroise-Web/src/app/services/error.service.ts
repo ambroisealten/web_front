@@ -20,6 +20,7 @@ export class ErrorService {
         switch(statusError){
             case(401): 
                 this.router.navigate(['login']) ; 
+                messageError = "Session expirée. Veuillez vous reconnecter";
                 break ; 
             case(403):
                 if (this.router.url == '/login')
