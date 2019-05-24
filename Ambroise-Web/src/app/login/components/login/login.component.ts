@@ -17,10 +17,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // used to set validators
   validationForm: FormGroup;
-  submitted = false;
 
   userEmail: string;
   userPswd: string;
+  stayConnectedChecked = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,10 +35,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     // init validators
     this.validationForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$')]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required]],
+      stayConnectedChecked: [this.stayConnectedChecked]
     });
 
-    this.tokenSubscription = this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived))
+    this.tokenSubscription = this.tokenService.tokenReceptionObservable.subscribe(tokenReceived => this.isRedirect(tokenReceived));
   }
 
   ngOnDestroy() {
@@ -55,14 +56,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.submitted = true;
-
     // stop here if form is invalid
     if (this.validationForm.invalid) {
       return;
     }
-
-    this.tokenService.signIn(this.validationForm.value.email, this.validationForm.value.password);
+    this.tokenService.signIn(
+      this.validationForm.value.email,
+      this.validationForm.value.password,
+      this.validationForm.value.stayConnectedChecked);
 
   }
 

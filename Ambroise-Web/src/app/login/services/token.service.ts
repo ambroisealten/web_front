@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoggerService, LogLevel } from '../../services/logger.service';
-import { BehaviorSubject } from 'rxjs';
-import { timeout, catchError } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
-import * as sha512 from 'js-sha512';
 import { Router } from '@angular/router';
+import * as sha512 from 'js-sha512';
+import { BehaviorSubject } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ErrorService } from 'src/app/services/error.service';
+import { environment } from 'src/environments/environment';
+import { LoggerService, LogLevel } from '../../services/logger.service';
 
 /**
  * Service pour le login
@@ -14,11 +14,12 @@ import { ErrorService } from 'src/app/services/error.service';
 @Injectable()
 export class TokenService {
 
-    //Observable pour vérifier que le token est reçu
+    // Observable pour vérifier que le token est reçu
     private tokenReceptionState = new BehaviorSubject(false);
     tokenReceptionObservable = this.tokenReceptionState.asObservable();
 
-    constructor(private httpClient: HttpClient,
+    constructor(
+        private httpClient: HttpClient,
         private router: Router,
         private errorService: ErrorService) { }
 
@@ -28,43 +29,42 @@ export class TokenService {
      * @param formInputMail
      * @param formInputPswd
      */
-    signIn(formInputMail: string, formInputPswd: string) {
+    signIn(formInputMail: string, formInputPswd: string, stayConnected: boolean) {
 
-        //Paramètres à envoyée au serveur pour vérifier la connexion
-        let postParams = {
+        // Paramètres à envoyée au serveur pour vérifier la connexion
+        const postParams = {
             mail: formInputMail,
             pswd: sha512.sha512(formInputPswd),
-            //pswd: formInputPswd
-        }
+            stayConnected,
+        };
 
-        LoggerService.log(postParams.mail + ":::" + postParams.pswd, LogLevel.DEBUG);
+        LoggerService.log(postParams.mail + ':::' + postParams.pswd, LogLevel.DEBUG);
 
-        //Requête POST au WS : login => Objectif récupérer un token de session valide
+        // Requête POST au WS : login => Objectif récupérer un token de session valide
         return this.httpClient.post(environment.serverAddress + '/login', postParams)
-            //Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
+            // Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
             .pipe(catchError(err => this.errorService.handleError(err)))
-            //Effectue une action dès la réception du token
+            // Effectue une action dès la réception du token
             .subscribe(token => {
-                //Check si la propriété Token existe
-                if (token.hasOwnProperty('token')){
-                    //On store le token dans le sessionStorage du navigateur
-                    window.sessionStorage.setItem("bearerToken",token['token']);
-                    //Notification de l'observable pour notifier la réception d'un token
+                // Check si la propriété Token existe
+                if (token.hasOwnProperty('token')) {
+                    // On store le token dans le sessionStorage du navigateur
+                    window.sessionStorage.setItem('bearerToken', token['token']);
+                    // Notification de l'observable pour notifier la réception d'un token
                     this.tokenReceptionState.next(true);
                 } else {
-                    LoggerService.log("Problème réception token !!",LogLevel.DEV)
+                    LoggerService.log('Problème réception token !!', LogLevel.DEV);
                 }
-            })
-
+            });
     }
 
     signOut() {
-        //TO-DO : redirect login page
+        // TO-DO : redirect login page
         window.sessionStorage.clear();
-        this.router.navigate(['login']) ; 
+        this.router.navigate(['login']) ;
     }
 
-    notifyTokenReception(received:boolean){
+    notifyTokenReception(received: boolean) {
         this.tokenReceptionState.next(received) ;
     }
 }
