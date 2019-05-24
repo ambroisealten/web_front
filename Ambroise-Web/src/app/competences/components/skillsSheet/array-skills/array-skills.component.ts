@@ -5,6 +5,7 @@ import { SkillsListService } from '../../../services/skillsList.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-array-skills',
@@ -33,7 +34,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
   skillsSubscription;
 
 
-  constructor(private skillsListService: SkillsListService) {
+  constructor(private skillsListService: SkillsListService, private toastr: ToastrService) {
   }
 
   /**
@@ -82,7 +83,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
       const filterValue = value.toLowerCase();
       return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
     }
-    else{
+    else {
       return [];
     }
   }
@@ -92,6 +93,10 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
   * @param  event skillName from input
   */
   addSkill(event) {
+    if (this.dataSourceArray.length >= 24) {
+      this.toastr.info('Vous ne pouvez pas mettre plus de 24 compétences par fiche de compétence', '', { positionClass: 'toast-bottom-full-width', closeButton: true })
+      return null;
+    }
     if (event.target.value.trim() !== '') {
       const skillName = event.target.value;
 
@@ -117,7 +122,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
 
     this.dataSourceArray.splice(skillIndex, 1);
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
-    
+
     this.updateDataSourceInService();
   }
 
