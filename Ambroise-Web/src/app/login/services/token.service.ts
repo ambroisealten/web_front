@@ -38,7 +38,10 @@ export class TokenService {
             stayConnected,
         };
 
-        LoggerService.log(postParams.mail + ':::' + postParams.pswd, LogLevel.DEBUG);
+        LoggerService.log('StayConnected:::'
+            + postParams.stayConnected
+            + ':::' + postParams.mail
+            + ':::' + postParams.pswd, LogLevel.DEBUG);
 
         // Requête POST au WS : login => Objectif récupérer un token de session valide
         return this.httpClient.post(environment.serverAddress + '/login', postParams)
@@ -59,12 +62,11 @@ export class TokenService {
     }
 
     signOut() {
-        // TO-DO : redirect login page
         window.sessionStorage.clear();
-        this.router.navigate(['login']) ;
+        this.router.navigate(['login']);
     }
 
     notifyTokenReception(received: boolean) {
-        this.tokenReceptionState.next(received) ;
+        this.tokenReceptionState.next(received);
     }
 }
