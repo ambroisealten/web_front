@@ -65,9 +65,10 @@ export class PdfComponent implements OnInit, OnDestroy {
     this.updateChartSkills(this.skillsArray);
     this.updateChartSoftSkills(this.softSkillsArray);
 
-    if(this.skillsArray.length == 0){
-      this.skillsArray.push({skill: {name: "Aucune compétence définie"}, grade: null} as SkillGraduated)
+    if (this.skillsArray.length == 0) {
+      this.skillsArray.push({ skill: { name: "Aucune compétence définie" }, grade: null } as SkillGraduated)
     }
+
 
     //Créer les menus
     this.createMenu();
@@ -147,6 +148,7 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill);
       }
     });
+    this.skillsArray.sort((e1, e2) => e1.grade < e2.grade ? 1 : -1);
   }
 
   /**
@@ -252,6 +254,15 @@ export class PdfComponent implements OnInit, OnDestroy {
       pdf.addImage(contentDataURL, 'JPEG', 0, 0, 297, 210);
       pdf.save(this.name + '.pdf'); // Generated PDF   
     });
+  }
+
+  countSkill() {
+    if (this.skillsArray.length <= 12) {
+      return true;
+    }
+    else if (this.skillsArray.length > 12) {
+      return false;
+    }
   }
 
   /***********************************************************************\
