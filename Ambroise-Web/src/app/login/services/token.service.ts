@@ -48,11 +48,12 @@ export class TokenService {
             // Timeout pour éviter de rester bloquer sur l'authentification si serveur injoignable
             .pipe(catchError(err => this.errorService.handleError(err)))
             // Effectue une action dès la réception du token
-            .subscribe(token => {
+            .subscribe(response => {
                 // Check si la propriété Token existe
-                if (token.hasOwnProperty('token')) {
+                if (response.hasOwnProperty('access')&&response.hasOwnProperty('refresh')) {
                     // On store le token dans le sessionStorage du navigateur
-                    window.sessionStorage.setItem('bearerToken', token['token']);
+                    window.sessionStorage.setItem('bearerToken', response['access']['token']);
+                    window.sessionStorage.setItem('refreshToken', response['refresh']['token']);
                     // Notification de l'observable pour notifier la réception d'un token
                     this.tokenReceptionState.next(true);
                 } else {
