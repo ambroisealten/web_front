@@ -148,6 +148,7 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill);
       }
     });
+    this.softSkillsArray.sort((e1,e2) => e1['skill']['order'] - e2['skill']['order'] ) ; 
     this.skillsArray.sort((e1, e2) => e1.grade < e2.grade ? 1 : -1);
   }
 

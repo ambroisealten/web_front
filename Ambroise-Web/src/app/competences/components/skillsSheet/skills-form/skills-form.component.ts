@@ -278,6 +278,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           this.skillsArray.push(skill);
         }
       });
+      this.softSkillsArray.sort((skill1,skill2) => skill1.skill.order - skill2.skill.order); 
       this.countSkillsUpdate = 0;
       this.countSoftSkillsUpdate = 0;
       this.modifDetection = false;
