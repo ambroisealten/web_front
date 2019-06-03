@@ -283,9 +283,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.modifDetection = false;
       this.skillsArrayDataSource = new MatTableDataSource(this.skillsArray);
       this.updateChartSkills(this.skillsArray);
-      this.softSkillsArrayDataSource = new MatTableDataSource(this.softSkillsArray.sort((e1, e2) =>
-        e1.grade < e2.grade ? 1 : -1
-      ));
+      this.softSkillsArrayDataSource = new MatTableDataSource(this.softSkillsArray);
       this.updateChartSoftSkills(this.softSkillsArray);
     }
   }
@@ -876,7 +874,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       });
       this.softSkillsChart = this.createOrUpdateChart(this.formatLabels(skillsLabels, 8), skillsData, 'canvasSoftSkills');
     }
-    this.softSkillsArray = arraySoftSkills.sort((e1, e2) => e1.grade < e2.grade ? -1 : 1);
+    this.softSkillsArray = arraySoftSkills.sort((e1, e2) => e1.skill.order < e2.skill.order ? -1 : 1);
     this.currentSkillsSheet.skillsList = this.skillsArray.concat(this.softSkillsArray);
   }
 
