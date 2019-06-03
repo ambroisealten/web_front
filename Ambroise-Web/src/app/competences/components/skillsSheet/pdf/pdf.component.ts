@@ -149,6 +149,9 @@ export class PdfComponent implements OnInit, OnDestroy {
       }
     });
     this.skillsArray.sort((e1, e2) => e1.grade < e2.grade ? 1 : -1);
+    if (this.skillsArray.length > 24) {
+      this.skillsArray = this.skillsArray.slice(0, 24);
+    }
   }
 
   /**
@@ -276,6 +279,7 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @param  arraySkills Array containing updated skills
    */
   updateChartSkills(arraySkills: SkillGraduated[]) {
+
     if (typeof this.skillsChart !== 'function') {
       this.skillsChart.destroy();
     }

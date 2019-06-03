@@ -67,6 +67,7 @@ export class Skill {
   name: string;
   order: number;
   isSoft?: string;
+  order:number ; 
 
   constructor(name: string) {
     this.name = name;

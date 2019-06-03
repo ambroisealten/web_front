@@ -95,10 +95,6 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
   * @param  event skillName from input
   */
   addSkill(event) {
-    if (this.dataSourceArray.length >= 24) {
-      this.toastr.info('Vous ne pouvez pas mettre plus de 24 compétences par fiche de compétence', '', { positionClass: 'toast-bottom-full-width', closeButton: true })
-      return null;
-    }
     if (event.target.value.trim() !== '') {
       const skillName = event.target.value;
 
