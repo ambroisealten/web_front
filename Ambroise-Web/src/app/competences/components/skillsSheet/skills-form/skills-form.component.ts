@@ -278,7 +278,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           this.skillsArray.push(skill);
         }
       });
-      this.softSkillsArray.sort((skill1,skill2) => skill1.skill.order - skill2.skill.order); 
+      this.softSkillsArray.sort((skill1, skill2) => skill1.skill.order - skill2.skill.order);
       this.countSkillsUpdate = 0;
       this.countSoftSkillsUpdate = 0;
       this.modifDetection = false;
@@ -321,6 +321,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
         if ((skillsSheetVersions as SkillsSheet[]).length > 0 && skillsSheetVersions[0].hasOwnProperty('versionDate')) {
           // init skillsSheet versions array
+          console.log("Prout");
+          console.log(skillsSheetVersions);
           (skillsSheetVersions as SkillsSheet[]).forEach(version => {
             versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
             let managerName = version.mailVersionAuthor.split('.')[0] + ' ' + version.mailVersionAuthor.split('.')[1];

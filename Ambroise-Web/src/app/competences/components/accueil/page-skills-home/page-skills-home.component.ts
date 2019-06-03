@@ -346,13 +346,17 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    * @author Quentin Della-Pasqua, Lucas Royackkers
    */
   doAddSkill() {
-    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1 && this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) !== undefined) {
+    console.log(this.compFilter);
+    console.log(this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1);
+    console.log(this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()));
+    console.log(this.rechercheInputCpt);
+    if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1 && this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) !== undefined && this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1) {
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
-    } else if (this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) !== undefined) {
+    } else if (this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1) {
       this.compFilter.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
