@@ -70,13 +70,13 @@ export class ErrorService {
     toastrSuccess(status: string, message: string) {
         LoggerService.log(status + ' : ' + message, LogLevel.DEV);
         this.toastr.success(status + ' - ' + message,
-            '👍', { positionClass: 'toast-bottom-full-width', closeButton: true });
+            '✔️', { positionClass: 'toast-bottom-full-width', closeButton: true });
     }
 
     toastrGood(status: string, message: string) {
         LoggerService.log(status + ' : ' + message, LogLevel.DEV);
         this.toastr.info(status + ' - ' + message,
-            '👌', { positionClass: 'toast-bottom-full-width', closeButton: true });
+            '👍', { positionClass: 'toast-bottom-full-width', closeButton: true });
     }
 
     /**

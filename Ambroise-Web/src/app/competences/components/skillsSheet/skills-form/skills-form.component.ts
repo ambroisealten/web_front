@@ -760,7 +760,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.updatePersonFromFormItems();
     if (item.id == 'highestDiplomaYear' && item.model <= environment.maxYear && item.model > environment.minYear) {
       let experienceTimeIndex = this.formItems.findIndex(item => item.id == 'experienceTime');
-      this.formItems[experienceTimeIndex].model = environment.maxYear - item.model;
+      this.formItems[experienceTimeIndex].model = environment.maxYear - item.model - 5;
+      if(this.formItems[experienceTimeIndex].model < 0) this.formItems[experienceTimeIndex].model = 0;
       this.experienceTimeTextColor = 'var(--ALTENOrange)';
     }
     else if ((item.id == 'highestDiplomaYear' && item.model > environment.maxYear) || (item.id == 'highestDiplomaYear' && item.model > this.minYear)) {
