@@ -60,7 +60,8 @@ export class PdfComponent implements OnInit, OnDestroy {
 
     //Person's Data
     this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
-    this.pdfName = this.currentPerson.surname.toLowerCase()+this.currentPerson.name[0]+"-"+this.currentPerson.job;
+    let job = this.currentPerson.job != "" ? this.currentPerson.job : "Fiche";
+    this.pdfName = this.currentPerson.surname.toLowerCase()+this.currentPerson.name[0]+"-"+job;
     this.setIdentityData();
     this.setDiplomaData();
 
