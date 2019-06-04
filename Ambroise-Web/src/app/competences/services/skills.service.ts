@@ -44,6 +44,16 @@ export class SkillsService {
 
         let comp: string = "";
         compFilter.forEach(filter => {
+            if(filter.includes('#')){
+                let i = filter.indexOf('#')
+                if( i == filter.length-1 ){
+                    filter = filter.substr(0,i) + "%23"
+                } else if (i == 0 ) {
+                    filter = "%23" + filter.substr(1) ; 
+                } else {
+                    filter = filter.substr(0,i) + "%23" + filter.substr(i+1) ; 
+                }
+            }
             comp += filter+','
         })
         if(comp== ""){
