@@ -11,6 +11,7 @@ import { SoftSkill } from '../../models/SoftSkill';
 import { Agency } from '../../models/Agency';
 import { DataSoftSkillDialogComponent } from '../modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ErrorService } from 'src/app/services/error.service';
 
 @Component({
   selector: 'app-admin-data-app',
@@ -20,7 +21,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 export class AdminDataAppComponent implements OnInit, OnDestroy {
   submenusSubscription;
 
-  //SoftSkill data 
+  // SoftSkill data 
   softSkills: SoftSkill[];
   softSkillsSources: MatTableDataSource<any[]> = new MatTableDataSource();
   displayedsoftSkillsColumns: string[] = ['Nom', 'Delete'];
@@ -35,7 +36,8 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     private adminService: AdminService,
     private dialog: MatDialog,
     private subMenusService: SubMenusService,
-    private router: Router) {
+    private router: Router,
+    private errorService: ErrorService) {
   }
 
   ngOnInit() {
@@ -77,11 +79,11 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   saveSoftSkillsOrder(dropList: any[]) {
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-    let finalList = [];
+    const finalList = [];
     let order = 0;
     for (let i = 0; i < dropList.length; i++) {
       order++;
-      let child = dropList[i];
+      const child = dropList[i];
       child.setOrder(order);
       finalList.push(child);
     }
@@ -94,9 +96,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     const postParams = {
       softSkillsList: finalList
     }
-    this.adminService.makeRequest('/softSkillsOrder', 'put', postParams).subscribe(() => {
+    this.adminService.makeRequest('/softSkillsOrder', 'put', postParams).subscribe((responses: any[]) => {
       this.fetchSoftSkills();
       dialogProgress.close();
+      this.errorService.handleResponses(responses, 200);
     });
   }
 
@@ -119,8 +122,9 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   onClickSynchroniseGeoApi() {
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-    this.adminService.makeRequest('/admin/synchronize/geographics', 'post', '').subscribe(() => {
+    this.adminService.makeRequest('/admin/synchronize/geographics', 'post', '').subscribe((response) => {
       dialogProgress.close();
+      this.errorService.handleResponse(response);
     });
     // TODO Attention, on a pas de moyen de savoir si une mise à jour à été faite sur la base distante
   }
@@ -132,9 +136,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       place: agency.getPlace(),
       placeType: agency.getPlaceType()
     };
-    this.adminService.makeRequest('/agency', 'delete', postParams).subscribe(() => {
+    this.adminService.makeRequest('/agency', 'delete', postParams).subscribe((response) => {
       this.fetchAgencies();
       dialogProgress.close();
+      this.errorService.handleResponse(response);
     });
   }
 
@@ -143,9 +148,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     const postParams = {
       name: softSkill.getName(),
     };
-    this.adminService.makeRequest('/skill', 'delete', postParams).subscribe(() => {
+    this.adminService.makeRequest('/skill', 'delete', postParams).subscribe((response) => {
       this.fetchSoftSkills();
       dialogProgress.close();
+      this.errorService.handleResponse(response);
     });
   }
 
@@ -165,9 +171,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             place: agency.getPlace(),
             placeType: agency.getPlaceType()
           };
-          this.adminService.makeRequest('/agency', 'post', postParams).subscribe(() => {
+          this.adminService.makeRequest('/agency', 'post', postParams).subscribe((response) => {
             this.fetchAgencies();
             dialogProgress.close();
+            this.errorService.handleResponse(response);
           });
         }
       });
@@ -194,9 +201,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             place: agency.getPlace(),
             placeType: agency.getPlaceType()
           };
-          this.adminService.makeRequest('/agency', 'post', postParams).subscribe(() => {
+          this.adminService.makeRequest('/agency', 'post', postParams).subscribe((response) => {
             this.fetchAgencies();
             dialogProgress.close();
+            this.errorService.handleResponse(response);
           });
         }
       });
@@ -216,9 +224,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             isSoft: softSkill.isSoft,
             order: softSkill.order
           };
-          this.adminService.makeRequest('/skill', 'post', postParams).subscribe(() => {
+          this.adminService.makeRequest('/skill', 'post', postParams).subscribe((response) => {
             this.fetchSoftSkills();
             dialogProgress.close();
+            this.errorService.handleResponse(response);
           });
         }
       });
@@ -241,9 +250,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             place: agency.getPlace(),
             placeType: agency.getPlaceType()
           };
-          this.adminService.makeRequest('/agency', 'put', postParams).subscribe(() => {
+          this.adminService.makeRequest('/agency', 'put', postParams).subscribe((response) => {
             this.fetchAgencies();
             dialogProgress.close();
+            this.errorService.handleResponse(response);
           });
         }
       });
@@ -263,9 +273,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
             name: softSkill.getName(),
             isSoft: softSkill.getIsSoft(),
           };
-          this.adminService.makeRequest('/skill', 'put', postParams).subscribe(() => {
+          this.adminService.makeRequest('/skill', 'put', postParams).subscribe((response) => {
             this.fetchSoftSkills();
             dialogProgress.close();
+            this.errorService.handleResponse(response);
           });
         }
       });
