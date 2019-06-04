@@ -33,6 +33,9 @@ export class PdfComponent implements OnInit, OnDestroy {
   identityData: string = '';
   diplomaData: string = '';
 
+  //PDF name
+  pdfName : string;
+
   //route param
   name: string;
   version: number;
@@ -57,6 +60,7 @@ export class PdfComponent implements OnInit, OnDestroy {
 
     //Person's Data
     this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
+    this.pdfName = this.currentPerson.surname.toLowerCase()+this.currentPerson.name[0]+"-"+this.currentPerson.job;
     this.setIdentityData();
     this.setDiplomaData();
 
@@ -255,7 +259,7 @@ export class PdfComponent implements OnInit, OnDestroy {
       var height = pdf.internal.pageSize.getHeight();
 
       pdf.addImage(contentDataURL, 'JPEG', 0, 0, 297, 210);
-      pdf.save(this.name + '.pdf'); // Generated PDF   
+      pdf.save(this.pdfName + '.pdf'); // Generated PDF   
     });
   }
 
