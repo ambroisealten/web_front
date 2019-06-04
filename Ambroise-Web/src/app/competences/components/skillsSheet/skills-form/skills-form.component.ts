@@ -321,8 +321,6 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       this.skillsSheetService.getAllSkillsSheetVersions(this.currentSkillsSheet.name, this.currentSkillsSheet.mailPersonAttachedTo).subscribe(skillsSheetVersions => {
         if ((skillsSheetVersions as SkillsSheet[]).length > 0 && skillsSheetVersions[0].hasOwnProperty('versionDate')) {
           // init skillsSheet versions array
-          console.log("Prout");
-          console.log(skillsSheetVersions);
           (skillsSheetVersions as SkillsSheet[]).forEach(version => {
             versionDate = new Date(parseInt(version.versionDate)).toLocaleDateString();
             let managerName = version.mailVersionAuthor.split('.')[0] + ' ' + version.mailVersionAuthor.split('.')[1];
