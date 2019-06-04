@@ -11,6 +11,7 @@ import { AdminService } from './services/admin.service';
 import { DataFileDialogComponent } from './components/modal-administation/data-file-dialog/data-file-dialog.component';
 import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spinner.component';
 import { DataSoftSkillDialogComponent } from './components/modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
+import { AdminUserComponent } from './components/admin-user/admin-user/admin-user.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { DataSoftSkillDialogComponent } from './components/modal-administation/d
     DataAgencyDialogComponent,
     DataFileDialogComponent,
     ProgressSpinnerComponent,
-    DataSoftSkillDialogComponent
+    DataSoftSkillDialogComponent,
+    AdminUserComponent
   ],
   entryComponents: [
     DataFileDialogComponent,
