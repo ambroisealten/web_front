@@ -75,7 +75,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   }
 
 
-  saveSoftSkillsOrder(dropList : any[]){
+  saveSoftSkillsOrder(dropList: any[]) {
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
     let finalList = [];
     let order = 0;
@@ -92,9 +92,9 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       }
     }
     const postParams = {
-      softSkillsList : finalList
+      softSkillsList: finalList
     }
-    this.adminService.makeRequest('/softSkillsOrder','put',postParams).subscribe(() =>{
+    this.adminService.makeRequest('/softSkillsOrder', 'put', postParams).subscribe(() => {
       this.fetchSoftSkills();
       dialogProgress.close();
     });
@@ -108,13 +108,13 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.softSkills = [];
     this.adminService.makeRequest('/softskills', 'get', '').subscribe((softSkillList: SoftSkill[]) => {
       for (const softSkill of softSkillList) {
-        this.softSkills.push(new SoftSkill(softSkill.name,softSkill.order));
+        this.softSkills.push(new SoftSkill(softSkill.name, softSkill.order));
       }
-      this.softSkills.sort((e1,e2) => e1.getOrder() - e2.getOrder());
+      this.softSkills.sort((e1, e2) => e1.getOrder() - e2.getOrder());
       this.softSkillsSources = new MatTableDataSource<any>(this.softSkills);
-      window.sessionStorage.setItem('softSkills',JSON.stringify(this.softSkills));
+      window.sessionStorage.setItem('softSkills', JSON.stringify(this.softSkills));
     });
-    
+
   }
 
   onClickSynchroniseGeoApi() {
@@ -177,7 +177,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     //TODO
 
   }
-   changeAgency(agencyName, agencyPlace, agencyPlaceType) {
+  changeAgency(agencyName, agencyPlace, agencyPlaceType) {
 
     const agency = new Agency(agencyName, agencyPlace, agencyPlaceType);
     const dialogAgency = this.openDialogAgency(agency);
@@ -200,10 +200,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
           });
         }
       });
-   }
+  }
 
   addSoftSkill() {
-    const softSkill = new SoftSkill('',this.softSkills.length+1);
+    const softSkill = new SoftSkill('', this.softSkills.length + 1);
     const dialogSoftSkill = this.openDialogSoftSkill(softSkill);
 
     dialogSoftSkill.afterClosed().subscribe(
@@ -214,7 +214,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
           const postParams = {
             name: softSkill.name,
             isSoft: softSkill.isSoft,
-            order : softSkill.order
+            order: softSkill.order
           };
           this.adminService.makeRequest('/skill', 'post', postParams).subscribe(() => {
             this.fetchSoftSkills();
