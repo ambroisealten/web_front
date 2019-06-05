@@ -48,16 +48,23 @@ export class ErrorService {
                     this.toastrError(status, message);
                     break;
                 default:
+                    this.toastrError(status, message);
                     break;
             }
         }
     }
 
     handleResponses(responses: any[], statusExpected: number) {
-        if (responses.filter(response => response.stackTrace[0].lineNumber !== statusExpected)) {
+        if (responses.filter(response => response.stackTrace[0].lineNumber === statusExpected).length != 0) {
             this.toastrGood(statusExpected.toString(), 'Requête effectuée avec succès');
         } else {
-            this.toastrError('500', 'Une erreur a été rencontrée au cours du processus, veuillez contacter un administrateur');
+            // TODO : Implement a more viable and efficient way to analyze errors that we get on our multiple requests
+            if(responses.length === 1 && responses[0].stackTrace[0].lineNumber === 403){
+                this.toastrError('403','Requête refusée, vous n\'avez pas les privilèges requis');
+            }
+            else{
+                this.toastrError('500', 'Une erreur a été rencontrée au cours du processus, veuillez contacter un administrateur');
+            }
         }
     }
 

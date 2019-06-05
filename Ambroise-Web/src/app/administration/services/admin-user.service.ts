@@ -15,7 +15,7 @@ export class AdminUserService {
         private httpHeaderService: HttpHeaderService,
         private errorService: ErrorService) { }
 
-    getUsers(): Observable<User[]> {
+    getUsers(): Observable<{} | User[]> {
         let options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .get<User[]>(environment.serverAddress + '/admin/users', options)
