@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatTableDataSource, MatTable } from '@angular/material';
 import { DataAgencyDialogComponent } from 'src/app/administration/components/modal-administation/data-agency-dialog/data-agency-dialog.component';
+import { DataUserManagementDialogComponent} from 'src/app/administration/components/modal-administation/data-user-management-dialog/data-user-management-dialog.component';
 import { AdminService } from 'src/app/administration/services/admin.service';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
 import { SubMenusService } from 'src/app/services/subMenus.service';
@@ -9,6 +10,7 @@ import { SubMenu } from 'src/app/header/models/menu';
 import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 import { SoftSkill } from '../../models/SoftSkill';
 import { Agency } from '../../models/Agency';
+import { User } from '../../models/User';
 import { DataSoftSkillDialogComponent } from '../modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ErrorService } from 'src/app/services/error.service';
@@ -32,6 +34,12 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   agenciesSources: MatTableDataSource<any[]> = new MatTableDataSource();
   displayedAgencyColumns: string[] = ['Nom', 'Lieu', 'Type de lieu', 'Delete'];
 
+
+  // User data 
+  users: User[];
+  usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
+  displayedUserColumns: string[] = ['Nom', 'Prénom', 'Email', 'Mot de passe', 'rôle', 'Delete'];
+
   constructor(
     private adminService: AdminService,
     private dialog: MatDialog,
@@ -45,6 +53,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.submenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
     this.fetchSoftSkills();
     this.fetchAgencies();
+    this.fetchUsers();
   }
 
   ngOnDestroy() {
@@ -66,6 +75,20 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
         this.agencies.push(new Agency(agency.name, agency.place, agency.placeType));
       }
       this.agenciesSources = new MatTableDataSource<any>(this.agencies)
+    });
+  }
+
+  getUser() {
+    return this.users;
+  }
+
+  fetchUsers() {
+    this.users = [];
+    this.adminService.makeRequest('/users', 'get', '').subscribe((usersList: User[]) => {
+      for (const user of usersList) {
+        this.users.push(new User(user.name, user.forName, user.mail, user.role));
+      }
+      this.agenciesSources = new MatTableDataSource<any>(this.users)
     });
   }
 
@@ -336,6 +359,57 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  addNewUser() {
+    console.log(this.users);
+    const user = new User('', '', '','');
+    const dialogUser = this.openDialogUser(user);
+
+    dialogUser.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          user.setName(data.name);
+          user.setForName(data.forName);
+          user.setMail(data.mail);
+          user.setRole(data.role)
+          const postParams = {
+            name: user.getName(),
+            forName: user.getForName(),
+            mail: user.getMail(),
+            role: user.getRole()
+          };
+          this.adminService.makeRequest('/user', 'post', postParams).subscribe((response) => {
+            this.fetchUsers();
+            dialogProgress.close();
+            this.errorService.handleResponse(response);
+          });
+        }
+      });
+  }
+
+  openDialogUser(user: User) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.direction = 'ltr';
+    dialogConfig.closeOnNavigation = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'User',
+      description: 'Utilisateur',
+      name: user.getName(),
+      forName: user.getForName(),
+      email: user.getMail(),
+      role: user.getRole(),
+    };
+
+    return this.dialog.open(DataUserManagementDialogComponent, dialogConfig);
+  }
+
   redirectAfterAction(redirect: string) {
     this.router.navigate([redirect]);
   }
@@ -347,3 +421,4 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.subMenusService.notifySubMenu(subMenu);
   }
 }
+
