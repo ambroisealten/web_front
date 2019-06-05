@@ -1,61 +1,54 @@
-@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-
-/* Styling h1 and links
-––––––––––––––––––––––––––––––––– */
-h1[alt="Simple"] {
-  color: white;
-}
-a[href],
-a[href]:hover {
-  color: grey;
-  font-size: 0.5em;
-  text-decoration: none;
+.synchroniserDiv {
+  margin-top: 5%;
+  margin-bottom: 5%;
 }
 
-body {
-  background: #4a4a4c !important;
+.panel-title {
+  display: -webkit-inline-box;
 }
 
-.inline {
-  display: inline-block;
+.addButton {
+  margin-left: 1%;
+  background-color: #f3f3f3;
 }
 
-.userInformation {
-  margin-left: 2vw;
-  width: 75vw;
-  max-height: 70vh;
-  overflow: auto;
+.removeButton {
+  color: red;
 }
 
-.container {
-  margin: 0%;
-  max-width: 75vw;
+#agencies {
+  margin-bottom: 3%;
 }
 
-.tableRow {
-  cursor: pointer;
+.panel-group .mat-raised-button {
+  margin-left: 1%;
 }
 
-.tableRow :hover {
-  background: #f5f5f5;
+/*
+* Agency Tab + tableau agence
+*/
+
+.agencyTab {
+  width: 100%;
+  padding-left: 25%;
+  padding-top: 2%;
 }
 
-.mat-cell {
-  font-size: 12px;
-}
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+.mat-elevation-z8 {
+  max-height: 30vh !important;
+  height: 25vh !important;
+  overflow: auto !important;
+  width: 50vw;
 }
 
 .mat-header-cell {
-  font-weight: bold;
   color: var(--ALTENLightGray);
-  font-size: 12px;
   background: var(--ALTENBlue);
-  min-width: 100px;
+}
+
+.mat-row:hover {
+  cursor: pointer;
+  background-color: var(--ALTENBlue) !important;
 }
 
 td.mat-cell:first-of-type {
@@ -66,26 +59,78 @@ td.mat-cell:first-of-type {
   background-color: var(--ALTENLightGray);
 }
 
-.mat-row:hover {
+.addButton {
+  float: left;
+}
+
+/*
+* Softskill Tab + tableau agence
+*/
+
+.softSkillTab {
+  width: 100%;
+  height: 60vh;
+  padding-left: 25%;
+  padding-top: 2%;
+}
+
+.example-container {
+  width: 400px;
+  max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.softSkillTab p{
+  min-width : 40px;
+}
+
+h4{
+  margin-top: 1%;
+}
+
+.example-box i:hover{
   cursor: pointer;
-  background-color: var(--ALTENMarinBlue) !important;
 }
 
-.mat-row:hover td {
-  color: white;
+.example-list {
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  width: 40vw;
 }
 
-::ng-deep .mat-sort-header-arrow {
-  color: white !important;
+.example-box.cdk-drag-disabled {
+  background: #ccc;
+  cursor: default;
 }
 
-::ng-deep .mat-sort-header-button {
-  margin: auto;
+.example-box {
+  padding: 20px 10px;
+  color: var(--ALTENDarkGray);
+  border-bottom: solid 1px #ccc;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
 }
 
-.mat-paginator-sticky {
-  bottom: 0px;
-  position: sticky;
-  z-index: 10;
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
+.userTab {
+  margin-left: 25%;
+}

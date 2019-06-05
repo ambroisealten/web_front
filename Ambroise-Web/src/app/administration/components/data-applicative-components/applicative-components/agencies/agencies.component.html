@@ -1,3 +1,25 @@
-<p>
-  agencies works!
-</p>
+<div class="agencyTab">
+  <button class="addButton" mat-icon-button (click)="addAgency()">+</button>
+  <table mat-table [dataSource]="agenciesSources" class="mat-elevation-z8">
+    <ng-container matColumnDef="Nom" sticky>
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let agencies" (click)="changeAgency(agencies)"> {{agencies.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Lieu" sticky>
+      <th mat-header-cell *matHeaderCellDef> Lieu </th>
+      <td mat-cell *matCellDef="let agencies" (click)="changeAgency(agencies)"> {{agencies.place}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Type de lieu" sticky>
+      <th mat-header-cell *matHeaderCellDef> Type de lieu </th>
+      <td mat-cell *matCellDef="let agencies" (click)="changeAgency(agencies)"> {{agencies.placeType}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Delete" sticky>
+      <th mat-header-cell *matHeaderCellDef> Supression </th>
+      <td mat-cell *matCellDef="let agencies" (click)="deleteAgency(agencies)"> <i class="material-icons">
+          delete
+        </i> </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedAgencyColumns" sticky></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedAgencyColumns;"></tr>
+  </table>
+</div>

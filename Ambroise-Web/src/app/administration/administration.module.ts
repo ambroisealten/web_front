@@ -21,6 +21,8 @@ import { LineOfBusinessComponent } from './components/data-applicative-component
 import { AdminJobComponent } from './components/data-applicative-components/applicative-components/admin-job/admin-job.component';
 import { AdminSkillGradeComponent } from './components/data-applicative-components/applicative-components/admin-skill-grade/admin-skill-grade.component';
 import { AdminSkillsComponent } from './components/data-applicative-components/data-quality-components/admin-skills/admin-skills.component';
+import { AdminAgencyService } from './services/admin-agency.service';
+import { AdminSoftSkillService } from './services/admin-softSkill.service';
 import { DataUserUpdateDialogComponent } from './components/modal-administation/data-user-update-dialog/data-user-update-dialog.component';
 
 @NgModule({
@@ -59,7 +61,9 @@ import { DataUserUpdateDialogComponent } from './components/modal-administation/
   ],
   providers: [
     AdminService,
-    AdminUserService
+    AdminUserService,
+    AdminAgencyService,
+    AdminSoftSkillService
   ]
 })
 export class AdministrationModule { }

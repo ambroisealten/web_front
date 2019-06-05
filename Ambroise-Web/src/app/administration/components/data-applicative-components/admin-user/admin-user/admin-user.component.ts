@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { AdminUserService } from 'src/app/administration/services/admin-user.service';
-import { User } from 'src/app/administration/models/User';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { User, UserRole } from 'src/app/administration/models/User';
+import { MatTableDataSource, MatPaginator, MatDialog, MatDialogConfig } from '@angular/material';
+import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
+import { ErrorService } from 'src/app/services/error.service';
+import { DataUserManagementDialogComponent } from '../../../modal-administation/data-user-management-dialog/data-user-management-dialog.component';
 
 @Component({
   selector: 'app-admin-user',
@@ -12,18 +15,24 @@ export class AdminUserComponent implements OnInit, OnDestroy {
 
   // Table
   userDataTable: MatTableDataSource<any[]> = new MatTableDataSource();
-  displayedColumns: string[] = ['Nom Prénom', 'Rôle', 'Agence'];
+  displayedColumns: string[] = ['Nom', 'Prénom', 'Email', 'Rôle', 'Agence', 'Delete'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   users: User[] = [] ; 
 
-  constructor(private adminUserService: AdminUserService) { }
+  constructor(private adminUserService: AdminUserService,
+    private dialog: MatDialog,
+    private errorService: ErrorService) { }
 
   ngOnInit() {
-    this.adminUserService.getUsers().subscribe(users => this.createData(users as User[]))  ; 
+    this.fetchUsers() ; 
   }
 
   ngOnDestroy(){
 
+  }
+
+  fetchUsers(){
+    this.adminUserService.getUsers().subscribe(users => this.createData(users as User[]))  ; 
   }
 
   createData(users: User[]){
@@ -32,7 +41,9 @@ export class AdminUserComponent implements OnInit, OnDestroy {
       this.users = users ; 
       users.forEach(user => {
         let tmpUser = {} ; 
-        tmpUser['Nom Prénom'] = user['name'] + ' ' + user['forname'] ;
+        tmpUser['Nom'] = user['name'] ; 
+        tmpUser['Prénom'] = user['forname'] ;
+        tmpUser['Email'] = user['mail'] ; 
         tmpUser['Rôle'] = user['role'] ; 
         tmpUser['Agence'] = user['agency'] ; 
         dataTable.push(tmpUser) ; 
@@ -40,6 +51,45 @@ export class AdminUserComponent implements OnInit, OnDestroy {
       this.userDataTable = new MatTableDataSource(dataTable) ; 
       this.userDataTable.paginator = this.paginator ; 
     }
+  }
+
+  addNewUser() {
+    const user = new User('', '', '',UserRole.CONSULTANT);
+    const dialogUser = this.openDialogUser(user);
+
+    dialogUser.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          this.adminUserService.createUser(user).subscribe((response) => {
+            this.fetchUsers();
+            dialogProgress.close();
+            this.errorService.handleResponse(response);
+          });
+        }
+      });
+  }
+
+  openDialogUser(user: User) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.direction = 'ltr';
+    dialogConfig.closeOnNavigation = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'User',
+      description: 'Utilisateur',
+      name: user.name,
+      forName: user.forname,
+      email: user.mail,
+      role: user.role,
+    };
+
+    return this.dialog.open(DataUserManagementDialogComponent, dialogConfig);
   }
 
   
