@@ -55,6 +55,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.fetchSoftSkills();
     this.fetchAgencies();
     this.fetchUsers();
+    console.log(this.users);
   }
 
   ngOnDestroy() {
@@ -85,11 +86,11 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   fetchUsers() {
     this.users = [];
-    this.adminService.makeRequest('/users', 'get', '').subscribe((usersList: User[]) => {
+    this.adminService.makeRequest('/admin/users', 'get', '').subscribe((usersList: User[]) => {
       for (const user of usersList) {
         this.users.push(new User(user.name, user.forname, user.mail, user.role));
       }
-      this.agenciesSources = new MatTableDataSource<any>(this.users)
+      this.usersSources = new MatTableDataSource<any>(this.users)
     });
   }
 
