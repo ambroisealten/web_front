@@ -181,7 +181,53 @@
     </mat-tab-group>
 
   </mat-tab>
+  <!-- Début Utilisateur  Panel -->
+  <mat-tab label="Gestion des Utilisateurs">
+    <div class="userTab">
+      <button class="addButton" mat-icon-button (click)="addNewUser()">+</button>
+      <table mat-table [dataSource]="agenciesSources" class="mat-elevation-z8">
+        <ng-container matColumnDef="Nom" sticky>
+          <th mat-header-cell *matHeaderCellDef> Nom </th>
+          <td mat-cell *matCellDef="let agencies"
+            (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Prénom" sticky>
+          <th mat-header-cell *matHeaderCellDef> Prénom </th>
+          <td mat-cell *matCellDef="let agencies"
+            (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Email" sticky>
+          <th mat-header-cell *matHeaderCellDef> email </th>
+          <td mat-cell *matCellDef="let agencies"
+            (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.place}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Mot de passe" sticky>
+          <th mat-header-cell *matHeaderCellDef> Mot de passe </th>
+          <td mat-cell *matCellDef="let agencies"
+            (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.placeType}} </td>
+        </ng-container>
+        <ng-container matColumnDef="rôle" sticky>
+          <th mat-header-cell *matHeaderCellDef> Rôle </th>
+          <td mat-cell *matCellDef="let agencies"
+            (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.placeType}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Delete" sticky>
+          <th mat-header-cell *matHeaderCellDef> Supression </th>
+          <td mat-cell *matCellDef="let agencies"
+            (click)="deleteAgency(agencies.name, agencies.place, agencies.placeType)"> <i class="material-icons">
+              delete
+            </i> </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedUserColumns" sticky></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedUserColumns;"></tr>
+      </table>
+    </div>
+  </mat-tab>
+  <!-- Fin Utilisateur  Panel -->
 </mat-tab-group>
+
+
 
 <!-- -->
 <div class="admin-app-data">

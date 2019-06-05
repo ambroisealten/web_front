@@ -19,7 +19,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   constructor(private adminUserService: AdminUserService) { }
 
   ngOnInit() {
-    this.adminUserService.getUsers().subscribe(users => this.createData(users))  ; 
+    this.adminUserService.getUsers().subscribe(users => this.createData(users as User[]))  ; 
   }
 
   ngOnDestroy(){
