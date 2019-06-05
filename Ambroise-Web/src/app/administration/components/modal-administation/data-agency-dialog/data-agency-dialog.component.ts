@@ -16,7 +16,7 @@ export class DataAgencyDialogComponent implements OnInit {
   description: string;
   errorMessage: string;
 
-  placeTypes: string[] = ['Ville', 'Region', 'Departement'];
+  placeTypes: string[] = ['Ville', 'Région', 'Département'];
 
   constructor(
     private fb: FormBuilder,
