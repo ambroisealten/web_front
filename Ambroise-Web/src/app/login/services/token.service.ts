@@ -30,7 +30,6 @@ export class TokenService {
      * @param formInputPswd
      */
     signIn(formInputMail: string, formInputPswd: string, stayConnected: boolean) {
-
         // Paramètres à envoyée au serveur pour vérifier la connexion
         const postParams = {
             mail: formInputMail,
