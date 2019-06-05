@@ -307,6 +307,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
   }
 
   openDialogAgency(agency: Agency) {
+    console.log("prout lucas");
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
