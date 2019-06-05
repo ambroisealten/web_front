@@ -8,6 +8,7 @@ import { HeaderUserComponent } from './components/header-user/header-user.compon
 //  Services 
 import { HeaderService } from './services/header.services';
 import { MatIconModule } from '@angular/material';
+import { TokenService } from '../login/services/token.service';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { MatIconModule } from '@angular/material';
     HeaderUserComponent
   ],
   providers: [
-    HeaderService
+    HeaderService,
+    TokenService
   ],
   entryComponents: [ 
     HeaderUserComponent

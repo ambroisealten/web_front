@@ -49,7 +49,7 @@ export class ErrorService {
     }
 
     refreshToken() {
-        const options = this.httpHeaderService.getHttpHeadersForRefreshToken();
+        const options = this.httpHeaderService.getHttpHeaders();
 
         return this.httpClient
             .get(environment.serverAddress + '/login', options)

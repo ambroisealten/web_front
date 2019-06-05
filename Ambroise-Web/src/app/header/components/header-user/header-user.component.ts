@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Menu } from '../../models/menu';
 import { IsNotLoginService } from 'src/app/services/isNotLogin.service';
 import { HeaderService } from '../../services/header.services';
+import { TokenService } from 'src/app/login/services/token.service';
 @Component({
   selector: 'app-header-user',
   templateUrl: './header-user.component.html',
@@ -19,7 +20,8 @@ export class HeaderUserComponent implements OnInit {
     private titleService: Title,
     private router: Router,
     private isNotLoginService: IsNotLoginService,
-    private headerService: HeaderService) {
+    private headerService: HeaderService,
+    private tokenService: TokenService ) {
     this.initModules();
   }
 
@@ -67,11 +69,10 @@ export class HeaderUserComponent implements OnInit {
   }
 
   accountClick() {
-    window.sessionStorage.clear();
     this.modules = [];
     this.done = false;
     this.isNotLoginService.notifyLoginOut(false);
-    this.router.navigate(['/login']);
+    this.tokenService.signOut();
   }
 
   isDone(): boolean {
