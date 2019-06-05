@@ -18,12 +18,14 @@
   <mat-form-field>
     <mat-label>Rôle</mat-label>
     <mat-select>
-      <mat-option *ngFor="let user of users" [value]="users">
-        {{user}}
+      <mat-option *ngFor="let food of foods" [value]="food.value">
+        {{food.viewValue}}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <p class="errorMessage"> {{ errorMessage }} </p>
+  <button class="mat-raised-button" (click)="resetPass()">Réinitialiser le mot de passe</button>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>

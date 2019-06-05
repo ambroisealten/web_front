@@ -21,6 +21,7 @@ import { LineOfBusinessComponent } from './components/data-applicative-component
 import { AdminJobComponent } from './components/data-applicative-components/applicative-components/admin-job/admin-job.component';
 import { AdminSkillGradeComponent } from './components/data-applicative-components/applicative-components/admin-skill-grade/admin-skill-grade.component';
 import { AdminSkillsComponent } from './components/data-applicative-components/data-quality-components/admin-skills/admin-skills.component';
+import { DataUserUpdateDialogComponent } from './components/modal-administation/data-user-update-dialog/data-user-update-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { AdminSkillsComponent } from './components/data-applicative-components/d
     LineOfBusinessComponent,
     AdminJobComponent,
     AdminSkillGradeComponent,
-    AdminSkillsComponent
+    AdminSkillsComponent,
+    DataUserUpdateDialogComponent
   ],
   entryComponents: [
     DataFileDialogComponent,

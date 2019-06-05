@@ -411,6 +411,51 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     return this.dialog.open(DataUserManagementDialogComponent, dialogConfig);
   }
 
+  changeUser(userName, userForName, userMail, userRole) {
+    const user = new User(userName, userForName, userMail, userRole);
+    const dialogUser = this.openDialogModifUser(user);
+
+    dialogUser.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          agency.setName(data.name);
+          agency.setPlace(data.place);
+          agency.setPlaceType(data.placeType);
+          const postParams = {
+            name: agency.getName(),
+            place: agency.getPlace(),
+            placeType: agency.getPlaceType()
+          };
+          this.adminService.makeRequest('/agency', 'post', postParams).subscribe((response) => {
+            this.fetchAgencies();
+            dialogProgress.close();
+            this.errorService.handleResponse(response);
+          });
+        }
+      });
+  }
+
+  openDialogModifUser(user: User) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.direction = 'ltr';
+    dialogConfig.closeOnNavigation = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'User',
+      description: 'Utilisateur',
+      name: user.name,
+      forName: user.forname,
+      email: user.mail,
+      role: user.role,
+    };
+  }
+
   redirectAfterAction(redirect: string) {
     this.router.navigate([redirect]);
   }
