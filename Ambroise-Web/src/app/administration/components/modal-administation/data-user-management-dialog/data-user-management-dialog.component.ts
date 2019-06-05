@@ -3,6 +3,7 @@ import { ModalSkillsCandidateComponent } from 'src/app/competences/components/ac
 import { MatDialogRef } from '@angular/material/dialog';
 import { User, UserRole } from 'src/app/administration/models/User';
 import { MatTableDataSource } from '@angular/material';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 
 @Component({
@@ -13,7 +14,8 @@ import { MatTableDataSource } from '@angular/material';
 
 export class DataUserManagementDialogComponent implements OnInit {
 
-  forName: string = '';
+  form: FormGroup;
+  forname: string = '';
   name: string= '';
   emailInput: string= '';
   role: boolean = false;
@@ -22,15 +24,40 @@ export class DataUserManagementDialogComponent implements OnInit {
   usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
   
   isCreateButtonDisabled: boolean = true;
+  valide: boolean = true;
+  errorMessage: string;
 
-  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>, ) { }
+
+  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<DataUserManagementDialogComponent> ) { }
 
   ngOnInit() {
     this.users = Object.keys(UserRole);
+    this.form = this.fb.group({
+      name: [this.name, []],
+      forname: [this.forname, []],
+      mail: [this.emailInput, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])],
+      role: [this.role, []],
+    })
   }
 
-  getRole() {
+  onChange() {
+    if (this.name == "" || this.forname == "" || this.emailInput == "") {
+      this.valide = true;
+    }
+    else {
+      this.errorMessage = "";
+      this.valide = false;
+    }
+  }
+  
+  save() {
+    this.dialogRef.close(this.form.value);
+  }
 
+  close() {
+    this.dialogRef.close();
   }
 
 

@@ -3,23 +3,19 @@
 <mat-dialog-content [formGroup]="form">
 
   <mat-form-field>
-    <input matInput placeholder="Nom" formControlName="name" (keyup)="onChange($event)">
+    <input matInput placeholder="Nom" required formControlName="name" [(ngModel)]="name" (keyup)="onChange($event)">
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Prénom" formControlName="prenom">
+    <input matInput placeholder="Prénom" required [(ngModel)]="forname" formControlName="forname">
   </mat-form-field>
   <mat-form-field>
-    <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="emailInput"
-      (ngModelChange)="emailChanged($event)" required pattern="([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
-      #test="ngModel" (input)="checkEnableCreateButton()">
-    <mat-error *ngIf="test.invalid && test.errors.pattern">L'email doit être valide.</mat-error>
-    <mat-error *ngIf="test.invalid && test.errors.required">L'email est obligatoire.</mat-error>
+    <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="emailInput" formControlName="mail" required >
   </mat-form-field>
   <mat-form-field>
     <mat-label>Rôle</mat-label>
     <mat-select>
-      <mat-option *ngFor="let food of foods" [value]="food.value">
-        {{food.viewValue}}
+      <mat-option *ngFor="let user of users" [value]="users">
+        {{user}}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -30,5 +26,5 @@
 
 <mat-dialog-actions>
   <button class="mat-raised-button" (click)="close()">Fermer</button>
-  <button class="mat-raised-button mat-primary" (click)="save()">Enregistrer</button>
+  <button class="mat-raised-button mat-primary" [disabled]="!form.valid" (click)="save()">Enregistrer</button>
 </mat-dialog-actions>

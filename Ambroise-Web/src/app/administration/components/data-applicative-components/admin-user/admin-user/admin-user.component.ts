@@ -69,6 +69,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
         }
       });
   }
+  
 
   openDialogUser(user: User) {
     const dialogConfig = new MatDialogConfig();
