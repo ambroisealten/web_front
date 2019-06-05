@@ -1,36 +1,24 @@
 export class User {
+    mail: string ;
+    name: string; 
+    forname: string; 
+    role: UserRole;
+    agency: string;
 
-    constructor(public name: string, public forName: string, public mail: string, public role: string) { }
-
-    getName() {
-        return this.name;
+    constructor(name: string, forName: string, mail: string, role: UserRole) {
+        this.name = name ; 
+        this.forname = forName ; 
+        this.mail = mail ; 
+        this.role = role ; 
     }
 
-    setName(name: string) {
-        this.name = name;
-    }
+}
 
-    getForName() {
-        return this.forName;
-    }
-
-    setForName(forName: string) {
-        this.forName = forName;
-    }
-
-    getMail() {
-        return this.mail;
-    }
-
-    setMail(mail: string) {
-        this.mail = mail;
-    }
-
-    getRole() {
-        return this.role;
-    }
-
-    setRole(role: string) {
-        this.role = role;
-    }
+export enum UserRole {
+    MANAGER_ADMIN = "Manager Admin",
+    CDR_ADMIN = "CDR Admin",
+    DEACTIVATED = "Deactivated", 
+    CONSULTANT = "Consultant", 
+    CDR = "CDR", 
+    MANAGER = "Manager",
 }

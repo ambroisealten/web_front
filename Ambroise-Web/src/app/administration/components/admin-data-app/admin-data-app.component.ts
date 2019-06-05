@@ -14,6 +14,7 @@ import { User } from '../../models/User';
 import { DataSoftSkillDialogComponent } from '../modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ErrorService } from 'src/app/services/error.service';
+import { UserRole } from 'src/app/administration/models/User' ; 
 
 @Component({
   selector: 'app-admin-data-app',
@@ -86,7 +87,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.users = [];
     this.adminService.makeRequest('/users', 'get', '').subscribe((usersList: User[]) => {
       for (const user of usersList) {
-        this.users.push(new User(user.name, user.forName, user.mail, user.role));
+        this.users.push(new User(user.name, user.forname, user.mail, user.role));
       }
       this.agenciesSources = new MatTableDataSource<any>(this.users)
     });
@@ -361,23 +362,22 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
 
   addNewUser() {
-    console.log(this.users);
-    const user = new User('', '', '','');
+    const user = new User('', '', '',UserRole.CONSULTANT);
     const dialogUser = this.openDialogUser(user);
 
     dialogUser.afterClosed().subscribe(
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          user.setName(data.name);
-          user.setForName(data.forName);
-          user.setMail(data.mail);
-          user.setRole(data.role)
+          user.name = data.name
+          user.forname = data.forname
+          user.mail = data.mail
+          user.role = data.role
           const postParams = {
-            name: user.getName(),
-            forName: user.getForName(),
-            mail: user.getMail(),
-            role: user.getRole()
+            name: user.name,
+            forName: user.forname, 
+            mail: user.mail,
+            role: user.role
           };
           this.adminService.makeRequest('/user', 'post', postParams).subscribe((response) => {
             this.fetchUsers();
@@ -401,10 +401,10 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       id: 1,
       title: 'User',
       description: 'Utilisateur',
-      name: user.getName(),
-      forName: user.getForName(),
-      email: user.getMail(),
-      role: user.getRole(),
+      name: user.name,
+      forName: user.forname,
+      email: user.mail,
+      role: user.role,
     };
 
     return this.dialog.open(DataUserManagementDialogComponent, dialogConfig);
