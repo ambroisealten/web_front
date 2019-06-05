@@ -1,0 +1,91 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+/* Styling h1 and links
+––––––––––––––––––––––––––––––––– */
+h1[alt="Simple"] {
+  color: white;
+}
+a[href],
+a[href]:hover {
+  color: grey;
+  font-size: 0.5em;
+  text-decoration: none;
+}
+
+body {
+  background: #4a4a4c !important;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.userInformation {
+  margin-left: 2vw;
+  width: 75vw;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.container {
+  margin: 0%;
+  max-width: 75vw;
+}
+
+.tableRow {
+  cursor: pointer;
+}
+
+.tableRow :hover {
+  background: #f5f5f5;
+}
+
+.mat-cell {
+  font-size: 12px;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-header-cell {
+  font-weight: bold;
+  color: var(--ALTENLightGray);
+  font-size: 12px;
+  background: var(--ALTENBlue);
+  min-width: 100px;
+}
+
+td.mat-cell:first-of-type {
+  padding-left: 0 !important;
+}
+
+.mat-row:nth-child(even) {
+  background-color: var(--ALTENLightGray);
+}
+
+.mat-row:hover {
+  cursor: pointer;
+  background-color: var(--ALTENMarinBlue) !important;
+}
+
+.mat-row:hover td {
+  color: white;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  color: white !important;
+}
+
+::ng-deep .mat-sort-header-button {
+  margin: auto;
+}
+
+.mat-paginator-sticky {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
+}
+

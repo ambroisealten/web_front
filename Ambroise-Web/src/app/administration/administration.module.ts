@@ -12,6 +12,7 @@ import { DataFileDialogComponent } from './components/modal-administation/data-f
 import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spinner.component';
 import { DataSoftSkillDialogComponent } from './components/modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
 import { AdminUserComponent } from './components/admin-user/admin-user/admin-user.component';
+import { AdminUserService } from './services/admin-user.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { AdminUserComponent } from './components/admin-user/admin-user/admin-use
     FormsModule
   ],
   providers: [
-    AdminService
+    AdminService,
+    AdminUserService
   ]
 })
 export class AdministrationModule { }
