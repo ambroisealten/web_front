@@ -28,7 +28,7 @@ export class AdminSoftSkillComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-
+    this.dialog.closeAll() ;
   }
 
 

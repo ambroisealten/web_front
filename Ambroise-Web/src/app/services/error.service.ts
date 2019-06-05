@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoggerService, LogLevel } from './logger.service';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material';
 
 @Injectable()
 export class ErrorService {
 
     constructor(
         private router: Router,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService,
+        private dialog: MatDialog) { }
 
     handleResponse(response) {
         if (response.stackTrace != null) {
@@ -92,6 +94,7 @@ export class ErrorService {
      * @author Quentin Della-Pasqua
      */
     handleError(error): any {
+        this.dialog.closeAll() ; 
         const statusError = error.error['status'];
         let messageError = error.error['message'];
         switch (statusError) {

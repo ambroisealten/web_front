@@ -23,6 +23,7 @@ import { IsNotLoginService } from './services/isNotLogin.service' ;
 import { SubMenusService } from './services/subMenus.service';
 import { ErrorService } from './services/error.service';
 import { HttpHeaderService } from './services/httpHeaderService';
+import { MatDialogModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { HttpHeaderService } from './services/httpHeaderService';
     HttpClientModule,
     ToastrModule.forRoot({
       preventDuplicates: true
-    }) 
+    }) ,
+    MatDialogModule
   ],
   providers: [
     LoggerService,

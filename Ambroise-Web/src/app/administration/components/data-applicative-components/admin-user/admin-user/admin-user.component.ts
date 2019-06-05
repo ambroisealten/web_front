@@ -28,7 +28,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-
+    this.dialog.closeAll() ;
   }
 
   fetchUsers(){

@@ -28,7 +28,7 @@ export class AgenciesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-
+    this.dialog.closeAll() ;
   }
 
   fetchAgencies() {
