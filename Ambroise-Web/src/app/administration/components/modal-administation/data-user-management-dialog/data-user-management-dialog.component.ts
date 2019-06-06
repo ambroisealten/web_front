@@ -33,8 +33,6 @@ export class DataUserManagementDialogComponent implements OnInit {
 
   ngOnInit() {
     this.roles = Object.keys(UserRole);
-    console.log(this.roles) ; 
-    this.role = this.roles[0] ; 
     this.form = this.fb.group({
       name: [this.name, []],
       forname: [this.forname, []],
