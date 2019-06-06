@@ -37,7 +37,6 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   }
 
   createData(users: User[]) {
-    console.log("prout");
     let dataTable: any[] = [];
     if (users.length > 0) {
       this.users = users;
@@ -50,10 +49,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
         tmpUser['Agence'] = user['agency'];
         dataTable.push(tmpUser);
       });
-      console.log("schlouze");
-      console.log(dataTable);
       this.userDataTable = new MatTableDataSource(dataTable);
-      console.log(this.userDataTable);
       this.userDataTable.paginator = this.paginator;
     }
   }
@@ -118,7 +114,6 @@ export class AdminUserComponent implements OnInit, OnDestroy {
           user.mail = data.mail;
           user.role = data.role;
           user.oldMail = oldMail;
-          console.log(user.role);
           this.adminUserService.updateUser(user).subscribe((response) => {
             this.fetchUsers();
             dialogProgress.close();

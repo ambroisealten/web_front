@@ -55,13 +55,8 @@ export class DataUserManagementDialogComponent implements OnInit {
       this.valide = false;
     }
   }
-
-  onValueChange(){
-    console.log(this.role) ; 
-  }
   
   save() {
-    console.log(this.form.value);
     this.dialogRef.close(this.form.value);
   }
 

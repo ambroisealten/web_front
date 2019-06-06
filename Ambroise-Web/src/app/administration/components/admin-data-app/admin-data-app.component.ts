@@ -55,7 +55,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.fetchSoftSkills();
     this.fetchAgencies();
     this.fetchUsers();
-    console.log(this.users);
   }
 
   ngOnDestroy() {
