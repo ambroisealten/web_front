@@ -88,7 +88,7 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
     this.users = [];
     this.adminService.makeRequest('/admin/users', 'get', '').subscribe((usersList: User[]) => {
       for (const user of usersList) {
-        this.users.push(new User(user.name, user.forname, user.mail, user.role));
+        this.users.push(new User(user.name, user.forname, user.mail, user.role,''));
       }
       this.usersSources = new MatTableDataSource<any>(this.users)
     });
@@ -363,22 +363,24 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
 
   addNewUser() {
-    const user = new User('', '', '',UserRole.CONSULTANT);
+    const user = new User('', '', '',UserRole.CONSULTANT,'');
     const dialogUser = this.openDialogUser(user);
 
     dialogUser.afterClosed().subscribe(
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          user.name = data.name
-          user.forname = data.forname
-          user.mail = data.mail
-          user.role = data.role
+          user.name = data.name;
+          user.forname = data.forname;
+          user.mail = data.mail;
+          user.role = data.role;
+          user.pswd = data.pswd;
           const postParams = {
             name: user.name,
             forName: user.forname, 
             mail: user.mail,
-            role: user.role
+            role: user.role,
+            pswd: user.pswd
           };
           this.adminService.makeRequest('/user', 'post', postParams).subscribe((response) => {
             this.fetchUsers();

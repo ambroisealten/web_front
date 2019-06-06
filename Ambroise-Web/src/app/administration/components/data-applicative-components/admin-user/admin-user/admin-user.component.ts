@@ -54,13 +54,18 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   }
 
   addNewUser() {
-    const user = new User('', '', '',UserRole.CONSULTANT);
+    const user = new User('', '', '',UserRole.CONSULTANT,'');
     const dialogUser = this.openDialogUser(user);
 
     dialogUser.afterClosed().subscribe(
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          user.name = data.name;
+          user.forname = data.forname;
+          user.mail = data.mail;
+          user.role = data.role;
+          user.pswd = data.pswd;
           this.adminUserService.createUser(user).subscribe((response) => {
             this.fetchUsers();
             dialogProgress.close();

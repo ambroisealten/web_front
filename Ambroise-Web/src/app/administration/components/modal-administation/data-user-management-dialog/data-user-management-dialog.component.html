@@ -12,6 +12,9 @@
     <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="emailInput" formControlName="mail" required (keyup)="onChange($event)">
   </mat-form-field>
   <mat-form-field>
+    <input matInput id="pswd" type="password" placeholder="Mot de passe" [(ngModel)]="pswd" formControlName="pswd" required (keyup)="onChange($event)">
+  </mat-form-field>
+  <mat-form-field>
     <mat-label>Rôle</mat-label>
     <mat-select>
       <mat-option *ngFor="let user of users" [value]="users" >

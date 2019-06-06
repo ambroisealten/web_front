@@ -18,6 +18,7 @@ export class DataUserManagementDialogComponent implements OnInit {
   forname: string = '';
   name: string= '';
   emailInput: string= '';
+  pswd: string = '';
   role: boolean = false;
 
   users: string[];
@@ -35,6 +36,7 @@ export class DataUserManagementDialogComponent implements OnInit {
     this.form = this.fb.group({
       name: [this.name, []],
       forname: [this.forname, []],
+      pswd : [this.pswd,[]],
       mail: [this.emailInput, Validators.compose([
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])],
@@ -43,7 +45,7 @@ export class DataUserManagementDialogComponent implements OnInit {
   }
 
   onChange() {
-    if (this.name == "" || this.forname == "" || this.emailInput == "") {
+    if (this.name == "" || this.forname == "" || this.emailInput == "" || this.pswd == "") {
       this.valide = true;
     }
     else {
