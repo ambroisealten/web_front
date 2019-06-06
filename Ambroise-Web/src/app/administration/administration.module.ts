@@ -49,7 +49,8 @@ import { DataUserUpdateDialogComponent } from './components/modal-administation/
     DataAgencyDialogComponent,
     ProgressSpinnerComponent,
     DataSoftSkillDialogComponent,
-    DataUserManagementDialogComponent
+    DataUserManagementDialogComponent,
+    DataUserUpdateDialogComponent
   ],
   imports: [
     CommonModule,

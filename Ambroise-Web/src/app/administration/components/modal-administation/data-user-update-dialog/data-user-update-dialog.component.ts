@@ -12,27 +12,28 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 })
 export class DataUserUpdateDialogComponent implements OnInit {
 
+  
   form: FormGroup;
   forname: string = '';
-  name: string= '';
-  emailInput: string= '';
+  name: string = '';
+  emailInput: string = '';
   role: boolean = false;
 
   users: string[];
   usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
-  
+
   isCreateButtonDisabled: boolean = true;
   valide: boolean = true;
   errorMessage: string;
-  
+
   constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<DataUserUpdateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataUser) {
-      this.errorMessage = "";
-      this.name = dataUser.name;
-      this.forname = dataUser.forname;
-      this.emailInput = dataUser.email;
-      this.role = dataUser.role;
-    }
+    this.errorMessage = "";
+    this.name = dataUser.name;
+    this.forname = dataUser.forName;
+    this.emailInput = dataUser.email;
+    this.role = dataUser.role;
+  }
 
   ngOnInit() {
     this.users = Object.keys(UserRole);
@@ -46,9 +47,9 @@ export class DataUserUpdateDialogComponent implements OnInit {
     })
   }
 
-  resetPass(){
-    LoggerService.log("Reset pswd",LogLevel.DEBUG);
-    this.dialogRef.close();
+  resetPass() {
+    LoggerService.log("Reset pswd", LogLevel.DEBUG);
+    //this.dialogRef.close();
   }
 
   save() {

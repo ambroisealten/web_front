@@ -19,9 +19,9 @@ export class DataUserManagementDialogComponent implements OnInit {
   name: string= '';
   emailInput: string= '';
   pswd: string = '';
-  role: boolean = false;
+  role: string ;
 
-  users: string[];
+  roles: string[];
   usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
   
   isCreateButtonDisabled: boolean = true;
@@ -32,7 +32,9 @@ export class DataUserManagementDialogComponent implements OnInit {
   constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<DataUserManagementDialogComponent> ) { }
 
   ngOnInit() {
-    this.users = Object.keys(UserRole);
+    this.roles = Object.keys(UserRole);
+    console.log(this.roles) ; 
+    this.role = this.roles[0] ; 
     this.form = this.fb.group({
       name: [this.name, []],
       forname: [this.forname, []],
@@ -53,8 +55,15 @@ export class DataUserManagementDialogComponent implements OnInit {
       this.valide = false;
     }
   }
+
+  onValueChange(){
+    console.log(this.role) ; 
+  }
   
   save() {
+    console.log(this.role)
+    console.log("Value")
+    console.log(this.form.value) ; 
     this.dialogRef.close(this.form.value);
   }
 

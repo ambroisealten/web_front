@@ -5,6 +5,7 @@ import { MatTableDataSource, MatPaginator, MatDialog, MatDialogConfig } from '@a
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
 import { ErrorService } from 'src/app/services/error.service';
 import { DataUserManagementDialogComponent } from '../../../modal-administation/data-user-management-dialog/data-user-management-dialog.component';
+import { DataUserUpdateDialogComponent } from '../../../modal-administation/data-user-update-dialog/data-user-update-dialog.component';
 
 @Component({
   selector: 'app-admin-user',
@@ -70,6 +71,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
             this.fetchUsers();
             dialogProgress.close();
             this.errorService.handleResponse(response);
+            this.fetchUsers();
           });
         }
       });
@@ -98,5 +100,51 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     return this.dialog.open(DataUserManagementDialogComponent, dialogConfig);
   }
 
+  updateUser(updateUser) {
+    const oldMail = updateUser.Email;
+    const user = new User(updateUser.Nom, updateUser.Prénom, updateUser.Email, updateUser.Rôle,'');
+    const dialogUser = this.openDialogUpdateUser(user);
+
+    dialogUser.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          user.name = data.name;
+          user.forname = data.forname;
+          user.mail = data.mail;
+          user.role = data.role;
+          user.oldMail = oldMail;
+          console.log(user.role);
+          this.adminUserService.updateUser(user).subscribe((response) => {
+            this.fetchUsers();
+            dialogProgress.close();
+            this.errorService.handleResponse(response);
+            this.fetchUsers();
+          });
+        }
+      });
+  }
+
+  openDialogUpdateUser(user) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.direction = 'ltr';
+    dialogConfig.closeOnNavigation = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'User',
+      description: 'UpdateUtilisateur',
+      name: user.name,
+      forName: user.forname,
+      email: user.mail,
+      role: user.role,
+    };
+    return this.dialog.open(DataUserUpdateDialogComponent, dialogConfig);
+
+  }
   
 }

@@ -16,9 +16,9 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Rôle</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let user of users" [value]="users" >
-        {{user}}
+    <mat-select [(ngModel)]="role" (selectionChange)="onValueChange()">
+      <mat-option *ngFor="let roleList of roles" [(value)]="roleList" >
+        {{roleList}}
       </mat-option>
     </mat-select>
   </mat-form-field>
