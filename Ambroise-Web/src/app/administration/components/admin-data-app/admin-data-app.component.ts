@@ -207,7 +207,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
 
   deleteAgency(agencyName, agencyPlace, agencyPlaceType) {
     //TODO
-
   }
   changeAgency(agencyName, agencyPlace, agencyPlaceType) {
 

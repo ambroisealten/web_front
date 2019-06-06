@@ -47,11 +47,6 @@ export class DataUserUpdateDialogComponent implements OnInit {
     })
   }
 
-  resetPass() {
-    LoggerService.log("Reset pswd", LogLevel.DEBUG);
-    //this.dialogRef.close();
-  }
-
   save() {
     this.dialogRef.close(this.form.value);
   }

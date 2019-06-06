@@ -16,7 +16,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
 
   // Table
   userDataTable: MatTableDataSource<any[]> = new MatTableDataSource();
-  displayedColumns: string[] = ['Nom', 'Prénom', 'Email', 'Rôle', 'Agence', 'Delete'];
+  displayedColumns: string[] = ['Nom', 'Prénom', 'Email', 'Rôle', 'Agence', 'Delete', 'Re-initialization'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   users: User[] = [];
 
@@ -37,6 +37,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   }
 
   createData(users: User[]) {
+    console.log("prout");
     let dataTable: any[] = [];
     if (users.length > 0) {
       this.users = users;
@@ -49,7 +50,10 @@ export class AdminUserComponent implements OnInit, OnDestroy {
         tmpUser['Agence'] = user['agency'];
         dataTable.push(tmpUser);
       });
+      console.log("schlouze");
+      console.log(dataTable);
       this.userDataTable = new MatTableDataSource(dataTable);
+      console.log(this.userDataTable);
       this.userDataTable.paginator = this.paginator;
     }
   }
@@ -150,6 +154,12 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   deleteUser(mail) {
     this.adminUserService.deleteUser(mail).subscribe((response) => {
       this.fetchUsers();
+      this.errorService.handleResponse(response);
+    });
+  }
+
+  changePass(mail) {
+    this.adminUserService.resetPassword(mail).subscribe((response) => {
       this.errorService.handleResponse(response);
     });
   }

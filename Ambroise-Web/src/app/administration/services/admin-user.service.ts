@@ -41,7 +41,14 @@ export class AdminUserService {
     deleteUser(mail: string) {
         let options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
-            .delete<User>(environment.serverAddress + '/admin/user' + mail, options)
+            .delete<User>(environment.serverAddress + '/admin/deleteUser/' + mail, options)
+            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+    }
+
+    resetPassword(mail: string) {
+        let options = this.httpHeaderService.getHttpHeaders();
+        return this.httpClient
+            .put<User>(environment.serverAddress + '/admin/user/resetPwd/'+ mail, '', options)
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
     }
 
