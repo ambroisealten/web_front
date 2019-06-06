@@ -23,6 +23,7 @@ import { AdminSkillGradeComponent } from './components/data-applicative-componen
 import { AdminSkillsComponent } from './components/data-applicative-components/data-quality-components/admin-skills/admin-skills.component';
 import { AdminAgencyService } from './services/admin-agency.service';
 import { AdminSoftSkillService } from './services/admin-softSkill.service';
+import { DataUserUpdateDialogComponent } from './components/modal-administation/data-user-update-dialog/data-user-update-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,14 +41,16 @@ import { AdminSoftSkillService } from './services/admin-softSkill.service';
     LineOfBusinessComponent,
     AdminJobComponent,
     AdminSkillGradeComponent,
-    AdminSkillsComponent
+    AdminSkillsComponent,
+    DataUserUpdateDialogComponent
   ],
   entryComponents: [
     DataFileDialogComponent,
     DataAgencyDialogComponent,
     ProgressSpinnerComponent,
     DataSoftSkillDialogComponent,
-    DataUserManagementDialogComponent
+    DataUserManagementDialogComponent,
+    DataUserUpdateDialogComponent
   ],
   imports: [
     CommonModule,

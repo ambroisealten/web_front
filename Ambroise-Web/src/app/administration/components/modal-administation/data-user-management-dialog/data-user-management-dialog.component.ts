@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UserRole } from '../../../models/User';
 
-
-export interface Food {
-  value: string;
-  viewValue: string;
-}
 
 @Component({
   selector: 'app-data-user-management-dialog',
@@ -14,25 +12,61 @@ export interface Food {
   styleUrls: ['./data-user-management-dialog.component.scss']
 })
 
-
 export class DataUserManagementDialogComponent implements OnInit {
+  description: string = "Création d'un utilisateur";
 
-  forName: string = '';
+  form: FormGroup;
+  forname: string = '';
   name: string= '';
   emailInput: string= '';
-  role: boolean = false;
+  pswd: string = '';
+  role: string = "CONSULTANT";
 
-  isCreateButtonDisabled: boolean = true;
-
-  constructor(private dialogRef: MatDialogRef<ModalSkillsCandidateComponent>, ) { }
-
-  foods: Food[] = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
-  ];
+  roles: string[];
+  usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
   
+  isCreateButtonDisabled: boolean = true;
+  valide: boolean = true;
+  errorMessage: string;
+
+
+  constructor(private fb: FormBuilder, private dialogRef: MatDialogRef<DataUserManagementDialogComponent> ) { }
+
   ngOnInit() {
+    this.roles = Object.keys(UserRole);
+    this.form = this.fb.group({
+      name: [this.name, []],
+      forname: [this.forname, []],
+      pswd : [this.pswd,[]],
+      mail: [this.emailInput, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])],
+      role: [this.role, []],
+    })
+  }
+
+
+  onChange() {
+    if (this.name == "" || this.forname == "" || this.emailInput == "" || this.pswd == "") {
+      this.valide = true;
+    }
+    else {
+      this.errorMessage = "";
+      this.valide = false;
+    }
+  }
+
+  onValueChange(){
+    console.log(this.role) ; 
+  }
+  
+  save() {
+    console.log(this.form.value);
+    this.dialogRef.close(this.form.value);
+  }
+
+  close() {
+    this.dialogRef.close();
   }
 
 

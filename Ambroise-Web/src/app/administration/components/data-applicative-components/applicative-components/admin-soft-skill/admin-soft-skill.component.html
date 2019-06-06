@@ -3,7 +3,7 @@
 <div class="softSkillTab">
   <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
   <div cdkDropList #docsList="cdkDropList" [cdkDropListData]="softSkills" class="example-list"
-    (cdkDropListDropped)="drop($event)" (ngModelChange)="saveSoftSkillsOrder()">
+    (cdkDropListDropped)="drop($event)" (ngModelChange)="saveSoftSkillsOrder(softSkills)">
     <div class="example-box" *ngFor="let softSkill of softSkills" cdkDrag>
       {{ softSkill.name }}
       <i (click)="removeSoftSkill(softSkill)" class="material-icons">
