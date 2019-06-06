@@ -4,6 +4,7 @@ import { ErrorService } from 'src/app/services/error.service';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { catchError, timeout } from 'rxjs/operators';
+import * as sha512 from 'js-sha512';
 import { User } from '../models/User';
 import { HttpClient } from '@angular/common/http';
 
@@ -24,6 +25,7 @@ export class AdminUserService {
 
     createUser(user: User) {
         let options = this.httpHeaderService.getHttpHeaders();
+        user.pswd = sha512.sha512(user.pswd);
         return this.httpClient
             .post<User>(environment.serverAddress + '/admin/user', user, options)
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
