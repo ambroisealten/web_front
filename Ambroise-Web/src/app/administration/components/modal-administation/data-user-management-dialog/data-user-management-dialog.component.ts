@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalSkillsCandidateComponent } from 'src/app/competences/components/accueil/modal-skills-candidate/modal-skills-candidate.component';
 import { MatDialogRef } from '@angular/material/dialog';
-import { User, UserRole } from 'src/app/administration/models/User';
 import { MatTableDataSource } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UserRole } from '../../../models/User';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class DataUserManagementDialogComponent implements OnInit {
   name: string= '';
   emailInput: string= '';
   pswd: string = '';
-  role: boolean = false;
+  role: string = "CONSULTANT";
 
   users: string[];
   usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
@@ -44,6 +44,11 @@ export class DataUserManagementDialogComponent implements OnInit {
     })
   }
 
+  changeRole(newValue : string){
+    this.role = newValue;
+    console.log(this.role);
+  }
+
   onChange() {
     if (this.name == "" || this.forname == "" || this.emailInput == "" || this.pswd == "") {
       this.valide = true;
@@ -55,6 +60,7 @@ export class DataUserManagementDialogComponent implements OnInit {
   }
   
   save() {
+    console.log(this.form.value);
     this.dialogRef.close(this.form.value);
   }
 

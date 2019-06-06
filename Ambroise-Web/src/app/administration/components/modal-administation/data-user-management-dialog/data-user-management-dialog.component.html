@@ -16,8 +16,8 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Rôle</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let user of users" [value]="users" >
+    <mat-select (selectionChange)="changeRole($event.target.value)" formControlName="role">
+      <mat-option *ngFor="let user of users" [value]="user"> 
         {{user}}
       </mat-option>
     </mat-select>
