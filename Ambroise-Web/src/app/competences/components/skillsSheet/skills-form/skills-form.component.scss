@@ -145,3 +145,8 @@
   margin-left: 25% !important;
   margin-right: 1% !important;
 }
+
+.mat-option.mat-active {
+  background-color: var(--ALTENDarkBlue) !important ; 
+  color: white !important ; 
+}

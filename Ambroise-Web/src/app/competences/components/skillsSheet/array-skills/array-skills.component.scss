@@ -4,6 +4,11 @@ table {
   margin-bottom: 2%;
 }
 
+.mat-option.mat-active {
+  background-color: var(--ALTENDarkBlue) !important ; 
+  color: white !important ; 
+}
+
 mat-form-field {
   width: 100%;
 }

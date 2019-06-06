@@ -5,6 +5,7 @@
     <mat-form-field>
         <input matInput placeholder="Nom du SoftSkill" formControlName="name" [(ngModel)]="name" (keyup)="onChange($event)">
     </mat-form-field>
+    <p class="errorMessage"> {{ errorMessage }} </p>
 </mat-dialog-content>
 
 <mat-dialog-actions>

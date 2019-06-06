@@ -154,3 +154,10 @@ td.mat-cell:first-of-type {
   position: sticky;
   z-index: 10;
 }
+
+
+.mat-option.mat-active {
+  background-color: var(--ALTENDarkBlue) !important ; 
+  color: white !important ; 
+}
+

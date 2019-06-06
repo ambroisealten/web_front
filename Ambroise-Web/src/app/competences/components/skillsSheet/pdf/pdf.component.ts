@@ -33,6 +33,9 @@ export class PdfComponent implements OnInit, OnDestroy {
   identityData: string = '';
   diplomaData: string = '';
 
+  //PDF name
+  pdfName : string;
+
   //route param
   name: string;
   version: number;
@@ -57,6 +60,8 @@ export class PdfComponent implements OnInit, OnDestroy {
 
     //Person's Data
     this.currentPerson = JSON.parse(window.sessionStorage.getItem('person')) as Person;
+    let job = this.currentPerson.job != "" ? this.currentPerson.job : "Fiche";
+    this.pdfName = this.currentPerson.surname.toLowerCase()+this.currentPerson.name[0]+"-"+job;
     this.setIdentityData();
     this.setDiplomaData();
 
@@ -65,9 +70,10 @@ export class PdfComponent implements OnInit, OnDestroy {
     this.updateChartSkills(this.skillsArray);
     this.updateChartSoftSkills(this.softSkillsArray);
 
-    if(this.skillsArray.length == 0){
-      this.skillsArray.push({skill: {name: "Aucune compétence définie"}, grade: null} as SkillGraduated)
+    if (this.skillsArray.length == 0) {
+      this.skillsArray.push({ skill: { name: "Aucune compétence définie" }, grade: null } as SkillGraduated)
     }
+
 
     //Créer les menus
     this.createMenu();
@@ -147,6 +153,10 @@ export class PdfComponent implements OnInit, OnDestroy {
         this.skillsArray.push(skill);
       }
     });
+    this.skillsArray.sort((e1, e2) => e1.grade < e2.grade ? 1 : -1);
+    if (this.skillsArray.length > 24) {
+      this.skillsArray = this.skillsArray.slice(0, 24);
+    }
   }
 
   /**
@@ -250,8 +260,17 @@ export class PdfComponent implements OnInit, OnDestroy {
       var height = pdf.internal.pageSize.getHeight();
 
       pdf.addImage(contentDataURL, 'JPEG', 0, 0, 297, 210);
-      pdf.save(this.name + '.pdf'); // Generated PDF   
+      pdf.save(this.pdfName + '.pdf'); // Generated PDF   
     });
+  }
+
+  countSkill() {
+    if (this.skillsArray.length <= 12) {
+      return true;
+    }
+    else if (this.skillsArray.length > 12) {
+      return false;
+    }
   }
 
   /***********************************************************************\
@@ -265,6 +284,7 @@ export class PdfComponent implements OnInit, OnDestroy {
    * @param  arraySkills Array containing updated skills
    */
   updateChartSkills(arraySkills: SkillGraduated[]) {
+
     if (typeof this.skillsChart !== 'function') {
       this.skillsChart.destroy();
     }

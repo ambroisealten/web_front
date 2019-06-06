@@ -36,6 +36,7 @@ export class SkillsService {
 
         let noComp: string = "";
         noCompFilter.forEach(filter => {
+            filter = encodeURIComponent(filter) ; 
             noComp += filter+","
         })
         if(noComp == ""){
@@ -44,6 +45,7 @@ export class SkillsService {
 
         let comp: string = "";
         compFilter.forEach(filter => {
+           filter = encodeURIComponent(filter) ; 
             comp += filter+','
         })
         if(comp== ""){
@@ -55,7 +57,7 @@ export class SkillsService {
         }
 
         return this.httpClient
-            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/'+noComp+"/"+comp+"/" + sortColumn, options)
+            .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/' + noComp + "/" + comp + "/" + encodeURIComponent(sortColumn), options)
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
       }
 

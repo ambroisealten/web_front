@@ -1,157 +1,40 @@
-<mat-tab-group>
+<mat-tab-group class="FirstTab">
 
   <mat-tab label="Données Applicatives">
 
     <mat-tab-group class="demo-tab-group">
-      <!--Start Agency Panel-->
+
       <mat-tab label="Agences">
-        <div class="agencyTab">
-          <button class="addButton" mat-icon-button (click)="addAgency()">+</button>
-          <table mat-table [dataSource]="agenciesSources" class="mat-elevation-z8">
-            <ng-container matColumnDef="Nom" sticky>
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let agencies"
-                (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.name}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Lieu" sticky>
-              <th mat-header-cell *matHeaderCellDef> Lieu </th>
-              <td mat-cell *matCellDef="let agencies"
-                (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.place}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Type de lieu" sticky>
-              <th mat-header-cell *matHeaderCellDef> Type de lieu </th>
-              <td mat-cell *matCellDef="let agencies"
-                (click)="changeAgency(agencies.name, agencies.place, agencies.placeType)"> {{agencies.placeType}} </td>
-            </ng-container>
-            <ng-container matColumnDef="Delete" sticky>
-              <th mat-header-cell *matHeaderCellDef> Supression </th>
-              <td mat-cell *matCellDef="let agencies"
-                (click)="deleteAgency(agencies.name, agencies.place, agencies.placeType)"> <i class="material-icons">
-                  delete
-                </i> </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedAgencyColumns" sticky></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedAgencyColumns;"></tr>
-          </table>
-        </div>
+        <app-agencies></app-agencies>
       </mat-tab>
-      <!--End Agency Panel-->
 
       <!--Start Soft Skill Panel-->
       <mat-tab label="SoftSkill">
-        <h4>Ici vous pouvez modifier les Soft Skills et changer l'ordre dans lesquelles ces dernières vont apparaître dans l'application</h4>
-        <div class="softSkillTab">
-          <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          <div cdkDropList #docsList="cdkDropList" [cdkDropListData]="softSkills" class="example-list"
-            (cdkDropListDropped)="drop($event)" (ngModelChange)="saveSoftSkillsOrder()">
-            <div class="example-box" *ngFor="let softSkill of softSkills" cdkDrag>
-              {{ softSkill.getName() }} 
-              <i (click)="removeSoftSkill(softSkill)" class="material-icons">
-                delete
-              </i>
-            </div>
-          </div>
-
-        </div>
-
-
-
+        <app-admin-soft-skill></app-admin-soft-skill>
       </mat-tab>
       <!--End Soft Skill Panel-->
 
       <!-- Start IQP-->
-      <mat-tab label="IQP">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="panel-title">
-              <h3 data-toggle="collapse" data-parent="#accordion" href="#softSkills">
-                IQP
-              </h3>
-            </div>
-            <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          </div>
-          <ng-container *ngFor="let softSkill of getSoftSkills() ">
-            <div id="softSkills" class="panel-collapse collapse in">
-              <div class="panel-body">
-                {{softSkill.name}} <button mat-raised-button (click)="updateSoftSkill(softSkill)">Modifier</button>
-                <button class="removeButton" mat-icon-button (click)="removeSoftSkill(softSkill)">x</button>
-              </div>
-            </div>
-          </ng-container>
-        </div>
-
+      <mat-tab label="Type d'engagement">
+        <app-contract-type></app-contract-type>
       </mat-tab>
       <!--End IQP Panel-->
 
       <!-- Start Secteur d'activité -->
       <mat-tab label="Secteur d'activité">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="panel-title">
-              <h3 data-toggle="collapse" data-parent="#accordion" href="#softSkills">
-                secteur d'activité
-              </h3>
-            </div>
-            <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          </div>
-          <ng-container *ngFor="let softSkill of getSoftSkills() ">
-            <div id="softSkills" class="panel-collapse collapse in">
-              <div class="panel-body">
-                {{softSkill.name}} <button mat-raised-button (click)="updateSoftSkill(softSkill)">Modifier</button>
-                <button class="removeButton" mat-icon-button (click)="removeSoftSkill(softSkill)">x</button>
-              </div>
-            </div>
-          </ng-container>
-        </div>
-
+        <app-line-of-business></app-line-of-business>
       </mat-tab>
       <!--End Secteur d'activité Panel-->
 
       <!-- Start Métiers -->
       <mat-tab label="Métiers">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="panel-title">
-              <h3 data-toggle="collapse" data-parent="#accordion" href="#softSkills">
-                Métiers
-              </h3>
-            </div>
-            <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          </div>
-          <ng-container *ngFor="let softSkill of getSoftSkills() ">
-            <div id="softSkills" class="panel-collapse collapse in">
-              <div class="panel-body">
-                {{softSkill.name}} <button mat-raised-button (click)="updateSoftSkill(softSkill)">Modifier</button>
-                <button class="removeButton" mat-icon-button (click)="removeSoftSkill(softSkill)">x</button>
-              </div>
-            </div>
-          </ng-container>
-        </div>
-
+        <app-admin-job></app-admin-job>
       </mat-tab>
       <!--End Métiers Panel-->
 
       <!-- Start notes (SoftSkill/Compétences) -->
       <mat-tab label="Notes (SoftSkill/Compétences)">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="panel-title">
-              <h3 data-toggle="collapse" data-parent="#accordion" href="#softSkills">
-                notes (SoftSkill/Compétences)
-              </h3>
-            </div>
-            <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          </div>
-          <ng-container *ngFor="let softSkill of getSoftSkills() ">
-            <div id="softSkills" class="panel-collapse collapse in">
-              <div class="panel-body">
-                {{softSkill.name}} <button mat-raised-button (click)="updateSoftSkill(softSkill)">Modifier</button>
-                <button class="removeButton" mat-icon-button (click)="removeSoftSkill(softSkill)">x</button>
-              </div>
-            </div>
-          </ng-container>
-        </div>
-
+        <app-admin-skill-grade></app-admin-skill-grade>
       </mat-tab>
       <!--End Métiers Panel-->
 
@@ -163,25 +46,21 @@
     <mat-tab-group>
       <!--Start Coméptence Panel-->
       <mat-tab label="Compétences">
-
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="panel-title">
-              <h3 data-toggle="collapse" data-parent="#accordion" href="#Compétence">
-                Compétences
-              </h3>
-            </div>
-            <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
-          </div>
-
-        </div>
+        <app-admin-skills></app-admin-skills>
         <!--End Compétence Panel-->
       </mat-tab>
 
     </mat-tab-group>
 
   </mat-tab>
+  <!-- Début Utilisateur  Panel -->
+  <mat-tab label="Gestion des Utilisateurs">
+    <app-admin-user></app-admin-user>
+  </mat-tab>
+  <!-- Fin Utilisateur  Panel -->
 </mat-tab-group>
+
+
 
 <!-- -->
 <div class="admin-app-data">

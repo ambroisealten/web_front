@@ -11,6 +11,18 @@ import { AdminService } from './services/admin.service';
 import { DataFileDialogComponent } from './components/modal-administation/data-file-dialog/data-file-dialog.component';
 import { ProgressSpinnerComponent } from '../utils/progress-spinner/progress-spinner.component';
 import { DataSoftSkillDialogComponent } from './components/modal-administation/data-soft-skill-dialog/data-soft-skill-dialog.component';
+import { DataUserManagementDialogComponent } from './components/modal-administation/data-user-management-dialog/data-user-management-dialog.component';
+import { AdminUserComponent } from './components/data-applicative-components/admin-user/admin-user/admin-user.component';
+import { AdminUserService } from './services/admin-user.service';
+import { AgenciesComponent } from './components/data-applicative-components/applicative-components/agencies/agencies.component';
+import { AdminSoftSkillComponent } from './components/data-applicative-components/applicative-components/admin-soft-skill/admin-soft-skill.component';
+import { ContractTypeComponent } from './components/data-applicative-components/applicative-components/contract-type/contract-type.component';
+import { LineOfBusinessComponent } from './components/data-applicative-components/applicative-components/line-of-business/line-of-business.component';
+import { AdminJobComponent } from './components/data-applicative-components/applicative-components/admin-job/admin-job.component';
+import { AdminSkillGradeComponent } from './components/data-applicative-components/applicative-components/admin-skill-grade/admin-skill-grade.component';
+import { AdminSkillsComponent } from './components/data-applicative-components/data-quality-components/admin-skills/admin-skills.component';
+import { AdminAgencyService } from './services/admin-agency.service';
+import { AdminSoftSkillService } from './services/admin-softSkill.service';
 
 @NgModule({
   declarations: [
@@ -19,13 +31,23 @@ import { DataSoftSkillDialogComponent } from './components/modal-administation/d
     DataAgencyDialogComponent,
     DataFileDialogComponent,
     ProgressSpinnerComponent,
-    DataSoftSkillDialogComponent
+    DataUserManagementDialogComponent,
+    DataSoftSkillDialogComponent,
+    AdminUserComponent,
+    AgenciesComponent,
+    AdminSoftSkillComponent,
+    ContractTypeComponent,
+    LineOfBusinessComponent,
+    AdminJobComponent,
+    AdminSkillGradeComponent,
+    AdminSkillsComponent
   ],
   entryComponents: [
     DataFileDialogComponent,
     DataAgencyDialogComponent,
     ProgressSpinnerComponent,
-    DataSoftSkillDialogComponent
+    DataSoftSkillDialogComponent,
+    DataUserManagementDialogComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +58,10 @@ import { DataSoftSkillDialogComponent } from './components/modal-administation/d
     FormsModule
   ],
   providers: [
-    AdminService
+    AdminService,
+    AdminUserService,
+    AdminAgencyService,
+    AdminSoftSkillService
   ]
 })
 export class AdministrationModule { }

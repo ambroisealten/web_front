@@ -14,15 +14,15 @@ export class DataAgencyDialogComponent implements OnInit {
   place: string;
   placeType: string;
   description: string;
+  errorMessage: string;
 
-
-  placeTypes: string[] = ['City', 'Region', 'Departement'];
+  placeTypes: string[] = ['Ville', 'Région', 'Département'];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DataAgencyDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataAgency) {
-
+    this.errorMessage = "";
     this.name = dataAgency.name;
     this.place = dataAgency.place;
     this.placeType = dataAgency.placeType;

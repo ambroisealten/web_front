@@ -5,6 +5,7 @@ import { SkillsListService } from '../../../services/skillsList.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-array-skills',
@@ -24,6 +25,8 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
 
   @Output() skillsEvent = new EventEmitter<SkillGraduated[]>();
 
+  skillAdd: string = "" ; 
+
   // Tableau contenant toutes les options (compétences) pour l'auto-complétion
   options: string[];
   filteredOptions: Observable<string[]>;
@@ -33,7 +36,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
   skillsSubscription;
 
 
-  constructor(private skillsListService: SkillsListService) {
+  constructor(private skillsListService: SkillsListService, private toastr: ToastrService) {
   }
 
   /**
@@ -82,7 +85,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
       const filterValue = value.toLowerCase();
       return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
     }
-    else{
+    else {
       return [];
     }
   }
@@ -104,6 +107,16 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
         this.updateDataSourceInService();
       }
       event.target.value = '';
+    } 
+  }
+
+  addSkillAutocomplete(event){
+    if(this.dataSourceArray.findIndex(skillGraduated => skillGraduated.skill.name.toLowerCase().trim() === event.toLowerCase().trim()) === -1){
+      this.dataSourceArray.push(new SkillGraduated(new Skill(event), 1));
+      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+
+      this.updateDataSourceInService();
+      this.skillAdd = "" ; 
     }
   }
 
@@ -117,7 +130,7 @@ export class ArraySkillsComponent implements OnInit, OnDestroy {
 
     this.dataSourceArray.splice(skillIndex, 1);
     this.dataSource = new MatTableDataSource(this.dataSourceArray);
-    
+
     this.updateDataSourceInService();
   }
 
