@@ -44,10 +44,6 @@ export class DataUserManagementDialogComponent implements OnInit {
     })
   }
 
-  changeRole(newValue : string){
-    this.role = newValue;
-    console.log(this.role);
-  }
 
   onChange() {
     if (this.name == "" || this.forname == "" || this.emailInput == "" || this.pswd == "") {
