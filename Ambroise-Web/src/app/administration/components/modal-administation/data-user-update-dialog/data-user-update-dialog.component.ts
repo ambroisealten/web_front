@@ -12,14 +12,14 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 })
 export class DataUserUpdateDialogComponent implements OnInit {
 
-  
+
   form: FormGroup;
   forname: string = '';
   name: string = '';
   emailInput: string = '';
-  role: boolean = false;
+  role: string = "CONSULTANT";
 
-  users: string[];
+  roles: string[];
   usersSources: MatTableDataSource<any[]> = new MatTableDataSource();
 
   isCreateButtonDisabled: boolean = true;
@@ -36,7 +36,7 @@ export class DataUserUpdateDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.users = Object.keys(UserRole);
+    this.roles = Object.keys(UserRole);
     this.form = this.fb.group({
       name: [this.name, []],
       forname: [this.forname, []],

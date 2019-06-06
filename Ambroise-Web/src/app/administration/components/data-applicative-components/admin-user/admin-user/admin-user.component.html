@@ -14,7 +14,7 @@
 
         <ng-container [matColumnDef]="displayedColumns[5]" sticky>
             <th mat-header-cell *matHeaderCellDef> Supression </th>
-            <td mat-cell *matCellDef="let user"> <i class="material-icons">delete</i></td>
+            <td mat-cell *matCellDef="let user" (click)="deleteUser(user.Email)"> <i class="material-icons">delete</i></td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>

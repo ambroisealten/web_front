@@ -18,44 +18,44 @@ export class AdminUserComponent implements OnInit, OnDestroy {
   userDataTable: MatTableDataSource<any[]> = new MatTableDataSource();
   displayedColumns: string[] = ['Nom', 'Prénom', 'Email', 'Rôle', 'Agence', 'Delete'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  users: User[] = [] ; 
+  users: User[] = [];
 
   constructor(private adminUserService: AdminUserService,
     private dialog: MatDialog,
     private errorService: ErrorService) { }
 
   ngOnInit() {
-    this.fetchUsers() ; 
+    this.fetchUsers();
   }
 
-  ngOnDestroy(){
-    this.dialog.closeAll() ;
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 
-  fetchUsers(){
-    this.adminUserService.getUsers().subscribe(users => this.createData(users as User[]))  ; 
+  fetchUsers() {
+    this.adminUserService.getUsers().subscribe(users => this.createData(users as User[]));
   }
 
-  createData(users: User[]){
-    let dataTable: any[] = [] ; 
-    if(users.length > 0 ){
-      this.users = users ; 
+  createData(users: User[]) {
+    let dataTable: any[] = [];
+    if (users.length > 0) {
+      this.users = users;
       users.forEach(user => {
-        let tmpUser = {} ; 
-        tmpUser['Nom'] = user['name'] ; 
-        tmpUser['Prénom'] = user['forname'] ;
-        tmpUser['Email'] = user['mail'] ; 
-        tmpUser['Rôle'] = user['role'] ; 
-        tmpUser['Agence'] = user['agency'] ; 
-        dataTable.push(tmpUser) ; 
+        let tmpUser = {};
+        tmpUser['Nom'] = user['name'];
+        tmpUser['Prénom'] = user['forname'];
+        tmpUser['Email'] = user['mail'];
+        tmpUser['Rôle'] = user['role'];
+        tmpUser['Agence'] = user['agency'];
+        dataTable.push(tmpUser);
       });
-      this.userDataTable = new MatTableDataSource(dataTable) ; 
-      this.userDataTable.paginator = this.paginator ; 
+      this.userDataTable = new MatTableDataSource(dataTable);
+      this.userDataTable.paginator = this.paginator;
     }
   }
 
   addNewUser() {
-    const user = new User('', '', '',UserRole.CONSULTANT,'');
+    const user = new User('', '', '', UserRole.CONSULTANT, '');
     const dialogUser = this.openDialogUser(user);
 
     dialogUser.afterClosed().subscribe(
@@ -76,7 +76,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
         }
       });
   }
-  
+
 
   openDialogUser(user: User) {
     const dialogConfig = new MatDialogConfig();
@@ -102,7 +102,7 @@ export class AdminUserComponent implements OnInit, OnDestroy {
 
   updateUser(updateUser) {
     const oldMail = updateUser.Email;
-    const user = new User(updateUser.Nom, updateUser.Prénom, updateUser.Email, updateUser.Rôle,'');
+    const user = new User(updateUser.Nom, updateUser.Prénom, updateUser.Email, updateUser.Rôle, '');
     const dialogUser = this.openDialogUpdateUser(user);
 
     dialogUser.afterClosed().subscribe(
@@ -146,5 +146,12 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     return this.dialog.open(DataUserUpdateDialogComponent, dialogConfig);
 
   }
-  
+
+  deleteUser(mail) {
+    this.adminUserService.deleteUser(mail).subscribe((response) => {
+      this.fetchUsers();
+      this.errorService.handleResponse(response);
+    });
+  }
+
 }
