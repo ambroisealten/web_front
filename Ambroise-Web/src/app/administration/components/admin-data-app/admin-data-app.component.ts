@@ -205,9 +205,6 @@ export class AdminDataAppComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteAgency(agencyName, agencyPlace, agencyPlaceType) {
-    //TODO
-  }
   changeAgency(agencyName, agencyPlace, agencyPlaceType) {
 
     const agency = new Agency(agencyName, agencyPlace, agencyPlaceType);
