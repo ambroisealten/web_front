@@ -3,7 +3,7 @@
 <mat-dialog-content [formGroup]="form">
 
   <mat-form-field>
-    <input matInput placeholder="Nom" required formControlName="name" [(ngModel)]="name" (keyup)="onChange($event)">
+    <input matInput placeholder="Nom" required formControlName="name" [(ngModel)]="name">
   </mat-form-field>
   <mat-form-field>
     <input matInput placeholder="Prénom" required [(ngModel)]="forname" formControlName="forname">

@@ -12,6 +12,7 @@ import { LoggerService, LogLevel } from 'src/app/services/logger.service';
 })
 export class DataUserUpdateDialogComponent implements OnInit {
 
+  description: string = "Mise à jour";
 
   form: FormGroup;
   forname: string = '';

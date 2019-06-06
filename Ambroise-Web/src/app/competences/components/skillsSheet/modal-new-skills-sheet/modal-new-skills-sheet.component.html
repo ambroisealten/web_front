@@ -4,7 +4,7 @@
   <div class="name">
     <mat-form-field>
       <input class="input" matInput placeholder="Nom de la nouvelle fiche" [(ngModel)]="name"
-        (keyup)="onChange($event)">
+        (keyup)="onChange()">
     </mat-form-field>
     <p class="errorMessage"> {{ errorMessage }} </p>
     <button mat-raised-button class="saveButton" color="primary" (click)="saveName()"

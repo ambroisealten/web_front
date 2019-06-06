@@ -13,6 +13,7 @@ import { UserRole } from '../../../models/User';
 })
 
 export class DataUserManagementDialogComponent implements OnInit {
+  description: string = "Création d'un utilisateur";
 
   form: FormGroup;
   forname: string = '';
