@@ -1,13 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, Injector } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, timer } from 'rxjs';
 import { catchError, finalize, mergeMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpHeaderService } from './httpHeaderService';
 import { LoggerService, LogLevel } from './logger.service';
-import { MatDialog } from '@angular/material';
 
 @Injectable()
 export class ErrorService {
@@ -15,7 +15,7 @@ export class ErrorService {
     constructor(
         private httpClient: HttpClient,
         private httpHeaderService: HttpHeaderService,
-        private router: Router,
+        public router: Router,
         private toastr: ToastrService,
         private dialog: MatDialog) { }
 
@@ -64,14 +64,13 @@ export class ErrorService {
     }
 
     handleResponses(responses: any[], statusExpected: number) {
-        if (responses.filter(response => response.stackTrace[0].lineNumber === statusExpected).length != 0) {
+        if (responses.filter(response => response.stackTrace[0].lineNumber === statusExpected).length !== 0) {
             this.toastrGood(statusExpected.toString(), 'Requête effectuée avec succès');
         } else {
             // TODO : Implement a more viable and efficient way to analyze errors that we get on our multiple requests
             if (responses.length === 1 && responses[0].stackTrace[0].lineNumber === 403) {
                 this.toastrError('403', 'Requête refusée, vous n\'avez pas les privilèges requis');
-            }
-            else {
+            } else {
                 this.toastrError('500', 'Une erreur a été rencontrée au cours du processus, veuillez contacter un administrateur');
             }
         }
@@ -101,8 +100,10 @@ export class ErrorService {
      * @author Quentin Della-Pasqua
      */
     handleError(error): any {
-        this.dialog.closeAll();
-        console.log(error) ; 
+        if(this.dialog !== undefined){
+            this.dialog.closeAll();
+        }
+        console.log(error);
         const statusError = error.error['status'];
         let messageError = error.error['message'];
         switch (statusError) {
@@ -126,50 +127,51 @@ export class ErrorService {
     }
 }
 
-export const genericRetryStrategy = (
-    {
-        maxRetryAttempts = 1,
-        scalingDuration = 1000,
-        excludedStatusCodes = []
-    }: {
-        maxRetryAttempts?: number;
-        scalingDuration?: number;
-        excludedStatusCodes?: number[];
-    } = {}
-) => (attempts: Observable<any>) => {
-    return attempts.pipe(
-        mergeMap((error, i) => {
-            const retryAttempt = i + 1;
-            // if maximum number of retries have been met
-            // or response is a status code we don't wish to retry, throw error
-            if (retryAttempt > maxRetryAttempts || excludedStatusCodes.find(e => e === error.status)) {
-                return this.ErrorService.handleError(error);
-            }
-            console.log(`Attempt ${retryAttempt}: retrying in ${retryAttempt * scalingDuration}ms`);
-            // retry after 1s, 2s, etc...
-            const token = window.sessionStorage.getItem('bearerToken');
-            const headers = new HttpHeaders({
-              'Content-Type': 'application/json',
-              'Authorization': token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-            });
-            const options = { headers: headers };
-
-            this.httpClient
-                .get(environment.serverAddress + '/login', options)
-                .pipe(catchError(error => this.router.navigate(['login'])))
-                .toPromise().then(response => {
-                    // Check si la propriété Token existe
-                    if (response.hasOwnProperty('token')) {
-                        // On store le token dans le sessionStorage du navigateur
-                        window.sessionStorage.setItem('refreshToken', response.token);
-                    } else {
-                        LoggerService.log('Problème réception token !!', LogLevel.DEV);
-                    }
-                    return;
-                });
-            return timer(scalingDuration) ;
-        }),
-        finalize(() => console.log('We are done!'))
-    );
-};
+// export const genericRetryStrategy = (
+//     {
+//         maxRetryAttempts = 1,
+//         scalingDuration = 1000,
+//         excludedStatusCodes = []
+//     }: {
+//         maxRetryAttempts?: number;
+//         scalingDuration?: number;
+//         excludedStatusCodes?: number[];
+//     } = {}
+// ) => (attempts: Observable<any>) => {
+//     return attempts.pipe(
+//         mergeMap((error, i) => {
+//             const retryAttempt = i + 1;
+//             // if maximum number of retries have been met
+//             // or response is a status code we don't wish to retry, throw error
+//             if (retryAttempt > maxRetryAttempts || excludedStatusCodes.find(e => e === error.status)) {
+//                 console.log('start');
+//                 return this.errorService.handleError(error);
+//             }
+//             console.log(`Attempt ${retryAttempt}: retrying in ${retryAttempt * scalingDuration}ms`);
+//             // retry after 1s, 2s, etc...
+//             const token = window.sessionStorage.getItem('bearerToken');
+//             const headers = new HttpHeaders({
+//                 'Content-Type': 'application/json',
+//                 Authorization: token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+//             });
+//             const options = { headers };
+//             console.log('oskour');
+//             this.httpClient
+//                 .get(environment.serverAddress + '/login', options)
+//                 .pipe(catchError(error => this.router.navigate(['login'])))
+//                 .toPromise().then(response => {
+//                     // Check si la propriété Token existe
+//                     if (response.hasOwnProperty('token')) {
+//                         // On store le token dans le sessionStorage du navigateur
+//                         window.sessionStorage.setItem('refreshToken', response['token']);
+//                     } else {
+//                         LoggerService.log('Problème réception token !!', LogLevel.DEV);
+//                     }
+//                     return;
+//                 });
+//             return timer(scalingDuration);
+//         }),
+//         finalize(() => console.log('We are done!'))
+//     );
+// };
 
