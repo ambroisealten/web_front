@@ -9,6 +9,7 @@ import { HeaderUserComponent } from './components/header-user/header-user.compon
 import { HeaderService } from './services/header.services';
 import { MatIconModule } from '@angular/material';
 import { TokenService } from '../login/services/token.service';
+import { HttpInterceptorProviders } from '../app-interceptor-provider';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { TokenService } from '../login/services/token.service';
   ],
   providers: [
     HeaderService,
-    TokenService
+    TokenService,
+    HttpInterceptorProviders
   ],
   entryComponents: [ 
     HeaderUserComponent

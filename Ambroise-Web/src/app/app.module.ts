@@ -19,7 +19,7 @@ import { IsNotLoginService } from './services/isNotLogin.service';
 import { LoggerService } from './services/logger.service';
 import { SubMenusService } from './services/subMenus.service';
 import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
-import { httpInterceptorProviders } from './app-interceptor-provider';
+import { HttpInterceptorProviders } from './app-interceptor-provider';
 
 @NgModule({
   declarations: [
@@ -44,7 +44,7 @@ import { httpInterceptorProviders } from './app-interceptor-provider';
     SubMenusService,
     ErrorService,
     HttpHeaderService,
-    httpInterceptorProviders
+    HttpInterceptorProviders
   ],
   bootstrap: [AppComponent],
   entryComponents: [

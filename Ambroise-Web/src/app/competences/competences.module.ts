@@ -25,6 +25,7 @@ import { SkillsListService } from './services/skillsList.service';
 import { ModalAvailabilityComponent } from './components/skillsSheet/modal-availability/modal-availability.component';
 import { DiplomasService } from './services/diplomas.service';
 import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new-skills-sheet/modal-new-skills-sheet.component';
+import { HttpInterceptorProviders } from '../app-interceptor-provider';
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new
     SkillsService,
     PersonSkillsService,
     SkillsListService,
-    DiplomasService
+    DiplomasService,
+    HttpInterceptorProviders
   ]
 })
 export class CompetencesModule {

@@ -24,6 +24,7 @@ import { AdminAgencyService } from './services/admin-agency.service';
 import { AdminSoftSkillService } from './services/admin-softSkill.service';
 import { AdminUserService } from './services/admin-user.service';
 import { AdminService } from './services/admin.service';
+import { HttpInterceptorProviders } from '../app-interceptor-provider';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { AdminService } from './services/admin.service';
     AdminService,
     AdminUserService,
     AdminAgencyService,
-    AdminSoftSkillService
+    AdminSoftSkillService,
+    HttpInterceptorProviders
   ]
 })
 export class AdministrationModule { }

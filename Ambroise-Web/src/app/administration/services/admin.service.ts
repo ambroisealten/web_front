@@ -77,18 +77,18 @@ export class AdminService {
 
     uploadFile(file: File, path: string): Observable<HttpEvent<string>> {
         const formdata: FormData = new FormData();
-
+ 
         formdata.append('file', file);
         formdata.append('path', path);
-
-        const headerParams = this.httpHeaderService.getHttpHeadersWithouContentType()['headers'];
-
+ 
+        const headerParams = this.httpHeaderService.getHttpHeadersWithoutContentType()['headers'];
+ 
         const req = new HttpRequest('POST', environment.serverAddress + '/file', formdata, {
             headers: headerParams,
             reportProgress: true,
             responseType: 'text'
         });
-
+ 
         return this.httpClient.request(req);
     }
 

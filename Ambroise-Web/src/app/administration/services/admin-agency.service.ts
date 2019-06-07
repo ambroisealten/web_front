@@ -16,33 +16,33 @@ export class AdminAgencyService {
         private errorService: ErrorService) { }
 
     getAgencies(): Observable<{} | Agency[]> {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .get<Agency[]>(environment.serverAddress + '/agencies', options)
             .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     createAgency(agency: Agency) {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .post<Agency>(environment.serverAddress + '/agency', agency, options)
             .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     updateAgency(agency: Agency) {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<Agency>(environment.serverAddress + '/agency', agency, options)
             .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     deleteAgency(agency: Agency) {
-        let postParams = {
+        const postParams = {
             name: agency.name,
             place: agency.place,
             placeType: agency.placeType
         };
-        let options = {
+        const options = {
             body: postParams,
             headers: this.httpHeaderService.getHttpHeaders()['headers'],
         };

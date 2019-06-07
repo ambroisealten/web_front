@@ -14,6 +14,7 @@ import { SignupComponent } from './components/signup/signup.component';
 //    IMPORT SERVICES
 import { TokenService } from './services/token.service';
 import { RoutingService } from './services/routing.service';
+import { HttpInterceptorProviders } from '../app-interceptor-provider';
 
 
 
@@ -32,7 +33,8 @@ import { RoutingService } from './services/routing.service';
   ],
   providers: [
     TokenService,
-    RoutingService
+    RoutingService,
+    HttpInterceptorProviders
   ]
 })
 export class LoginModule { }
