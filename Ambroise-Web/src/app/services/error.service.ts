@@ -100,10 +100,9 @@ export class ErrorService {
      * @author Quentin Della-Pasqua
      */
     handleError(error): any {
-        if(this.dialog !== undefined){
+        if (this.dialog !== undefined) {
             this.dialog.closeAll();
         }
-        console.log(error);
         const statusError = error.error['status'];
         let messageError = error.error['message'];
         switch (statusError) {
@@ -126,52 +125,3 @@ export class ErrorService {
         return error;
     }
 }
-
-// export const genericRetryStrategy = (
-//     {
-//         maxRetryAttempts = 1,
-//         scalingDuration = 1000,
-//         excludedStatusCodes = []
-//     }: {
-//         maxRetryAttempts?: number;
-//         scalingDuration?: number;
-//         excludedStatusCodes?: number[];
-//     } = {}
-// ) => (attempts: Observable<any>) => {
-//     return attempts.pipe(
-//         mergeMap((error, i) => {
-//             const retryAttempt = i + 1;
-//             // if maximum number of retries have been met
-//             // or response is a status code we don't wish to retry, throw error
-//             if (retryAttempt > maxRetryAttempts || excludedStatusCodes.find(e => e === error.status)) {
-//                 console.log('start');
-//                 return this.errorService.handleError(error);
-//             }
-//             console.log(`Attempt ${retryAttempt}: retrying in ${retryAttempt * scalingDuration}ms`);
-//             // retry after 1s, 2s, etc...
-//             const token = window.sessionStorage.getItem('bearerToken');
-//             const headers = new HttpHeaders({
-//                 'Content-Type': 'application/json',
-//                 Authorization: token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
-//             });
-//             const options = { headers };
-//             console.log('oskour');
-//             this.httpClient
-//                 .get(environment.serverAddress + '/login', options)
-//                 .pipe(catchError(error => this.router.navigate(['login'])))
-//                 .toPromise().then(response => {
-//                     // Check si la propriété Token existe
-//                     if (response.hasOwnProperty('token')) {
-//                         // On store le token dans le sessionStorage du navigateur
-//                         window.sessionStorage.setItem('refreshToken', response['token']);
-//                     } else {
-//                         LoggerService.log('Problème réception token !!', LogLevel.DEV);
-//                     }
-//                     return;
-//                 });
-//             return timer(scalingDuration);
-//         }),
-//         finalize(() => console.log('We are done!'))
-//     );
-// };
-

@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpHeaderService } from 'src/app/services/httpHeaderService';
-import { ErrorService } from 'src/app/services/error.service';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { catchError, timeout } from 'rxjs/operators';
-import * as sha512 from 'js-sha512';
-import { User } from '../models/User';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import * as sha512 from 'js-sha512';
+import { Observable } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
+import { ErrorService } from 'src/app/services/error.service';
+import { HttpHeaderService } from 'src/app/services/httpHeaderService';
+import { environment } from 'src/environments/environment';
+import { User } from '../models/User';
 
 @Injectable()
 export class AdminUserService {
@@ -17,45 +17,45 @@ export class AdminUserService {
         private errorService: ErrorService) { }
 
     getUsers(): Observable<{} | User[]> {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .get<User[]>(environment.serverAddress + '/admin/users', options)
-            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     createUser(user: User) {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         user.pswd = sha512.sha512(user.pswd);
         return this.httpClient
             .post<User>(environment.serverAddress + '/admin/user', user, options)
-            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     updateUser(user: User) {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<User>(environment.serverAddress + '/admin/user', user, options)
-            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     deleteUser(mail: string) {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .delete<User>(environment.serverAddress + '/admin/deleteUser/' + mail, options)
-            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
     resetPassword(mail: string) {
-        let options = this.httpHeaderService.getHttpHeaders();
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
-            .put<User>(environment.serverAddress + '/admin/user/resetPwd/'+ mail, '', options)
-            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+            .put<User>(environment.serverAddress + '/admin/user/resetPwd/' + mail, '', options)
+            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 
-    updatePassword(password: string, mail: string){
-        let options = this.httpHeaderService.getHttpHeaders();
+    updatePassword(password: string, mail: string) {
+        const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<User>(environment.serverAddress + '/admin/user', mail, options)
-            .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
     }
 }

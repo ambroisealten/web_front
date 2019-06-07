@@ -1,12 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoggerService, LogLevel } from '../../services/logger.service';
+import { Route } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { timeout } from 'rxjs/internal/operators/timeout';
-import {Route, Router } from '@angular/router';
+import { catchError, retry } from 'rxjs/operators';
 import { ErrorService } from 'src/app/services/error.service';
-import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 /**
  * Service pour récupérer les routes
@@ -14,21 +12,22 @@ import { catchError } from 'rxjs/operators';
 @Injectable()
 export class RoutingService {
 
-    constructor(private httpClient: HttpClient, 
-        private errorService: ErrorService){}
+    constructor(
+        private httpClient: HttpClient,
+        private errorService: ErrorService) { }
 
     public getRoute(): Observable<{} | Route[]> {
 
-        let token = window.sessionStorage.getItem('bearerToken') ; 
-        let headers = new HttpHeaders({
+        const token = window.sessionStorage.getItem('bearerToken');
+        const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': token != "" ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+            Authorization: token !== '' ? token : ''
         });
-        let options = { headers: headers };
+        const options = { headers };
 
         return this.httpClient
-            .get<Route[]>( environment.serverAddress + '/configRouting', options)
-            .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)))
-            
+            .get<Route[]>(environment.serverAddress + '/configRouting', options)
+            .pipe(retry(), catchError(err => this.errorService.handleError(err)));
+
     }
 }

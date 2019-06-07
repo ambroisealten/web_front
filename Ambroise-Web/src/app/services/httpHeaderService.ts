@@ -6,27 +6,27 @@ export class HttpHeaderService {
 
   getHttpHeaders(): {} {
     const token = window.sessionStorage.getItem('bearerToken');
-    let headers = new HttpHeaders({
+    const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+      Authorization: token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
     });
-    return { headers: headers };
+    return { headers };
   }
 
   getHttpHeadersWithouContentType(): {} {
     const token = window.sessionStorage.getItem('bearerToken');
-    let headers = new HttpHeaders({
-      'Authorization': token !== '' ? token : ''
+    const headers = new HttpHeaders({
+      Authorization: token !== '' ? token : ''
     });
-    return { headers: headers };
+    return { headers };
   }
 
   getHttpHeadersForRefreshToken(): {} {
     const token = window.sessionStorage.getItem('refreshToken');
-    let headers = new HttpHeaders({
+    const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
+      Authorization: token !== '' ? token : '' // TO-DO : En attente du WebService Login pour la récuperation du token
     });
-    return { headers: headers };
+    return { headers };
   }
 }

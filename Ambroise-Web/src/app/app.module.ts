@@ -1,29 +1,25 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-
+import { MatDialogModule } from '@angular/material';
 //  IMPORT INTERNAL MODULE
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule } from 'ngx-toastr';  
-
+import { ToastrModule } from 'ngx-toastr';
 //  ROUTING
 import { AppRoutingModule } from './app-routing.module';
-
 //  COMPONENT
 import { AppComponent } from './app.component';
-import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
-
 //  IMPORT FEATURE MODULE
 import { FooterModule } from './footer/footer.module';
 import { HeaderModule } from './header/header.module';
-
-// SERVICE
-import { LoggerService } from './services/logger.service';
-import { IsNotLoginService } from './services/isNotLogin.service' ;
-import { SubMenusService } from './services/subMenus.service';
 import { ErrorService } from './services/error.service';
 import { HttpHeaderService } from './services/httpHeaderService';
-import { MatDialogModule } from '@angular/material';
+import { IsNotLoginService } from './services/isNotLogin.service';
+// SERVICE
+import { LoggerService } from './services/logger.service';
+import { SubMenusService } from './services/subMenus.service';
+import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
+import { httpInterceptorProviders } from './app-interceptor-provider';
 
 @NgModule({
   declarations: [
@@ -47,7 +43,8 @@ import { MatDialogModule } from '@angular/material';
     IsNotLoginService,
     SubMenusService,
     ErrorService,
-    HttpHeaderService
+    HttpHeaderService,
+    httpInterceptorProviders
   ],
   bootstrap: [AppComponent],
   entryComponents: [

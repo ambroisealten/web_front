@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { Person, PersonRole } from '../models/person';
-import { catchError, timeout } from 'rxjs/operators';
+import { catchError, retry } from 'rxjs/operators';
 import { ErrorService } from 'src/app/services/error.service';
 import { HttpHeaderService } from 'src/app/services/httpHeaderService';
+import { environment } from 'src/environments/environment';
+import { Person, PersonRole } from '../models/person';
 
 @Injectable()
 /**
@@ -28,10 +28,10 @@ export class PersonSkillsService {
     } else {
       urlRequest = environment.serverAddress + '/consultant';
     }
-    let options = this.httpHeaderService.getHttpHeaders() ;
+    const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .post<Person>(urlRequest, person, options)
-      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .pipe(retry(), catchError(err => this.errorService.handleError(err)));
   }
 
   createNewPersonAndSkillsSheet(personAndSkillsSheet) {
@@ -43,10 +43,10 @@ export class PersonSkillsService {
     } else {
       urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
     }
-    let options = this.httpHeaderService.getHttpHeaders() ;
+    const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .post<Person>(urlRequest, personAndSkillsSheet, options)
-      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .pipe(retry(), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -60,10 +60,10 @@ export class PersonSkillsService {
     } else {
       urlRequest = environment.serverAddress + '/consultant';
     }
-    let options = this.httpHeaderService.getHttpHeaders() ;
+    const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .put<Person>(urlRequest, person, options)
-      .pipe(timeout(5000), catchError(err => this.errorService.handleError(err)));
+      .pipe(retry(), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -71,10 +71,10 @@ export class PersonSkillsService {
    * @param  mail Person's mail
    */
   getPersonByMail(mail: string) {
-    let options = this.httpHeaderService.getHttpHeaders() ;
+    const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<Person>(environment.serverAddress + '/person/' + mail, options)
-      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(), catchError(error => this.errorService.handleError(error)));
   }
 
 }
