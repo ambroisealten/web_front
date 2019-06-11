@@ -108,7 +108,7 @@ export class AdminSoftSkillComponent implements OnInit, OnDestroy {
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          const previousName = softSkill.name ; 
+          softSkill['previousName'] = softSkill.name ; 
           softSkill.setName(data.name);
           this.adminSoftSkillService.updateSoftSkill(softSkill).subscribe((response) => {
             this.fetchSoftSkills();

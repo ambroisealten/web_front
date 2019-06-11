@@ -20,22 +20,34 @@ export class AgenciesComponent implements OnInit, OnDestroy {
   displayedAgencyColumns: string[] = ['Nom', 'Lieu', 'Type de lieu', 'Delete'];
 
   constructor(private adminAgencyService: AdminAgencyService,
-    private dialog: MatDialog, 
+    private dialog: MatDialog,
     private errorService: ErrorService) { }
 
   ngOnInit() {
-    this.fetchAgencies() ; 
+    this.fetchAgencies();
   }
 
-  ngOnDestroy(){
-    this.dialog.closeAll() ;
+  ngOnDestroy() {
+    this.dialog.closeAll();
   }
 
   fetchAgencies() {
     this.agencies = [];
     this.adminAgencyService.getAgencies().subscribe((agenciesList: Agency[]) => {
       this.agencies = agenciesList;
-      this.agenciesSources = new MatTableDataSource<any>(this.agencies) 
+      this.agencies.forEach(agency => {
+        switch (agency.placeType) {
+          case ('region'): agency['Type de Lieu'] = "Région";
+            break;
+          case('city'): agency['Type de Lieu'] = "Ville";
+            break ; 
+          case('departement'): agency['Type de Lieu'] = "Département";
+            break ; 
+          default: 
+            break ; 
+        }
+      })
+      this.agenciesSources = new MatTableDataSource<any>(this.agencies)
     });
   }
 
@@ -56,7 +68,8 @@ export class AgenciesComponent implements OnInit, OnDestroy {
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminAgencyService.createAgency(agency).subscribe((response) => {
+          this.switchPlaceType(data) ; 
+          this.adminAgencyService.createAgency(data).subscribe((response) => {
             this.fetchAgencies();
             dialogProgress.close();
             this.errorService.handleResponse(response);
@@ -71,7 +84,12 @@ export class AgenciesComponent implements OnInit, OnDestroy {
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminAgencyService.updateAgency(agency).subscribe((response) => {
+          data['oldName'] = agency.name;
+          if (data['placeType'] == null) {
+            data['placeType'] = agency.placeType;
+          }
+          this.switchPlaceType(data) ; 
+          this.adminAgencyService.updateAgency(data).subscribe((response) => {
             this.fetchAgencies();
             dialogProgress.close();
             this.errorService.handleResponse(response);
@@ -100,4 +118,16 @@ export class AgenciesComponent implements OnInit, OnDestroy {
     return this.dialog.open(DataAgencyDialogComponent, dialogConfig);
   }
 
+  switchPlaceType(data){
+    switch (data.placeType) {
+      case ('Région'): data.placeType = "region";
+        break;
+      case('Ville'): data.placeType = "city" ; 
+        break ; 
+      case('Département'): data.placeType = "departement"
+        break ; 
+      default: 
+        break ; 
+    }
+  }
 }

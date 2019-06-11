@@ -24,6 +24,7 @@ import { AdminSkillsComponent } from './components/data-applicative-components/d
 import { AdminAgencyService } from './services/admin-agency.service';
 import { AdminSoftSkillService } from './services/admin-softSkill.service';
 import { DataUserUpdateDialogComponent } from './components/modal-administation/data-user-update-dialog/data-user-update-dialog.component';
+import { AdminGeoApiService } from './services/admin-geo-api.service';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { DataUserUpdateDialogComponent } from './components/modal-administation/
     AdminService,
     AdminUserService,
     AdminAgencyService,
-    AdminSoftSkillService
+    AdminSoftSkillService,
+    AdminGeoApiService
   ]
 })
 export class AdministrationModule { }

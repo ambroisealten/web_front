@@ -93,27 +93,4 @@ export class AdminService {
 
         return this.httpClient.request(req);
     }
-
-    makeRequest(url: string, method: string, postParams) {
-        const options = {
-            body: postParams,
-            headers: this.httpHeaderService.getHttpHeaders()['headers'],
-        };
-
-        switch (method) {
-            case 'get':
-                return this.httpClient.get(environment.serverAddress + url, options)
-                    .pipe(catchError(err => this.errorService.handleError(err)));
-            case 'post':
-                return this.httpClient.post(environment.serverAddress + url, postParams, options)
-                    .pipe(catchError(err => this.errorService.handleError(err)));
-            case 'put':
-                return this.httpClient.put(environment.serverAddress + url, postParams, options)
-                    .pipe(catchError(err => this.errorService.handleError(err)));
-            case 'delete':
-                return this.httpClient.delete(environment.serverAddress + url, options)
-                    .pipe(catchError(err => this.errorService.handleError(err)));
-            default:
-        }
-    }
 }

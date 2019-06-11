@@ -29,10 +29,10 @@ export class AdminAgencyService {
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
     }
 
-    updateAgency(agency: Agency) {
+    updateAgency(agency) {
         let options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
-            .put<Agency>(environment.serverAddress + '/agency', agency, options)
+            .put(environment.serverAddress + '/agency', agency, options)
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
     }
 

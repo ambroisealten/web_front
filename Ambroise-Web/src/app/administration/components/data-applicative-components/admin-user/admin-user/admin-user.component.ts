@@ -58,16 +58,36 @@ export class AdminUserComponent implements OnInit, OnDestroy {
     const dialogUser = this.openDialogUser(user);
 
     dialogUser.afterClosed().subscribe(
-      (data: any) => {
+      (data: User) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminUserService.createUser(user).subscribe((response) => {
+          this.adminUserService.createUser(data).subscribe((response) => {
             this.fetchUsers();
             dialogProgress.close();
             this.errorService.handleResponse(response);
           });
         }
       });
+  }
+
+  openDialogModifUser(user: User) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.direction = 'ltr';
+    dialogConfig.closeOnNavigation = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'User',
+      description: 'Utilisateur',
+      name: user.name,
+      forName: user.forname,
+      email: user.mail,
+      role: user.role,
+    };
   }
   
 

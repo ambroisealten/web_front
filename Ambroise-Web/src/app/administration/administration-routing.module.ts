@@ -4,7 +4,7 @@ import { AdminDataAppComponent } from './components/admin-data-app/admin-data-ap
 import { AdminDocumentComponent } from './components/admin-document/admin-document.component';
 
 const routes: Routes = [
-  { path: '', component: AdminDataAppComponent },
+  { path: '', redirectTo: 'document', pathMatch: 'full' },
   { path: 'dataApp', component: AdminDataAppComponent },
   { path: 'document', component: AdminDocumentComponent }
 ];

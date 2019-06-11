@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaderService } from 'src/app/services/httpHeaderService';
 import { ErrorService } from 'src/app/services/error.service';
-import { Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { catchError, timeout } from 'rxjs/operators';
+import { catchError, timeout, retryWhen, mergeMap, finalize } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Agency } from '../models/Agency';
 import { SoftSkill } from '../models/SoftSkill';
@@ -59,4 +59,5 @@ export class AdminSoftSkillService {
             .delete<Agency>(environment.serverAddress + '/skill', options)
             .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
     }
+    
 }

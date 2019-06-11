@@ -113,6 +113,7 @@ export class ErrorService {
             default:
                 break;
         }
+        console.log("ICI") ;
         this.toastrError(statusError, messageError);
         return error;
     }
