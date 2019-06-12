@@ -9,14 +9,17 @@ import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
+    iteration = 0;
+
     constructor(
-        private httpClient: HttpClient, 
+        private httpClient: HttpClient,
         private router: Router,
         private cookieService: CookieService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            if (err.status === 401) {
+            if (err.status === 401 && this.iteration <= 20) {
+                this.iteration++;
                 const refreshToken = this.cookieService.get('refreshToken');
                 const headers = new HttpHeaders({
                     'Content-Type': 'application/json',
@@ -38,7 +41,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                     });
 
                 const token = window.sessionStorage.getItem('bearerToken');
-                const cloneRequest = request.clone({headers: request.headers.set('Authorization', token !== '' ? token : '')});
+                const cloneRequest = request.clone({ headers: request.headers.set('Authorization', token !== '' ? token : '') });
                 return next.handle(cloneRequest);
             } else {
                 const error = err.error.message || err.statusText;
