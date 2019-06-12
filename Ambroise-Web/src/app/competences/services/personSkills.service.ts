@@ -31,7 +31,7 @@ export class PersonSkillsService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .post<Person>(urlRequest, person, options)
-      .pipe(retry(), catchError(err => this.errorService.handleError(err)));
+      .pipe(retry(20), catchError(err => this.errorService.handleError(err)));
   }
 
   createNewPersonAndSkillsSheet(personAndSkillsSheet) {
@@ -46,7 +46,7 @@ export class PersonSkillsService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .post<Person>(urlRequest, personAndSkillsSheet, options)
-      .pipe(retry(), catchError(err => this.errorService.handleError(err)));
+      .pipe(retry(20), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -63,7 +63,7 @@ export class PersonSkillsService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .put<Person>(urlRequest, person, options)
-      .pipe(retry(), catchError(err => this.errorService.handleError(err)));
+      .pipe(retry(20), catchError(err => this.errorService.handleError(err)));
   }
 
   /**
@@ -74,7 +74,7 @@ export class PersonSkillsService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<Person>(environment.serverAddress + '/person/' + mail, options)
-      .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
   }
 
 }

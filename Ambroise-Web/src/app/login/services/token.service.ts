@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { ErrorService } from 'src/app/services/error.service';
 import { environment } from 'src/environments/environment';
 import { LoggerService, LogLevel } from '../../services/logger.service';
+import { CookieService } from 'ngx-cookie-service';
 
 /**
  * Service pour le login
@@ -21,7 +22,8 @@ export class TokenService {
     constructor(
         private httpClient: HttpClient,
         private router: Router,
-        private errorService: ErrorService) { }
+        private errorService: ErrorService,
+        private cookieService: CookieService) { }
 
     /**
      * Permet de récupérer un token de session valide si l'utilisateur rentre le bon
@@ -52,10 +54,9 @@ export class TokenService {
             // Effectue une action dès la réception du token
             .subscribe((response: HttpResponse<any>) => {
                 // Check si la propriété Token existe
-                if (response.body.hasOwnProperty('access') && response.body.hasOwnProperty('refresh')) {
+                if (response.body.hasOwnProperty('token')) {
                     // On store le token dans le sessionStorage du navigateur
-                    window.sessionStorage.setItem('bearerToken', response.body['access']['token']);
-                    window.sessionStorage.setItem('refreshToken', response.body['refresh']['token']);
+                    window.sessionStorage.setItem('bearerToken', response.body['token']);
                     // Notification de l'observable pour notifier la réception d'un token
                     this.tokenReceptionState.next(true);
                 } else {
@@ -65,17 +66,19 @@ export class TokenService {
     }
 
     signOut() {
-        const token = window.sessionStorage.getItem('refreshToken');
+        const token = this.cookieService.get('refreshToken');
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': token !== '' ? token : ''
+            Authorization: token !== '' ? token : ''
         });
         this.httpClient.post(environment.serverAddress + '/signout', '', { headers })
             .pipe(catchError(err => this.errorService.handleError(err)))
             .subscribe(() => {
-                window.sessionStorage.clear();
-                this.router.navigate(['login']);
+
             });
+        window.sessionStorage.clear();
+        this.cookieService.delete('refreshToken');
+        this.router.navigate(['login']);
     }
 
     notifyTokenReception(received: boolean) {

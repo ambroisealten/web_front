@@ -20,7 +20,7 @@ export class AdminUserService {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .get<User[]>(environment.serverAddress + '/admin/users', options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     createUser(user: User) {
@@ -28,34 +28,34 @@ export class AdminUserService {
         user.pswd = sha512.sha512(user.pswd);
         return this.httpClient
             .post<User>(environment.serverAddress + '/admin/user', user, options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     updateUser(user: User) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<User>(environment.serverAddress + '/admin/user', user, options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     deleteUser(mail: string) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .delete<User>(environment.serverAddress + '/admin/deleteUser/' + mail, options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     resetPassword(mail: string) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<User>(environment.serverAddress + '/admin/user/resetPwd/' + mail, '', options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     updatePassword(password: string, mail: string) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<User>(environment.serverAddress + '/admin/user', mail, options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 }

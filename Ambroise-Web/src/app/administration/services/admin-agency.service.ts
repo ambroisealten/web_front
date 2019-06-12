@@ -19,21 +19,21 @@ export class AdminAgencyService {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .get<Agency[]>(environment.serverAddress + '/agencies', options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     createAgency(agency: Agency) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .post<Agency>(environment.serverAddress + '/agency', agency, options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     updateAgency(agency: Agency) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<Agency>(environment.serverAddress + '/agency', agency, options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 
     deleteAgency(agency: Agency) {
@@ -48,6 +48,6 @@ export class AdminAgencyService {
         };
         return this.httpClient
             .delete<Agency>(environment.serverAddress + '/agency', options)
-            .pipe(retry(), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
     }
 }

@@ -5,15 +5,19 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { LoggerService, LogLevel } from './logger.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    constructor(private httpClient: HttpClient, private router: Router) { }
+    constructor(
+        private httpClient: HttpClient, 
+        private router: Router,
+        private cookieService: CookieService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
             if (err.status === 401) {
-                const refreshToken = window.sessionStorage.getItem('refreshToken');
+                const refreshToken = this.cookieService.get('refreshToken');
                 const headers = new HttpHeaders({
                     'Content-Type': 'application/json',
                     Authorization: refreshToken !== '' ? refreshToken : ''
@@ -21,7 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 const options = { headers };
                 this.httpClient
                     .get(environment.serverAddress + '/login', options)
-                    .pipe(catchError(error => this.router.navigate(['login'])))
+                    .pipe(catchError(() => this.router.navigate(['login'])))
                     .subscribe(response => {
                         // Check si la propriété Token existe
                         if (response.hasOwnProperty('token')) {
