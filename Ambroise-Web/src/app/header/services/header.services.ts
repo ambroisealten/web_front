@@ -18,6 +18,6 @@ export class HeaderService {
 
         return this.httpClient
             .get(environment.serverAddress + '/configMenu', options)
-            .pipe(retry(20), catchError(err => this.errorService.handleError(err)));
+            .pipe(retry(10), catchError(err => this.errorService.handleError(err)));
     }
 }

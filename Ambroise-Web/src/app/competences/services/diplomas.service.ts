@@ -23,6 +23,6 @@ export class DiplomasService {
     let options = this.httpHeaderService.getHttpHeaders();
     return this.httpClient
       .get(environment.serverAddress + '/diplomas/', options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 }

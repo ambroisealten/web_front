@@ -28,14 +28,14 @@ export class SkillsListService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<Skill[]>(environment.serverAddress + '/skills/', options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 
   getSoftSkills(): Observable<{} | Skill[]> {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<Skill[]>(environment.serverAddress + '/softskills/', options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 
   /**
@@ -45,6 +45,6 @@ export class SkillsListService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<Skill[]>(environment.serverAddress + '/techskills/', options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 }

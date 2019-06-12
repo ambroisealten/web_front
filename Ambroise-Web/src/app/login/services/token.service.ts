@@ -74,11 +74,10 @@ export class TokenService {
         this.httpClient.post(environment.serverAddress + '/signout', '', { headers })
             .pipe(catchError(err => this.errorService.handleError(err)))
             .subscribe(() => {
-
+                window.sessionStorage.clear();
+                // this.cookieService.delete('refreshToken');
+                this.router.navigate(['login']);
             });
-        window.sessionStorage.clear();
-        this.cookieService.delete('refreshToken');
-        this.router.navigate(['login']);
     }
 
     notifyTokenReception(received: boolean) {

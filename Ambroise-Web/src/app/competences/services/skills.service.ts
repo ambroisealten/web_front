@@ -57,7 +57,7 @@ export class SkillsService {
 
        return this.httpClient
             .get<{} | Skills[]>(environment.serverAddress + '/skillsheetSearch/' + noComp + '/' + comp + '/' + encodeURIComponent(sortColumn), options)
-            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
       }
 
 }

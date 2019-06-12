@@ -21,21 +21,21 @@ export class AdminSoftSkillService {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .get<SoftSkill[]>(environment.serverAddress + '/softskills', options)
-            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
     }
 
     createSoftSkill(softSkill: SoftSkill) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .post<SoftSkill>(environment.serverAddress + '/skill', softSkill, options)
-            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
     }
 
     updateSoftSkill(softSkill: SoftSkill) {
         const options = this.httpHeaderService.getHttpHeaders();
         return this.httpClient
             .put<SoftSkill>(environment.serverAddress + '/skill', softSkill, options)
-            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
     }
 
     updateSoftSkillsOrder(softSkill: Skill[]) {
@@ -44,7 +44,7 @@ export class AdminSoftSkillService {
         softSkills['softSkillsList'] = softSkill;
         return this.httpClient
             .put(environment.serverAddress + '/softSkillsOrder', softSkills, options)
-            .pipe(retry(20),
+            .pipe(retry(10),
                 catchError(error => this.errorService.handleError(error)));
     }
 
@@ -58,7 +58,7 @@ export class AdminSoftSkillService {
         };
         return this.httpClient
             .delete<Agency>(environment.serverAddress + '/skill', options)
-            .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+            .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
     }
 
     delay(ms: number) {

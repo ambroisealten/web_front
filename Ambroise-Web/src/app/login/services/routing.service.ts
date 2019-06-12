@@ -27,7 +27,7 @@ export class RoutingService {
 
         return this.httpClient
             .get<Route[]>(environment.serverAddress + '/configRouting', options)
-            .pipe(retry(20), catchError(err => this.errorService.handleError(err)));
+            .pipe(retry(10), catchError(err => this.errorService.handleError(err)));
 
     }
 }

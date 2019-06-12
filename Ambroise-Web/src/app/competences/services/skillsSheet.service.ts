@@ -25,7 +25,7 @@ export class SkillsSheetService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .post<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 
   /**
@@ -36,7 +36,7 @@ export class SkillsSheetService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .put<SkillsSheet>(environment.serverAddress + '/skillsheet', skillsSheet, options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 
   /**
@@ -47,7 +47,7 @@ export class SkillsSheetService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<SkillsSheet[]>(environment.serverAddress + '/skillsheetMail/' + mail, options)
-      .pipe(retry(20), catchError(error => this.errorService.handleError(error)));
+      .pipe(retry(10), catchError(error => this.errorService.handleError(error)));
   }
 
   /**
@@ -59,7 +59,7 @@ export class SkillsSheetService {
     const options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
       .get<SkillsSheet[]>(environment.serverAddress + '/skillsheetVersion/' + skillsSheetName + '/' + mailPersonAttachedTo, options)
-      .pipe(retry(20),
+      .pipe(retry(10),
         catchError(error => this.errorService.handleError(error)));
   }
 
