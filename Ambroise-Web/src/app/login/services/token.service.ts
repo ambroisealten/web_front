@@ -7,7 +7,6 @@ import { catchError } from 'rxjs/operators';
 import { ErrorService } from 'src/app/services/error.service';
 import { environment } from 'src/environments/environment';
 import { LoggerService, LogLevel } from '../../services/logger.service';
-import { CookieService } from 'ngx-cookie-service';
 
 /**
  * Service pour le login
@@ -22,8 +21,7 @@ export class TokenService {
     constructor(
         private httpClient: HttpClient,
         private router: Router,
-        private errorService: ErrorService,
-        private cookieService: CookieService) { }
+        private errorService: ErrorService) { }
 
     /**
      * Permet de récupérer un token de session valide si l'utilisateur rentre le bon
@@ -66,16 +64,15 @@ export class TokenService {
     }
 
     signOut() {
-        const token = this.cookieService.get('refreshToken');
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            Authorization: token !== '' ? token : ''
         });
-        this.httpClient.post(environment.serverAddress + '/signout', '', { headers })
+        this.httpClient.post(environment.serverAddress + '/signout', '', {
+            headers, withCredentials: true,
+        })
             .pipe(catchError(err => this.errorService.handleError(err)))
             .subscribe(() => {
                 window.sessionStorage.clear();
-                // this.cookieService.delete('refreshToken');
                 this.router.navigate(['login']);
             });
     }

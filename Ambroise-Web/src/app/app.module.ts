@@ -20,7 +20,6 @@ import { LoggerService } from './services/logger.service';
 import { SubMenusService } from './services/subMenus.service';
 import { ConfirmationDialogComponent } from './utils/confirmation-dialog/confirmation-dialog.component';
 import { HttpInterceptorProviders } from './app-interceptor-provider';
-import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -45,8 +44,7 @@ import { CookieService } from 'ngx-cookie-service';
     SubMenusService,
     ErrorService,
     HttpHeaderService,
-    HttpInterceptorProviders,
-    CookieService
+    HttpInterceptorProviders
   ],
   bootstrap: [AppComponent],
   entryComponents: [

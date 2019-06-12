@@ -5,7 +5,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { LoggerService, LogLevel } from './logger.service';
-import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
