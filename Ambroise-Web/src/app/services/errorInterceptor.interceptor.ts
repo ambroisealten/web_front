@@ -12,8 +12,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
     constructor(
         private httpClient: HttpClient,
-        private router: Router,
-        private cookieService: CookieService) { }
+        private router: Router) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
