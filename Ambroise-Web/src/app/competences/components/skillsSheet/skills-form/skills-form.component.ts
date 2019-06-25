@@ -83,6 +83,11 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   name: string;
   version: number;
 
+  // status
+  status: string;
+  isEditStatusButtonHidden: boolean = false;
+
+
   // avis + comment
   avis: string;
   comment: string = '';
@@ -507,6 +512,15 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * On click on edit status button
+   */
+  editStatus() {
+    this.isEditStatusButtonHidden = true;
+    this.tmpCurrentPerson = this.currentPerson;
+    this.myControl.enable();
+  }
+
+  /**
    * On click on save edit button : Person is updated in db
    */
   savePerson() {
@@ -543,6 +557,31 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Update person's status on select
+   */
+  onStatusChange() {
+    switch (this.status) {
+      case 'APPLICANT' :
+          this.currentPerson.role = PersonRole.APPLICANT;
+        break;
+      case 'CONSULTANT' :
+          this.currentPerson.role = PersonRole.CONSULTANT;
+        break;
+      case 'DEMISSIONNAIRE' :
+          this.currentPerson.role = PersonRole.DEMISSIONNAIRE;
+        break;      
+    }
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+        this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
+      }
+    });
+    this.isEditStatusButtonHidden = false;
+  }
+
+  /**
    * On click on cancel edit button
    */
   cancelEditPerson() {
@@ -550,6 +589,15 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.updateFormItemsFromPerson(this.currentPerson);
     this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
+    this.myControl.disable();
+  }
+
+  /**
+   * On click on cancel edit button
+   */
+  cancelEditStatus() {
+    this.isEditStatusButtonHidden = false;
+    this.updateFormItemsFromPerson(this.currentPerson);
     this.myControl.disable();
   }
 
