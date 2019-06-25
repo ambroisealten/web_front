@@ -4,6 +4,26 @@
 
   <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
     maxlength="30" [ngModel]="currentSkillsSheet.name">
+    <button mat-icon-button class="editStatusButton" (click)="editStatus()" [hidden]="isEditStatusButtonHidden">
+      <mat-icon class="editIcon">edit</mat-icon>
+    </button>
+    <div>
+      <mat-form-field [hidden]="!isEditStatusButtonHidden">
+        <mat-label>{{ status }}</mat-label>
+        <mat-select [(ngModel)]="status" (ngModelChange)="onStatusChange()">
+          <mat-option value="APPLICANT">Candidature en cours</mat-option>
+          <mat-option value="CONSULTANT">Dans l'effectif</mat-option>
+          <mat-option value="DEMISSIONNAIRE">Archive</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- <button mat-icon-button class="savePersonButton" (click)="savePerson()" [hidden]="!isEditStatusButtonHidden">
+        <mat-icon class="savePersonIcon">check</mat-icon>
+      </button> -->
+      <button mat-icon-button class="cancelButton" (click)="cancelEditStatus()" [hidden]="!isEditStatusButtonHidden">
+        <mat-icon class="cancelIcon">close</mat-icon>
+      </button>
+    </div>
+
   <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
   <button mat-raised-button (click)="setViewPDF()">
     <mat-icon>picture_as_pdf</mat-icon>
