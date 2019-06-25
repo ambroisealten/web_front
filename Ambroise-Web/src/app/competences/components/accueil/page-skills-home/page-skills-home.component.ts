@@ -366,9 +366,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    * @author Maxime Maquinghen
    */
   doAddFilter() {
-    console.log("AVANT   " + this.rechercheInput);
     this.rechercheInput = this.removeAccents(this.rechercheInput);
-    console.log("APRES   " + this.rechercheInput);
     if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) === -1 && this.rechercheInput !== null && !this.rechercheInput.match('^\ +') && this.rechercheInput !== '') {
       this.filter.push(this.rechercheInput);
       this.searchSkillSheets();
