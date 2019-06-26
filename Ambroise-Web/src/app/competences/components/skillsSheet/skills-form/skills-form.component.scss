@@ -8,8 +8,20 @@
 }
 
 .currentSheetInfo p {
-    margin: 0;
+  margin: 0;
+  max-width: 15%;
 }
+
+.currentSheetName editStatusButton {
+  max-width: 10%;
+  margin-left: 16%;
+}
+
+.currentSheetName mat-form-field {
+  margin: 0;
+  padding: 0;
+}
+
 
 .skillsSheetNameDiv {
   max-width: 100%;

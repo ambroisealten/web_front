@@ -51,6 +51,19 @@ body {
 } // Set yellow color when star hover
 
 */
+.statusCheck {
+  width: 100%;
+ }
+
+.statusCheck p {
+  width: 100%;
+  float: left;
+}
+
+.statusCheck mat-checkbox {
+  width: 100%;
+  float: left;
+}
 
 .skillSheetInformation {
   margin-left: 2vw;

@@ -8,7 +8,7 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 import { SkillGraduated, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { Person, DurationType } from 'src/app/competences/models/person';
+import { Person, DurationType, PersonRole } from 'src/app/competences/models/person';
 import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
@@ -26,6 +26,14 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel;
 
   opinionList = ["+++","++","+","-","--","---","NOK"] ; 
+
+  status = {
+    APPLICANT : false,
+    CONSULTANT : false,
+    DEMISSIONNAIRE : false,
+  };
+
+  statusList = [];
 
   avis ; 
 
@@ -72,6 +80,9 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
+    this.status.APPLICANT = true;
+    this.status.CONSULTANT = true;
+    this.doAddStatus();
     this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -102,14 +113,14 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    */
   searchSkillSheets() {
     if(this.avis != undefined){
-      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[]),this.compFilter,this.sort).subscribe(skillsList => {
+      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[], this.statusList),this.compFilter,this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
           this.skillsSheetDataSource.paginator = this.paginator
         }
       }); ; 
     } else {
-      this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
+      this.skillsService.getAllSkills(this.filter.concat(this.statusList), this.compFilter, this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
           this.skillsSheetDataSource.paginator = this.paginator
@@ -339,6 +350,18 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
 
   redirectToSkillsSheet(name: string, version: number) {
     this.router.navigate(['skills/skillsheet/' + name + '/' + version]);
+  }
+
+  doAddStatus() {
+    this.statusList = [];
+    if (this.status.APPLICANT)
+      this.statusList.push(PersonRole.APPLICANT);
+    if (this.status.CONSULTANT)
+      this.statusList.push(PersonRole.CONSULTANT);
+    if (this.status.DEMISSIONNAIRE)
+      this.statusList.push(PersonRole.DEMISSIONNAIRE);
+
+    this.searchSkillSheets();
   }
 
   /**

@@ -33,6 +33,18 @@
           </mat-select>
         </mat-form-field>
 
+         <div class="statusCheck">
+            <p>
+              <mat-checkbox [(ngModel)]="status.APPLICANT" (ngModelChange)="doAddStatus()">Candidature en cours</mat-checkbox>
+            </p>
+            <p>
+              <mat-checkbox [(ngModel)]="status.CONSULTANT" (ngModelChange)="doAddStatus()">Dans les effectifs</mat-checkbox>
+            </p>
+            <p>
+              <mat-checkbox [(ngModel)]="status.DEMISSIONNAIRE" (ngModelChange)="doAddStatus()">Archivé</mat-checkbox>
+            </p>
+         </div>
+          
       </mat-expansion-panel>
       <mat-expansion-panel #expansionCPT>
         <mat-expansion-panel-header>
