@@ -51,6 +51,13 @@ body {
 } // Set yellow color when star hover
 
 */
+.statusCheck {
+   position: relative;
+ }
+
+.statusCheck p {
+  float: left;
+}
 
 .skillSheetInformation {
   margin-left: 2vw;

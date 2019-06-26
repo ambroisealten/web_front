@@ -28,12 +28,12 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   opinionList = ["+++","++","+","-","--","---","NOK"] ; 
 
   status = {
-    APPLICANT : true,
-    CONSULTANT : true,
+    APPLICANT : false,
+    CONSULTANT : false,
     DEMISSIONNAIRE : false,
   };
 
-  statusList = ['APPLICANT','CONSULTANT'];
+  statusList = [];
 
   avis ; 
 
@@ -80,7 +80,11 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
-    //this.doAddStatus();
+    this.status.APPLICANT = true;
+    this.status.CONSULTANT = true;
+    console.log("APPLICANT : " + this.status.APPLICANT + " CONSULTANT : " + this.status.CONSULTANT);
+    this.doAddStatus();
+    console.log(this.statusList);
     this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -351,6 +355,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   doAddStatus() {
+    console.log("APPLICANT : " + this.status.APPLICANT + " CONSULTANT : " + this.status.CONSULTANT + " DEMISSIONNAIRE : " + this.status.DEMISSIONNAIRE);
     this.statusList = [];
     if (this.status.APPLICANT) {
       console.log("APPLICANT");
