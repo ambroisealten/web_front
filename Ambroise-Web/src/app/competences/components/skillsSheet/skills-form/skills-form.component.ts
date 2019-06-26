@@ -387,6 +387,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
@@ -402,6 +403,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else {
       this.currentSkillsSheet.versionNumber = 1;
       this.currentSkillsSheet.comment = this.comment;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
@@ -417,10 +419,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   onSubmitRedirect(redirect: string) {
     LoggerService.log('submitRedirect', LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
       this.currentSkillsSheet.comment = this.comment;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1;
@@ -483,7 +487,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @param  roleName role to translate
    */
   translate(roleName) {
-    return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
+    if (roleName.toLowerCase() == 'applicant')
+      return 'Candidat';
+    else if (roleName.toLowerCase() == 'consultant')
+      return 'Consultant';
+    else if (roleName.toLowerCase() == 'demissionnaire')
+      return 'Archivé';
   }
 
   /**
@@ -562,20 +571,24 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   onStatusChange() {
     switch (this.status) {
       case 'APPLICANT' :
-          this.currentPerson.role = PersonRole.APPLICANT;
-        break;
+          this.currentPerson.newRole = PersonRole.APPLICANT;
+          break;
       case 'CONSULTANT' :
-          this.currentPerson.role = PersonRole.CONSULTANT;
-        break;
+          this.currentPerson.newRole = PersonRole.CONSULTANT;
+          break;
       case 'DEMISSIONNAIRE' :
-          this.currentPerson.role = PersonRole.DEMISSIONNAIRE;
-        break;      
+          this.currentPerson.newRole = PersonRole.DEMISSIONNAIRE;
+          break;      
     }
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
         this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
+        this.currentPerson.role = this.currentPerson.newRole;
+        this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
+        this.tmpCurrentPerson = this.currentPerson;
+        this.savePerson();
       }
     });
     this.isEditStatusButtonHidden = false;

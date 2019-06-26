@@ -10,6 +10,7 @@ export class Person {
   employer: string;
   monthlyWage: string;
   role: PersonRole;
+  newRole: PersonRole;
   personInChargeMail: string;
   urlDocs: string[];
   highestDiploma: string;
