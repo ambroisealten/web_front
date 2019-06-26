@@ -378,6 +378,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  //console.log("STRING PERSON : " + JSON.stringify(this.currentPerson));
+
   /**
   * Calls skills service to save current skillsSheet
   */
@@ -387,6 +389,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
@@ -394,6 +397,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
           let tmpSkillsSheets: SkillsSheet[] = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
           let tmpModifiedSkillsSheets = tmpSkillsSheets.map(skillsSheet => skillsSheet.name == this.currentSkillsSheet.name ? this.currentSkillsSheet : skillsSheet);
           window.sessionStorage.setItem('skills', JSON.stringify(tmpModifiedSkillsSheets));
+          console.log("STRING TMPMODIFIEDSKILLSHSEET : " + JSON.stringify(tmpModifiedSkillsSheets));
           this.initVersionArray(false);
           this.router.navigate(['skills/skillsheet/' + this.currentSkillsSheet.name + '/' + this.currentSkillsSheet.versionNumber]);
           this.toastrService.info('Fiche de compétence mise à jour avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
@@ -402,6 +406,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else {
       this.currentSkillsSheet.versionNumber = 1;
       this.currentSkillsSheet.comment = this.comment;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
@@ -417,10 +422,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   onSubmitRedirect(redirect: string) {
     LoggerService.log('submitRedirect', LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
       this.currentSkillsSheet.comment = this.comment;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1;
@@ -483,7 +490,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @param  roleName role to translate
    */
   translate(roleName) {
-    return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
+    if (roleName.toLowerCase() == 'applicant')
+      return 'Candidat';
+    else if (roleName.toLowerCase() == 'consultant')
+      return 'Consultant';
+    else if (roleName.toLowerCase() == 'demissionnaire')
+      return 'Archivé';
   }
 
   /**
@@ -560,22 +572,34 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * Update person's status on select
    */
   onStatusChange() {
+    console.log("CURRENT ROLE : " + this.currentPerson.role);
     switch (this.status) {
       case 'APPLICANT' :
-          this.currentPerson.role = PersonRole.APPLICANT;
+          console.log("APPLICANT");
+          this.currentPerson.newRole = PersonRole.APPLICANT;
         break;
       case 'CONSULTANT' :
-          this.currentPerson.role = PersonRole.CONSULTANT;
+          console.log("CONSULTANT");
+          this.currentPerson.newRole = PersonRole.CONSULTANT;
         break;
       case 'DEMISSIONNAIRE' :
-          this.currentPerson.role = PersonRole.DEMISSIONNAIRE;
+          console.log("DEMISSIONNAIRE");
+          this.currentPerson.newRole = PersonRole.DEMISSIONNAIRE;
         break;      
     }
+    console.log("CURRENT ROLE : " + this.currentPerson.role + " || NEW ROLE : " + this.currentPerson.newRole);
     this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      console.log("HTTP RESPO : " + httpResponse['stackTrace'][0]['lineNumber']);
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
         window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        console.log("STRING PERSON : " + JSON.stringify(this.currentPerson));
         LoggerService.log('Person updated', LogLevel.DEBUG);
         this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
+        this.currentPerson.role = this.currentPerson.newRole;
+        this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
+        this.tmpCurrentPerson = this.currentPerson;
+        this.savePerson();
+        console.log("NEW ROLE : " + this.currentPerson.role + " || FICHE ROLE : " + this.currentSkillsSheet.rolePersonAttachedTo);
       }
     });
     this.isEditStatusButtonHidden = false;
