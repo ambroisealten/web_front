@@ -1,5 +1,5 @@
 <div class="currentSheetInfo">
-  <div>
+  <div class="currentSheetName">
       <p [hidden]="isEditStatusButtonHidden"> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})
         </p>
       <p [hidden]="!isEditStatusButtonHidden"> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }}
@@ -7,7 +7,6 @@
       <button mat-icon-button class="editStatusButton" (click)="editStatus()" [hidden]="isEditStatusButtonHidden">
           <mat-icon class="editIcon">edit</mat-icon>
       </button>
-      <div>
         <mat-form-field [hidden]="!isEditStatusButtonHidden">
           <mat-label>{{ translate(currentPerson.role) }}</mat-label>
           <mat-select [(ngModel)]="status" (ngModelChange)="onStatusChange()">
@@ -19,7 +18,6 @@
         <button mat-icon-button class="cancelButton" (click)="cancelEditStatus()" [hidden]="!isEditStatusButtonHidden">
           <mat-icon class="cancelIcon">close</mat-icon>
         </button>
-      </div>
   </div>
 
   <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
