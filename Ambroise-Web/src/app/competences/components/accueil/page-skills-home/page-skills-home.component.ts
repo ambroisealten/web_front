@@ -82,9 +82,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     );
     this.status.APPLICANT = true;
     this.status.CONSULTANT = true;
-    console.log("APPLICANT : " + this.status.APPLICANT + " CONSULTANT : " + this.status.CONSULTANT);
     this.doAddStatus();
-    console.log(this.statusList);
     this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -355,22 +353,14 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   doAddStatus() {
-    console.log("APPLICANT : " + this.status.APPLICANT + " CONSULTANT : " + this.status.CONSULTANT + " DEMISSIONNAIRE : " + this.status.DEMISSIONNAIRE);
     this.statusList = [];
-    if (this.status.APPLICANT) {
-      console.log("APPLICANT");
+    if (this.status.APPLICANT)
       this.statusList.push(PersonRole.APPLICANT);
-    }
-    if (this.status.CONSULTANT){
-      console.log("CONSULTANT");
+    if (this.status.CONSULTANT)
       this.statusList.push(PersonRole.CONSULTANT);
-    }
-    if (this.status.DEMISSIONNAIRE){
-      console.log("DEMISSIONNAIRE");
+    if (this.status.DEMISSIONNAIRE)
       this.statusList.push(PersonRole.DEMISSIONNAIRE);
-    }
 
-    console.log("APRES §§§ " + this.statusList);
     this.searchSkillSheets();
   }
 
