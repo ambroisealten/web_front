@@ -488,9 +488,9 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    */
   translate(roleName) {
     if (roleName.toLowerCase() == 'applicant')
-      return 'Candidat';
+      return 'Candidature en cours';
     else if (roleName.toLowerCase() == 'consultant')
-      return 'Consultant';
+      return 'Dans l\'effectif';
     else if (roleName.toLowerCase() == 'demissionnaire')
       return 'Archivé';
   }
