@@ -25,8 +25,10 @@ export class PersonSkillsService {
 
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
-    } else {
+    } else if (person.role.toUpperCase() === PersonRole.CONSULTANT) {
       urlRequest = environment.serverAddress + '/consultant';
+    } else {
+      urlRequest = environment.serverAddress + '/archive';
     }
     let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
@@ -40,6 +42,8 @@ export class PersonSkillsService {
 
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicantAndSkillsSheet';
+    } else if (person.role.toUpperCase() === PersonRole.CONSULTANT) {
+      urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
     } else {
       urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
     }
@@ -57,8 +61,10 @@ export class PersonSkillsService {
     let urlRequest: string;
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
-    } else {
+    } else if (person.role.toUpperCase() === PersonRole.CONSULTANT) {
       urlRequest = environment.serverAddress + '/consultant';
+    } else {
+      urlRequest = environment.serverAddress + '/archive';
     }
     let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
