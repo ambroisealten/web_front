@@ -480,13 +480,27 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   }
 
+  findSheetReplace(replaceSheetList) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name != this.currentSkillsSheet.name)
+        rs = skillsSheet.name;
+    });
+    return (rs);
+  }
+
   deleteSkillsSheet() {
+    let replaceSheetList = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    let replaceSheetName = this.findSheetReplace(replaceSheetList);
+
+    console.log("Replace : " + replaceSheetName);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      person: this.currentPerson
+      person: this.currentPerson,
+      skillsSheet: this.currentSkillsSheet,
+      replaceSheet: replaceSheetName
     };
-
     const dialogRef = this.dialog.open(ModalDeleteSkillsSheetComponent, dialogConfig);
 
   }

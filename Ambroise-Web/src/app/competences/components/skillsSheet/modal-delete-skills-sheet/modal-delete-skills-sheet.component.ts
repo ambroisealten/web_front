@@ -13,14 +13,18 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
   templateUrl: './modal-delete-skills-sheet.component.html',
   styleUrls: ['./modal-delete-skills-sheet.component.scss']
 })
+
+/**
+ * Thomas Decamp
+ */
 export class ModalDeleteSkillsSheetComponent implements OnInit {
 
   name: string;
   errorMessage : string;
+  replaceName : string;
 
   currentPerson: Person;
   currentSkillsSheet: SkillsSheet;
-  newSkillsSheet: PageSkillsHomeComponent;
 
   valide: boolean = true;
 
@@ -33,40 +37,33 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
     private router: Router,
     @Inject(MAT_DIALOG_DATA) data) {
     this.currentPerson = data.person;
+    this.currentSkillsSheet = data.skillsSheet;
     this.errorMessage = "";
+    this.replaceName = data.replaceSheet;
+    console.log(this.currentSkillsSheet);
+    console.log(this.replaceName);
   }
 
   ngOnInit() {
     this.tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-
   }
 
-  onChange() {
-    if (this.name == ""){
-      this.valide = true;
-      this.errorMessage = "Veuillez entrer un nom valide pour la fiche";
-    }
-    else if(this.tmpSkillsSheets.find(skillsSheet => skillsSheet.name === this.name) !== undefined) {
-      this.valide = true;
-      this.errorMessage = "Cette fiche existe déjà";
-    }
-    else {
-      this.errorMessage = "";
-      this.valide = false;
-    }
-  }
-
-  saveName() {
-    const newSkillsSheet = new SkillsSheet(this.name, this.currentPerson);
-    this.skillsSheetService.createNewSkillsSheet(newSkillsSheet).subscribe(httpResponse => {
-      if (httpResponse['stackTrace'][0]['lineNumber'] === 201) {
-        let createdSkillsSheet = JSON.parse(httpResponse['message']) as SkillsSheet;
-        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        tmpSkillsSheets.push(createdSkillsSheet);
-        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        this.router.navigate(['skills/skillsheet/' + this.name + '/1']);
+  deleteFiche() {
+    console.log("DELETE ?");
+    const deleteSkillsSheet = this.currentSkillsSheet;
+    this.skillsSheetService.deleteSkillsSheet(deleteSkillsSheet).subscribe(httpResponse => {
+      console.log("PASS ?");
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
+        console.log("PASS !");
+        // let deletedSkillsSheet = JSON.parse(httpResponse['message']) as SkillsSheet;
+        // const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        // tmpSkillsSheets.push(deletedSkillsSheet);
+        // window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        console.log("ROUTER ?");
+        this.router.navigate(['skills/skillsheet/' + this.replaceName + '/1']);
+        console.log("ROUTER !");
         this.subMenusService.notifyMenuAction('');
-        this.toastrService.info('Fiche de compétence créée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
+        this.toastrService.info('Fiche de compétence supprimée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         this.dialogRef.close();
       }
     });

@@ -56,7 +56,8 @@ import { ModalDeleteSkillsSheetComponent } from './components/skillsSheet/modal-
     SkillsFormComponent,
     PdfComponent,
     ModalAvailabilityComponent,
-    ModalNewSkillsSheetComponent
+    ModalNewSkillsSheetComponent,
+    ModalDeleteSkillsSheetComponent
   ],
   providers: [
     SkillsSheetService,
