@@ -22,6 +22,7 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
 import { environment } from '../../../../../environments/environment';
+import { ModalDeleteSkillsSheetComponent } from '../modal-delete-skills-sheet/modal-delete-skills-sheet.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -87,6 +88,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   status: string;
   isEditStatusButtonHidden: boolean = false;
 
+  // delete
+  isDeleteButtonHidden: boolean = true;
 
   // avis + comment
   avis: string;
@@ -474,6 +477,31 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     };
 
     const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
+
+  }
+
+  findSheetReplace(replaceSheetList) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name != this.currentSkillsSheet.name)
+        rs = skillsSheet.name;
+    });
+    return (rs);
+  }
+
+  deleteSkillsSheet() {
+    let replaceSheetList = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    let replaceSheetName = this.findSheetReplace(replaceSheetList);
+
+    console.log("Replace : " + replaceSheetName);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      person: this.currentPerson,
+      skillsSheet: this.currentSkillsSheet,
+      replaceSheet: replaceSheetName
+    };
+    const dialogRef = this.dialog.open(ModalDeleteSkillsSheetComponent, dialogConfig);
 
   }
 
