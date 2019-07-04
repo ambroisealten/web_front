@@ -22,6 +22,7 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
 import { environment } from '../../../../../environments/environment';
+import { ModalDeleteSkillsSheetComponent } from '../modal-delete-skills-sheet/modal-delete-skills-sheet.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -87,6 +88,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   status: string;
   isEditStatusButtonHidden: boolean = false;
 
+  // delete
+  isDeleteButtonHidden: boolean = true;
 
   // avis + comment
   avis: string;
@@ -474,6 +477,17 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     };
 
     const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
+
+  }
+
+  deleteSkillsSheet() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      person: this.currentPerson
+    };
+
+    const dialogRef = this.dialog.open(ModalDeleteSkillsSheetComponent, dialogConfig);
 
   }
 

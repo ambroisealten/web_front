@@ -28,7 +28,7 @@
     <mat-icon>picture_as_pdf</mat-icon>
     Aperçu PDF
   </button>
-  <button class="deleteButton" mat-raised-button (click)="deleteForm()" color="warn">
+  <button class="deleteButton" mat-raised-button (click)="deleteSkillsSheet()" color="warn" [hidden]="!isDeleteButtonHidden">
     <mat-icon>delete_forever</mat-icon>
     Supprimer la fiche
   </button>
