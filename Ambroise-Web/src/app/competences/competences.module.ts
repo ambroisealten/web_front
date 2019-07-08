@@ -25,6 +25,7 @@ import { SkillsListService } from './services/skillsList.service';
 import { ModalAvailabilityComponent } from './components/skillsSheet/modal-availability/modal-availability.component';
 import { DiplomasService } from './services/diplomas.service';
 import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new-skills-sheet/modal-new-skills-sheet.component';
+import { ModalDeleteSkillsSheetComponent } from './components/skillsSheet/modal-delete-skills-sheet/modal-delete-skills-sheet.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new
     PdfComponent,
     SkillsFormComponent,
     ModalAvailabilityComponent,
-    ModalNewSkillsSheetComponent
+    ModalNewSkillsSheetComponent,
+    ModalDeleteSkillsSheetComponent
   ],
   imports: [
     CommonModule,
@@ -54,7 +56,8 @@ import { ModalNewSkillsSheetComponent } from './components/skillsSheet/modal-new
     SkillsFormComponent,
     PdfComponent,
     ModalAvailabilityComponent,
-    ModalNewSkillsSheetComponent
+    ModalNewSkillsSheetComponent,
+    ModalDeleteSkillsSheetComponent
   ],
   providers: [
     SkillsSheetService,

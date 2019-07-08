@@ -28,7 +28,7 @@ import { MatDialogModule } from '@angular/material';
 @NgModule({
   declarations: [
     AppComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
   ],
   imports: [
     HeaderModule,

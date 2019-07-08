@@ -22,6 +22,7 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
 import { environment } from '../../../../../environments/environment';
+import { ModalDeleteSkillsSheetComponent } from '../modal-delete-skills-sheet/modal-delete-skills-sheet.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -87,6 +88,8 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   status: string;
   isEditStatusButtonHidden: boolean = false;
 
+  // delete
+  isDeleteButtonHidden: boolean = true;
 
   // avis + comment
   avis: string;
@@ -168,6 +171,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
         this.initVersionArray(false);
       }
+      this.setupDeleteButton(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
       this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet));
       this.createMenu();
       this.comment = this.currentSkillsSheet.comment;
@@ -177,6 +181,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.myControl.disable();
     this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
+    
   }
 
   ngOnDestroy() {
@@ -206,6 +211,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     });
     //this.subMenusService.notifySubMenu(subMenu)
+  }
+
+  /**
+   * 
+   * @param skillsSheets 
+   * @author Thomas Decamp
+   */
+  setupDeleteButton(skillsSheets: SkillsSheet[]) {
+    if (skillsSheets.length > 1)
+      this.isDeleteButtonHidden = false;
+    else
+      this.isDeleteButtonHidden = true;
   }
 
   /**
@@ -475,6 +492,40 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ModalNewSkillsSheetComponent, dialogConfig);
 
+  }
+
+  findSheetReplace(replaceSheetList) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name != this.currentSkillsSheet.name)
+        rs = skillsSheet.name;
+    });
+    return (rs);
+  }
+
+  findSheetVersion(replaceSheetList, replaceSheetName) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name == replaceSheetName)
+        rs = skillsSheet.versionNumber;
+    });
+    return (rs);
+  }
+
+  deleteSkillsSheet() {
+    let replaceSheetList = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    let replaceSheetName = this.findSheetReplace(replaceSheetList);
+    let replaceSheetVersion = this.findSheetVersion(replaceSheetList, replaceSheetName);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      person: this.currentPerson,
+      skillsSheet: this.currentSkillsSheet,
+      replaceSheet: replaceSheetName,
+      replaceSheetVersion: replaceSheetVersion
+    };
+    const dialogRef = this.dialog.open(ModalDeleteSkillsSheetComponent, dialogConfig);
   }
 
   redirectAfterAction(redirect: string) {
