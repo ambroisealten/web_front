@@ -27,7 +27,7 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
   currentPerson: Person;
   currentSkillsSheet: SkillsSheet;
 
-  valide: boolean = true;
+  isDeleted: boolean = false;
 
   tmpSkillsSheets: any[];
 
@@ -52,6 +52,7 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
     const deleteSkillsSheet = this.currentSkillsSheet;
     this.skillsSheetService.deleteSkillsSheet(deleteSkillsSheet).subscribe(httpResponse => {
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
+        this.isDeleted = true;
         const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
         tmpSkillsSheets.forEach(sheet => {
           if (sheet.name === deleteSkillsSheet.name)

@@ -171,6 +171,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
         this.initVersionArray(false);
       }
+      this.setupDeleteButton(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
       this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet));
       this.createMenu();
       this.comment = this.currentSkillsSheet.comment;
@@ -180,6 +181,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.myControl.disable();
     this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
+    
   }
 
   ngOnDestroy() {
@@ -209,6 +211,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     });
     //this.subMenusService.notifySubMenu(subMenu)
+  }
+
+  /**
+   * 
+   * @param skillsSheets 
+   * @author Thomas Decamp
+   */
+  setupDeleteButton(skillsSheets: SkillsSheet[]) {
+    if (skillsSheets.length > 1)
+      this.isDeleteButtonHidden = false;
+    else
+      this.isDeleteButtonHidden = true;
   }
 
   /**
