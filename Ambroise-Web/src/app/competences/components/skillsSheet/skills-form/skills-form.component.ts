@@ -954,10 +954,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (typeof this.skillsChart !== 'function') {
       this.skillsChart.destroy();
     }
+    
     if (arraySkills.length !== 0) {
       const skillsLabels: string[] = [];
       const skillsData: number[] = [];
       arraySkills.forEach((skillGraduated) => {
+        skillGraduated.skill.name = skillGraduated.skill.name.trim();
         skillsLabels.push(skillGraduated.skill.name);
         skillsData.push(skillGraduated.grade);
       });
@@ -983,6 +985,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       const skillsLabels: string[] = [];
       const skillsData: number[] = [];
       arraySoftSkills.forEach((skillGraduated) => {
+        skillGraduated.skill.name = skillGraduated.skill.name.trim();
         skillsLabels.push(skillGraduated.skill.name);
         skillsData.push(skillGraduated.grade);
       });
