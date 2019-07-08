@@ -22,11 +22,12 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
   name: string;
   errorMessage : string;
   replaceName : string;
+  replaceVersion : number;
 
   currentPerson: Person;
   currentSkillsSheet: SkillsSheet;
 
-  valide: boolean = true;
+  isDeleted: boolean = false;
 
   tmpSkillsSheets: any[];
 
@@ -40,8 +41,7 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
     this.currentSkillsSheet = data.skillsSheet;
     this.errorMessage = "";
     this.replaceName = data.replaceSheet;
-    console.log(this.currentSkillsSheet);
-    console.log(this.replaceName);
+    this.replaceVersion = data.replaceSheetVersion;
   }
 
   ngOnInit() {
@@ -49,19 +49,17 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
   }
 
   deleteFiche() {
-    console.log("DELETE ?");
     const deleteSkillsSheet = this.currentSkillsSheet;
     this.skillsSheetService.deleteSkillsSheet(deleteSkillsSheet).subscribe(httpResponse => {
-      console.log("PASS ?");
       if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
-        console.log("PASS !");
-        // let deletedSkillsSheet = JSON.parse(httpResponse['message']) as SkillsSheet;
-        // const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
-        // tmpSkillsSheets.push(deletedSkillsSheet);
-        // window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
-        console.log("ROUTER ?");
-        this.router.navigate(['skills/skillsheet/' + this.replaceName + '/1']);
-        console.log("ROUTER !");
+        this.isDeleted = true;
+        const tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+        tmpSkillsSheets.forEach(sheet => {
+          if (sheet.name === deleteSkillsSheet.name)
+            tmpSkillsSheets.splice(tmpSkillsSheets.indexOf(sheet),1);
+        });
+        window.sessionStorage.setItem('skills', JSON.stringify(tmpSkillsSheets));
+        this.router.navigate(['skills/skillsheet/' + this.replaceName + '/' + this.replaceVersion]);
         this.subMenusService.notifyMenuAction('');
         this.toastrService.info('Fiche de compétence supprimée avec succès !', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
         this.dialogRef.close();

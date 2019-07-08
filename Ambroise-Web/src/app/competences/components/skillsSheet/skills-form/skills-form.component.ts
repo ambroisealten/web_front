@@ -171,6 +171,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
         this.initVersionArray(false);
       }
+      this.setupDeleteButton(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
       this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet));
       this.createMenu();
       this.comment = this.currentSkillsSheet.comment;
@@ -180,6 +181,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.myControl.disable();
     this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
+    
   }
 
   ngOnDestroy() {
@@ -209,6 +211,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     });
     //this.subMenusService.notifySubMenu(subMenu)
+  }
+
+  /**
+   * 
+   * @param skillsSheets 
+   * @author Thomas Decamp
+   */
+  setupDeleteButton(skillsSheets: SkillsSheet[]) {
+    if (skillsSheets.length > 1)
+      this.isDeleteButtonHidden = false;
+    else
+      this.isDeleteButtonHidden = true;
   }
 
   /**
@@ -489,20 +503,29 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     return (rs);
   }
 
+  findSheetVersion(replaceSheetList, replaceSheetName) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name == replaceSheetName)
+        rs = skillsSheet.versionNumber;
+    });
+    return (rs);
+  }
+
   deleteSkillsSheet() {
     let replaceSheetList = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
     let replaceSheetName = this.findSheetReplace(replaceSheetList);
+    let replaceSheetVersion = this.findSheetVersion(replaceSheetList, replaceSheetName);
 
-    console.log("Replace : " + replaceSheetName);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
       person: this.currentPerson,
       skillsSheet: this.currentSkillsSheet,
-      replaceSheet: replaceSheetName
+      replaceSheet: replaceSheetName,
+      replaceSheetVersion: replaceSheetVersion
     };
     const dialogRef = this.dialog.open(ModalDeleteSkillsSheetComponent, dialogConfig);
-
   }
 
   redirectAfterAction(redirect: string) {
