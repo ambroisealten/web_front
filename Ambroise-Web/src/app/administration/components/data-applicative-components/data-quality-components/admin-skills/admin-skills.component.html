@@ -1,11 +1,19 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <div class="panel-title">
-      <h3 data-toggle="collapse" data-parent="#accordion" href="#Compétence">
-        Compétences
-      </h3>
-    </div>
-    <button class="addButton" mat-icon-button>+</button>
-  </div>
-
+<div class="skillsTab">
+  <button class="addButton" mat-icon-button (click)="addSkill()">+</button>
+  <table mat-table [dataSource]="skillsSources" class="mat-elevation-z8">
+    <ng-container matColumnDef="Nom" sticky>
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.name}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Synonymes" sticky>
+      <th mat-header-cell *matHeaderCellDef> synonymous </th>
+      <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.synonymous}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Remplacer par" sticky>
+      <th mat-header-cell *matHeaderCellDef> replace </th>
+      <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.replace}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedSkillColumns" sticky></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedSkillColumns;"></tr>
+  </table>
 </div>
