@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Agency } from 'src/app/administration/models/Agency';
+import { Skill } from 'src/app/administration/models/Skill';
 import { MatTableDataSource, MatDialogConfig, MatDialog } from '@angular/material';
-import { AdminAgencyService } from 'src/app/administration/services/admin-agency.service';
+import { AdminSkillsSynonymousService } from 'src/app/administration/services/admin-skills-synonymous.service';
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
-import { DataAgencyDialogComponent } from '../../../modal-administation/data-agency-dialog/data-agency-dialog.component';
+import { DataSkillDialogComponent } from '../../../modal-administation/data-skill-dialog/data-skill-dialog.component';
 import { ErrorService } from 'src/app/services/error.service';
 
 @Component({
@@ -13,51 +13,76 @@ import { ErrorService } from 'src/app/services/error.service';
 })
 export class AdminSkillsComponent implements OnInit , OnDestroy {
 
-  // agency data 
-  agencies: Agency[];
-  currentAgency: string[];
-  agenciesSources: MatTableDataSource<any[]> = new MatTableDataSource();
-  displayedAgencyColumns: string[] = ['Nom', 'Lieu', 'Type de lieu', 'Delete'];
+  // skill data 
+  skills: Skill[];
+  skillsSynonymous: Skill[];
+  currentSkill: string[];
+  skillsSources: MatTableDataSource<any[]> = new MatTableDataSource();
+  skillsSynonymousSources: MatTableDataSource<any[]> = new MatTableDataSource();
+  displayedSkillColumns: string[] = ['Nom', 'Synonymes', 'Remplacer par', 'Delete'];
 
-  constructor(private adminAgencyService: AdminAgencyService,
+  constructor(private adminSkillService: AdminSkillsSynonymousService,
     private dialog: MatDialog, 
     private errorService: ErrorService) { }
 
   ngOnInit() {
-    this.fetchAgencies() ; 
+    this.fetchSkills() ; 
   }
 
   ngOnDestroy(){
     this.dialog.closeAll() ;
   }
 
-  fetchAgencies() {
-    this.agencies = [];
-    this.adminAgencyService.getAgencies().subscribe((agenciesList: Agency[]) => {
-      this.agencies = agenciesList;
-      this.agenciesSources = new MatTableDataSource<any>(this.agencies) 
+  fetchSkills() {
+    this.skills = [];
+    this.adminSkillService.getSkills().subscribe((skillsList: Skill[]) => {
+      this.skills = skillsList;
+      console.log("Skills : " + this.skills);
+      this.skills.forEach(skill => {
+        if (skill.getReplaceWith() || skill.getSynonymous()) {
+          this.skillsSynonymous.push(skill);
+          console.log(skill);
+        }
+      });
+      this.skillsSources = new MatTableDataSource<any>(this.skills);
+      this.skillsSynonymousSources = new MatTableDataSource<any>(this.skills);
     });
   }
 
-  removeAgency(agency: Agency) {
+  removeSkill(skill: Skill) {
     const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-    this.adminAgencyService.deleteAgency(agency).subscribe((response) => {
-      this.fetchAgencies();
+    this.adminSkillService.deleteSkillsSynonymous(skill).subscribe((response) => {
+      this.fetchSkills();
       dialogProgress.close();
       this.errorService.handleResponse(response);
     });
   }
 
-  addAgency() {
-    const agency = new Agency('', '', '');
-    const dialogAgency = this.openDialogAgency(agency);
+  // addSkill() {
+  //   const skill = new Skill('', '', '');
+  //   const dialogSkill = this.openDialogSkill(skill);
 
-    dialogAgency.afterClosed().subscribe(
+  //   dialogSkill.afterClosed().subscribe(
+  //     (data: any) => {
+  //       if (data) {
+  //         const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+  //         this.adminSkillService.updateSkillsSynonymous(skill).subscribe((response) => {
+  //           this.fetchSkills();
+  //           dialogProgress.close();
+  //           this.errorService.handleResponse(response);
+  //         });
+  //       }
+  //     });
+  // }
+
+  changeSkill(skill: Skill) {
+    const dialogSkill = this.openDialogSkill(skill);
+    dialogSkill.afterClosed().subscribe(
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminAgencyService.createAgency(agency).subscribe((response) => {
-            this.fetchAgencies();
+          this.adminSkillService.updateSkillsSynonymous(skill).subscribe((response) => {
+            this.fetchSkills();
             dialogProgress.close();
             this.errorService.handleResponse(response);
           });
@@ -65,22 +90,7 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
       });
   }
 
-  changeAgency(agency: Agency) {
-    const dialogAgency = this.openDialogAgency(agency);
-    dialogAgency.afterClosed().subscribe(
-      (data: any) => {
-        if (data) {
-          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminAgencyService.updateAgency(agency).subscribe((response) => {
-            this.fetchAgencies();
-            dialogProgress.close();
-            this.errorService.handleResponse(response);
-          });
-        }
-      });
-  }
-
-  openDialogAgency(agency: Agency) {
+  openDialogSkill(skill: Skill) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = false;
@@ -91,13 +101,12 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
 
     dialogConfig.data = {
       id: 1,
-      title: 'Agency',
-      description: 'Agence',
-      name: agency.name,
-      place: agency.place
+      title: 'Skill',
+      description: 'Compétence',
+      name: skill.name
     };
 
-    return this.dialog.open(DataAgencyDialogComponent, dialogConfig);
+    return this.dialog.open(DataSkillDialogComponent, dialogConfig);
   }
 
 }
