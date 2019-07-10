@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-data-skill-dialog',
@@ -7,9 +9,37 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DataSkillDialogComponent implements OnInit {
 
-  constructor() { }
+  form: FormGroup;
+  name: string;
+  synonymous: string[];
+  replaceWith: string;
+  description: string;
+  errorMessage: string;
 
-  ngOnInit() {
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<DataSkillDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public dataSkill) {
+    this.errorMessage = "";
+    this.name = dataSkill.name;
+    this.synonymous = dataSkill.synonymous;
+    this.replaceWith = dataSkill.replaceWith;
+    this.description = dataSkill.description;
   }
 
+  ngOnInit() {
+    this.form = this.fb.group({
+      name: [this.name, []],
+      synonymous: [this.synonymous, []],
+      replaceWith: [this.replaceWith, []],
+    });
+  }
+
+  save() {
+    this.dialogRef.close(this.form.value);
+  }
+
+  close() {
+    this.dialogRef.close();
+  }
 }

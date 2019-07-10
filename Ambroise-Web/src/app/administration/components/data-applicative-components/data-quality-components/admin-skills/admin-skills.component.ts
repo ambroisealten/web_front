@@ -36,16 +36,20 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
   fetchSkills() {
     this.skills = [];
     this.adminSkillService.getSkills().subscribe((skillsList: Skill[]) => {
-      this.skills = skillsList;
+      for (const skill of skillsList) {
+        this.skills.push(new Skill(skill.name, skill.synonymous, skill.replaceWith));
+      }
+      // this.skills = skillsList;
       console.log("Skills : " + this.skills);
       this.skills.forEach(skill => {
-        if (skill.getReplaceWith() || skill.getSynonymous()) {
+        if (skill.getReplaceWith() != null || skill.getSynonymous() != null) {
           this.skillsSynonymous.push(skill);
-          console.log(skill);
+          // console.log(skill);
         }
+        console.log(skill.name);
       });
       this.skillsSources = new MatTableDataSource<any>(this.skills);
-      this.skillsSynonymousSources = new MatTableDataSource<any>(this.skills);
+      this.skillsSynonymousSources = new MatTableDataSource<any>(this.skillsSynonymous);
     });
   }
 
@@ -58,22 +62,22 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
     });
   }
 
-  // addSkill() {
-  //   const skill = new Skill('', '', '');
-  //   const dialogSkill = this.openDialogSkill(skill);
+  addSkill() {
+    const skill = new Skill('', [''], '');
+    const dialogSkill = this.openDialogSkill(skill);
 
-  //   dialogSkill.afterClosed().subscribe(
-  //     (data: any) => {
-  //       if (data) {
-  //         const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-  //         this.adminSkillService.updateSkillsSynonymous(skill).subscribe((response) => {
-  //           this.fetchSkills();
-  //           dialogProgress.close();
-  //           this.errorService.handleResponse(response);
-  //         });
-  //       }
-  //     });
-  // }
+    dialogSkill.afterClosed().subscribe(
+      (data: any) => {
+        if (data) {
+          const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
+          this.adminSkillService.updateSkillsSynonymous(skill).subscribe((response) => {
+            this.fetchSkills();
+            dialogProgress.close();
+            this.errorService.handleResponse(response);
+          });
+        }
+      });
+  }
 
   changeSkill(skill: Skill) {
     const dialogSkill = this.openDialogSkill(skill);
@@ -103,7 +107,9 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
       id: 1,
       title: 'Skill',
       description: 'Compétence',
-      name: skill.name
+      name: skill.name,
+      synonymous: skill.synonymous,
+      replaceWith: skill.replaceWith
     };
 
     return this.dialog.open(DataSkillDialogComponent, dialogConfig);

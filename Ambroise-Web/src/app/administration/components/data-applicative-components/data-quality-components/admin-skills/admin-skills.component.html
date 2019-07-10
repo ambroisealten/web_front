@@ -6,12 +6,12 @@
       <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.name}} </td>
     </ng-container>
     <ng-container matColumnDef="Synonymes" sticky>
-      <th mat-header-cell *matHeaderCellDef> synonymous </th>
+      <th mat-header-cell *matHeaderCellDef> Synonymes </th>
       <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.synonymous}} </td>
     </ng-container>
     <ng-container matColumnDef="Remplacer par" sticky>
-      <th mat-header-cell *matHeaderCellDef> replace </th>
-      <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.replace}} </td>
+      <th mat-header-cell *matHeaderCellDef> Remplacer par </th>
+      <td mat-cell *matCellDef="let skills" (click)="changeSkill(skills)"> {{skills.replaceWith}} </td>
     </ng-container>
     <ng-container matColumnDef="Delete" sticky>
       <th mat-header-cell *matHeaderCellDef> Supression </th>
