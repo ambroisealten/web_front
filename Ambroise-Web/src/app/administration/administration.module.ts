@@ -52,7 +52,8 @@ import { DataSkillDialogComponent } from './components/modal-administation/data-
     ProgressSpinnerComponent,
     DataSoftSkillDialogComponent,
     DataUserManagementDialogComponent,
-    DataUserUpdateDialogComponent
+    DataUserUpdateDialogComponent,
+    DataSkillDialogComponent
   ],
   imports: [
     CommonModule,

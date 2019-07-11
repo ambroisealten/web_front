@@ -15,10 +15,8 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
 
   // skill data 
   skills: Skill[];
-  skillsSynonymous: Skill[];
   currentSkill: string[];
   skillsSources: MatTableDataSource<any[]> = new MatTableDataSource();
-  skillsSynonymousSources: MatTableDataSource<any[]> = new MatTableDataSource();
   displayedSkillColumns: string[] = ['Nom', 'Synonymes', 'Remplacer par', 'Delete'];
 
   constructor(private adminSkillService: AdminSkillsSynonymousService,
@@ -36,20 +34,20 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
   fetchSkills() {
     this.skills = [];
     this.adminSkillService.getSkills().subscribe((skillsList: Skill[]) => {
-      for (const skill of skillsList) {
-        this.skills.push(new Skill(skill.name, skill.synonymous, skill.replaceWith));
-      }
-      // this.skills = skillsList;
-      console.log("Skills : " + this.skills);
-      this.skills.forEach(skill => {
-        if (skill.getReplaceWith() != null || skill.getSynonymous() != null) {
-          this.skillsSynonymous.push(skill);
-          // console.log(skill);
-        }
-        console.log(skill.name);
-      });
+      this.skills = skillsList;
+      // for (const skill of skillsList) {
+      //   console.log("Skill : " + skill.name);
+      //   this.skills.push(new Skill(skill.name, skill.synonymous, skill.replaceWith));
+      // }
+      // // this.skills = skillsList;
+      // console.log("Skills : " + this.skills);
+      // this.skills.forEach(skill => {
+      //   if (skill.getReplaceWith() != null || skill.getSynonymous() != null) {
+      //     this.skillsSynonymous.push(skill);
+      //   }
+      //   console.log("Skill : " + skill.getName());
+      // });
       this.skillsSources = new MatTableDataSource<any>(this.skills);
-      this.skillsSynonymousSources = new MatTableDataSource<any>(this.skillsSynonymous);
     });
   }
 
