@@ -20,7 +20,7 @@ export class AdminSkillsSynonymousService {
   getSkills(): Observable<{} | Skill[]> {
     let options = this.httpHeaderService.getHttpHeaders();
       return this.httpClient
-          .get<Skill[]>(environment.serverAddress + '/skillsSynonymous', options)
+          .get<Skill[]>(environment.serverAddress + '/techskills', options)
           .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
   }
   

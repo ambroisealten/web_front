@@ -55,6 +55,7 @@ export class AgenciesComponent implements OnInit, OnDestroy {
     dialogAgency.afterClosed().subscribe(
       (data: any) => {
         if (data) {
+          console.log("NAME : " + agency.name + " || PLACE : " + agency.place + " || PLACETYPE : " + agency.placeType);         
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
           this.adminAgencyService.createAgency(agency).subscribe((response) => {
             this.fetchAgencies();
