@@ -33,20 +33,8 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
 
   fetchSkills() {
     this.skills = [];
-    this.adminSkillService.getSkills().subscribe((skillsList: Skill[]) => {
+    this.adminSkillService.getSkillsSynonymous().subscribe((skillsList: Skill[]) => {
       this.skills = skillsList;
-      // for (const skill of skillsList) {
-      //   console.log("Skill : " + skill.name);
-      //   this.skills.push(new Skill(skill.name, skill.synonymous, skill.replaceWith));
-      // }
-      // // this.skills = skillsList;
-      // console.log("Skills : " + this.skills);
-      // this.skills.forEach(skill => {
-      //   if (skill.getReplaceWith() != null || skill.getSynonymous() != null) {
-      //     this.skillsSynonymous.push(skill);
-      //   }
-      //   console.log("Skill : " + skill.getName());
-      // });
       this.skillsSources = new MatTableDataSource<any>(this.skills);
     });
   }
@@ -68,7 +56,7 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
       (data: any) => {
         if (data) {
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminSkillService.updateSkillsSynonymous(skill).subscribe((response) => {
+          this.adminSkillService.updateSkillsSynonymous(data).subscribe((response) => {
             this.fetchSkills();
             dialogProgress.close();
             this.errorService.handleResponse(response);
@@ -82,8 +70,9 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
     dialogSkill.afterClosed().subscribe(
       (data: any) => {
         if (data) {
+          console.log("DATA : " + data + " || NAME : " + data.name + " || " + data.synonymous);
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
-          this.adminSkillService.updateSkillsSynonymous(skill).subscribe((response) => {
+          this.adminSkillService.updateSkillsSynonymous(data).subscribe((response) => {
             this.fetchSkills();
             dialogProgress.close();
             this.errorService.handleResponse(response);
