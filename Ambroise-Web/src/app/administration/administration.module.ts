@@ -24,6 +24,7 @@ import { AdminSkillsComponent } from './components/data-applicative-components/d
 import { AdminAgencyService } from './services/admin-agency.service';
 import { AdminSoftSkillService } from './services/admin-softSkill.service';
 import { DataUserUpdateDialogComponent } from './components/modal-administation/data-user-update-dialog/data-user-update-dialog.component';
+import { DataSkillDialogComponent } from './components/modal-administation/data-skill-dialog/data-skill-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { DataUserUpdateDialogComponent } from './components/modal-administation/
     AdminJobComponent,
     AdminSkillGradeComponent,
     AdminSkillsComponent,
-    DataUserUpdateDialogComponent
+    DataUserUpdateDialogComponent,
+    DataSkillDialogComponent
   ],
   entryComponents: [
     DataFileDialogComponent,
@@ -50,7 +52,8 @@ import { DataUserUpdateDialogComponent } from './components/modal-administation/
     ProgressSpinnerComponent,
     DataSoftSkillDialogComponent,
     DataUserManagementDialogComponent,
-    DataUserUpdateDialogComponent
+    DataUserUpdateDialogComponent,
+    DataSkillDialogComponent
   ],
   imports: [
     CommonModule,
