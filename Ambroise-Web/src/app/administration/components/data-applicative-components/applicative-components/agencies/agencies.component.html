@@ -2,7 +2,7 @@
   <button class="addButton" mat-icon-button (click)="addAgency()">+</button>
   <table mat-table [dataSource]="agenciesSources" class="mat-elevation-z8">
     <ng-container matColumnDef="Nom" sticky>
-      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <th mat-header-cell *matHeaderCellDef> Nom </th>
       <td mat-cell *matCellDef="let agencies" (click)="changeAgency(agencies)"> {{agencies.name}} </td>
     </ng-container>
     <ng-container matColumnDef="Lieu" sticky>
