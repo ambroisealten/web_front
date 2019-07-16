@@ -23,6 +23,7 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
   errorMessage : string;
   replaceName : string;
   replaceVersion : number;
+  sheetName : string;
 
   currentPerson: Person;
   currentSkillsSheet: SkillsSheet;
@@ -42,6 +43,7 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
     this.errorMessage = "";
     this.replaceName = data.replaceSheet;
     this.replaceVersion = data.replaceSheetVersion;
+    this.sheetName = this.currentSkillsSheet.name;
   }
 
   ngOnInit() {

@@ -3,7 +3,7 @@
     Supprimer la fiche</h2>
 
 <mat-dialog-content>
-    <p>Etes-vous sûr ? La suppression est définitive et irrémédiable</p>
+    <p>Voulez vous supprimer la fiche {{ sheetName }} ?<br>La suppression est définitive et irrémédiable</p>
     <p class="errorMessage"> {{ errorMessage }} </p>
     <button mat-raised-button class="saveButton" (click)="cancel()">Annuler</button>
     <button mat-raised-button class="deleteButton" color="warn" (click)="deleteFiche()">Supprimer</button>
