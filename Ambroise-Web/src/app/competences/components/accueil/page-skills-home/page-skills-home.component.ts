@@ -56,6 +56,8 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   filteredOptions: Observable<string[]>;
   myControl = new FormControl();
 
+  identityOptions: string[];
+  
   rechercheInput: string;
   rechercheInputCpt: string;
 
@@ -104,6 +106,16 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   getSkillsList() {
     this.skillsListService.getAllSkills().subscribe(skillsList => {
       this.options = (skillsList as Skill[]).map(skill => skill.name);
+    });
+  }
+
+  /**
+   * Cherche toutes les compétences en base
+   * @author Lucas Royackkers
+   */
+  getPersonsList() {
+    this.personSkillsService.getAllPersons().subscribe(personsList => {
+      this.identityOptions = (personsList as Person[]).map(person => person.name);
     });
   }
 

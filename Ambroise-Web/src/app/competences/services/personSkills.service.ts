@@ -17,6 +17,16 @@ export class PersonSkillsService {
               private httpHeaderService: HttpHeaderService) { }
 
   /**
+   * HTTP Get request to get all Skills
+   */
+  getAllPersons() {
+    let options = this.httpHeaderService.getHttpHeaders() ;
+    return this.httpClient
+      .get<Person[]>(environment.serverAddress + '/persons/', options)
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+  }
+
+  /**
    * HTTP Post request to create a new Person in db
    * @param  person Person to create
    */

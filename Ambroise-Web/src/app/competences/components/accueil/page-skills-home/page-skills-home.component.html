@@ -66,6 +66,16 @@
         </mat-autocomplete>
       </mat-form-field>
 
+      <mat-form-field class="searchBarId">
+        <input matInput placeholder="Nom, Prénom " (keyup.enter)="doAddFilter()" [formControl]="myControl"
+          [matAutocomplete]="auto">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (click)="doAddFilter()">
+            {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
       <div class="skillSheetInformation mat-elevation-z8">
         <table mat-table [dataSource]="skillsSheetDataSource" matSort (matSortChange)="onColumnSort($event)"
           class="container">
