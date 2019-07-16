@@ -10,3 +10,19 @@
     color : red;
     font-size: 10px;
   }
+  
+  .saveButton{
+    margin: 2%;
+  }
+
+  
+.mat-raised-button {
+  background-color: var(--ALTENBlue);
+  color: white;
+//  vertical-align: bottom;
+}
+
+.deleteButton {
+  background-color: rgb(255, 30, 0) !important;
+  margin: 2%;
+}

@@ -66,5 +66,11 @@ export class ModalDeleteSkillsSheetComponent implements OnInit {
       }
     });
   }
-
+  
+  /**
+   * On click on cancel button : close dialog with value 'canceled'
+   */
+  cancel() {
+    this.dialogRef.close('canceled');
+  }
 }
