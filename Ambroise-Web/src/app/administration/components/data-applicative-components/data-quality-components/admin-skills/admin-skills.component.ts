@@ -70,7 +70,6 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
     dialogSkill.afterClosed().subscribe(
       (data: any) => {
         if (data) {
-          console.log("DATA : " + data + " || NAME : " + data.name + " || " + data.synonymous);
           const dialogProgress = ProgressSpinnerComponent.openDialogProgress(this.dialog);
           this.adminSkillService.updateSkillsSynonymous(data).subscribe((response) => {
             this.fetchSkills();

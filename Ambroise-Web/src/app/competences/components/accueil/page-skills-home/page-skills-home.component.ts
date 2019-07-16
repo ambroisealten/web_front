@@ -120,7 +120,6 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
         }
       }); ; 
     } else {
-      console.log("avis undefined");
       this.skillsService.getAllSkills(this.filter.concat(this.statusList), this.compFilter, this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
@@ -370,21 +369,17 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    * @author Quentin Della-Pasqua, Lucas Royackkers
    */
   doAddSkill() {
-    console.log("DoAdd");
     if (this.displayedColumns.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1 && this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.options.find(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) !== undefined && this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1) {
-      console.log("if");
       this.compFilter.push(this.rechercheInputCpt);
       this.compColumns.push(this.rechercheInputCpt);
       this.displayedColumns.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     } else if (this.rechercheInputCpt !== null && !this.rechercheInputCpt.match('^\ +') && this.rechercheInputCpt !== '' && this.compFilter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputCpt.toLowerCase()) === -1) {
-      console.log("else if");
       this.compFilter.push(this.rechercheInputCpt);
       this.searchSkillSheets();
       this.expansionCPT.expanded = true;
     }
-    console.log("---------");
     this.rechercheInputCpt = '';
     this.myControl.setValue('');
   }
