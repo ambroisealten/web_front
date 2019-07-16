@@ -11,7 +11,7 @@
     <mat-form-field>
         <input class="replaceField" matInput placeholder="A remplacer par" formControlName="replaceWith" (keyup)="onChange()" [disabled]="valideReplace">
     </mat-form-field>
-    <p class="errorMessage"> {{ errorMessage }} </p>
+    <p class="instruction"> {{ instructionMessage }} </p>
 </mat-dialog-content>
 
 <mat-dialog-actions>

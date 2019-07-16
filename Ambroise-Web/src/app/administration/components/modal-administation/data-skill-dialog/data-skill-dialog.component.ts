@@ -14,7 +14,7 @@ export class DataSkillDialogComponent implements OnInit {
   synonymous: string;
   replaceWith: string;
   description: string;
-  errorMessage: string;
+  instructionMessage: string;
 
   valide: boolean = true;
   valideSynonymous: boolean = true;
@@ -24,7 +24,7 @@ export class DataSkillDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<DataSkillDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataSkill) {
-    this.errorMessage = "";
+    this.instructionMessage = "";
     this.name = dataSkill.name;
     this.synonymous = dataSkill.synonymous;
     this.replaceWith = dataSkill.replaceWith;
@@ -50,16 +50,16 @@ export class DataSkillDialogComponent implements OnInit {
       this.valide = true;
       this.valideSynonymous = true;
       this.valideReplace = true;
-      this.errorMessage = "Entrez une liste de synonymes séparées\npar des virgules, ou bien un remplacement";
+      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
     } else if (n.synonymous && n.replaceWith) {
       this.valide = true;
-      this.errorMessage = "Ne remplissez pas les deux champs";      
+      this.instructionMessage = "Ne remplissez pas les deux champs";      
     } else if (n.replaceWith) {
-      this.errorMessage = "";
+      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
       this.valide = false;
       this.valideSynonymous = true;
     } else if (n.synonymous) {
-      this.errorMessage = "";
+      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
       this.valide = false;
       this.valideReplace = true;
     }
