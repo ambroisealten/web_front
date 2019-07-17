@@ -398,7 +398,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
 
   /**
    * Ajoute le filter a la liste
-   * @author Maxime Maquinghen
+   * @author Maxime Maquinghen, Thomas Decamp
    */
   doAddFilter() {
     this.rechercheInput = this.removeAccents(this.rechercheInput);
