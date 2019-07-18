@@ -57,9 +57,12 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   myControl = new FormControl();
 
   identityOptions: string[];
+  identityFilteredOptions: Observable<string[]>;
+  myIdentityControl = new FormControl();
   
   rechercheInput: string;
   rechercheInputCpt: string;
+  rechercheInputId: string;
 
   //current skills[]
   currentSkills: Skills[];
@@ -81,6 +84,9 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     this.getSkillsList();
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
+    );
+    this.identityFilteredOptions = this.myIdentityControl.valueChanges.pipe(
+      map(value => this._filterId(value))
     );
     this.status.APPLICANT = true;
     this.status.CONSULTANT = true;
@@ -152,6 +158,22 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       const filterValue = value.toLowerCase();
       this.rechercheInputCpt = value;
       return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   * Filtre toutes les options qui correspondent à l'input user
+   *
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Thomas Decamp
+   */
+  private _filterId(value: string): string[] {
+    if (value.length !== 0) {
+      const filterValue = value.toLowerCase();
+      this.rechercheInputId = value;
+      return this.identityOptions.filter(identityOptions => identityOptions.toLowerCase().startsWith(filterValue));
     } else {
       return [];
     }
@@ -407,6 +429,20 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       this.searchSkillSheets();
     }
     this.rechercheInput = '';
+  }
+
+  /**
+   * Ajoute le filter a la liste
+   * @author Thomas Decamp
+   */
+  doAddIdentity() {
+    this.rechercheInputId = this.removeAccents(this.rechercheInputId);
+    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputId.toLowerCase()) === -1 && this.rechercheInputId !== null && !this.rechercheInputId.match('^\ +') && this.rechercheInputId !== '') {
+      this.filter.push(this.rechercheInputId);
+      this.searchSkillSheets();
+    }
+    this.rechercheInputId = '';
+    this.myControl.setValue('');
   }
 
   /**

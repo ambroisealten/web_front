@@ -67,11 +67,11 @@
       </mat-form-field>
 
       <mat-form-field class="searchBarId">
-        <input matInput placeholder="Nom, Prénom " (keyup.enter)="doAddFilter()" [formControl]="myControl"
-          [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (click)="doAddFilter()">
-            {{option}}
+        <input matInput placeholder="Nom, Prénom " (keyup.enter)="doAddIdentity()" [formControl]="myIdentityControl"
+          [matAutocomplete]="autoIdentity">
+        <mat-autocomplete autoActiveFirstOption #autoIdentity="matAutocomplete">
+          <mat-option *ngFor="let identityOption of identityFilteredOptions | async" [value]="identityOption" (click)="doAddIdentity()">
+            {{identityOption}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
