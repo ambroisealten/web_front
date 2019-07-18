@@ -85,6 +85,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
+    this.getPersonsList();
     this.identityFilteredOptions = this.myIdentityControl.valueChanges.pipe(
       map(value => this._filterId(value))
     );
@@ -116,12 +117,12 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Cherche toutes les compétences en base
-   * @author Lucas Royackkers
+   * Cherche toutes les personnes
+   * @author Thomas Decamp
    */
   getPersonsList() {
     this.personSkillsService.getAllPersons().subscribe(personsList => {
-      this.identityOptions = (personsList as Person[]).map(person => person.name);
+      this.identityOptions = (personsList as Person[]).map(person => person.name + " " + person.surname);
     });
   }
 
@@ -451,7 +452,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
    */
   removeAccents(word) {
     var r = word.toLowerCase();
-    r = r.replace(new RegExp("\\s", 'g'),""); 
+    //r = r.replace(new RegExp("\\s", 'g'),""); 
     r = r.replace(new RegExp("[àáâãäå]", 'g'),"a"); 
     r = r.replace(new RegExp("æ", 'g'),"ae"); 
     r = r.replace(new RegExp("ç", 'g'),"c"); 
@@ -462,7 +463,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     r = r.replace(new RegExp("œ", 'g'),"oe"); 
     r = r.replace(new RegExp("[ùúûü]", 'g'),"u"); 
     r = r.replace(new RegExp("[ýÿ]", 'g'),"y"); 
-    r = r.replace(new RegExp("\\W", 'g'),""); 
+    //r = r.replace(new RegExp("\\W", 'g'),""); 
     return (r);
   }
 
