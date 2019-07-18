@@ -63,4 +63,20 @@ export class SkillsSheetService {
         catchError(error => this.errorService.handleError(error)));
   }
 
+  /**
+   * Delete SkillsSheet
+   * @param skillsSheet 
+   */
+  deleteSkillsSheet(skillsSheet: SkillsSheet) {
+    let postParams = {
+      name: skillsSheet.name,
+    };
+    let options = {
+        body: postParams,
+        headers: this.httpHeaderService.getHttpHeaders()['headers'],
+    };
+    return this.httpClient
+      .delete(environment.serverAddress + '/skillsheet', options)
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+  }
 }

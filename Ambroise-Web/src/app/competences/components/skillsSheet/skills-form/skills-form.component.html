@@ -1,13 +1,36 @@
 <div class="currentSheetInfo">
-  <p> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})
-  </p>
+  <div class="currentSheetName">
+      <p [hidden]="isEditStatusButtonHidden"> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }} ({{ translate(currentPerson.role) }})
+        </p>
+      <p [hidden]="!isEditStatusButtonHidden"> {{ currentPerson.name | titlecase }} {{ currentPerson.surname | titlecase }}
+        </p>
+      <button mat-icon-button class="editStatusButton" (click)="editStatus()" [hidden]="isEditStatusButtonHidden">
+          <mat-icon class="editIcon">edit</mat-icon>
+      </button>
+        <mat-form-field [hidden]="!isEditStatusButtonHidden">
+          <mat-label>{{ translate(currentPerson.role) }}</mat-label>
+          <mat-select [(ngModel)]="status" (ngModelChange)="onStatusChange()">
+            <mat-option value="APPLICANT">Candidature en cours</mat-option>
+            <mat-option value="CONSULTANT">Dans l'effectif</mat-option>
+            <mat-option value="DEMISSIONNAIRE">Archivé</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-icon-button class="cancelButton" (click)="cancelEditStatus()" [hidden]="!isEditStatusButtonHidden">
+          <mat-icon class="cancelIcon">close</mat-icon>
+        </button>
+  </div>
 
   <input (blur)="checkIfNameEmpty($event)" onkeypress="return (this.innerText.length <= 30)" class="skillsSheetNameDiv"
     maxlength="30" [ngModel]="currentSkillsSheet.name">
+
   <button class="button_save" mat-raised-button (click)="onSubmitForm()">Enregistrer la fiche</button>
   <button mat-raised-button (click)="setViewPDF()">
     <mat-icon>picture_as_pdf</mat-icon>
     Aperçu PDF
+  </button>
+  <button class="deleteButton" mat-raised-button (click)="deleteSkillsSheet()" color="warn" [hidden]="isDeleteButtonHidden">
+    <mat-icon>delete_forever</mat-icon>
+    Supprimer la fiche
   </button>
 </div>
 

@@ -33,6 +33,12 @@
           </mat-select>
         </mat-form-field>
 
+        <div class="statusCheck">
+          <mat-checkbox [(ngModel)]="status.APPLICANT" (ngModelChange)="doAddStatus()">Candidature en cours</mat-checkbox>
+          <mat-checkbox [(ngModel)]="status.CONSULTANT" (ngModelChange)="doAddStatus()">Dans les effectifs</mat-checkbox>
+          <mat-checkbox [(ngModel)]="status.DEMISSIONNAIRE" (ngModelChange)="doAddStatus()">Archivé</mat-checkbox>
+        </div>
+          
       </mat-expansion-panel>
       <mat-expansion-panel #expansionCPT>
         <mat-expansion-panel-header>
@@ -56,6 +62,16 @@
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
           <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (click)="doAddSkill()">
             {{option}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field class="searchBarId">
+        <input matInput placeholder="Nom, Prénom " (keyup.enter)="doAddIdentity()" [formControl]="myIdentityControl"
+          [matAutocomplete]="autoIdentity">
+        <mat-autocomplete autoActiveFirstOption #autoIdentity="matAutocomplete">
+          <mat-option *ngFor="let identityOption of identityFilteredOptions | async" [value]="identityOption" (click)="doAddIdentity()">
+            {{identityOption}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>

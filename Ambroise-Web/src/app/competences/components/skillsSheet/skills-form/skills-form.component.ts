@@ -22,6 +22,7 @@ import { PageSkillsHomeComponent } from '../../accueil/page-skills-home/page-ski
 import { ModalAvailabilityComponent } from '../modal-availability/modal-availability.component';
 import { ModalNewSkillsSheetComponent } from '../modal-new-skills-sheet/modal-new-skills-sheet.component';
 import { environment } from '../../../../../environments/environment';
+import { ModalDeleteSkillsSheetComponent } from '../modal-delete-skills-sheet/modal-delete-skills-sheet.component';
 
 @Component({
   selector: 'app-skills-form',
@@ -82,6 +83,13 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   // Informations contains in the path
   name: string;
   version: number;
+
+  // status
+  status: string;
+  isEditStatusButtonHidden: boolean = false;
+
+  // delete
+  isDeleteButtonHidden: boolean = true;
 
   // avis + comment
   avis: string;
@@ -163,6 +171,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
         this.setupSkillsSheet(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
         this.initVersionArray(false);
       }
+      this.setupDeleteButton(JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]);
       this.initializeView(new Skills(this.currentPerson, this.currentSkillsSheet));
       this.createMenu();
       this.comment = this.currentSkillsSheet.comment;
@@ -172,6 +181,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.myControl.disable();
     this.myControl.setValue(this.formItems[0].model);
     this.enableEditIfFormFieldsEmpty();
+    
   }
 
   ngOnDestroy() {
@@ -201,6 +211,18 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       }
     });
     //this.subMenusService.notifySubMenu(subMenu)
+  }
+
+  /**
+   * 
+   * @param skillsSheets 
+   * @author Thomas Decamp
+   */
+  setupDeleteButton(skillsSheets: SkillsSheet[]) {
+    if (skillsSheets.length > 1)
+      this.isDeleteButtonHidden = false;
+    else
+      this.isDeleteButtonHidden = true;
   }
 
   /**
@@ -382,6 +404,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.currentSkillsSheet.comment = this.comment;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
@@ -397,6 +420,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     } else {
       this.currentSkillsSheet.versionNumber = 1;
       this.currentSkillsSheet.comment = this.comment;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.skillsSheetService.createNewSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           let tmpSkillsSheets = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
@@ -412,10 +436,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   onSubmitRedirect(redirect: string) {
     LoggerService.log('submitRedirect', LogLevel.DEBUG);
     LoggerService.log(this.currentSkillsSheet, LogLevel.DEBUG);
+    this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
     let tmpExisting;
     if ((tmpExisting = (JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[]).find(skillsSheet => skillsSheet.name === this.currentSkillsSheet.name)) != undefined) {
       this.currentSkillsSheet.versionNumber = tmpExisting.versionNumber;
       this.currentSkillsSheet.comment = this.comment;
+      this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
       this.skillsSheetService.updateSkillsSheet(this.currentSkillsSheet).subscribe(httpResponse => {
         if (httpResponse['stackTrace'][0]['lineNumber'] == 201) {
           this.currentSkillsSheet.versionNumber += 1;
@@ -468,6 +494,40 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
 
   }
 
+  findSheetReplace(replaceSheetList) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name != this.currentSkillsSheet.name)
+        rs = skillsSheet.name;
+    });
+    return (rs);
+  }
+
+  findSheetVersion(replaceSheetList, replaceSheetName) {
+    let rs;
+    replaceSheetList.forEach(skillsSheet => {
+      if (skillsSheet.name == replaceSheetName)
+        rs = skillsSheet.versionNumber;
+    });
+    return (rs);
+  }
+
+  deleteSkillsSheet() {
+    let replaceSheetList = JSON.parse(window.sessionStorage.getItem('skills')) as SkillsSheet[];
+    let replaceSheetName = this.findSheetReplace(replaceSheetList);
+    let replaceSheetVersion = this.findSheetVersion(replaceSheetList, replaceSheetName);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      person: this.currentPerson,
+      skillsSheet: this.currentSkillsSheet,
+      replaceSheet: replaceSheetName,
+      replaceSheetVersion: replaceSheetVersion
+    };
+    const dialogRef = this.dialog.open(ModalDeleteSkillsSheetComponent, dialogConfig);
+  }
+
   redirectAfterAction(redirect: string) {
     this.subMenusService.resetMenuAction();
     this.router.navigate([redirect]);
@@ -478,7 +538,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
    * @param  roleName role to translate
    */
   translate(roleName) {
-    return roleName.toLowerCase() === 'applicant' ? 'Candidat' : 'Consultant';
+    if (roleName.toLowerCase() == 'applicant')
+      return 'Candidature en cours';
+    else if (roleName.toLowerCase() == 'consultant')
+      return 'Dans l\'effectif';
+    else if (roleName.toLowerCase() == 'demissionnaire')
+      return 'Archivé';
   }
 
   /**
@@ -503,6 +568,15 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = false;
     this.tmpCurrentPerson = this.currentPerson;
     this.experienceTimeTextColor = 'var(--ALTENDarkGray)';
+    this.myControl.enable();
+  }
+
+  /**
+   * On click on edit status button
+   */
+  editStatus() {
+    this.isEditStatusButtonHidden = true;
+    this.tmpCurrentPerson = this.currentPerson;
     this.myControl.enable();
   }
 
@@ -543,6 +617,35 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Update person's status on select
+   */
+  onStatusChange() {
+    switch (this.status) {
+      case 'APPLICANT' :
+          this.currentPerson.newRole = PersonRole.APPLICANT;
+          break;
+      case 'CONSULTANT' :
+          this.currentPerson.newRole = PersonRole.CONSULTANT;
+          break;
+      case 'DEMISSIONNAIRE' :
+          this.currentPerson.newRole = PersonRole.DEMISSIONNAIRE;
+          break;      
+    }
+    this.personSkillsService.updatePerson(this.currentPerson).subscribe(httpResponse => {
+      if (httpResponse['stackTrace'][0]['lineNumber'] === 200) {
+        window.sessionStorage.setItem('person', JSON.stringify(this.currentPerson));
+        LoggerService.log('Person updated', LogLevel.DEBUG);
+        this.toastrService.info('Informations mise à jour avec succès', '', { positionClass: 'toast-bottom-full-width', timeOut: 1850, closeButton: true });
+        this.currentPerson.role = this.currentPerson.newRole;
+        this.currentSkillsSheet.rolePersonAttachedTo = this.currentPerson.role;
+        this.tmpCurrentPerson = this.currentPerson;
+        this.savePerson();
+      }
+    });
+    this.isEditStatusButtonHidden = false;
+  }
+
+  /**
    * On click on cancel edit button
    */
   cancelEditPerson() {
@@ -550,6 +653,15 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     this.isPersonDataDisabled = true;
     this.updateFormItemsFromPerson(this.currentPerson);
     this.experienceTimeTextColor = 'rgba(0,0,0,.38)';
+    this.myControl.disable();
+  }
+
+  /**
+   * On click on cancel edit button
+   */
+  cancelEditStatus() {
+    this.isEditStatusButtonHidden = false;
+    this.updateFormItemsFromPerson(this.currentPerson);
     this.myControl.disable();
   }
 
@@ -842,10 +954,12 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
     if (typeof this.skillsChart !== 'function') {
       this.skillsChart.destroy();
     }
+    
     if (arraySkills.length !== 0) {
       const skillsLabels: string[] = [];
       const skillsData: number[] = [];
       arraySkills.forEach((skillGraduated) => {
+        skillGraduated.skill.name = skillGraduated.skill.name.trim();
         skillsLabels.push(skillGraduated.skill.name);
         skillsData.push(skillGraduated.grade);
       });
@@ -871,6 +985,7 @@ export class SkillsFormComponent implements OnInit, OnDestroy {
       const skillsLabels: string[] = [];
       const skillsData: number[] = [];
       arraySoftSkills.forEach((skillGraduated) => {
+        skillGraduated.skill.name = skillGraduated.skill.name.trim();
         skillsLabels.push(skillGraduated.skill.name);
         skillsData.push(skillGraduated.grade);
       });

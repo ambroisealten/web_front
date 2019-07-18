@@ -17,6 +17,16 @@ export class PersonSkillsService {
               private httpHeaderService: HttpHeaderService) { }
 
   /**
+   * HTTP Get request to get all Skills
+   */
+  getAllPersons() {
+    let options = this.httpHeaderService.getHttpHeaders() ;
+    return this.httpClient
+      .get<Person[]>(environment.serverAddress + '/persons/', options)
+      .pipe(timeout(5000), catchError(error => this.errorService.handleError(error)));
+  }
+
+  /**
    * HTTP Post request to create a new Person in db
    * @param  person Person to create
    */
@@ -25,8 +35,10 @@ export class PersonSkillsService {
 
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
-    } else {
+    } else if (person.role.toUpperCase() === PersonRole.CONSULTANT) {
       urlRequest = environment.serverAddress + '/consultant';
+    } else {
+      urlRequest = environment.serverAddress + '/archive';
     }
     let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient
@@ -40,6 +52,8 @@ export class PersonSkillsService {
 
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicantAndSkillsSheet';
+    } else if (person.role.toUpperCase() === PersonRole.CONSULTANT) {
+      urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
     } else {
       urlRequest = environment.serverAddress + '/consultantAndSkillsSheet';
     }
@@ -57,8 +71,10 @@ export class PersonSkillsService {
     let urlRequest: string;
     if (person.role.toUpperCase() === PersonRole.APPLICANT) {
       urlRequest = environment.serverAddress + '/applicant';
-    } else {
+    } else if (person.role.toUpperCase() === PersonRole.CONSULTANT) {
       urlRequest = environment.serverAddress + '/consultant';
+    } else {
+      urlRequest = environment.serverAddress + '/archive';
     }
     let options = this.httpHeaderService.getHttpHeaders() ;
     return this.httpClient

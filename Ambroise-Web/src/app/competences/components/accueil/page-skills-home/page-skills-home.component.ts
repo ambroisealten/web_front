@@ -8,7 +8,7 @@ import { PersonSkillsService } from 'src/app/competences/services/personSkills.s
 import { SkillGraduated, Skill } from 'src/app/competences/models/skillsSheet';
 import { SkillsService } from 'src/app/competences/services/skills.service';
 import { Skills } from 'src/app/competences/models/skills';
-import { Person, DurationType } from 'src/app/competences/models/person';
+import { Person, DurationType, PersonRole } from 'src/app/competences/models/person';
 import { SubMenu } from 'src/app/header/models/menu';
 import { SubMenusService } from 'src/app/services/subMenus.service';
 import { FormControl } from '@angular/forms';
@@ -26,6 +26,14 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   @ViewChild('expansionCPT') expansionCPT: MatExpansionPanel;
 
   opinionList = ["+++","++","+","-","--","---","NOK"] ; 
+
+  status = {
+    APPLICANT : false,
+    CONSULTANT : false,
+    DEMISSIONNAIRE : false,
+  };
+
+  statusList = [];
 
   avis ; 
 
@@ -48,8 +56,13 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   filteredOptions: Observable<string[]>;
   myControl = new FormControl();
 
+  identityOptions: string[];
+  identityFilteredOptions: Observable<string[]>;
+  myIdentityControl = new FormControl();
+  
   rechercheInput: string;
   rechercheInputCpt: string;
+  rechercheInputId: string;
 
   //current skills[]
   currentSkills: Skills[];
@@ -72,6 +85,13 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       map(value => this._filter(value))
     );
+    this.getPersonsList();
+    this.identityFilteredOptions = this.myIdentityControl.valueChanges.pipe(
+      map(value => this._filterId(value))
+    );
+    this.status.APPLICANT = true;
+    this.status.CONSULTANT = true;
+    this.doAddStatus();
     this.searchSkillSheets();
     this.createMenu();
     this.subMenusSubscription = this.subMenusService.menuActionObservable.subscribe(action => this.doAction(action));
@@ -97,19 +117,29 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Cherche toutes les personnes
+   * @author Thomas Decamp
+   */
+  getPersonsList() {
+    this.personSkillsService.getAllPersons().subscribe(personsList => {
+      this.identityOptions = (personsList as Person[]).map(person => person.name + " " + person.surname);
+    });
+  }
+
+  /**
    * Cherche toutes les skillSheets
    * @author Quentin Della-pasqua
    */
   searchSkillSheets() {
     if(this.avis != undefined){
-      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[]),this.compFilter,this.sort).subscribe(skillsList => {
+      this.skillsService.getAllSkills(this.filter.concat(this.avis as string[], this.statusList),this.compFilter,this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
           this.skillsSheetDataSource.paginator = this.paginator
         }
       }); ; 
     } else {
-      this.skillsService.getAllSkills(this.filter, this.compFilter, this.sort).subscribe(skillsList => {
+      this.skillsService.getAllSkills(this.filter.concat(this.statusList), this.compFilter, this.sort).subscribe(skillsList => {
         if (skillsList.hasOwnProperty('results')) {
           this.createDataSource(skillsList['results'] as Skills[]);
           this.skillsSheetDataSource.paginator = this.paginator
@@ -129,6 +159,22 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       const filterValue = value.toLowerCase();
       this.rechercheInputCpt = value;
       return this.options.filter(option => option.toLowerCase().startsWith(filterValue));
+    } else {
+      return [];
+    }
+  }
+
+  /**
+   * Filtre toutes les options qui correspondent à l'input user
+   *
+   * @param value la valeur renseignée par l'utilisateur
+   * @author Thomas Decamp
+   */
+  private _filterId(value: string): string[] {
+    if (value.length !== 0) {
+      const filterValue = value.toLowerCase();
+      this.rechercheInputId = value;
+      return this.identityOptions.filter(identityOptions => identityOptions.toLowerCase().startsWith(filterValue));
     } else {
       return [];
     }
@@ -341,6 +387,18 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['skills/skillsheet/' + name + '/' + version]);
   }
 
+  doAddStatus() {
+    this.statusList = [];
+    if (this.status.APPLICANT)
+      this.statusList.push(PersonRole.APPLICANT);
+    if (this.status.CONSULTANT)
+      this.statusList.push(PersonRole.CONSULTANT);
+    if (this.status.DEMISSIONNAIRE)
+      this.statusList.push(PersonRole.DEMISSIONNAIRE);
+
+    this.searchSkillSheets();
+  }
+
   /**
    * Ajoute une colonne au tableau + appel au WS pour trier
    * @author Quentin Della-Pasqua, Lucas Royackkers
@@ -363,14 +421,50 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
 
   /**
    * Ajoute le filter a la liste
-   * @author Maxime Maquinghen
+   * @author Maxime Maquinghen, Thomas Decamp
    */
   doAddFilter() {
+    this.rechercheInput = this.removeAccents(this.rechercheInput);
     if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInput.toLowerCase()) === -1 && this.rechercheInput !== null && !this.rechercheInput.match('^\ +') && this.rechercheInput !== '') {
       this.filter.push(this.rechercheInput);
       this.searchSkillSheets();
     }
     this.rechercheInput = '';
+  }
+
+  /**
+   * Ajoute le filter a la liste
+   * @author Thomas Decamp
+   */
+  doAddIdentity() {
+    this.rechercheInputId = this.removeAccents(this.rechercheInputId);
+    if (this.filter.findIndex(filterTag => filterTag.toLowerCase() === this.rechercheInputId.toLowerCase()) === -1 && this.rechercheInputId !== null && !this.rechercheInputId.match('^\ +') && this.rechercheInputId !== '') {
+      this.filter.push(this.rechercheInputId);
+      this.searchSkillSheets();
+    }
+    this.rechercheInputId = '';
+    this.myControl.setValue('');
+  }
+
+  /**
+   * Retire les accents
+   * @author Thomas Decamp
+   */
+  removeAccents(word) {
+    var r = word.toLowerCase();
+    //r = r.replace(new RegExp("\\s", 'g'),""); 
+    r = r.replace(new RegExp("[àáâãäå]", 'g'),"a"); 
+    r = r.replace(new RegExp("æ", 'g'),"ae"); 
+    r = r.replace(new RegExp("ç", 'g'),"c"); 
+    r = r.replace(new RegExp("[èéêë]", 'g'),"e"); 
+    r = r.replace(new RegExp("[ìíîï]", 'g'),"i"); 
+    r = r.replace(new RegExp("ñ", 'g'),"n");                             
+    r = r.replace(new RegExp("[òóôõö]", 'g'),"o"); 
+    r = r.replace(new RegExp("œ", 'g'),"oe"); 
+    r = r.replace(new RegExp("[ùúûü]", 'g'),"u"); 
+    r = r.replace(new RegExp("[ýÿ]", 'g'),"y"); 
+    //r = r.replace(new RegExp("\\W", 'g'),""); 
+    return (r);
   }
 
   /**
