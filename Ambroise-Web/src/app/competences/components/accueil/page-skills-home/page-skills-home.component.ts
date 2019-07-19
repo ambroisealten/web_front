@@ -443,7 +443,7 @@ export class PageSkillsHomeComponent implements OnInit, OnDestroy {
       this.searchSkillSheets();
     }
     this.rechercheInputId = '';
-    this.myControl.setValue('');
+    this.myIdentityControl.setValue('');
   }
 
   /**
