@@ -6,10 +6,10 @@
         <input matInput placeholder="Nom de la compétence" formControlName="name">
     </mat-form-field>
     <mat-form-field>
-        <input matInput placeholder="Synonyme de" formControlName="synonymous" (keyup)="onChange()" [disabled]="valideSynonymous">
+        <input class="synonymousField" matInput placeholder="Synonyme de" formControlName="synonymous" (keyup)="onChange()">
     </mat-form-field>
     <mat-form-field>
-        <input class="replaceField" matInput placeholder="A remplacer par" formControlName="replaceWith" (keyup)="onChange()" [disabled]="valideReplace">
+        <input class="replaceField" matInput placeholder="A remplacer par" formControlName="replaceWith" (keyup)="onChange()">
     </mat-form-field>
     <p class="instruction"> {{ instructionMessage }} </p>
 </mat-dialog-content>

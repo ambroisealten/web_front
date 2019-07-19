@@ -11,14 +11,12 @@ export class DataSkillDialogComponent implements OnInit {
 
   form: FormGroup;
   name: string;
-  synonymous: string;
+  synonymous: string[];
   replaceWith: string;
   description: string;
   instructionMessage: string;
 
   valide: boolean = true;
-  valideSynonymous: boolean = true;
-  valideReplace: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -46,22 +44,19 @@ export class DataSkillDialogComponent implements OnInit {
 
   checkField() {
     let n = this.form.value;
+
     if (!n.synonymous && !n.replaceWith) {
       this.valide = true;
-      this.valideSynonymous = true;
-      this.valideReplace = true;
       this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
+    } else if (!n.synonymous && n.replaceWith) {
+      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
+      this.valide = false;
+    } else if (n.synonymous && !n.replaceWith) {
+      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
+      this.valide = false;
     } else if (n.synonymous && n.replaceWith) {
       this.valide = true;
-      this.instructionMessage = "Ne remplissez pas les deux champs";      
-    } else if (n.replaceWith) {
-      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
-      this.valide = false;
-      this.valideSynonymous = true;
-    } else if (n.synonymous) {
-      this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
-      this.valide = false;
-      this.valideReplace = true;
+      this.instructionMessage = "Ne remplissez pas les deux champs";
     }
   }
 

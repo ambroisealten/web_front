@@ -5,6 +5,7 @@ import { AdminSkillsSynonymousService } from 'src/app/administration/services/ad
 import { ProgressSpinnerComponent } from 'src/app/utils/progress-spinner/progress-spinner.component';
 import { DataSkillDialogComponent } from '../../../modal-administation/data-skill-dialog/data-skill-dialog.component';
 import { ErrorService } from 'src/app/services/error.service';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-admin-skills',
@@ -88,13 +89,15 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
     dialogConfig.hasBackdrop = true;
     dialogConfig.direction = 'ltr';
     dialogConfig.closeOnNavigation = true;
-
+    
+    const tmpSynonymous = skill.synonymous.join();
+    
     dialogConfig.data = {
       id: 1,
       title: 'Skill',
       description: 'Compétence',
       name: skill.name,
-      synonymous: skill.synonymous,
+      synonymous: tmpSynonymous,
       replaceWith: skill.replaceWith
     };
 
