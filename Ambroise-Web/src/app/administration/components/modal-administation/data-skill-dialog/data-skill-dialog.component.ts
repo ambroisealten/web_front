@@ -48,6 +48,9 @@ export class DataSkillDialogComponent implements OnInit {
     if (!n.synonymous && !n.replaceWith) {
       this.valide = true;
       this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
+    } else if (n.replaceWith === n.name || n.synonymous === n.name) {
+      this.valide = true;
+      this.instructionMessage = "Veuillez changer la valeur du champs";
     } else if (!n.synonymous && n.replaceWith) {
       this.instructionMessage = "Entrez une liste de synonymes séparées par des virgules, ou bien un remplacement";
       this.valide = false;

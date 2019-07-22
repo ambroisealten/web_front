@@ -94,7 +94,7 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
     if (skill.synonymous != undefined)
       tmpSynonymous = skill.synonymous.join();
     else
-      tmpSynonymous = "";
+      tmpSynonymous = null;
     
     dialogConfig.data = {
       id: 1,
