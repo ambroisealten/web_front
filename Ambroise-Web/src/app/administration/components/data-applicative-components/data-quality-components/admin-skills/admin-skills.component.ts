@@ -90,7 +90,11 @@ export class AdminSkillsComponent implements OnInit , OnDestroy {
     dialogConfig.direction = 'ltr';
     dialogConfig.closeOnNavigation = true;
     
-    const tmpSynonymous = skill.synonymous.join();
+    let tmpSynonymous;
+    if (skill.synonymous != undefined)
+      tmpSynonymous = skill.synonymous.join();
+    else
+      tmpSynonymous = "";
     
     dialogConfig.data = {
       id: 1,
