@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  globalLogType: "JOKE",
+  serverAddress: "http://" + "localhost:8080",
+  defaultModule: 'Missions',
+  minYear : 1920,
+  maxYear : new Date().getFullYear() + 5
 };
 
 /*

@@ -1,0 +1,111 @@
+.navbarContent{
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    margin-left : 1%;
+}
+
+.header nav{
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: var(--ALTENLightGray);
+}
+
+.headNavbar, .navbarContent {
+    width: 100%;
+}
+
+.navbar {
+    position: relative;
+    min-height: 50px;
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+}
+
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.headMenu {
+    //margin-left: 15%; // Fait bouger les menus quand ils sont clickés -> jcp pk dans le doute j'ai laissé en commentaire si on souhaire repasser dessus
+   // margin-right: 15%;
+    transition: linear .5s;
+    list-style-type: none;
+}
+
+.dropup, .dropdown {
+    position: relative;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+.dropdown-menu{ 
+    width: 100%;
+    min-width: 80px;
+    color: var(--ALTENDarkBlue);
+    overflow-y: scroll;
+    max-height: 1000%;
+}
+
+.dropdown-item:hover{
+    transition : linear .1s;
+
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    margin: 1% !important;
+    padding: 0 !important;
+    white-space: pre-line;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: transparent;
+}
+
+.submenuicon {
+    margin-right: 5%;
+    height: 50%;
+}
+
+.submenu:hover .submenuicon, .submenu:hover p {
+    color: var(--ALTENBlue);
+    cursor: pointer;
+}
+
+.submenu{
+    display: flex;
+    align-items: center;
+    margin: auto;
+    text-align: center;
+    color: var(--ALTENDarkBlue);
+}
+
+.nav-item .submenu:hover {
+    color: var(--ALTENBlue);
+    cursor: pointer;
+}
+
+
+.selected{
+   border-bottom: 2px solid var(--ALTENDarkBlue);
+   padding-right:5%;
+}
+
+.selectedDD{
+    background-color: var(--ALTENDarkBlue);
+    color: white !important;
+    width:100%;
+}
+
+.selectedDD .dropdown-item{
+    color:white !important ; 
+}
+

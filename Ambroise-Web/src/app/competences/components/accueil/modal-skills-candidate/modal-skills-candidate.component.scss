@@ -1,0 +1,29 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  padding: 10%;
+}
+
+.slider {
+  display: flex;
+  flex-direction: row;
+}
+
+.slider p {
+  margin-right: 5%;
+  margin-left: 5%;
+}
+
+button {
+  outline: none;
+  margin: auto;
+}
+
+.alert-warning, .alert {
+  margin: auto;
+  padding: 1%;
+}
+
+/*.ng-valid {
+  border: 5px solid #42A948;
+}*/

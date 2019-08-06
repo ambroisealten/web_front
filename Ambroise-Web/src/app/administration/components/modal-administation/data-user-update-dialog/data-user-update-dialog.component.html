@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field>
+    <input matInput placeholder="Nom" required formControlName="name" [(ngModel)]="name">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Prénom" required [(ngModel)]="forname" formControlName="forname">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput id="email" type="email" placeholder="Email" [(ngModel)]="emailInput" formControlName="mail" required >
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Rôle</mat-label>
+    <mat-select formControlName="role">
+      <mat-option *ngFor="let userRole of roles" [value]="userRole"> 
+        {{userRole}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <p class="errorMessage"> {{ errorMessage }} </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button class="mat-raised-button" (click)="close()">Fermer</button>
+  <button class="mat-raised-button mat-primary" [disabled]="!form.valid" (click)="save()">Enregistrer</button>
+</mat-dialog-actions>

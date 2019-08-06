@@ -1,0 +1,86 @@
+<mat-tab-group class="FirstTab">
+
+  <mat-tab label="Données Applicatives">
+
+    <mat-tab-group class="demo-tab-group">
+
+      <mat-tab label="Agences">
+        <app-agencies></app-agencies>
+      </mat-tab>
+
+      <!--Start Soft Skill Panel-->
+      <mat-tab label="SoftSkill">
+        <app-admin-soft-skill></app-admin-soft-skill>
+      </mat-tab>
+      <!--End Soft Skill Panel-->
+
+      <!-- Start IQP-->
+      <mat-tab label="Type d'engagement">
+        <app-contract-type></app-contract-type>
+      </mat-tab>
+      <!--End IQP Panel-->
+
+      <!-- Start Secteur d'activité -->
+      <mat-tab label="Secteur d'activité">
+        <app-line-of-business></app-line-of-business>
+      </mat-tab>
+      <!--End Secteur d'activité Panel-->
+
+      <!-- Start Métiers -->
+      <mat-tab label="Métiers">
+        <app-admin-job></app-admin-job>
+      </mat-tab>
+      <!--End Métiers Panel-->
+
+      <!-- Start notes (SoftSkill/Compétences) -->
+      <mat-tab label="Notes (SoftSkill/Compétences)">
+        <app-admin-skill-grade></app-admin-skill-grade>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
+
+  <mat-tab label="Qualité de données">
+
+    <mat-tab-group>
+      <!--Start Coméptence Panel-->
+      <mat-tab label="Compétences">
+        <app-admin-skills></app-admin-skills>
+        <!--End Compétence Panel-->
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </mat-tab>
+  <!-- Début Utilisateur  Panel -->
+  <mat-tab label="Gestion des Utilisateurs">
+    <app-admin-user></app-admin-user>
+  </mat-tab>
+  <!-- Fin Utilisateur  Panel -->
+</mat-tab-group>
+
+
+
+<!-- -->
+<div class="admin-app-data">
+  <mat-tab-group class="demo-tab-group">
+
+
+
+
+
+
+
+  </mat-tab-group>
+
+  <!--
+  <div class="synchroniserDiv">
+    <h3>Synchroniser les villes, départements et région avec la base API Géo du gouvernement</h3>
+    <button class="mat-raised-button" (click)="onClickSynchroniseGeoApi()">Synchroniser</button>
+  </div>
+
+  Arcordéon de données
+  <div class="panel-group" id="accordion">
+
+
+  </div>-->
+</div>

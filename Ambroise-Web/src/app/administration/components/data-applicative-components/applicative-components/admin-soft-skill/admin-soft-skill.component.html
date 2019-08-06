@@ -1,0 +1,15 @@
+<h4>Ici vous pouvez modifier les Soft Skills et changer l'ordre dans lesquelles ces dernières vont apparaître
+  dans l'application</h4>
+<div class="softSkillTab">
+  <button class="addButton" mat-icon-button (click)="addSoftSkill()">+</button>
+  <div cdkDropList #docsList="cdkDropList" [cdkDropListData]="softSkills" class="example-list"
+    (cdkDropListDropped)="drop($event)" (ngModelChange)="saveSoftSkillsOrder(softSkills)">
+    <div class="example-box" *ngFor="let softSkill of softSkills" cdkDrag>
+      {{ softSkill.name }}
+      <i (click)="removeSoftSkill(softSkill)" class="material-icons">
+        delete
+      </i>
+    </div>
+  </div>
+
+</div>

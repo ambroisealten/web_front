@@ -1,0 +1,27 @@
+table {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 2%; 
+}
+
+tr.mat-row {
+  height: 4vh !important;
+}
+
+.mat-row:hover {
+  background-color: #d3e7f5;
+  cursor: pointer;
+}
+
+.modif { 
+  max-height : 24vh !important;
+  overflow: auto !important;
+}
+
+.mat-header-cell{
+  background-color: inherit;
+}
+
+thead tr.mat-header-row{
+  height: fit-content !important;
+}

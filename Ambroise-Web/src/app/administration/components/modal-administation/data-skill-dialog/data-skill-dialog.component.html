@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{description}}</h2>
+
+<mat-dialog-content [formGroup]="form">
+
+    <mat-form-field>
+        <input matInput placeholder="Nom de la compétence" formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+        <input class="synonymousField" matInput placeholder="Synonyme de" formControlName="synonymous" (keyup)="onChange()">
+    </mat-form-field>
+    <mat-form-field>
+        <input class="replaceField" matInput placeholder="A remplacer par" formControlName="replaceWith" (keyup)="onChange()">
+    </mat-form-field>
+    <p class="instruction"> {{ instructionMessage }} </p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()">Fermer</button>
+    <button class="mat-raised-button mat-primary" (click)="save()" [disabled]="valide">Enregistrer</button>
+</mat-dialog-actions>

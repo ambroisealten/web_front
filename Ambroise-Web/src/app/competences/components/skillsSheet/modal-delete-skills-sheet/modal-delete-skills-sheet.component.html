@@ -1,0 +1,10 @@
+<h2 mat-dialog-title class="dialogTitle">
+    <mat-icon>warning</mat-icon>
+    Supprimer la fiche</h2>
+
+<mat-dialog-content>
+    <p>Voulez vous supprimer la fiche {{ sheetName }} ?<br>La suppression est définitive et irrémédiable</p>
+    <p class="errorMessage"> {{ errorMessage }} </p>
+    <button mat-raised-button class="saveButton" (click)="cancel()">Annuler</button>
+    <button mat-raised-button class="deleteButton" color="warn" (click)="deleteFiche()">Supprimer</button>
+</mat-dialog-content>

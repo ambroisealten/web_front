@@ -1,1 +1,274 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~ngx-toastr/toastr.css';  
+
+body{
+    margin: auto;
+    text-align: center;
+    font-family: 'Verdana', sans-serif;
+    --ALTENBlue : #008bd2e8;
+    --ALTENLightGray : #E6E6E9;
+    --ALTENWhiteModule : hsla(0,0%,100%,.2);
+    --ALTENWhiteModuleHome : hsla(0,0%,100%,.4);
+    --ALTENGray : #C0C0C8;
+    --ALTENDarkGray : #8C8C9A;
+    --ALTENDarkBlue : #043962;
+    --ALTENRed : #E30513;
+    --ALTENMarinBlue : #2F80F3;
+    --ALTENLightBlue : #7ECBEE;
+    --ALTENOrange : #FFBA00;
+    --ALTENBlack : #000000;
+    color : var(--ALTENDarkGray);
+}
+
+a{
+    color: var(--ALTENBlue);
+}
+
+@media (max-width :400px){
+    a,body{
+        font-size: 2.3vw;
+    }
+
+    h6{
+        font-size: 2.35vw;
+    }
+
+    h5{
+        font-size: 2.45vw;
+    }
+
+    h4{
+        font-size: 2.55vw; 
+    }
+
+    h3{
+        font-size: 2.65vw;
+    }
+
+    h2{
+        font-size: 2.8vw;
+    }
+
+    h1{
+        font-size: 3vw;
+    } 
+}
+
+@media (min-width : 400px) and (max-width:600px){
+    a,body{
+        font-size: 2.2vw;
+    }
+
+    h6{
+        font-size: 2.25vw;
+    }
+
+    h5{
+        font-size: 2.35vw;
+    }
+
+    h4{
+        font-size: 2.45vw; 
+    }
+
+    h3{
+        font-size: 2.55vw;
+    }
+
+    h2{
+        font-size: 2.7vw;
+    }
+
+    h1{
+        font-size: 2.9vw;
+    }
+}
+
+@media (min-width:600px) and (max-width:900px) {
+    a,body{
+        font-size : 1.7vw;
+    }
+
+    h6{
+        font-size: 1.75vw;
+    }
+
+    h5{
+        font-size: 1.85vw;
+    }
+
+    h4{
+        font-size: 1.95vw; 
+    }
+
+    h3{
+        font-size: 2.05vw;
+    }
+
+    h2{
+        font-size: 2.2vw;
+    }
+
+    h1{
+        font-size: 2.35vw;
+    }
+}
+
+@media (min-width:900px) and (max-width:1200px){
+    a,body{
+        font-size : 1.35vw;
+    }
+
+    h6{
+        font-size: 1.39vw;
+    }
+
+    h5{
+        font-size: 1.5vw;
+    }
+
+    h4{
+        font-size: 1.6vw; 
+    }
+
+    h3{
+        font-size: 1.7vw;
+    }
+
+    h2{
+        font-size: 1.85vw;
+    }
+
+    h1{
+        font-size: 2vw;
+    }  
+} 
+
+@media (min-width:1200px) and (max-width:1500px){
+    a,body{
+        font-size: 1.1vw;
+    }
+
+    h6{
+        font-size: 1.16vw;
+    }
+
+    h5{
+        font-size: 1.25vw;
+    }
+
+    h4{
+        font-size: 1.35vw; 
+    }
+
+    h3{
+        font-size: 1.45vw;
+    }
+
+    h2{
+        font-size: 1.6vw;
+    }
+
+    h1{
+        font-size: 1.8vw;
+    }
+}
+
+@media (min-width:1500px) {
+    a,body{
+        font-size: .95vw; 
+    }
+
+    h6{
+        font-size: .99vw;
+    }
+
+    h5{
+        font-size: 1.1vw;
+    }
+
+    h4{
+        font-size: 1.2vw; 
+    }
+
+    h3{
+        font-size: 1.3vw;
+    }
+
+    h2{
+        font-size: 1.45vw;
+    }
+
+    h1{
+        font-size: 1.6vw;
+    }
+}
+
+.allTagWords{
+    display: inline-block;
+    max-height: 20vh;
+    overflow: auto;
+}
+
+.tagWord{
+    color :#043962;
+    text-align: left;
+    background-color: var(--ALTENGray);
+    border-radius: 10px;
+    transition: linear .2s;
+    width: fit-content !important;
+    margin-bottom: 3%;
+    max-width: 17vw;
+    margin-left: 7%;
+    margin-bottom: 2%;
+}
+
+.allTagWordsCpt {
+    display: inline-block;
+    max-height: 20vh;
+    overflow: auto;
+}
+
+.tagWordCpt {
+    color :#043962;
+    text-align: left;
+    background-color: var(--ALTENGray);
+    border-radius: 10px;
+    transition: linear .2s;
+    width: fit-content !important;
+    margin-bottom: 3%;
+    max-width: 17vw;
+    margin-left: 7%;
+    margin-bottom: 2%;
+}
+
+th {
+    text-align: center !important;
+}
+
+div .mat-expansion-panel-body  {
+    padding-left: 2% !important;
+    padding-bottom: 5% !important;
+  }
+
+div.mat-expansion-panel-content ng-trigger ng-trigger-bodyExpansion {
+    padding-left: 0% !important;
+}
+
+.closeTag{
+    filter : brightness(55%);
+    width: 7%;
+    min-width: 20px;
+    transition : linear .2s;
+    float: left;
+}
+
+.tagWordCpt:hover, .tagWord:hover {
+    background-color: var(--ALTENRed);
+    color : white;
+}
+
+.tagWordCpt:hover .closeTag, .tagWord:hover .closeTag{
+    filter : brightness(0) invert(1);
+}

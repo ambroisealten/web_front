@@ -1,0 +1,115 @@
+table {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 2%;
+}
+
+.mat-option.mat-active {
+  background-color: var(--ALTENDarkBlue) !important ; 
+  color: white !important ; 
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+td.mat-cell {
+  padding: 1% 0 1% 0;
+}
+
+td.mat-cell:last-of-type {
+  text-align: center;
+}
+
+tr.mat-row {
+  height: 1rem;
+}
+
+.mat-form-field {
+  font-size: 75%;
+}
+
+/** Input number styling **/
+input[type="number"] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.number-input {
+  border: 1px solid #ddd;
+  display: inline-flex;
+}
+
+.number-input,
+.number-input * {
+  box-sizing: border-box;
+}
+
+.incrementButton, .decrementButton {
+  outline:none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+}
+
+.number-input button.incrementButton:before,
+.number-input button.incrementButton:after,
+.number-input button.decrementButton:before,
+.number-input button.decrementButton:after {
+  display: inline-block;
+  position: absolute;
+  content: '';
+  width: 1rem;
+  height: 3%;
+  background-color: var(--ALTENBlue);
+  transform: translate(-50%, -50%);
+}
+
+.number-input button.incrementButton:after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.number-input button.incrementButton:before, .number-input button.decrementButton:before {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.number-input input[type=number] {
+  max-width: 3rem;
+  border: solid #ddd;
+  border-width: 0 1px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.removeButton {
+  padding:0;
+  float: right;
+}
+
+.removeButton:focus {
+  outline: none;
+}
+
+.removeIcon {
+  font-size: 1em;
+  margin: auto;
+  color: var(--ALTENDarkGray);
+}
+
+.tab-div {
+  height: 30vh;
+  overflow: auto;
+}
